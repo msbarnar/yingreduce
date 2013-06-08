@@ -8,7 +8,7 @@ body {
 	margin:0;
 	font:12px/15px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	color:#8a8a8a;
-	min-width:1000px;
+	min-width:800px;
 	background:#fff;
 	height:100%;
 }
@@ -94,8 +94,17 @@ form,fieldset{
 	border-radius: 12px;
 }
 .links .ico1 {background:#fff url(../images/sprite.png) no-repeat 14px -445px;}
-.links .ico2 {background:#fff url(../images/sprite.png) no-repeat 13px -530px;}
+.links .ico2 {background:#fff url(../images/sprite.png) no-repeat 13px -532px;}
 .links .ico3 {background:#fff url(../images/sprite.png) no-repeat 8px -312px;}
+.links .ico-tables {
+	float: left;
+	display: inline;
+	padding-right: 5px;
+	margin-left: -30px;
+	background:#fff url(../images/sprite.png) no-repeat 10px -98px;
+	height: 20px;
+	width: 30px;
+	}
 .profile-box {float:right;}
 .btn-on {
 	background:url(../images/sprite.png) no-repeat -230px -5px;
@@ -323,4 +332,9 @@ form,fieldset{
 
 .nodisplay {
 	display: none;
+}
+
+.section-body {
+	margin-left: 30px;
+	margin-right: 30px;
 }

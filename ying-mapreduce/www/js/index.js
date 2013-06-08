@@ -4,7 +4,9 @@ $(document).ready(initialize());
 
 function initialize() {
 	// Update node info every 3 seconds
-	setInterval(updateNodeInfo, 3000);
+	setInterval(function() {
+		nodeInfoReq = makeRequest("node", updateConnectionStatus);
+	}, 3000);
 }
 
 function getXmlHttpRequest() {
@@ -42,16 +44,31 @@ function checkConnectivity(req) {
 	}
 }
 
-function updateNodeInfo() {
-	nodeInfoReq = makeRequest("node", displayNodeInfo);
+function updateConnectionStatus() {
+	checkConnectivity(nodeInfoReq);
 }
 
-// Show node info in pane
-function displayNodeInfo() {
-	if (checkConnectivity(nodeInfoReq)) {
-			var message = nodeInfoReq.responseXML.getElementsByTagName("status")[0];
-			document.getElementById("nodeStatus").innerHTML = message.childNodes[0].nodeValue;
-	} else {
-		document.getElementById("nodeStatus").innerHTML = "Unknown";
-	}
+function switch_tab_network() {
+	tables_stop();
+	mapreduce_stop();
+	settings_stop();
+	network_start();
+}
+function switch_tab_tables() {
+	network_stop();
+	mapreduce_stop();
+	settings_stop();
+	tables_start();
+}
+function switch_tab_mapreduce() {
+	network_stop();
+	tables_stop();
+	settings_stop();
+	mapreduce_start();
+}
+function switch_tab_settings() {
+	network_stop();
+	tables_stop();
+	mapreduce_stop();
+	settings_start();
 }
