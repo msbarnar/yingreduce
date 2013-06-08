@@ -27,11 +27,17 @@ function makeRequest(url, callback) {
 function checkConnectivity(req) {
 	if (req.readyState == 4 && req.status == 200) {
 		$("span#connectionStatus").text("connected");
-		$("div#connectionStatus").css("background-color", "#E6FFB2");
+		$("img#connection-off").addClass("nodisplay");
+		$("img#connection-on").removeClass("nodisplay");
+		$("div.section-not-connected").addClass("nodisplay");
+		$("div.section-body").removeClass("nodisplay");
 		return true;
 	} else {
 		$("span#connectionStatus").text("not connected");
-		$("div#connectionStatus").css("background-color", "#FFE6E6");
+		$("img#connection-off").removeClass("nodisplay");
+		$("img#connection-on").addClass("nodisplay");
+		$("div.section-not-connected").removeClass("nodisplay");
+		$("div.section-body").addClass("nodisplay");
 		return false;
 	}
 }

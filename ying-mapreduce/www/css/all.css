@@ -94,8 +94,8 @@ form,fieldset{
 	border-radius: 12px;
 }
 .links .ico1 {background:#fff url(../images/sprite.png) no-repeat 14px -445px;}
-.links .ico2 {background:#fff url(../images/sprite.png) no-repeat 13px -528px;}
-.links .ico3 {background:#fff url(../images/sprite.png) no-repeat 11px -637px;}
+.links .ico2 {background:#fff url(../images/sprite.png) no-repeat 13px -530px;}
+.links .ico3 {background:#fff url(../images/sprite.png) no-repeat 8px -312px;}
 .profile-box {float:right;}
 .btn-on {
 	background:url(../images/sprite.png) no-repeat -230px -5px;
@@ -177,7 +177,7 @@ form,fieldset{
 	color:#dc6200;
 	background:#fff6de url(../images/sprite.png) no-repeat 18px -975px;
 }
-.states .succes {
+.states .success {
 	color:#3f5a04;
 	background:#dfedc0 url(../images/sprite.png) no-repeat 15px -841px;
 }
@@ -198,13 +198,14 @@ form,fieldset{
 	top:0;
 }
 .logo {
-	background:url(../images/sprite.png) no-repeat -53px 0;
-	width:36px;
-	height:44px;
+	background:url(../images/asu-logo.png) no-repeat;
+	background-size:100%;
+	width:60px;
+	height:45px;
 	overflow:hidden;
 	text-indent:-9999px;
 	display:block;
-	margin:0 auto 23px;
+	margin:10px auto 23px;
 	position:relative;
 	left:1px;
 }
@@ -318,4 +319,8 @@ form,fieldset{
 	background: -ms-linear-gradient(top,  #950707 0%,#610202 100%);
 	background: linear-gradient(to bottom,  #950707 0%,#610202 100%);
 	border-top:2px solid #b01919;
+}
+
+.nodisplay {
+	display: none;
 }
