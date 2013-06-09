@@ -17,7 +17,9 @@ public final class SimpleServerTableProxy
 {
 	private final TableID tableId;
 	
-	private final Map<String, List<Page>> tables = new HashMap<String, List<Page>>();
+	public int totalPageCount = -1;
+	
+	private final List<Page> pages = new ArrayList<Page>();
 	
 	public SimpleServerTableProxy(final TableID tableId) {
 		this.tableId = tableId;
@@ -32,16 +34,11 @@ public final class SimpleServerTableProxy
 	@Override
 	public Message processMessage(final Message message) {
 		final PageOutRequest msg = (PageOutRequest) message;
-		final String tableId = msg.getTableId().toString();
-		List<Page> pages = this.tables.get(tableId);
-		if (pages == null) {
-			pages = new ArrayList<Page>();
-			this.tables.put(tableId, pages);
-		}
-		pages.add(msg.getPage());
+		this.pages.add(msg.getPage());
 		
 		return null;
 	}
 
+	public final int getPageCount() { return this.pages.size(); }
 	public final TableID getTableId() { return this.tableId; }
 }

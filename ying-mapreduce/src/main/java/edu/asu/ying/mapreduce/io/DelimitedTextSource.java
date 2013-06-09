@@ -78,6 +78,9 @@ public class DelimitedTextSource
 		final String line;
 		try {
 			line = this.reader.readLine();
+			if (line == null) {
+				throw new NoSuchElementException();
+			}
 		} catch (final IOException e) {
 			throw new NoSuchElementException();
 		}

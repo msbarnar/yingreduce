@@ -3,6 +3,7 @@ package edu.asu.ying.mapreduce.ui.http;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 
 import javax.servlet.ServletContext;
@@ -19,6 +20,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileCleaningTracker;
 
 import edu.asu.ying.mapreduce.TableServerDaemon;
+import edu.asu.ying.mapreduce.io.table.SimpleServerTableProxy;
+import edu.asu.ying.mapreduce.io.table.SimpleServerTableProxyProvider;
 import edu.asu.ying.mapreduce.rpc.net.NodeNotFoundException;
 import edu.asu.ying.mapreduce.table.ElementSource;
 import edu.asu.ying.mapreduce.table.TableID;
@@ -28,6 +31,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
@@ -203,5 +207,25 @@ public final class TableServerController
 		}
 		response.getWriter().write("<value>".concat(String.valueOf(rnd)).concat("</value>"));
 		response.getWriter().write("<success>true</success>");
+	}
+	
+	@WebMethod(name = "tables")
+	public void getTables(final HttpServletRequest requset, final HttpServletResponse response) throws IOException {
+		// Send back the list of tables
+		final PrintWriter w = response.getWriter();
+		w.write("<tables>");
+		final SimpleServerTableProxyProvider prov = this.daemon.getProxyProvider();
+		final Map<String, SimpleServerTableProxy> tables = prov.getTable();
+		for (final Map.Entry<String, SimpleServerTableProxy> entry : tables.entrySet()) {
+			w.write("<table>");
+				w.write("<id>");
+					w.write(entry.getKey());
+				w.write("</id>");
+				w.write("<pageCount>");
+					w.write(String.valueOf(entry.getValue().getPageCount()));
+				w.write("</pageCount>");
+			w.write("</table>");
+		}
+		w.write("</tables>");
 	}
 }

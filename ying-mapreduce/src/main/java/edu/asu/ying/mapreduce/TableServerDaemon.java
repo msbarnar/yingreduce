@@ -71,6 +71,8 @@ public final class TableServerDaemon
 		this.receiveChannel.close();
 	}
 	
+	public final SimpleServerTableProxyProvider getProxyProvider() { return (SimpleServerTableProxyProvider) this.proxyProvider; }
+	
 	public final ElementSource getElementSource(final TableID tableId, final InputStream stream) {
 		final ClientTable table = new ClientTable(tableId, this.getSendChannel().getMessageSink());
 		return new DelimitedTextSource(stream, table, '\n', ',');
