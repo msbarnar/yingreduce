@@ -1,10 +1,12 @@
 package edu.asu.ying.mapreduce;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 
 import edu.asu.ying.mapreduce.ui.Observable;
 import edu.asu.ying.mapreduce.ui.ObservableProperties;
+import edu.asu.ying.mapreduce.io.DelimitedTextSource;
 import edu.asu.ying.mapreduce.io.table.SimpleServerTableProxyProvider;
 import edu.asu.ying.mapreduce.rpc.channels.kad.KadReceiveChannel;
 import edu.asu.ying.mapreduce.rpc.channels.kad.KadSendChannel;
@@ -24,6 +26,7 @@ public final class TableServerDaemon
 	private ServerTableProxyProvider proxyProvider;
 	// Provides table instances to handle messages
 	private ServerTableProvider tableProvider;
+	
 	// Redirects messages to appropriate handlers
 	private MessageDispatch messageDispatch;
 	// Listens for messages from the network and sends them to the dispatch
@@ -66,6 +69,11 @@ public final class TableServerDaemon
 	
 	public void stop() {
 		this.receiveChannel.close();
+	}
+	
+	public final ElementSource getElementSource(final TableID tableId, final InputStream stream) {
+		final ClientTable table = new ClientTable(tableId, this.getSendChannel().getMessageSink());
+		return new DelimitedTextSource(stream, table, '\n', ',');
 	}
 	
 	@Override

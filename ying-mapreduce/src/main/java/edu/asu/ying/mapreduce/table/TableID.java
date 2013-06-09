@@ -32,6 +32,11 @@ public final class TableID
 	}
 	
 	@Override
+	public final String toString() {
+		return this.id;
+	}
+	
+	@Override
 	public final boolean equals(final Object rhs) {
 		if (rhs == this)
 			return true;

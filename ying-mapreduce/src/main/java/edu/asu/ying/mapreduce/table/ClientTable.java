@@ -90,7 +90,8 @@ public final class ClientTable
 			public void onEvent(final Object sender, final EventArgs args) {
 				ClientTable.this.newPage();
 				// Only listen to page full events from the most recent page
-				((Page) sender).onPageFull.detach(this);
+				//FIXME: ConcurrentModification; we're iterating the event right now!
+				// FIXME: ((Page) sender).onPageFull.detach(this);
 			}
 		});
 		this.pageQueue.add(this.currentPage);
@@ -133,7 +134,7 @@ public final class ClientTable
 		final PageOutRequest msg = new PageOutRequest(page);
 		// Send the message down the chain and get the result synchronously
 		final PageOutResponse response = (PageOutResponse) this.nextSink.processMessage(msg);
-		page.setIsDistributed((Boolean) response.getStatus());
+		//TODO: page.setIsDistributed((Boolean) response.getStatus());
 	}
 	
 	/*****************************************************************
