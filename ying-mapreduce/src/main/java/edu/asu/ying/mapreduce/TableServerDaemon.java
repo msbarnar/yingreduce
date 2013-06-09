@@ -3,6 +3,8 @@ package edu.asu.ying.mapreduce;
 import java.io.Serializable;
 import java.util.*;
 
+import edu.asu.ying.mapreduce.ui.Observable;
+import edu.asu.ying.mapreduce.ui.ObservableProperties;
 import edu.asu.ying.mapreduce.io.table.SimpleServerTableProxyProvider;
 import edu.asu.ying.mapreduce.rpc.channels.kad.KadReceiveChannel;
 import edu.asu.ying.mapreduce.rpc.messaging.MessageDispatch;
@@ -52,11 +54,17 @@ public final class TableServerDaemon
 		// The receive channel will pipe incoming messages to the dispatch
 		// The default implementation doesn't join any network to begin
 		this.kadChannel = new KadReceiveChannel(this.messageDispatch);
-		Logger.get().info("Kademlia server is listening on port ".concat(
-				this.kadChannel.getTransportSink().getProperties().get("port").toString()));
+		
+		final int serverPort = (Integer) this.kadChannel.getTransportSink().getProperties().get("port");
+		Logger.get().info("Kademlia server is listening on port ".concat(String.valueOf(serverPort)));
 	}
 	
 	public void stop() {
 		this.kadChannel.close();
+	}
+	
+	@Override
+	public List<ObservableProperties> getExposedProps() {
+		return this.kadChannel.getExposedProps();
 	}
 }
