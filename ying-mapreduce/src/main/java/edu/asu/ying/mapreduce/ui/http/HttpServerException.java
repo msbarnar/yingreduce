@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.webui;
+package edu.asu.ying.mapreduce.ui.http;
 
 public class HttpServerException
 	extends RuntimeException

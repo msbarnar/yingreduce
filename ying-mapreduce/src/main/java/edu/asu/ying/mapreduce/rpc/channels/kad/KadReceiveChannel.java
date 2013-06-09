@@ -9,6 +9,7 @@ import edu.asu.ying.mapreduce.rpc.channels.*;
 import edu.asu.ying.mapreduce.rpc.formatting.*;
 import edu.asu.ying.mapreduce.rpc.messaging.MessageSink;
 import edu.asu.ying.mapreduce.rpc.net.NodeNotFoundException;
+import edu.asu.ying.mapreduce.ui.ObservableProperties;
 
 public final class KadReceiveChannel
 	implements ReceiveChannel
@@ -47,4 +48,9 @@ public final class KadReceiveChannel
 	public final MessageSink getRequestSink() { return this.formatterSink; }
 	@Override
 	public final MessageSink getResponseSink() { return this.responseFormatterSink; }
+	
+	@Override
+	public final ObservableProperties getExposedProps() {
+		return this.transportSink.getExposedProps();
+	}
 }

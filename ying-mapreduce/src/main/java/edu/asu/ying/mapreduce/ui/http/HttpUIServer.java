@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.webui;
+package edu.asu.ying.mapreduce.ui.http;
 
 import java.util.*;
 
@@ -7,10 +7,13 @@ import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 
+import edu.asu.ying.mapreduce.TableServerDaemon;
+import edu.asu.ying.mapreduce.ui.ObservableProvider;
+
 /**
- * The base HTTP server for the web interface.
+ * The HTTP server that serves the user interface.
  */
-public class InterfaceServer
+public class HttpUIServer
 {
 	private final Server httpServer;
 	// Manages the delegation to servlets
@@ -21,7 +24,7 @@ public class InterfaceServer
 	private final Map<String, Object> properties = new HashMap<String, Object>();
 	
 	
-	public InterfaceServer() throws Exception {
+	public HttpUIServer() throws Exception {
 		// TODO: Use configuration
 		this.properties.put("port", 8777);
 		this.httpServer = new Server(Integer.parseInt(this.properties.get("port").toString()));
@@ -37,8 +40,9 @@ public class InterfaceServer
 		this.resources.setResourceBase("www");
 		
 		// Connect servlets to associated URLs
-		this.context.setContextPath("/node");
-		this.context.addServlet(new ServletHolder(new NodeServlet()), "/");
+		this.context.setContextPath("/");
+		// Connect the local node
+		this.context.addServlet(new ServletHolder(new Connector(ObservableProvider.INSTANCE.getObservable(TableServerDaemon.class))), "/node");
 		
 		// Attach handlers to server
 		HandlerList handlers = new HandlerList();

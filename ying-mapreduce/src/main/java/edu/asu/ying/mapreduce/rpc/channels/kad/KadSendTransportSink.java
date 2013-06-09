@@ -11,6 +11,7 @@ import edu.asu.ying.mapreduce.rpc.channels.SendChannelTransportSink;
 import edu.asu.ying.mapreduce.rpc.messaging.*;
 import edu.asu.ying.mapreduce.rpc.net.*;
 import edu.asu.ying.mapreduce.rpc.net.kad.*;
+import edu.asu.ying.mapreduce.ui.ObservableProperties;
 
 /**
  * {@link KadSendTransportSink} is the client interface to the Kademlia network.
@@ -28,6 +29,7 @@ public final class KadSendTransportSink
 	implements MessageSink, SendChannelTransportSink
 {
 	private final Map<String, Object> properties = new HashMap<String, Object>();
+	private final ObservableProperties exposedProps = new ObservableProperties();
 	
 	// The Kad endpoint
 	private final KeybasedRouting kbrNode;
@@ -64,6 +66,11 @@ public final class KadSendTransportSink
 		} catch (final IllegalStateException e) {
 			throw new NodeNotFoundException(e);
 		}
+		
+		this.exposedProps.clear();
+		// Expose the bootstrap node address
+		this.exposedProps.add(new AbstractMap.SimpleEntry<String, Serializable>(
+				"bootstrap-address", remoteNodeAddress));
 	}
 
 	/**
@@ -117,6 +124,11 @@ public final class KadSendTransportSink
 	@Override
 	public void close() {
 		this.kbrNode.shutdown();
+	}
+	
+	@Override
+	public final ObservableProperties getExposedProps() {
+		return this.exposedProps;
 	}
 	
 	@Override

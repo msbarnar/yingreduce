@@ -8,6 +8,7 @@ package edu.asu.ying.mapreduce;
 import java.util.logging.Level;
 
 import edu.asu.ying.mapreduce.logging.Logger;
+import edu.asu.ying.mapreduce.ui.ObservableProvider;
 
 
 public enum Daemon
@@ -23,6 +24,8 @@ public enum Daemon
 		// Start the daemons
 		try {
 			this.tableServer = new TableServerDaemon();
+			// Make the table server available to the interface
+			ObservableProvider.INSTANCE.register(this.tableServer);
 			this.interfaceDaemon = new InterfaceDaemon();
 			this.ready = true;
 		} catch (final Throwable e) {
