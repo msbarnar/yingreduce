@@ -13,6 +13,10 @@ public final class ObservableProperties
 	public ObservableProperties(final Object owner) {
 		this.owner = owner.getClass().getSimpleName();
 	}
+	public ObservableProperties(final Object owner, final Map.Entry<String, Serializable> element) {
+		this(owner);
+		this.add(element);
+	}
 	
 	public final String getClassName() { return this.owner; }
 }

@@ -383,10 +383,33 @@ span.danger {
   border-radius: 5px;
   border-color: #f3e4bd;
   color: #333;
-  transition: all 0.1s ease-out;
+  transition: all 0.05s ease-out;
 }
 
 .simple-input:focus { 
   outline: none;
   border-color: #F1B720;
 }
+
+a.inline {
+  display: inline-block;
+  margin: 0 0.2em;
+  padding: 3px;
+  background: #97CAF2;
+  border-radius: 2px;
+  transition: all 0.05s;
+
+  /* Font styles */
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+}
+a.inline:hover   { background: #53A7EA; }
+a.inline:active  { background: #C4E1F8; }
+a.inline:visited { background: #F2BF97; }
+
+a.bugreport {
+	margin-top: 5px;
+	background: #be0000;
+}
+a.bugreport:hover { background: #720000; }

@@ -31,6 +31,7 @@ function displayConnected(data) {
 	$("img#connection-on").removeClass("nodisplay");
 	$("div.section-not-connected").addClass("nodisplay");
 	$("div.section-body").removeClass("nodisplay");
+	// Display the status on the network pane
 	getNodeStatus(data);
 }
 function displayDisconnected() {
@@ -39,39 +40,6 @@ function displayDisconnected() {
 	$("img#connection-on").addClass("nodisplay");
 	$("div.section-not-connected").removeClass("nodisplay");
 	$("div.section-body").addClass("nodisplay");
-}
-
-function getNodeStatus(data) {
-	var nodeStatus = data.getElementsByTagName("status")[0].childNodes[0].nodeValue;
-	if (nodeStatus.toLowerCase() == "running") {
-		displayNodeRunning();
-	} else if (nodeStatus.toLowerCase() == "down") {
-		displayNodeDown();
-	} else if (nodeStatus.toLowerCase() == "error") {
-		displayNodeError(data.getElementsByTagName("message")[0].childNodes[0].nodeValue);
-	} else {
-		displayNodeError("Unknown status: " + nodeStatus);
-	}
-}
-
-function displayNodeRunning() {
-	$("li#node-running").removeClass("nodisplay");
-	$("li#node-down").addClass("nodisplay");
-	$("li#node-error").addClass("nodisplay");
-	$("li#node-error-message").addClass("nodisplay");
-}
-function displayNodeDown() {
-	$("li#node-running").addClass("nodisplay");
-	$("li#node-down").removeClass("nodisplay");
-	$("li#node-error").addClass("nodisplay");
-	$("li#node-error-message").addClass("nodisplay");
-}
-function displayNodeError(errMessage) {
-	$("li#node-running").addClass("nodisplay");
-	$("li#node-down").addClass("nodisplay");
-	$("li#node-error").removeClass("nodisplay");
-	$("li#node-error-message").removeClass("nodisplay");
-	$("li#node-error-message").text(errMessage);
 }
 
 function switch_tab_network() {
@@ -97,4 +65,24 @@ function switch_tab_settings() {
 	tables_stop();
 	mapreduce_stop();
 	settings_start();
+}
+
+function xml2string(node) {
+	if (typeof(XMLSerializer) !== 'undefined') {
+		var serializer = new XMLSerializer();
+		return serializer.serializeToString(node);
+	} else if (node.xml) {
+		return node.xml;
+	}
+}
+
+function makeBugReportLink(bugNo, detail) {
+	return "<a class=\"inline bugreport\" "
+		+ "onClick='sendBugReport(this, " + bugNo + ");' "
+		+ "href=\"mailto:msbarnar@gmail.com?subject=Mapreduce Bug&Body=%0D%0A%0D%0A%0D%0A(DETAILS FOR BUG " + bugNo + ")%0D%0A" + detail
+		+ "\">Report this bug to the developers</a>";
+}
+
+function sendBugReport(element, bugNo) {
+	element.innerText = "Bug report sent";
 }
