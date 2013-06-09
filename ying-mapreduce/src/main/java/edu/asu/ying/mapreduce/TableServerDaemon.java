@@ -7,6 +7,7 @@ import edu.asu.ying.mapreduce.ui.Observable;
 import edu.asu.ying.mapreduce.ui.ObservableProperties;
 import edu.asu.ying.mapreduce.io.table.SimpleServerTableProxyProvider;
 import edu.asu.ying.mapreduce.rpc.channels.kad.KadReceiveChannel;
+import edu.asu.ying.mapreduce.rpc.channels.kad.KadSendChannel;
 import edu.asu.ying.mapreduce.rpc.messaging.MessageDispatch;
 import edu.asu.ying.mapreduce.table.*;
 import edu.asu.ying.mapreduce.logging.Logger;
@@ -26,7 +27,9 @@ public final class TableServerDaemon
 	// Redirects messages to appropriate handlers
 	private MessageDispatch messageDispatch;
 	// Listens for messages from the network and sends them to the dispatch
-	private KadReceiveChannel kadChannel;
+	private KadReceiveChannel receiveChannel;
+	// Connects to an existing network and sends messages to it
+	private KadSendChannel sendChannel;
 	
 	public TableServerDaemon() {
 		this(null);
@@ -53,18 +56,23 @@ public final class TableServerDaemon
 		this.tableProvider.registerForMessages(this.messageDispatch);
 		// The receive channel will pipe incoming messages to the dispatch
 		// The default implementation doesn't join any network to begin
-		this.kadChannel = new KadReceiveChannel(this.messageDispatch);
+		this.receiveChannel = new KadReceiveChannel(this.messageDispatch);
 		
-		final int serverPort = (Integer) this.kadChannel.getTransportSink().getProperties().get("port");
+		final int serverPort = (Integer) this.receiveChannel.getTransportSink().getProperties().get("port");
 		Logger.get().info("Kademlia server is listening on port ".concat(String.valueOf(serverPort)));
+		
+		this.sendChannel = new KadSendChannel();
 	}
 	
 	public void stop() {
-		this.kadChannel.close();
+		this.receiveChannel.close();
 	}
 	
 	@Override
 	public List<ObservableProperties> getExposedProps() {
-		return this.kadChannel.getExposedProps();
+		return this.receiveChannel.getExposedProps();
 	}
+	
+	public final KadReceiveChannel getReceiveChannel() { return this.receiveChannel; }
+	public final KadSendChannel getSendChannel() { return this.sendChannel; }
 }

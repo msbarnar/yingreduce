@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 
+import edu.asu.ying.mapreduce.Daemon;
 import edu.asu.ying.mapreduce.TableServerDaemon;
 import edu.asu.ying.mapreduce.ui.ObservableProvider;
 
@@ -42,7 +43,8 @@ public class HttpUIServer
 		// Connect servlets to associated URLs
 		this.context.setContextPath("/");
 		// Connect the local node
-		this.context.addServlet(new ServletHolder(new Connector(ObservableProvider.INSTANCE.getObservable(TableServerDaemon.class))), "/node");
+		this.context.addServlet(new ServletHolder(new Presenter(ObservableProvider.INSTANCE.getObservable(TableServerDaemon.class))), "/node");
+		this.context.addServlet(new ServletHolder(new TableServerController(Daemon.INSTANCE.getTableServerDaemon())), "/tables");
 		
 		// Attach handlers to server
 		HandlerList handlers = new HandlerList();

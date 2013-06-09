@@ -1,5 +1,6 @@
 var network_updateTimer;
 var network_active = false;
+var network_isConnected = false;
 
 function network_start() {
 	$("#tab-network").removeClass("nodisplay");
@@ -17,6 +18,61 @@ function network_stop() {
 function update_network() { 
 }
 
+function network_connect() {
+	var ipaddr = $("input#connect-addr").val();
+	$.ajax({
+		url: "http://localhost:8777/tables", 
+		data: {method: "connect", uri: ipaddr}
+	}).done(displayConnectMessage)
+		.fail(displayConnectError); 
+}
+
+function displayConnectMessage(data) {	
+	var exception = data.getElementsByTagName("exception")[0];
+	if (exception) {
+		displayConnectError(data);
+		return;
+	} else {
+		resBox = $("li#connect-result");
+		resBox.addClass("success");
+		var remoteAddr = data.getElementsByTagName("remote-addr")[0];
+		if (remoteAddr) {
+			remoteAddr = "<br>Remote node: " + remoteAddr.childNodes[0].nodeValue;
+		} else {
+			remoteAddr = "";
+		}
+		resBox.html("<span class=\"subheading\">Successfully connected</span>" + remoteAddr);
+		$("div#connect-result").removeClass("nodisplay");
+		$("div#connect-instructions").addClass("nodisplay");
+		
+		network_isConnected = true;
+	}
+}
+function displayConnectError(data) {
+	resBox = $("li#connect-result"); 
+	
+	resBox.addClass("error");
+	var exception = data.getElementsByTagName("exception")[0].childNodes[0].nodeValue;
+	if (exception) {
+		var detail = data.getElementsByTagName("detail")[0].childNodes[0].nodeValue;
+		if (detail != "null") {
+			detail + "<br>" + detail;
+		} else {
+			detail = "";
+		}
+		var cause = data.getElementsByTagName("cause")[0].childNodes[0].nodeValue;
+		if (cause && cause != "null") {
+			cause = "<br>Caused by:<br>" + cause;
+		} else {
+			cause = "";
+		}
+		resBox.html("<span class=\"exception\">" + exception + "</span>"
+			+ detail + cause);
+	}
+	$("div#connect-result").removeClass("nodisplay");
+	network_isConnected = false;
+}
+
 function getNodeStatus(data) {
 	if (!network_active) {
 		return;
@@ -32,7 +88,7 @@ function getNodeStatus(data) {
 		malformedResponse(data);
 		return;
 	}
-	var localEndpoint = "";//receiveSink.getElementsByTagName("local-endpoint")[0].childNodes[0].nodeValue;
+	var localEndpoint = receiveSink.getElementsByTagName("local-endpoint")[0].childNodes[0].nodeValue;
 	if (!localEndpoint) {
 		displayNodeDown();
 	} else {
@@ -41,7 +97,9 @@ function getNodeStatus(data) {
 }
 
 function displayNodeRunning(localEndpoint) {
+	$("li#node-running").html("<span class=\"subheading\">Node is running</span><br>" + localEndpoint);
 	$("li#node-running").removeClass("nodisplay");
+	
 	$("li#node-down").addClass("nodisplay");
 	$("li#node-error").addClass("nodisplay");
 	$("li#node-error-message").addClass("nodisplay");

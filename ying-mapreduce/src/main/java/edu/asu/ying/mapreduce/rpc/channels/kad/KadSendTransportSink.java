@@ -37,7 +37,10 @@ public final class KadSendTransportSink
 	private final ObservableProperties exposedProps = new ObservableProperties(this);
 	
 	// The Kad endpoint
+	private final KeybasedRoutingProvider kbrProvider;
 	private final KeybasedRouting kbrNode;
+	
+	private boolean isJoined = false;
 	
 	/**
 	 * Initialize the transport sink with the address of a remote bootstrap node
@@ -46,13 +49,10 @@ public final class KadSendTransportSink
 	 * @throws URISyntaxException if the remote node address is not a valid URI.
 	 * @throws NodeNotFoundException 
 	 */
-	public KadSendTransportSink(final URI remoteNodeAddress) 
-			throws URISyntaxException, NodeNotFoundException {
+	public KadSendTransportSink() {
 		// Get an instance of the Kademlia node
-		final KeybasedRoutingProvider kbrProvider = new SingletonKeybasedRoutingProvider();
+		this.kbrProvider = new SingletonKeybasedRoutingProvider();
 		this.kbrNode = kbrProvider.getKeybasedRouting();
-		// Join an existing network in a send-only mode
-		this.join(kbrProvider, remoteNodeAddress);
 	}
 	/**
 	 * Joins the kademlia network specified by <code>remoteNodeAddress</code> using
@@ -62,20 +62,28 @@ public final class KadSendTransportSink
 	 * @throws URISyntaxException
 	 * @throws NodeNotFoundException
 	 */
-	private final void join(final KeybasedRoutingProvider kbrProvider, final URI remoteNodeAddress) 
+	public final void join(final URI remoteNodeAddress) 
 			throws URISyntaxException, NodeNotFoundException {
+		if (this.isJoined) {
+			return;
+		}
+		
 		// Connect to a network
-		final URI remoteUri = kbrProvider.makeURI(remoteNodeAddress);
+		final URI remoteUri = this.kbrProvider.makeURI(remoteNodeAddress);
 		try {
 			this.kbrNode.join(Arrays.asList(remoteUri));
 		} catch (final IllegalStateException e) {
 			throw new NodeNotFoundException(e);
 		}
 		
+		this.properties.put("bootstrap-uri", remoteUri);
+		
 		this.exposedProps.clear();
 		// Expose the bootstrap node address
 		this.exposedProps.add(new AbstractMap.SimpleEntry<String, Serializable>(
 				"bootstrap-address", remoteNodeAddress));
+		
+		this.isJoined = true;
 	}
 
 	/**

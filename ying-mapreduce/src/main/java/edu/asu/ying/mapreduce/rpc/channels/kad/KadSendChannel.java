@@ -34,10 +34,13 @@ public final class KadSendChannel
 	 * @throws URISyntaxException if the remote node address is not a valid URI.
 	 * @throws NodeNotFoundException if the remote node cannot be found
 	 */
-	public KadSendChannel(final URI remoteNode) 
-			throws URISyntaxException, NodeNotFoundException {
-		this.transportSink = new KadSendTransportSink(remoteNode);
+	public KadSendChannel() {
+		this.transportSink = new KadSendTransportSink();
 		this.formatterSink = new SimpleSendFormatterSink(this.transportSink);
+	}
+	
+	public void join(final URI remoteNode) throws NodeNotFoundException, URISyntaxException {
+		this.transportSink.join(remoteNode);
 	}
 	
 	public void close() {

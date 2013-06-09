@@ -18,14 +18,14 @@ import edu.asu.ying.mapreduce.ui.ObservableProvider;
 /**
  * Exposes information about the node found at the key specified in the url 
  */
-public final class Connector
+public final class Presenter
 	extends HttpServlet
 {
 	private static final long serialVersionUID = -545603243684031979L;
 	
 	private final Observable connectTo;
 	
-	public Connector(final Observable connectTo) {
+	public Presenter(final Observable connectTo) {
 		// Get an instance of the table server so we can observe it
 		this.connectTo = connectTo;
 	}
