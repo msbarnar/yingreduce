@@ -64,7 +64,7 @@ public final class TableServerDaemon
 	}
 	
 	@Override
-	public ObservableProperties getExposedProps() {
+	public List<ObservableProperties> getExposedProps() {
 		return this.kadChannel.getExposedProps();
 	}
 }

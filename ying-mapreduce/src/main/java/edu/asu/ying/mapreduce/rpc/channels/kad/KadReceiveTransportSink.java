@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.rpc.channels.ReceiveChannelTransportSink;
@@ -20,12 +21,17 @@ import il.technion.ewolf.kbr.*;
 /**
  * Listens to the Kademlia network for messages destined for this node
  * and passes them to a {@link ReceiveChannelSink} chain.
+ * <p>
+ * Exposes the following properties via {@link KadReceiveTransportSink#getExposedProps}:
+ * <ul>
+ * 	<li><code>local-endpoint</code> - the protocol, IP address, port, and Kademlia key of the listening/sending node.</li>
+ * </ul>
  */
 public final class KadReceiveTransportSink 
 	implements MessageHandler, ReceiveChannelTransportSink
 {
 	private final Map<String, Object> properties = new HashMap<String, Object>();
-	private final ObservableProperties exposedProps = new ObservableProperties();
+	private final ObservableProperties exposedProps = new ObservableProperties(this);
 	
 	// The Kad endpoint
 	private final KeybasedRouting kbrNode;
@@ -50,7 +56,7 @@ public final class KadReceiveTransportSink
 			this.properties.put("port", -1);
 		}
 		this.exposedProps.add(new AbstractMap.SimpleEntry<String, Serializable>(
-				"listen-address", this.kbrNode.getLocalNode().getURI("openkad.udp")));
+				"local-endpoint", this.kbrNode.getLocalNode().getURI("openkad.udp")));
 	}
 	/**
 	 * Initialize the local node and attempt to join an existing network.
@@ -138,8 +144,8 @@ public final class KadReceiveTransportSink
 	}
 	
 	@Override
-	public final ObservableProperties getExposedProps() {
-		return this.exposedProps;
+	public final List<ObservableProperties> getExposedProps() {
+		return Arrays.asList(this.exposedProps);
 	}
 	@Override
 	public final Map<String, Object> getProperties() { return this.properties; }

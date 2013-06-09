@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.ui.http;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -53,24 +54,34 @@ public final class Connector
 	}
 	
 	private final String getResponse() {
-		final ObservableProperties props = this.connectTo.getExposedProps();
+		final List<ObservableProperties> propList = this.connectTo.getExposedProps();
 		final StringBuilder sb = new StringBuilder();
 		
 		// Build an XML document from the properties
+		// <node>
+		// 	<MyObject>
+		//    <MyProperty>stuff</MyProperty>
+		//  </MyObject>
+		// </node>
 		sb.append("<node>");
-		for (final Map.Entry<String, Serializable> entry : props) {
-			// open tag
-			sb.append('<');
-				sb.append(entry.getKey());
-			sb.append('>');
+		for (final ObservableProperties props : propList) {
+			sb.append(this.openTag(props.getClassName()));
+			for (final Map.Entry<String, Serializable> entry : props) {
+				sb.append(this.openTag(entry.getKey()));
 				sb.append(entry.getValue());
-			// close tag
-			sb.append("</");
-				sb.append(entry.getKey());
-			sb.append('>');
+				sb.append(closeTag(entry.getKey()));
+			}
+			sb.append(this.closeTag(props.getClassName()));
 		}
 		sb.append("</node>");
 		
 		return sb.toString();
+	}
+	
+	private final String openTag(final String name) {
+		return "<".concat(StringEscapeUtils.escapeXml(name)).concat(">");
+	}
+	private final String closeTag(final String name) {
+		return "</".concat(StringEscapeUtils.escapeXml(name)).concat(">");
 	}
 }

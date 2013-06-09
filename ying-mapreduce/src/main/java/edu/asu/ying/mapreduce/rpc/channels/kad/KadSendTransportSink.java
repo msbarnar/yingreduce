@@ -24,12 +24,17 @@ import edu.asu.ying.mapreduce.ui.ObservableProperties;
  * <p>
  * If the {@link TransportHeaders} specify a request vs. a one-off message, the client channel sends the request
  * and returns an asynchronous result from the remote node. 
+ * <p>
+ * Exposes the following properties via {@link KadSendTransportSink#getExposedProps}:
+ * <ul>
+ * 	<li><code>bootstrap-address</code> - the IP address of the node used to find the network.
+ * </ul>
  */
 public final class KadSendTransportSink
 	implements MessageSink, SendChannelTransportSink
 {
 	private final Map<String, Object> properties = new HashMap<String, Object>();
-	private final ObservableProperties exposedProps = new ObservableProperties();
+	private final ObservableProperties exposedProps = new ObservableProperties(this);
 	
 	// The Kad endpoint
 	private final KeybasedRouting kbrNode;
@@ -125,10 +130,10 @@ public final class KadSendTransportSink
 	public void close() {
 		this.kbrNode.shutdown();
 	}
-	
+
 	@Override
-	public final ObservableProperties getExposedProps() {
-		return this.exposedProps;
+	public final List<ObservableProperties> getExposedProps() {
+		return Arrays.asList(this.exposedProps);
 	}
 	
 	@Override

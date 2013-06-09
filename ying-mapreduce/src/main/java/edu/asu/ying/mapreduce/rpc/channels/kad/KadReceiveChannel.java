@@ -3,6 +3,7 @@ package edu.asu.ying.mapreduce.rpc.channels.kad;
 import java.io.Serializable;
 import java.net.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.rpc.channels.*;
@@ -50,7 +51,7 @@ public final class KadReceiveChannel
 	public final MessageSink getResponseSink() { return this.responseFormatterSink; }
 	
 	@Override
-	public final ObservableProperties getExposedProps() {
+	public final List<ObservableProperties> getExposedProps() {
 		return this.transportSink.getExposedProps();
 	}
 }

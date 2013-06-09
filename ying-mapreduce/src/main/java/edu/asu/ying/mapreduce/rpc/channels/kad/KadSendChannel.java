@@ -57,7 +57,7 @@ public final class KadSendChannel
 	public SendChannelTransportSink getTransportSink() { return this.transportSink; }
 	
 	@Override
-	public final ObservableProperties getExposedProps() {
+	public final List<ObservableProperties> getExposedProps() {
 		return this.transportSink.getExposedProps();
 	}
 }
