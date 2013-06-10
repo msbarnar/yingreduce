@@ -1,0 +1,20 @@
+package edu.asu.ying.mapreduce.rpc.channels;
+
+<<<<<<< HEAD
+import edu.asu.ying.mapreduce.rpc.messaging.MessageSink;
+=======
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import edu.asu.ying.mapreduce.rpc.messaging.MessageSink;
+import edu.asu.ying.mapreduce.rpc.net.NodeNotFoundException;
+>>>>>>> release/0.1-YINGDEMO
+
+public interface SendChannelTransportSink
+	extends MessageSink, ChannelTransportSink
+{
+<<<<<<< HEAD
+=======
+	public void join(final URI uri) throws URISyntaxException, NodeNotFoundException;
+>>>>>>> release/0.1-YINGDEMO
+}

@@ -1,0 +1,26 @@
+package edu.asu.ying.mapreduce.rpc.channels;
+
+import java.io.Serializable;
+import java.util.Map;
+
+<<<<<<< HEAD
+=======
+import edu.asu.ying.mapreduce.ui.Observable;
+
+>>>>>>> release/0.1-YINGDEMO
+/**
+ * Base interface for a channel that transmits data.
+ */
+public interface Channel
+<<<<<<< HEAD
+=======
+	extends Observable
+>>>>>>> release/0.1-YINGDEMO
+{
+	/**
+	 * Returns the map of {@link Writable} properties for the {@link ChannelSink}.
+	 */
+	public Map<? extends Serializable, ? extends Serializable> getProperties();
+	
+	public void close();
+}

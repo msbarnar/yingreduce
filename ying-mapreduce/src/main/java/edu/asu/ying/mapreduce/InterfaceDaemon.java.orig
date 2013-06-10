@@ -1,0 +1,43 @@
+package edu.asu.ying.mapreduce;
+
+import java.util.logging.Level;
+
+import edu.asu.ying.mapreduce.logging.Logger;
+<<<<<<< HEAD
+import edu.asu.ying.mapreduce.webui.InterfaceServer;
+=======
+import edu.asu.ying.mapreduce.ui.http.HttpUIServer;
+>>>>>>> release/0.1-YINGDEMO
+
+/**
+ * Manages the web server that serves the user interface.
+ */
+public final class InterfaceDaemon
+{
+<<<<<<< HEAD
+	private final InterfaceServer server;
+=======
+	private final HttpUIServer server;
+>>>>>>> release/0.1-YINGDEMO
+	
+	public InterfaceDaemon() throws Exception {
+		try {
+			Logger.get().info("Starting interface daemon");
+<<<<<<< HEAD
+			this.server = new InterfaceServer();
+=======
+			this.server = new HttpUIServer();
+>>>>>>> release/0.1-YINGDEMO
+			Logger.get().info("Interface is running on port ".concat(String.valueOf(this.server.getProperties().get("port"))));
+		} catch (final Exception e) {
+			Logger.get().log(Level.SEVERE, 
+					"Web interface daemon failed to start due to an exception",
+					e);
+			throw e;
+		}
+	}
+	
+	public void stop() throws Exception {
+		this.server.stop();
+	}
+}

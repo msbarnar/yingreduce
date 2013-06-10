@@ -1,0 +1,26 @@
+.DS_Store
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+.metadata
+>>>>>>> release/0.1-YINGDEMO
+=======
+.metadata
+>>>>>>> release/0.1-YINGDEMO
+
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+target
+>>>>>>> release/0.1-YINGDEMO
+=======
+
+target
+>>>>>>> release/0.1-YINGDEMO
