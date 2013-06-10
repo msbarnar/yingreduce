@@ -38,7 +38,7 @@ public class HttpUIServer
 		// TODO: Use configuration
 		this.resources.setWelcomeFiles(new String[] { "index.html" });
 		// Default HTML folder
-		this.resources.setResourceBase("www");
+		this.resources.setResourceBase(this.getClass().getResource("/www").toURI().toString());
 		
 		// Connect servlets to associated URLs
 		this.context.setContextPath("/");

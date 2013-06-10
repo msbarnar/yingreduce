@@ -1,0 +1,26 @@
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;	
+}
+
+span.header {
+	font-style: bold;
+}
+
+div#connectionStatus {
+	width: 100px;
+	display: block;
+	float: right;
+	text-align: center;
+	background-color: #FFE6E6;
+}
+
+span#connectionStatus {
+	font-style: italic;
+}
+
+div#network {
+	display: inline;
+	float: left;
+}

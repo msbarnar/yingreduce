@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Random;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -25,33 +26,25 @@ public final class SingletonKeybasedRoutingProvider
 		private static final int DEFAULT_BUCKETSIZE = 20;
 		private static final int DEFAULT_PORT = 5000;
 		private static KeybasedRouting INSTANCE;
-		private static KeybasedRouting INSTANCE2;
-		
+
 		/*
 		 * Initialize a singleton instance of the Kademlia node
 		 */
 		static {
 			// FIXME: Remove second testing instance
 			// FIXME: Don't use default parameters
+			final int rnd = (new Random()).nextInt(1000);
 			Injector injector = Guice.createInjector(new KadNetModule()
 				.setProperty("openkad.keyfactory.keysize", String.valueOf(DEFAULT_KEYSIZE))
 				.setProperty("openkad.bucket.kbuckets.maxsize", String.valueOf(DEFAULT_BUCKETSIZE))
-				.setProperty("openkad.seed", String.valueOf(DEFAULT_PORT+1))
-				.setProperty("openkad.net.udp.port", String.valueOf(DEFAULT_PORT+1)));
+				.setProperty("openkad.seed", String.valueOf(DEFAULT_PORT+rnd))
+				.setProperty("openkad.net.udp.port", String.valueOf(DEFAULT_PORT+rnd)));
 			
 			INSTANCE = injector.getInstance(KeybasedRouting.class);
-			
-			injector = Guice.createInjector(new KadNetModule()
-			.setProperty("openkad.keyfactory.keysize", String.valueOf(DEFAULT_KEYSIZE))
-			.setProperty("openkad.bucket.kbuckets.maxsize", String.valueOf(DEFAULT_BUCKETSIZE))
-			.setProperty("openkad.seed", String.valueOf(DEFAULT_PORT))
-			.setProperty("openkad.net.udp.port", String.valueOf(DEFAULT_PORT)));
-			
-			INSTANCE2 = injector.getInstance(KeybasedRouting.class);
-			
+		
 			try {
 				INSTANCE.create();
-				INSTANCE2.create();
+				//INSTANCE2.create();
 			} catch (final IOException e) {
 				throw new RuntimeException(e);
 			}
