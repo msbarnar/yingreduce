@@ -83,18 +83,19 @@ public final class ClientTable
 	 * queued pages exceeds the maximum allowed.
 	 */
 	private void newPage() {
-		this.currentPage = new Page(this, this.numPages, this.pageSize);
+		ClientTable.this.numPages++;
+		this.currentPage = new Page(this, this.numPages-1, this.pageSize);
 		// Add a new page every time a page fills up
 		this.currentPage.onPageFull.attach(new EventHandler<EventArgs>() {
 			@Override
 			public void onEvent(final Object sender, final EventArgs args) {
 				ClientTable.this.newPage();
 				// Only listen to page full events from the most recent page
-				((Page) sender).onPageFull.detach(this);
+				//FIXME: ConcurrentModification; we're iterating the event right now!
+				// FIXME: ((Page) sender).onPageFull.detach(this);
 			}
 		});
 		this.pageQueue.add(this.currentPage);
-		this.numPages++;
 		
 		// Page out if we have too many pages.
 		if (this.numPages > this.maxPageQueueSize) {
@@ -133,7 +134,7 @@ public final class ClientTable
 		final PageOutRequest msg = new PageOutRequest(page);
 		// Send the message down the chain and get the result synchronously
 		final PageOutResponse response = (PageOutResponse) this.nextSink.processMessage(msg);
-		page.setIsDistributed((Boolean) response.getStatus());
+		//TODO: page.setIsDistributed((Boolean) response.getStatus());
 	}
 	
 	/*****************************************************************
@@ -184,6 +185,8 @@ public final class ClientTable
 	public ElementSink getNextElementSink() {
 		return null;
 	}
+	
+	public final int getNumPages() { return this.numPages; }
 
 	/*****************************************************************
 	 * MessageSink implementation 									 */

@@ -9,6 +9,7 @@ import edu.asu.ying.mapreduce.rpc.channels.*;
 import edu.asu.ying.mapreduce.rpc.formatting.SimpleSendFormatterSink;
 import edu.asu.ying.mapreduce.rpc.messaging.MessageSink;
 import edu.asu.ying.mapreduce.rpc.net.NodeNotFoundException;
+import edu.asu.ying.mapreduce.ui.ObservableProperties;
 
 
 /**
@@ -33,10 +34,13 @@ public final class KadSendChannel
 	 * @throws URISyntaxException if the remote node address is not a valid URI.
 	 * @throws NodeNotFoundException if the remote node cannot be found
 	 */
-	public KadSendChannel(final URI remoteNode) 
-			throws URISyntaxException, NodeNotFoundException {
-		this.transportSink = new KadSendTransportSink(remoteNode);
+	public KadSendChannel() {
+		this.transportSink = new KadSendTransportSink();
 		this.formatterSink = new SimpleSendFormatterSink(this.transportSink);
+	}
+	
+	public void join(final URI remoteNode) throws NodeNotFoundException, URISyntaxException {
+		this.transportSink.join(remoteNode);
 	}
 	
 	public void close() {
@@ -54,4 +58,9 @@ public final class KadSendChannel
 
 	@Override
 	public SendChannelTransportSink getTransportSink() { return this.transportSink; }
+	
+	@Override
+	public final List<ObservableProperties> getExposedProps() {
+		return this.transportSink.getExposedProps();
+	}
 }

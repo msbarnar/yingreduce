@@ -6,11 +6,15 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 
 import edu.asu.ying.mapreduce.rpc.channels.SendChannelTransportSink;
 import edu.asu.ying.mapreduce.rpc.messaging.*;
 import edu.asu.ying.mapreduce.rpc.net.*;
 import edu.asu.ying.mapreduce.rpc.net.kad.*;
+import edu.asu.ying.mapreduce.ui.ObservableProperties;
 
 /**
  * {@link KadSendTransportSink} is the client interface to the Kademlia network.
@@ -23,14 +27,23 @@ import edu.asu.ying.mapreduce.rpc.net.kad.*;
  * <p>
  * If the {@link TransportHeaders} specify a request vs. a one-off message, the client channel sends the request
  * and returns an asynchronous result from the remote node. 
+ * <p>
+ * Exposes the following properties via {@link KadSendTransportSink#getExposedProps}:
+ * <ul>
+ * 	<li><code>bootstrap-address</code> - the IP address of the node used to find the network.
+ * </ul>
  */
 public final class KadSendTransportSink
 	implements MessageSink, SendChannelTransportSink
 {
 	private final Map<String, Object> properties = new HashMap<String, Object>();
+	private final ObservableProperties exposedProps = new ObservableProperties(this);
 	
 	// The Kad endpoint
+	private final KeybasedRoutingProvider kbrProvider;
 	private final KeybasedRouting kbrNode;
+	
+	private boolean isJoined = false;
 	
 	/**
 	 * Initialize the transport sink with the address of a remote bootstrap node
@@ -39,13 +52,10 @@ public final class KadSendTransportSink
 	 * @throws URISyntaxException if the remote node address is not a valid URI.
 	 * @throws NodeNotFoundException 
 	 */
-	public KadSendTransportSink(final URI remoteNodeAddress) 
-			throws URISyntaxException, NodeNotFoundException {
+	public KadSendTransportSink() {
 		// Get an instance of the Kademlia node
-		final KeybasedRoutingProvider kbrProvider = new SingletonKeybasedRoutingProvider();
+		this.kbrProvider = new SingletonKeybasedRoutingProvider();
 		this.kbrNode = kbrProvider.getKeybasedRouting();
-		// Join an existing network in a send-only mode
-		this.join(kbrProvider, remoteNodeAddress);
 	}
 	/**
 	 * Joins the kademlia network specified by <code>remoteNodeAddress</code> using
@@ -55,15 +65,28 @@ public final class KadSendTransportSink
 	 * @throws URISyntaxException
 	 * @throws NodeNotFoundException
 	 */
-	private final void join(final KeybasedRoutingProvider kbrProvider, final URI remoteNodeAddress) 
+	public final void join(final URI remoteNodeAddress) 
 			throws URISyntaxException, NodeNotFoundException {
+		if (this.isJoined) {
+			return;
+		}
+		
 		// Connect to a network
-		final URI remoteUri = kbrProvider.makeURI(remoteNodeAddress);
+		final URI remoteUri = this.kbrProvider.makeURI(remoteNodeAddress);
 		try {
 			this.kbrNode.join(Arrays.asList(remoteUri));
 		} catch (final IllegalStateException e) {
 			throw new NodeNotFoundException(e);
 		}
+		
+		this.properties.put("bootstrap-uri", remoteUri);
+		
+		this.exposedProps.clear();
+		// Expose the bootstrap node address
+		this.exposedProps.add(new AbstractMap.SimpleEntry<String, Serializable>(
+				"bootstrap-address", remoteNodeAddress));
+		
+		this.isJoined = true;
 	}
 
 	/**
@@ -90,13 +113,15 @@ public final class KadSendTransportSink
 		}
 		// Send request to three nearest nodes
 		final Iterator<Node> iter = foundNodes.iterator();
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 1; i++) {
 			if (iter.hasNext()) {
 				// Let the channel serialize the message
 				try {
-					this.kbrNode.sendMessage(iter.next(), "mapreduce", message);
-				} catch (final IOException e) {
-					throw new NetworkException("Failed to send message to peer", e);
+					// this.kbrNode.sendMessage(iter.next(), "mapreduce", message);
+					// TODO: Proper async
+					return (Message) this.kbrNode.sendRequest(iter.next(), "mapreduce", message).get();
+				} catch (final ExecutionException | InterruptedException e) {
+					return null;
 				}
 			} else {
 				break;
@@ -117,6 +142,11 @@ public final class KadSendTransportSink
 	@Override
 	public void close() {
 		this.kbrNode.shutdown();
+	}
+
+	@Override
+	public final List<ObservableProperties> getExposedProps() {
+		return Arrays.asList(this.exposedProps);
 	}
 	
 	@Override

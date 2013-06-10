@@ -3,8 +3,10 @@ package edu.asu.ying.mapreduce.rpc.channels.kad;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.rpc.channels.ReceiveChannelTransportSink;
@@ -12,17 +14,24 @@ import edu.asu.ying.mapreduce.rpc.messaging.*;
 import edu.asu.ying.mapreduce.rpc.net.NodeNotFoundException;
 import edu.asu.ying.mapreduce.rpc.net.kad.KeybasedRoutingProvider;
 import edu.asu.ying.mapreduce.rpc.net.kad.SingletonKeybasedRoutingProvider;
+import edu.asu.ying.mapreduce.ui.ObservableProperties;
 
 import il.technion.ewolf.kbr.*;
 
 /**
  * Listens to the Kademlia network for messages destined for this node
  * and passes them to a {@link ReceiveChannelSink} chain.
+ * <p>
+ * Exposes the following properties via {@link KadReceiveTransportSink#getExposedProps}:
+ * <ul>
+ * 	<li><code>local-endpoint</code> - the protocol, IP address, port, and Kademlia key of the listening/sending node.</li>
+ * </ul>
  */
 public final class KadReceiveTransportSink 
 	implements MessageHandler, ReceiveChannelTransportSink
 {
 	private final Map<String, Object> properties = new HashMap<String, Object>();
+	private final ObservableProperties exposedProps = new ObservableProperties(this);
 	
 	// The Kad endpoint
 	private final KeybasedRouting kbrNode;
@@ -46,6 +55,8 @@ public final class KadReceiveTransportSink
 		} catch (final NullPointerException e) {
 			this.properties.put("port", -1);
 		}
+		this.exposedProps.add(new AbstractMap.SimpleEntry<String, Serializable>(
+				"local-endpoint", this.kbrNode.getLocalNode().getURI("openkad.udp")));
 	}
 	/**
 	 * Initialize the local node and attempt to join an existing network.
@@ -124,7 +135,11 @@ public final class KadReceiveTransportSink
 		// channel sink. The return value from the client channel should be a formatted
 		// response.
 		final Message response = this.requestSink.processMessage(message);
-		return this.responseSink.processMessage(response);
+		if (response != null) {
+			return this.responseSink.processMessage(response);
+		} else {
+			return null;
+		}
 	}
 	
 	@Override
@@ -132,6 +147,10 @@ public final class KadReceiveTransportSink
 		this.kbrNode.shutdown();
 	}
 	
+	@Override
+	public final List<ObservableProperties> getExposedProps() {
+		return Arrays.asList(this.exposedProps);
+	}
 	@Override
 	public final Map<String, Object> getProperties() { return this.properties; }
 }

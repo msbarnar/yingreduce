@@ -1,4 +1,8 @@
 .DS_Store
+<<<<<<< HEAD
+=======
+.metadata
+>>>>>>> release/0.1-YINGDEMO
 
 *.class
 
@@ -6,3 +10,8 @@
 *.jar
 *.war
 *.ear
+<<<<<<< HEAD
+=======
+
+target
+>>>>>>> release/0.1-YINGDEMO

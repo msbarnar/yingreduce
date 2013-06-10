@@ -20,6 +20,10 @@ public final class ServerTableProvider
 		this.tableProxyProvider = tableProxyProvider;
 	}
 
+	public final ServerTable getTable(final TableID tableId) {
+		return new ServerTable(tableId, this.tableProxyProvider.getProxy(tableId));
+	}
+	
 	/*****************************************************************
 	 * MessageSink implementation									 */
 	@Override
@@ -35,7 +39,7 @@ public final class ServerTableProvider
 		ServerTable table = this.tables.get(tableId);
 		if (table == null) {
 			// Spawn a new table
-			table = new ServerTable(tableId, this.tableProxyProvider.getProxy(tableId));
+			table = this.getTable(tableId);
 			this.tables.put(tableId, table);
 		}
 		return table.processMessage(message);
@@ -48,6 +52,7 @@ public final class ServerTableProvider
 	 */
 	@Override
 	public void registerForMessages(final MessageDispatch dispatcher) {
-		dispatcher.registerSink(TableMessage.class, this);
+		dispatcher.registerSink(PageOutRequest.class, this);
+		dispatcher.registerSink(PageGetRequest.class, this);
 	}
 }

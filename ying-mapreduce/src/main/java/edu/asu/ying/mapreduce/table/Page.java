@@ -28,8 +28,9 @@ public final class Page
 	private final TableID tableId;
 	// The index of this page on the table
 	private final int index;
+	private final int numPages;
 	// The maximum number of elements to accept before firing {@link Page#onPageFull}.
-	private final int maxSize;
+	private final int maxSize = 1;
 	// The unique key identifying this page on the network
 	// Page keys are constructed from the table ID + page index, so all
 	// pages of a particular table can be located if its ID is known.
@@ -57,7 +58,8 @@ public final class Page
 		this.table = table;
 		this.tableId = table.getTableId();
 		this.index = index;
-		this.maxSize = maxSize;
+		this.numPages = table.getNumPages();
+		//this.maxSize = maxSize;
 		this.key = this.makeKey();
 	}
 	
@@ -66,7 +68,7 @@ public final class Page
 	 * table and index.
 	 */
 	private final NetworkKey makeKey() {
-		return new NetworkKey().add(this.table.getNetworkKey()).add(this.index);
+		return new NetworkKey().add(this.table.getTableId()).add(this.index);
 	}
 	public final NetworkKey getNetworkKey() { return this.key; }
 	
@@ -76,18 +78,10 @@ public final class Page
 	 * @throw PageFullException if the page is already full. 
 	 */
 	public Serializable put(final Element element) {
-		return this.put(element.getKey(), element.getValue());
-	}
-	/**
-	 * Attempt to add an element to the page.
-	 * 
-	 * @throw PageFullException if the page is already full. 
-	 */
-	@Override
-	public Serializable put(final Serializable key, final Serializable value) {
 		// Only add new elements if the page is not full
+		final int size = this.size();
 		if (!this.isFull()) { 
-			final Serializable oldVal = super.put(key, value);
+			final Serializable oldVal = super.put(element.getKey(), element.getValue());
 			// Only fire onPageFull the first time the page becomes full.
 			// Subsequent attempts to add elements will throw an exception.
 			if (this.isFull()) {
@@ -95,7 +89,7 @@ public final class Page
 			}
 			return oldVal;
 		} else {
-			throw new PageFullException(new ArrayList<Element>(Arrays.asList(new Element((Serializable) key, (Serializable) value))));
+			throw new PageFullException(new ArrayList<Element>(Arrays.asList(new Element((Serializable) element.getKey(), (Serializable) element.getValue()))));
 		}
 	}
 	/**
@@ -158,6 +152,8 @@ public final class Page
 		}
 	}
 	
+	public final int getNumPages() { return this.numPages; }
+	public final int getIndex() { return this.index; }
 	public final TableID getTableId() { return this.tableId; }
 	public boolean isFull() { return this.size() >= this.maxSize; }
 	

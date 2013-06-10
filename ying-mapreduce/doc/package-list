@@ -1,0 +1,15 @@
+edu.asu.ying.mapreduce
+edu.asu.ying.mapreduce.config
+edu.asu.ying.mapreduce.events
+edu.asu.ying.mapreduce.io
+edu.asu.ying.mapreduce.io.table
+edu.asu.ying.mapreduce.logging
+edu.asu.ying.mapreduce.rpc.channels
+edu.asu.ying.mapreduce.rpc.channels.kad
+edu.asu.ying.mapreduce.rpc.formatting
+edu.asu.ying.mapreduce.rpc.messaging
+edu.asu.ying.mapreduce.rpc.net
+edu.asu.ying.mapreduce.rpc.net.kad
+edu.asu.ying.mapreduce.table
+edu.asu.ying.mapreduce.ui
+edu.asu.ying.mapreduce.ui.http

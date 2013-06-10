@@ -1,63 +1,1 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8" />
-	<title>AJAX Test</title>
-	<script type="text/javascript">
-	var nodeInfoReq;
-	
-	function initialize() {
-		// Update node info every 3 seconds
-		setInterval(updateNodeInfo, 3000);
-	}
-	
-	function getXmlHttpRequest() {
-		if (typeof XMLHttpRequest != "undefined") {
-			return new XMLHttpRequest();
-		} else if (window.ActiveXObject) {
-			return new ActiveXObject("Microsoft.XMLHTTP");
-		}
-	}
-	
-	function updateNodeInfo() {
-		nodeInfoReq = getXmlHttpRequest();
-		nodeInfoReq.open("GET", "http://localhost:8777/node", true);
-		nodeInfoReq.onreadystatechange = displayNodeInfo;
-		nodeInfoReq.send(null);
-	}
-
-	// Show in status bar if we're connected to the local node
-	function checkConnectivity(req) {
-		if (req.readyState == 4 && req.status == 200) {
-			document.getElementById("connectionStatus").innerHTML = "connected";
-			return true;
-		} else {
-			document.getElementById("connectionStatus").innerHTML = "not connected";
-			return false;
-		}
-	}
-	
-	// Show node info in pane
-	function displayNodeInfo() {
-		if (checkConnectivity(nodeInfoReq)) {
-				var message = nodeInfoReq.responseXML.getElementsByTagName("status")[0];
-				document.getElementById("nodeStatus").innerHTML = message.childNodes[0].nodeValue;
-		} else {
-			document.getElementById("nodeStatus").innerHTML = "Unknown";
-		}
-	}
-    </script>
-</head>
-<body onLoad="javascript:initialize()">
-	<h2>Local Node</h2>
-	<table>
-		<tr>
-			<td><b>Status:<b></b></b></td>
-			<td><div id="nodeStatus">Unknown</div></td>
-		</tr>
-		<tr>
-			<td colspan="2"><div id="connectionStatus" style="text-align:right;font-style:italic;">not connected</div></td>
-		</tr>
-	</table>
-</body>
-</html>
+<!DOCTYPE html><html><head>	<meta charset="utf-8">	<title>AdminPanel</title>	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.10.3/build/cssreset/cssreset-min.css">	<link media="all" rel="stylesheet" type="text/css" href="css/all.css" />	<link rel="stylesheet" type="text/css" href="css/gh-buttons.css" />	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>	<script type="text/javascript">window.jQuery || document.write('<script type="text/javascript" src="js/jquery-1.7.2.min.js"><\/script>');</script>	<script type="text/javascript" src="js/jquery.main.js"></script>	<script type="text/javascript" src="js/network.js"></script>	<script type="text/javascript" src="js/tables.js"></script>	<script type="text/javascript" src="js/mapreduce.js"></script>	<script type="text/javascript" src="js/settings.js"></script>	<script type="text/javascript" src="js/index.js"></script>	<!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="css/ie.css" /><![endif]--></head><body onLoad="javascript:switch_tab_network();">	<div id="wrapper">		<div id="content">			<div class="c1">				<div class="controls">					<div class="profile-box">						<span class="profile">							<a href="#" class="section">								<img id="connection-off" class="image" src="images/connection-off.png" alt="image description" width="26" height="26" />								<img id="connection-on" class="image nodisplay" src="images/connection-on.png" alt="image description" width="26" height="26" />								<span class="text-box">									Local Node									<span id="connectionStatus" class="name">Not connected</span>								</span>							</a>							<!-- <a href="#" class="opener">opener</a> -->						</span>						<!-- <a href="#" class="btn-on">On</a> -->					</div>				</div>				<div class="tabs">					<div id="tab-network" class="tab">						<article style="clear:left;">							<div class="text-section">								<h1>Network</h1>								<p>Connect to a P2P network or view the current connection.</p>							</div>							<div class="section-not-connected">								<ul class="states">									<li class="error">Not currently connected to the local node.</li>								</ul>							</div>							<div class="section-body nodisplay">								<ul class="states" style="margin-bottom: 20px">									<li id="node-running" class="success nodisplay">Node is running</li>									<li id="node-down" class="warning">Node status is not available</li>									<li id="node-error" class="error nodisplay">Node is experiencing a problem</li>									<li id="node-error-message" class="error nodisplay"></li>								</ul>								<div class="box">									<h3>Join a network</h3>									<div class="body">										<span class="subheading">You can connect to another node to become a part of its network.</span>										<br>										Joining a network enrolls this node as a participant in storing data and executing map/reduce tasks sent by other nodes.										<br><br>										<div id="connect-instructions">											To join a network, specify the address of one of its nodes:										</div>										<div class="nodisplay" id="connect-result">											<ul class="states">												<li id="connect-result"></li>											</ul>										</div>										<div id="connect-instructions">											<div style="padding: 10px 0 0 10px"><span class="subheading">IP Address:</span> <input type="text" id="connect-addr" class="simple-input" />											<a href="#" class="button icon search" onclick="network_connect();">Search for network</a></div>										</div>									</div>								</div>							</div>						</article>					</div>					<div id="tab-tables" class="tab nodisplay">						<article style="clear:left;">							<div class="text-section">								<h1>Distributed Tables</h1>								<p>These are all of the tables for which the local node has a part.</p>							</div>							<div class="section-not-connected">								<ul class="states">									<li class="error">Not currently connected to the local node.</li>								</ul>							</div>							<div class="section-body nodisplay" id="tables">								<div class="box" id="table-upload">									<h3>Upload a Table</h3>									<div class="body">										<span class="subheading">Uploading table data will automatically distribute it across the network.</span>										<br/><br/>										<form method="POST" enctype="multipart/form-data" action="/tables" target="upload-target" onsubmit="startTableUpload();">											First name your table<br/>											<input type="text" name="tableid" class="simple-input" /><br/><br/>											Next select the file containing the table data and click <span style="color:#3072b3">Upload</span>.											<br/><br/>																						<input class="button pill" type="file" name="tabledata" />											<input class="button icon search" type="submit" value="Upload" />										</form>										<iframe id="upload-target" name="upload-target" src="#" class="nodisplay">										</iframe>										<br/>										<ul class="states nodisplay" id="upload-result">											<li class="success nodisplay" id="upload-successful">Table data uploaded successfully</li>											<li class="error nodisplay" id="upload-error">There was a problem uploading your table data</li>										</ul>									</div>								</div>								<br><br>								<ul class="states nodisplay" id="table-list-update-error">									<li class="error">There was a problem updating the table list.</li>								</ul>								<div class="box" id="table-store">									<h3>Local Table Store</h3>									<div class="body">										<table id="table-store">											<thead>												<th class="first">Table ID</th>												<th nowrap>Number of Pages</th>											</thead>											<tbody id="table-store">											</tbody>										</table>									</div>								</div>							</div>						</article>					</div>					<div id="tab-mapreduce" class="tab nodisplay">						<article>							<div class="text-section">								<h1>Map/Reduce</h1>								<p>Queue map/reduce tasks</p>							</div>							<div class="section-not-connected">								<ul class="states">									<li class="error">Not currently connected to the local node.</li>								</ul>							</div>							<div class="section-body nodisplay">								Nothing here...							</div>						</article>					</div>					<div id="tab-settings" class="tab nodisplay">						<article>							<div class="text-section">								<h1>Settings</h1>								<p>Modify the local daemon's settings here.</p>							</div>							<div class="section-not-connected">								<ul class="states">									<li class="error">Not currently connected to the local node.</li>								</ul>							</div>							<div class="section-body nodisplay">								<div class="box">									<h3>Shut down the node</h3>									<div class="body">										<span class="subheading danger">The network daemon and this interface will be disabled.</span>										<a href="#" class="button danger" style="margin-left:40px;float:right;">Shutdown Daemon</a>										<br>										Turning the node off may make the network unstable or cause certain										distributed operations to fail.									</div>								</div>							</div>						</article>					</div>				</div>			</div>		</div>		<aside id="sidebar">			<strong class="logo"><a href="http://www.asu.edu">ASU</a></strong>			<ul class="tabset buttons">				<li id="tab-btn-network" class="active">					<a href="javascript:switch_tab_network();" class="ico7"><span>Network</span><em></em></a>					<span class="tooltip"><span>Network</span></span>				</li>				<li id="tab-btn-tables">					<a href="javascript:switch_tab_tables();" class="ico3"><span>Tables</span><em></em></a>					<span class="tooltip"><span>Tables</span></span>				</li>				<li id="tab-btn-mapreduce">					<a href="javascript:switch_tab_mapreduce();" class="ico6"><span>Map/Reduce</span><em></em></a>					<span class="tooltip"><span>Map/Reduce</span></span>				</li>				<li id="tab-btn-settings">					<a href="javascript:switch_tab_settings();" class="ico8"><span>Settings</span><em></em></a>					<span class="tooltip"><span>Settings</span></span>				</li>			</ul>			<span class="shadow"></span>		</aside>	</div></body></html>

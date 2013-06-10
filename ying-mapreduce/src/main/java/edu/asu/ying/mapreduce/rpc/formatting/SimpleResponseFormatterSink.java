@@ -14,7 +14,7 @@ public final class SimpleResponseFormatterSink
 
 	@Override
 	public final Message processMessage(final Message message) {
-		return new ResponseMessage(message);
+		return message;
 	}
 
 	@Override
