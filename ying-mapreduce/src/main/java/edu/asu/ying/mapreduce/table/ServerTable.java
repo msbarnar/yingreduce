@@ -54,7 +54,8 @@ public final class ServerTable
 			return this.dataProxy.processMessage(message);
 	
 		} else {
-			return message;
+			// Don't return anything if we get an invalid message type
+			return null;
 		}
 	}
 }

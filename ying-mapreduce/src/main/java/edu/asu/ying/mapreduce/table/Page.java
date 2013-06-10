@@ -28,6 +28,7 @@ public final class Page
 	private final TableID tableId;
 	// The index of this page on the table
 	private final int index;
+	private final int numPages;
 	// The maximum number of elements to accept before firing {@link Page#onPageFull}.
 	private final int maxSize = 1;
 	// The unique key identifying this page on the network
@@ -57,6 +58,7 @@ public final class Page
 		this.table = table;
 		this.tableId = table.getTableId();
 		this.index = index;
+		this.numPages = table.getNumPages();
 		//this.maxSize = maxSize;
 		this.key = this.makeKey();
 	}
@@ -66,7 +68,7 @@ public final class Page
 	 * table and index.
 	 */
 	private final NetworkKey makeKey() {
-		return new NetworkKey().add(this.table.getNetworkKey()).add(this.index);
+		return new NetworkKey().add(this.table.getTableId()).add(this.index);
 	}
 	public final NetworkKey getNetworkKey() { return this.key; }
 	
@@ -150,6 +152,8 @@ public final class Page
 		}
 	}
 	
+	public final int getNumPages() { return this.numPages; }
+	public final int getIndex() { return this.index; }
 	public final TableID getTableId() { return this.tableId; }
 	public boolean isFull() { return this.size() >= this.maxSize; }
 	

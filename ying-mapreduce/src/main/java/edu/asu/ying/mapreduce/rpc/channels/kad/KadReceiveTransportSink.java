@@ -135,7 +135,11 @@ public final class KadReceiveTransportSink
 		// channel sink. The return value from the client channel should be a formatted
 		// response.
 		final Message response = this.requestSink.processMessage(message);
-		return this.responseSink.processMessage(response);
+		if (response != null) {
+			return this.responseSink.processMessage(response);
+		} else {
+			return null;
+		}
 	}
 	
 	@Override

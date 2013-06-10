@@ -53,5 +53,6 @@ public final class ServerTableProvider
 	@Override
 	public void registerForMessages(final MessageDispatch dispatcher) {
 		dispatcher.registerSink(PageOutRequest.class, this);
+		dispatcher.registerSink(PageGetRequest.class, this);
 	}
 }

@@ -40,7 +40,7 @@ function update_tables() {
 
 function updateTableList() {
 	$.ajax({
-		url: "http://localhost:8777/tables",
+		url: "/tables",
 		data: {method: "tables"}
 	}).done(displayTableList)
 	.fail(displayTableListError);
@@ -54,7 +54,7 @@ function displayTableList(data) {
 	$.each($tables, function(index, value) {
 		var $tableid = $(value).find("id").text();
 		var $pages = $(value).find("pageCount").text();
-		$(new_tbody).append('<tr><td class="first"><a href="#" class="table-selector" onclick="selectTable(this);">'
+		$(new_tbody).append('<tr><td class="first"><a href="/tables?method=get&tableid='+$tableid+'" class="table-selector">'
 				+ $tableid + '</a></td>'
 				+ '<td>' + $pages + '</td></tr>');
 	});

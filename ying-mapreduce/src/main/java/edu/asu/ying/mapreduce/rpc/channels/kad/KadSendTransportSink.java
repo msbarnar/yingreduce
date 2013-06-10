@@ -6,6 +6,9 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 
 import edu.asu.ying.mapreduce.rpc.channels.SendChannelTransportSink;
 import edu.asu.ying.mapreduce.rpc.messaging.*;
@@ -110,13 +113,15 @@ public final class KadSendTransportSink
 		}
 		// Send request to three nearest nodes
 		final Iterator<Node> iter = foundNodes.iterator();
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 1; i++) {
 			if (iter.hasNext()) {
 				// Let the channel serialize the message
 				try {
-					this.kbrNode.sendMessage(iter.next(), "mapreduce", message);
-				} catch (final IOException e) {
-					throw new NetworkException("Failed to send message to peer", e);
+					// this.kbrNode.sendMessage(iter.next(), "mapreduce", message);
+					// TODO: Proper async
+					return (Message) this.kbrNode.sendRequest(iter.next(), "mapreduce", message).get();
+				} catch (final ExecutionException | InterruptedException e) {
+					return null;
 				}
 			} else {
 				break;

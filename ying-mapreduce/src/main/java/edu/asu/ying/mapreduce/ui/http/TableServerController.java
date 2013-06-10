@@ -1,5 +1,8 @@
 package edu.asu.ying.mapreduce.ui.http;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +11,7 @@ import java.io.Serializable;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -84,17 +88,25 @@ public final class TableServerController
 	public void doGet(final HttpServletRequest request, final HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		response.setContentType("text/xml");
-		response.getWriter().write("<response>");
 		
+		response.setHeader("Cache-Control","no-store, max-age=0, no-cache, must-revalidate");     
+        response.addHeader("Cache-Control", "post-check=0, pre-check=0"); 
+        response.setHeader("Pragma", "no-cache");  
+        response.setDateHeader("Expires", 0);
+        
+		final String method = request.getParameter("method");
 		try {
 			// Get the action to take from the parameters
-			final String method = request.getParameter("method");
-			
 			if (method == null || method.equals("")) {
 				errorResponse(new IllegalArgumentException("Method name cannot be empty."));
 			}
-			response.getWriter().write("<method>".concat(method).concat("</method>"));
+			
+			if (!method.equals("get")) {
+				// FIXME: hackity hack hack because getTable wants to open the output stream
+				response.setContentType("text/xml");
+				response.getWriter().write("<response>");
+				response.getWriter().write("<method>".concat(method).concat("</method>"));
+			}
 			
 			final Method webMethod = this.actions.get(method);
 			if (webMethod == null) {
@@ -109,9 +121,10 @@ public final class TableServerController
 		} catch (final ErrorResponseException e) {
 			response.getWriter().write(e.getResponse());
 		}
-		
-		response.getWriter().write("</response>");
-		response.flushBuffer();
+		if (!method.equals("get")) {
+			response.getWriter().write("</response>");
+			response.flushBuffer();
+		}
 	}
 	
 	@Override
@@ -119,7 +132,11 @@ public final class TableServerController
 		throws ServletException, IOException {
 		response.setContentType("text/xml");
 		response.getWriter().write("<response>");
-		
+		response.setHeader("Cache-Control","no-store, max-age=0, no-cache, must-revalidate");     
+        response.addHeader("Cache-Control", "post-check=0, pre-check=0"); 
+        response.setHeader("Pragma", "no-cache");  
+        response.setDateHeader("Expires", 0);
+        
 		try {
 			// For file uploads
 			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -227,5 +244,26 @@ public final class TableServerController
 			w.write("</table>");
 		}
 		w.write("</tables>");
+	}
+	
+	@WebMethod(name = "get")
+	public void getTable(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		// Retrieve a complete table and return its contents
+		final String tableId = request.getParameter("tableid");
+		final InputStream inStream = this.daemon.getTableStream(new TableID(tableId));
+		final ServletOutputStream outStream = response.getOutputStream();
+		
+		response.setContentType("text/plain");
+		response.setHeader("Content-disposition", "attachment; filename=".concat(tableId).concat(".txt"));
+		
+		final byte[] buffer = new byte[2048];
+		int bytesRead = 0;
+		
+		while (-1 != (bytesRead = inStream.read(buffer, 0, buffer.length))) {
+			outStream.write(buffer, 0, bytesRead);
+		}
+		
+		outStream.flush();
+		outStream.close();
 	}
 }

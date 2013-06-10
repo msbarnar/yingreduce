@@ -15,6 +15,7 @@ public enum Daemon
 {
 	INSTANCE;
 	
+	// TODO: Use Guice here
 	private TableServerDaemon tableServer;
 	private InterfaceDaemon interfaceDaemon;
 	
