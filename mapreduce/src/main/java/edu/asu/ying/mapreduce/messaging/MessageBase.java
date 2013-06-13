@@ -18,7 +18,7 @@ import java.util.Map;
 public abstract class MessageBase
 	implements Message
 {
-	private final Map<Serializable, Serializable> properties = new HashMap<Serializable, Serializable>();
+	protected final Map<Serializable, Serializable> properties = new HashMap<Serializable, Serializable>();
 
 	/*
 	 * Constructors

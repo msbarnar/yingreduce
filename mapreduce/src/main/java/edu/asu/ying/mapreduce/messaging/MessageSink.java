@@ -1,5 +1,7 @@
 package edu.asu.ying.mapreduce.messaging;
 
+import java.io.IOException;
+
 /**
  * A {@link MessageSink} receives {@link Message} objects and passes them to some destination.
  * <p>
@@ -8,5 +10,5 @@ package edu.asu.ying.mapreduce.messaging;
 public interface MessageSink
 {
 	public MessageSink getNextSink();
-	public Message accept(final Message message);
+	public Message accept(final Message message) throws IOException;
 }

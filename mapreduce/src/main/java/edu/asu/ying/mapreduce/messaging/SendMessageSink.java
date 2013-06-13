@@ -1,13 +1,13 @@
-package edu.asu.ying.mapreduce.net;
+package edu.asu.ying.mapreduce.messaging;
 
 import com.google.inject.BindingAnnotation;
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
+
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.FIELD;
-
-import edu.asu.ying.mapreduce.messaging.MessageSink;
 
 
 /**
@@ -18,5 +18,5 @@ import edu.asu.ying.mapreduce.messaging.MessageSink;
  * remote host.
  */
 @BindingAnnotation
-@Target({ FIELD, PARAMETER }) @Retention(RUNTIME)
+@Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
 public @interface SendMessageSink {}

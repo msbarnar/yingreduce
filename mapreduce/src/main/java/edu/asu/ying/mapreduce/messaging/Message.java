@@ -9,6 +9,7 @@ import java.util.Map;
  * {@link Message} objects carry information through {@link MessageSink} chains.
  */
 public interface Message
+	extends Serializable
 {
 	public Map<Serializable, Serializable> getProperties();
 	public URI getDestinationUri();
