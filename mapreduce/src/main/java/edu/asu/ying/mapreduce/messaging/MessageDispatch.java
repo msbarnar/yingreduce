@@ -10,10 +10,17 @@ import com.google.common.util.concurrent.ListenableFuture;
 public interface MessageDispatch
 	extends MessageOutputStream
 {
+	// TODO: convert to fluent interface
 	/**
 	 * Gets a {@link ListenableFuture} that will be fulfilled when the dispatch receives a message with a specific ID.
 	 * @param id the ID of the message to forward.
 	 * @return a promise of a future message with the given ID.
 	 */
 	public ListenableFuture<Message> getFutureMessageById(final String id);
+	/**
+	 * Gets a {@link ListenableFuture} that will be fulfilled when the dispatch receives a message of a specific class.
+	 * @param messageClass the class of the message to forward.
+	 * @return a promise of a future message with the given classs.
+	 */
+	public ListenableFuture<Message> getFutureMessageByClass(final Class<? extends Message> messageClass);
 }
