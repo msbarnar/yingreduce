@@ -5,17 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ffc779c-2642-4842-aeac-60344a3ce6bc" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/AbstractMessageFilter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/FutureMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterAllOf.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterAnyOf.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterRoot.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageDispatch.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageDispatch.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/AbstractMessageFilter.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/AbstractMessageFilter.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterAllOf.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterAllOf.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterAnyOf.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterAnyOf.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterRoot.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterRoot.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/FutureMessage.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/FutureMessage.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371158889950" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371163477469" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371081520280" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371085836176" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371080775184" ignored="false" />
@@ -53,7 +52,7 @@
     <file path="/InvalidContentResponse.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371147864838" ignored="false" />
     <file path="/NoResponseException.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371151513234" ignored="false" />
     <file path="/ResponseHandler.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371152328024" ignored="false" />
-    <file path="/FutureMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371163446740" ignored="false" />
+    <file path="/FutureMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371163929584" ignored="false" />
     <file path="/MessageFilter.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371162532253" ignored="false" />
     <file path="/MessageFilterAny.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371160844445" ignored="false" />
     <file path="/MessageFilterAllOf.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371163168221" ignored="false" />
@@ -119,17 +118,7 @@
     <favorites_list name="mapreduce" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="FutureMessage.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/FutureMessage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="0" selection-start="566" selection-end="566" vertical-scroll-proportion="0.32386363">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -704,12 +693,16 @@
       <created>1371158893316</created>
       <updated>1371158893316</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Message filtering (almost)">
+      <created>1371163479292</created>
+      <updated>1371163479292</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="4" y="22" width="1916" height="1028" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -776,7 +769,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Incoming traffic wired through MessageHandler composed over MessageDispatch. KadChannel module wires up outgoing and incoming with singleton KeybasedRouting and singleton MessageDispatch" />
+    <option name="LAST_COMMIT_MESSAGE" value="Message filtering (almost)" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -794,6 +787,7 @@
     <MESSAGE value="Started with sinks again; nixing for streams; makes an important point about directionality of message flow. Will necessitate writing an asynchronous response handler&#10;" />
     <MESSAGE value="Traffic is wired from SendMessageStream-&gt;Kad; need to wire a handler for Kad messages to a MessageDispatch and write a provider for it" />
     <MESSAGE value="Incoming traffic wired through MessageHandler composed over MessageDispatch. KadChannel module wires up outgoing and incoming with singleton KeybasedRouting and singleton MessageDispatch" />
+    <MESSAGE value="Message filtering (almost)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -878,14 +872,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterRoot.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterRoot.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="14" column="49" selection-start="371" selection-end="371" vertical-scroll-proportion="0.23863636">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterAllOf.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterAllOf.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="82" column="9" selection-start="1950" selection-end="1950" vertical-scroll-proportion="0.60795456">
           <folding>
@@ -894,7 +888,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageFilterAnyOf.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterAnyOf.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="21" column="24" selection-start="478" selection-end="478" vertical-scroll-proportion="0.35795453">
           <folding>
@@ -903,7 +897,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/AbstractMessageFilter.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/AbstractMessageFilter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="29" column="0" selection-start="821" selection-end="821" vertical-scroll-proportion="0.4943182">
           <folding>
@@ -914,8 +908,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/FutureMessage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="0" selection-start="566" selection-end="566" vertical-scroll-proportion="0.32386363">
-          <folding />
+        <state line="44" column="7" selection-start="1393" selection-end="1393" vertical-scroll-proportion="0.6761364">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

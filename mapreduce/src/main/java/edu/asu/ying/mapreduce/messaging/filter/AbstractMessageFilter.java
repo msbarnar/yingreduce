@@ -1,4 +1,6 @@
-package edu.asu.ying.mapreduce.messaging;
+package edu.asu.ying.mapreduce.messaging.filter;
+
+import edu.asu.ying.mapreduce.messaging.Message;
 
 import java.io.Serializable;
 import java.net.URI;
