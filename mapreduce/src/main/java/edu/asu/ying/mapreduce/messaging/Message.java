@@ -22,6 +22,9 @@ public interface Message
 	 */
 	public String getId();
 
+	public URI getSourceUri();
+	public void setSourceUri(final URI uri);
+
 	public URI getDestinationUri();
 
 	/**

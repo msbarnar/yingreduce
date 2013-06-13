@@ -4,8 +4,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import edu.asu.ying.mapreduce.messaging.MessageDispatch;
 import edu.asu.ying.mapreduce.messaging.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.SendMessageStream;
+import edu.asu.ying.mapreduce.messaging.SimpleMessageDispatch;
+import edu.asu.ying.mapreduce.net.kad.KadMessageHandler;
 import il.technion.ewolf.kbr.*;
 import il.technion.ewolf.kbr.concurrent.CompletionHandler;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
@@ -45,12 +48,45 @@ public final class KadChannel
 		}
 	}
 
+
+	/**
+	 * Singleton {@link MessageDispatch} provider.
+	 */
+	private enum MessageDispatchProvider {
+		INSTANCE;
+		private final MessageDispatch dispatch;
+
+		private MessageDispatchProvider() {
+			this.dispatch = new SimpleMessageDispatch();
+		}
+	}
+
 	@Override
 	protected void configure() {
 	}
 
 	/**
-	 * Provides a singleton instance of {@link KeybasedRouting} to send and receive channels.
+	 * Provides a {@link KadMessageHandler} that listens to the local node and writes to a {@link MessageDispatch}.
+	 */
+	@Provides
+	private final KadMessageHandler provideMessageHandler() {
+		final Injector injector = Guice.createInjector(this);
+		return new KadMessageHandler(injector.getInstance(KeybasedRouting.class),
+		                             injector.getInstance(MessageDispatch.class));
+	}
+
+	/**
+	 * Provides an instance of {@link MessageDispatch} for objects to register to receive specific messages from the
+	 * network.
+	 */
+	@Provides
+	private final MessageDispatch provideMessageDispatch() {
+		return MessageDispatchProvider.INSTANCE.dispatch;
+	}
+
+	/**
+	 * Provides an instance of {@link KeybasedRouting} to send and receive channels for their underlying network
+	 * communication.
 	 */
 	@Provides
 	private final KeybasedRouting provideKeybasedRouting() {

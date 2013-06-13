@@ -5,47 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ffc779c-2642-4842-aeac-60344a3ce6bc" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadSendChannel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageDispatch.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/SendMessageStream.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/SimpleMessageDispatch.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/matthew.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/SendChannelSink.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadSendChannelSink.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageSink.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/SendMessageSink.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/kad/KadSendMessageSink.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/ChannelSink.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/ChannelSink.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/AcknowledgementMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/InvalidContentException.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/kad/KadMessageHandler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/NoResponseException.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadChannel.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadChannel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/kad/KadResourceFinder.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/kad/KadResourceFinder.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadSendChannel.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadSendChannel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageOutputStream.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageOutputStream.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/ResourceFinder.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/ResourceFinder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/mapreduce.iml" afterPath="$PROJECT_DIR$/mapreduce/mapreduce.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/pom.xml" afterPath="$PROJECT_DIR$/mapreduce/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371095709650" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371152225500" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371081520280" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371085836176" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371080775184" ignored="false" />
-    <file path="/a.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371087448259" ignored="false" />
-    <file path="/sample.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371085335117" ignored="false" />
+    <file path="/a.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371150851892" ignored="false" />
+    <file path="/sample.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371148884386" ignored="false" />
     <file path="/Finder.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371082245454" ignored="false" />
     <file path="/KadResourceFinder.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371101032297" ignored="false" />
     <file path="/NetworkClient.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371082803108" ignored="false" />
     <file path="/MessageSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371093705342" ignored="false" />
-    <file path="/Message.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371103179067" ignored="false" />
+    <file path="/Message.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371150843625" ignored="false" />
     <file path="/pom.xml" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371101479176" ignored="false" />
     <file path="/SendMessageSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371094551550" ignored="false" />
     <file path="/GetResourceMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371086368365" ignored="false" />
-    <file path="/MessageBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371103071588" ignored="false" />
+    <file path="/MessageBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371149081605" ignored="false" />
     <file path="/ExceptionMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371091289338" ignored="false" />
     <file path="/UnexpectedMessageException.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371091826447" ignored="false" />
     <file path="/KadSendSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371093836932" ignored="false" />
@@ -54,8 +40,8 @@
     <file path="/SendChannelSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371095349169" ignored="false" />
     <file path="/ChannelSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371094924703" ignored="false" />
     <file path="/KadSendChannelSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371095333599" ignored="false" />
-    <file path="/KadChannel.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371103863903" ignored="false" />
-    <file path="/KadSendChannel.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371103017159" ignored="false" />
+    <file path="/KadChannel.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371152893435" ignored="false" />
+    <file path="/KadSendChannel.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371151624721" ignored="false" />
     <file path="/MessageOutputStream.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371102142294" ignored="false" />
     <file path="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/SendChannelSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371095723082" ignored="false" />
     <file path="/SendMessageStream.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371095949008" ignored="false" />
@@ -64,6 +50,11 @@
     <file path="/MessageDispatch.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371099047945" ignored="false" />
     <file path="/ResponseDispatch.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371100416849" ignored="false" />
     <file path="/SimpleMessageDispatch.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371100366709" ignored="false" />
+    <file path="/KadMessageHandler.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371148202861" ignored="false" />
+    <file path="/AcknowledgementResponse.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371147584562" ignored="false" />
+    <file path="/InvalidContentResponse.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371147864838" ignored="false" />
+    <file path="/NoResponseException.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371151513234" ignored="false" />
+    <file path="/ResponseHandler.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371152328024" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +118,16 @@
       <file leaf-file-name="KadChannel.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadChannel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="0" selection-start="1829" selection-end="1829" vertical-scroll-proportion="0.5879121">
+            <state line="62" column="0" selection-start="2209" selection-end="2209" vertical-scroll-proportion="0.23469388">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KadMessageHandler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/kad/KadMessageHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="34" column="7" selection-start="982" selection-end="982" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -135,13 +135,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="KadSendChannel.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadSendChannel.java">
+      <file leaf-file-name="SendMessageStream.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/SendMessageStream.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="11" selection-start="760" selection-end="760" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="14" column="6" selection-start="529" selection-end="529" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -164,21 +162,21 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/SendChannelSink.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/SendMessageStream.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageResponseDispatch.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/ResponseDispatch.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/GrandMessageDispatch.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageDispatchBase.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/SimpleMessageDispatch.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/ResourceFinder.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageDispatch.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/kad/KadResourceFinder.java" />
         <option value="$PROJECT_DIR$/mapreduce/pom.xml" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageOutputStream.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadSendChannel.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/AcknowledgementResponse.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/InvalidContentResponse.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/InvalidContentException.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/kad/KadMessageHandler.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/NoResponseException.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadSendChannel.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/ResponseHandler.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/MessageHandler.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadChannel.java" />
       </list>
     </option>
@@ -195,7 +193,7 @@
     <option name="x" value="4" />
     <option name="y" value="22" />
     <option name="width" value="1916" />
-    <option name="height" value="1058" />
+    <option name="height" value="1028" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -466,6 +464,40 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="net" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kad" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="messaging" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -544,7 +576,7 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="options.splitter.main.proportions" value="0.19029851" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="options.lastSelected" value="Errors" />
+    <property name="options.lastSelected" value="preferences.keymap" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="FullScreen" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
@@ -679,11 +711,15 @@
       <created>1371095715302</created>
       <updated>1371095715302</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Traffic is wired from SendMessageStream-&gt;Kad; need to wire a handler for Kad messages to a MessageDispatch and write a provider for it">
+      <created>1371104032780</created>
+      <updated>1371104032780</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="4" y="22" width="1916" height="1058" extended-state="6" />
+    <frame x="4" y="22" width="1916" height="1028" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -694,7 +730,6 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32978722" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -705,6 +740,7 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32978722" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32978722" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -715,7 +751,7 @@
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <option name="CHECK_NEW_TODO" value="true" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <option name="myTodoPanelSettings">
       <value>
         <are-packages-shown value="false" />
@@ -751,7 +787,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Started with sinks again; nixing for streams; makes an important point about directionality of message flow. Will necessitate writing an asynchronous response handler&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Traffic is wired from SendMessageStream-&gt;Kad; need to wire a handler for Kad messages to a MessageDispatch and write a provider for it" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -767,6 +803,7 @@
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
     <MESSAGE value="Designing initial resource concept" />
     <MESSAGE value="Started with sinks again; nixing for streams; makes an important point about directionality of message flow. Will necessitate writing an asynchronous response handler&#10;" />
+    <MESSAGE value="Traffic is wired from SendMessageStream-&gt;Kad; need to wire a handler for Kad messages to a MessageDispatch and write a provider for it" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -776,58 +813,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/kad/GetResourceMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="0" selection-start="1272" selection-end="1272" vertical-scroll-proportion="0.489011">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/UnexpectedMessageException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="497" selection-end="497" vertical-scroll-proportion="0.27960527">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/ExceptionMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="0" selection-start="1192" selection-end="1192" vertical-scroll-proportion="0.6743421">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/ChannelSink.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="1" selection-start="321" selection-end="321" vertical-scroll-proportion="0.19736843">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/SendMessageStream.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="43" selection-end="755" vertical-scroll-proportion="0.032967035">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/ResourceFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="63" selection-start="752" selection-end="752" vertical-scroll-proportion="0.32967034">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/finder/kad/KadResourceFinder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="43" column="0" selection-start="1609" selection-end="1609" vertical-scroll-proportion="0.17582418">
@@ -872,9 +857,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/AcknowledgementMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="1" selection-start="192" selection-end="192" vertical-scroll-proportion="0.11513158">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/InvalidContentException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="1" selection-start="296" selection-end="296" vertical-scroll-proportion="0.19736843">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="21" selection-start="114" selection-end="114" vertical-scroll-proportion="0.06802721">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="86" column="7" selection-start="2336" selection-end="2336" vertical-scroll-proportion="0.5879121">
+        <state line="67" column="40" selection-start="1814" selection-end="1814" vertical-scroll-proportion="0.20181406">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#823#851#0" expanded="true" />
@@ -882,18 +888,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/NoResponseException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="7" selection-start="576" selection-end="576" vertical-scroll-proportion="0.34615386">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="10" column="23" selection-start="273" selection-end="273" vertical-scroll-proportion="0.17006803">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadSendChannel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="11" selection-start="760" selection-end="760" vertical-scroll-proportion="0.0">
+        <state line="117" column="9" selection-start="4520" selection-end="4520" vertical-scroll-proportion="0.48979592">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/SendMessageStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="6" selection-start="529" selection-end="529" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/kad/KadMessageHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="7" selection-start="982" selection-end="982" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -902,10 +920,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/channels/kad/KadChannel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="0" selection-start="1829" selection-end="1829" vertical-scroll-proportion="0.5879121">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="62" column="0" selection-start="2209" selection-end="2209" vertical-scroll-proportion="0.23469388">
+          <folding />
         </state>
       </provider>
     </entry>

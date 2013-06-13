@@ -71,6 +71,18 @@ public abstract class MessageBase
 	@Override
 	public Map<Serializable, Serializable> getProperties() { return this.properties; }
 
+	public void setSourceUri(final URI uri) { this.properties.put("source-uri", uri); }
+	@Override
+	public URI getSourceUri() {
+		try {
+			return (URI) this.properties.get("source-uri");
+		} catch (final ClassCastException e) {
+			// TODO: Logging
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public void setDestinationUri(final URI uri) { this.properties.put("destination-uri", uri); }
 	@Override
 	public URI getDestinationUri() {
