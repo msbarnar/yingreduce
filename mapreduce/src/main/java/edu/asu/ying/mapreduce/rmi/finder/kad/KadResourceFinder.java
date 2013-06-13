@@ -1,8 +1,8 @@
 package edu.asu.ying.mapreduce.rmi.finder.kad;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import edu.asu.ying.mapreduce.messaging.*;
 import edu.asu.ying.mapreduce.net.RemoteResource;
 import edu.asu.ying.mapreduce.rmi.finder.ResourceFinder;
@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.rmi.RemoteException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -27,44 +29,60 @@ import java.util.List;
 public final class KadResourceFinder
 	implements ResourceFinder
 {
-	private final MessageSink sendSink;
+	// We pass messages here to send them
+	private final MessageOutputStream messageOutput;
+	// Provides Future<> results for messages for which we expect responses.
+	private final MessageDispatch responseDispatch;
 
 	/**
-	 * Initializes the resource finder with an outgoing message sink to relay its messages.
-	 * @param sendSink the message sink chain that will relay the resource finder's messages to their destination.
+	 * Initializes the resource finder with an outgoing message stream to contact remote hosts.
+	 * @param sendStream the message output stream that will convey messages to remote hosts.
 	 */
 	@Inject
-	public KadResourceFinder(final @SendMessageSink MessageSink sendSink) {
-		this.sendSink = sendSink;
+	public KadResourceFinder(final @SendMessageStream MessageOutputStream sendStream,
+	                         final MessageDispatch responseDispatch) {
+
+		this.messageOutput = sendStream;
+		this.responseDispatch = responseDispatch;
 	}
 
 	/**
 	 * Constructs a {@link GetResourceMessage} with the resource identifier and node key in the URI.
 	 * @param uri the identifier used to locate the resource.
-	 * @return one or more references to resources matching the URI.
+	 * @return a future response to be fulfilled by the {@link MessageDispatch} when it receives a response.
 	 * @throws URISyntaxException if the URI is not a valid {@link RemoteResource} identifier.
-	 * @throws IOException if the underlying network implementation throws an exception.
+	 * @throws IOException if the underlying network implementation throws an exception or no response was received
+	 * from the remote host.
 	 */
 	@Override
 	public final List<RemoteResource> findResource(final URI uri)
 			throws URISyntaxException, IOException {
 		// Build the message from the URI
 		final Message message = new GetResourceMessage(uri);
-		// Pass the message to the network and block until we get a response
-		// TODO: async
-		final Message response = this.sendSink.accept(message);
+		// Register to get a response from the message dispatch
+		final ListenableFuture<Message> response = this.responseDispatch.getFutureMessageById(message.getId());
+		// Write the message to the network
+		this.messageOutput.write(message);
 
-		// Check for an exceptional response
-		if (response instanceof ExceptionMessage) {
-			throw ((ExceptionMessage) response).getException();
+		// Wait for a response; timeout after 20 seconds
+		final Message responseMessage;
+		try {
+			responseMessage = response.get(20, TimeUnit.SECONDS);
+		} catch (final InterruptedException | ExecutionException | TimeoutException e) {
+			throw new IOException(e);
 		}
 
-		if (!(response instanceof GetResourceMessage)) {
-			throw new UnexpectedMessageException(response, GetResourceMessage.class);
+		// Check for an exceptional response
+		if (responseMessage instanceof ExceptionMessage) {
+			throw ((ExceptionMessage) responseMessage).getException();
+		}
+
+		if (!(responseMessage instanceof GetResourceMessage)) {
+			throw new UnexpectedMessageException(responseMessage, GetResourceMessage.class);
 		}
 
 		final Optional<Serializable> resources =
-				Optional.fromNullable(((GetResourceMessage) response).getProperties().get("resources"));
+				Optional.fromNullable(((GetResourceMessage) responseMessage).getProperties().get("resources"));
 
 		// No resources found or property of the wrong type
 		if (!resources.isPresent() || !(resources.get() instanceof List)) {

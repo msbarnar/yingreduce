@@ -1,5 +1,6 @@
 package edu.asu.ying.mapreduce.rmi.finder;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import edu.asu.ying.mapreduce.net.RemoteResource;
 
 import java.io.IOException;

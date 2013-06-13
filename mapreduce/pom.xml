@@ -37,5 +37,10 @@
         <artifactId>guava</artifactId>
         <version>14.0.1</version>
     </dependency>
+    <dependency>
+        <groupId>il.technion.ewolf.kbr</groupId>
+        <artifactId>openkad</artifactId>
+        <version>1.0</version>
+    </dependency>
   </dependencies>
 </project>
