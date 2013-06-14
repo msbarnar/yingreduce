@@ -5,24 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ffc779c-2642-4842-aeac-60344a3ce6bc" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilter2.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterAnd.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterCombiner.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterCombiners.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterMatcher.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterNode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterNot.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterOr.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageIdFilter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessagePropertyFilter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageTypeFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilter.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilter.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilter2.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterAnd.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterCombiner.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterCombiners.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterNode.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterNot.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterOr.java" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterMatcher.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterMatcher.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageIdFilter.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageIdFilter.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessagePropertyFilter.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessagePropertyFilter.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageTypeFilter.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageTypeFilter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/test/java/TestMessageFilters.java" afterPath="$PROJECT_DIR$/mapreduce/src/test/java/TestMessageFilters.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371190592570" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371202935130" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371186205464" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371184938383" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371080775184" ignored="false" />
@@ -151,10 +150,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="TestMessageFilters.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="TestMessageFilters.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mapreduce/src/test/java/TestMessageFilters.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="52" column="25" selection-start="1659" selection-end="1659" vertical-scroll-proportion="0.51290876">
+            <state line="29" column="16" selection-start="658" selection-end="658" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -162,60 +161,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MessageFilterNode.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterNode.java">
+      <file leaf-file-name="MessageFilterAllOf.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterAllOf.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="0" selection-start="628" selection-end="628" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MessageFilterCombiner.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterCombiner.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="0" selection-start="609" selection-end="609" vertical-scroll-proportion="0.0">
+            <state line="19" column="56" selection-start="415" selection-end="415" vertical-scroll-proportion="0.49053356">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MessageIdFilter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageIdFilter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="0" selection-start="394" selection-end="394" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MessageFilterNot.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterNot.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="0" selection-start="410" selection-end="410" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MessageFilter2.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilter2.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="0" selection-start="1337" selection-end="1337" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MessageFilterOr.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterOr.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="0" selection-start="381" selection-end="381" vertical-scroll-proportion="0.0">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -620,40 +572,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="filter2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mapreduce" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mapreduce" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mapreduce" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="messaging" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="filter" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -747,7 +665,7 @@
       <recent name="edu.asu.ying.mapreduce.messaging.filter2" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.TestMessageFilters.MessageFiltersChainTogether">
+  <component name="RunManager" selected="JUnit.TestMessageFilters">
     <configuration default="false" name="TestMessageFilters" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="mapreduce" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -921,8 +839,8 @@
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestMessageFilters.MessageFiltersChainTogether" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.TestMessageFilters" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestMessageFilters" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestMessageFilters.MessageFiltersChainTogether" />
         <item index="2" class="java.lang.String" itemvalue="JUnit.TestMessageFilters.NewStyleMessageFilter" />
       </list>
     </recent_temporary>
@@ -995,7 +913,11 @@
       <created>1371190593223</created>
       <updated>1371190593223</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Killing new filtering; it's not better.">
+      <created>1371202937355</created>
+      <updated>1371202937356</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1067,7 +989,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Experimenting with different filtering" />
+    <option name="LAST_COMMIT_MESSAGE" value="Killing new filtering; it's not better." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1090,6 +1012,7 @@
     <MESSAGE value="Message filtering + tests&#10;" />
     <MESSAGE value="ActivatorProvider is wired to respond to GetResourceMessage.&#10;Need to decide on the outermost interface for the channel; probably just by exposing ResourceFinder" />
     <MESSAGE value="Experimenting with different filtering" />
+    <MESSAGE value="Killing new filtering; it's not better." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1113,13 +1036,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterMatcher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="0" selection-start="113" selection-end="113" vertical-scroll-proportion="0.23210831">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="69" column="0" selection-start="1816" selection-end="1816" vertical-scroll-proportion="0.3326886">
@@ -1130,36 +1046,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageTypeFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="9" selection-start="443" selection-end="443" vertical-scroll-proportion="0.5421687">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessagePropertyFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="32" selection-start="756" selection-end="756" vertical-scroll-proportion="0.8519794">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterCombiners.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="42" selection-start="258" selection-end="258" vertical-scroll-proportion="0.30981067">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterAnd.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="23" selection-start="369" selection-end="369" vertical-scroll-proportion="0.46471602">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/junit/junit/4.11/junit-4.11.jar!/org/junit/Assert.class">
       <provider selected="true" editor-type-id="text-editor">
         <state line="40" column="0" selection-start="1897" selection-end="1897" vertical-scroll-proportion="0.3471223">
@@ -1167,55 +1053,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterCombiner.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="0" selection-start="609" selection-end="609" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageIdFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="0" selection-start="394" selection-end="394" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterOr.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="0" selection-start="381" selection-end="381" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilter2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="0" selection-start="1337" selection-end="1337" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterNot.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="0" selection-start="410" selection-end="410" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter2/MessageFilterNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="0" selection-start="628" selection-end="628" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/test/java/TestMessageFilters.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="25" selection-start="1659" selection-end="1659" vertical-scroll-proportion="0.51290876">
+        <state line="29" column="16" selection-start="658" selection-end="658" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageTypeFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="47" selection-start="226" selection-end="226" vertical-scroll-proportion="0.28399312">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessagePropertyFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="19" selection-start="161" selection-end="161" vertical-scroll-proportion="0.20654045">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterMatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="2" selection-start="107" selection-end="107" vertical-scroll-proportion="0.15490533">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/filter/MessageFilterAllOf.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="56" selection-start="415" selection-end="415" vertical-scroll-proportion="0.49053356">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

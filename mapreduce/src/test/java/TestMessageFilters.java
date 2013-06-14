@@ -1,6 +1,5 @@
 import edu.asu.ying.mapreduce.messaging.MessageBase;
 import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
-import edu.asu.ying.mapreduce.messaging.filter2.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,74 +11,6 @@ public class TestMessageFilters
 {
 	private class TestMessage extends MessageBase {}
 	private class TestMessage2 extends MessageBase {}
-
-	@Test
-	public void MessageFilterById() {
-		TestMessage msg1 = new TestMessage();
-		msg1.setId("1");
-		msg1.getProperties().put("msg", "1");
-
-		TestMessage2 msg2 = new TestMessage2();
-		msg2.setId("2");
-		msg2.getProperties().put("msg", "2");
-
-		Assert.assertTrue(MessageFilter2.id("1").filter(msg1));
-		Assert.assertFalse(MessageFilter2.id("2").filter(msg1));
-	}
-
-	@Test
-	public void MessageFilterByType() {
-		TestMessage msg1 = new TestMessage();
-		TestMessage2 msg2 = new TestMessage2();
-
-		Assert.assertTrue(MessageFilter2.type(TestMessage.class).filter(msg1));
-		Assert.assertFalse(MessageFilter2.type(TestMessage.class).filter(msg2));
-		Assert.assertTrue(MessageFilter2.type(TestMessage2.class).filter(msg2));
-	}
-
-	@Test
-	public void MessageFiltersChainTogether() {
-		TestMessage msg1 = new TestMessage();
-		msg1.setId("1");
-
-		Assert.assertTrue(MessageFilter2.id("1").or.id("2").filter(msg1));
-		Assert.assertFalse(MessageFilter2.id("3").or.id("2").filter(msg1));
-		Assert.assertTrue(MessageFilter2.id("3").or.id("2").or.id("1").and.id("1").filter(msg1));
-
-		Assert.assertFalse(MessageFilter2.id("1").and.id("2").filter(msg1));
-		Assert.assertTrue(MessageFilter2.id("1").not.id("2").filter(msg1));
-		Assert.assertFalse(MessageFilter2.id("1").not.id("1").filter(msg1));
-
-		Assert.assertTrue(MessageFilter2.not.id("2").or.id("3").filter(msg1));
-		Assert.assertTrue(MessageFilter2.not.id("2").and.id("1").filter(msg1));
-		Assert.assertFalse(MessageFilter2.not.id("1").or.id("1").filter(msg1));
-
-		TestMessage msg2 = new TestMessage();
-		msg1.setId("2");
-		TestMessage msg3 = new TestMessage();
-		msg1.setId("3");
-
-		Assert.assertTrue(MessageFilter2.id("1").not.id("2").or.id("3").filter(msg1));
-		Assert.assertFalse(MessageFilter2.id("1").not.id("2").or.id("3").filter(msg2));
-		Assert.assertFalse(MessageFilter2.id("1").not.id("2").or.id("3").filter(msg3));
-	}
-
-	@Test
-	public void TrailingMessageFiltersAreIgnored() {
-		TestMessage msg1 = new TestMessage();
-
-		Assert.assertTrue(MessageFilter2.type(TestMessage.class).or.filter(msg1));
-		Assert.assertTrue(MessageFilter2.type(TestMessage.class).not.filter(msg1));
-		Assert.assertTrue(MessageFilter2.type(TestMessage.class).and.filter(msg1));
-	}
-
-	@Test
-	public void StartingWithMessageCombiner() {
-		TestMessage msg1 = new TestMessage();
-
-		Assert.assertTrue(MessageFilter2.not.type(TestMessage2.class).filter(msg1));
-		Assert.assertFalse(MessageFilter2.not.type(TestMessage.class).filter(msg1));
-	}
 
 	@Test
 	public void MessageFilteredOnAll() {

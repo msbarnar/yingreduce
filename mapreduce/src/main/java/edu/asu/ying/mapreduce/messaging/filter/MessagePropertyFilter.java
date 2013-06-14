@@ -1,10 +1,8 @@
-package edu.asu.ying.mapreduce.messaging.filter2;
+package edu.asu.ying.mapreduce.messaging.filter;
 
 import edu.asu.ying.mapreduce.messaging.Message;
 
 import java.io.Serializable;
-import java.util.AbstractMap;
-import java.util.Map;
 
 
 /**
