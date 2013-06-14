@@ -3,7 +3,7 @@ package edu.asu.ying.mapreduce.rmi.resource;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.*;
-import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
+import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 
 import java.io.IOException;
 import java.io.Serializable;

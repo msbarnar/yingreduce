@@ -3,14 +3,13 @@ package edu.asu.ying.mapreduce.messaging;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
-import edu.asu.ying.mapreduce.messaging.filter.MessageFilterBase;
 
 import java.util.*;
 import java.util.concurrent.Executors;
 
 
 /**
- * {@link SimpleMessageDispatch} is a {@link MessageOutputStream} that associates messages with specific recipient
+ * {@link SimpleMessageDispatch} is a {@link edu.asu.ying.mapreduce.messaging.io.MessageOutputStream} that associates messages with specific recipient
  * objects and provides those messages via {@link com.google.common.util.concurrent.ListenableFuture} promises.
  */
 public class SimpleMessageDispatch

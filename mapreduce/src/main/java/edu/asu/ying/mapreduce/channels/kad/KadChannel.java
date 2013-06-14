@@ -5,12 +5,12 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import edu.asu.ying.mapreduce.messaging.MessageDispatch;
-import edu.asu.ying.mapreduce.messaging.MessageOutputStream;
+import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.SendMessageStream;
 import edu.asu.ying.mapreduce.messaging.SimpleMessageDispatch;
 import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.activator.kad.KadActivator;
+import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
 import il.technion.ewolf.kbr.*;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
@@ -63,7 +63,7 @@ public final class KadChannel
 
 	@Override
 	protected void configure() {
-		bind(Activator.class).to(KadActivator.class);
+		bind(Activator.class).to(KadServerActivator.class);
 	}
 
 	/**

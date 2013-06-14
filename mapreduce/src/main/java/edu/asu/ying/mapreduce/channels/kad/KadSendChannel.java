@@ -13,13 +13,11 @@ import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.ExceptionMessage;
 import edu.asu.ying.mapreduce.messaging.Message;
-import edu.asu.ying.mapreduce.messaging.MessageOutputStream;
+import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.NoResponseException;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.Node;
-
-import javax.swing.text.html.HTMLDocument;
 
 
 /**

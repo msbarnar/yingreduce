@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Controls creation and lifetime management for remotely activated objects.
  */
-public class KadActivator
+public class KadServerActivator
 	implements Activator
 {
 	@Override

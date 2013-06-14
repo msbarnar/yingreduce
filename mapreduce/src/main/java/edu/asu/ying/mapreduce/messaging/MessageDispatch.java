@@ -1,10 +1,11 @@
 package edu.asu.ying.mapreduce.messaging;
 
 import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
+import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 
 
 /**
- * A {@link MessageDispatch} is a {@link MessageOutputStream} that associates recipient objects with specific messages
+ * A {@link MessageDispatch} is a {@link edu.asu.ying.mapreduce.messaging.io.MessageOutputStream} that associates recipient objects with specific messages
  * so that they can be asynchronously notified when a message of interest arrives.
  */
 public interface MessageDispatch
