@@ -4,16 +4,13 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.text.ParseException;
 import java.util.*;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.google.common.base.Charsets;
-import com.google.common.net.HostSpecifier;
 import com.google.inject.Inject;
-import edu.asu.ying.mapreduce.UriUtils;
 import edu.asu.ying.mapreduce.messaging.ExceptionMessage;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
