@@ -58,8 +58,8 @@ public final class SyncResourceFinder
 		// Build the message from the URI
 		final Message message = new GetResourceMessage(uri);
 		// Register to get a response from the message dispatch matching the request by ID
-		final FutureMessage response
-				= this.responseDispatch.getFutureMessage(new MessageFilter().allOf.id(message.getId()));
+		final FutureMessage response = this.responseDispatch.getFutureMessage();
+		response.filter.allOf.id(message.getId());
 		// Write the message to the network
 		this.messageOutput.write(message);
 

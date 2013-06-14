@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.messaging;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
 import edu.asu.ying.mapreduce.messaging.filter.MessageFilterBase;
 
 import java.util.*;
@@ -48,7 +49,7 @@ public class SimpleMessageDispatch
 	}
 
 	@Override
-	public FutureMessage getFutureMessage(final MessageFilterBase filter) {
+	public FutureMessage getFutureMessage(final MessageFilter filter) {
 		// Solves the race condition in getFutureMessage() by specifying the filter before adding the message
 		synchronized (this.futures) {
 			final FutureMessage future = this.createFutureMessage();

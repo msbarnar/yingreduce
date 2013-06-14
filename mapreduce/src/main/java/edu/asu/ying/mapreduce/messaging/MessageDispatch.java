@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.messaging;
 
-import edu.asu.ying.mapreduce.messaging.filter.MessageFilterBase;
+import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
 
 
 /**
@@ -23,5 +23,6 @@ public interface MessageDispatch
 	 * @param filter the filter that will select the message to return.
 	 * @return a promise of a future message.
 	 */
-	public FutureMessage getFutureMessage(final MessageFilterBase filter);
+	// TODO: Improve the filter application interface
+	public FutureMessage getFutureMessage(final MessageFilter filter);
 }

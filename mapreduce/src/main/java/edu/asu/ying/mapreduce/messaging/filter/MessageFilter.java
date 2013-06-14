@@ -13,11 +13,9 @@ import java.net.URI;
 public class MessageFilter
 	extends MessageFilterBase
 {
-	public final MessageFilterBase allOf = new MessageFilterAllOf();
-	public final MessageFilterBase anyOf = new MessageFilterAnyOf();
-	public final MessageFilterBase noneOf = new MessageFilterNoneOf();
-
-	private MessageFilterBase setFilter;
+	public MessageFilterBase allOf = new MessageFilterAllOf();
+	public MessageFilterBase anyOf = new MessageFilterAnyOf();
+	public MessageFilterBase noneOf = new MessageFilterNoneOf();
 
 	private boolean matchAny = false;
 
@@ -28,7 +26,6 @@ public class MessageFilter
 	}
 
 	public final void clear() {
-		this.setFilter = null;
 		this.allOf.clear();
 		this.anyOf.clear();
 		this.noneOf.clear();
@@ -40,16 +37,14 @@ public class MessageFilter
 		this.matchAny = true;
 	}
 
-	public final void set(final MessageFilterBase filter) {
-		this.setFilter = filter;
+	public final void set(final MessageFilter filter) {
+		this.allOf = filter.allOf;
+		this.anyOf = filter.anyOf;
+		this.noneOf = filter.noneOf;
 	}
 
 	@Override
 	public boolean match(final Message message) {
-		if (this.setFilter != null) {
-			return this.setFilter.match(message);
-		}
-
 		if (allOf.isActive() || anyOf.isActive() || noneOf.isActive()) {
 			return this.anyOf.match(message) && this.noneOf.match(message) && this.allOf.match(message);
 		} else {
