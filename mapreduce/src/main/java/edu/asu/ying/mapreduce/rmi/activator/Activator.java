@@ -46,4 +46,6 @@ public interface Activator
 	 * found, or if a problem occurred while obtaining the reference.
 	 */
 	Remote getReference(final Class<?> type, final Map<String, String> properties) throws RemoteException;
+
+	String echo(final String message);
 }

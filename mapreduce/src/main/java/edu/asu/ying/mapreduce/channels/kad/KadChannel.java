@@ -9,8 +9,12 @@ import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.SendMessageStream;
 import edu.asu.ying.mapreduce.messaging.SimpleMessageDispatch;
 import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
+import edu.asu.ying.mapreduce.net.LocalNode;
+import edu.asu.ying.mapreduce.net.kad.KadLocalNode;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceFinder;
+import edu.asu.ying.mapreduce.rmi.resource.SyncResourceFinder;
 import il.technion.ewolf.kbr.*;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
@@ -64,6 +68,8 @@ public final class KadChannel
 	@Override
 	protected void configure() {
 		bind(Activator.class).to(KadServerActivator.class);
+		bind(ResourceFinder.class).to(SyncResourceFinder.class);
+		bind(LocalNode.class).to(KadLocalNode.class);
 	}
 
 	/**

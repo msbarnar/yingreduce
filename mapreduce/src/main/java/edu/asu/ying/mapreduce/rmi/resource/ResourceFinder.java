@@ -19,5 +19,5 @@ public interface ResourceFinder
 	 * @throws URISyntaxException if the {@link URI} is not in the proper format.
 	 * @throws IOException if the underlying network accession throws an exception.
 	 */
-	public List<RemoteResource> findResource(final URI uri) throws URISyntaxException, IOException;
+	List<RemoteResource> findResource(final URI uri) throws URISyntaxException, IOException;
 }

@@ -12,23 +12,23 @@ import java.util.Map;
 /**
  * Controls creation and lifetime management for remotely activated objects.
  */
-public class KadServerActivator
+public final class KadServerActivator
 	implements Activator
 {
 	@Override
-	public Remote getReference(final Class<?> type, final Map<String, String> properties) throws RemoteException {
+	public final Remote getReference(final Class<?> type, final Map<String, String> properties) throws RemoteException {
 		// TODO: use UnicastRemoteObject.exportObject
 		System.out.println(String.format("GET INSTANCE: %s", type.toString()));
 		return null;
 	}
 
 	@Override
-	public URI getUri() {
-		return null;
+	public final String echo(final String msg) {
+		return msg;
 	}
 
 	@Override
-	public Serializable getResource() {
+	public final URI getUri() {
 		return null;
 	}
 }

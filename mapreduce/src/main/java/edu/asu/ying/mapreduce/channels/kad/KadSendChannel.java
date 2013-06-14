@@ -4,13 +4,16 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.util.*;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.google.common.base.Charsets;
+import com.google.common.net.HostSpecifier;
 import com.google.inject.Inject;
+import edu.asu.ying.mapreduce.UriUtils;
 import edu.asu.ying.mapreduce.messaging.ExceptionMessage;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
@@ -46,7 +49,9 @@ public final class KadSendChannel
 	private final URI makeLocalUri() {
 		final Node localNode = this.kadNode.getLocalNode();
 		try {
-			return new URI("node", localNode.getKey().toBase64(), null, null);
+			// Escape the key for URI syntax
+			final String localNodeAddress = UriUtils.encodeHost(localNode.getKey().toString());
+			return new URI("node", localNodeAddress, null, null);
 		} catch (final URISyntaxException e) {
 			// TODO: logging
 			e.printStackTrace();
@@ -63,8 +68,8 @@ public final class KadSendChannel
 	public final void write(final Message message) throws IOException {
 		message.setSourceUri(this.localUri);
 		// Identify the destination nodes and send the message to them
-		// This line just decided what charset IDs are in forever
-		final Key destKey = new Key(message.getId().getBytes(Charsets.UTF_8));
+		// This line just decided what charset keys are in forever
+		final Key destKey = new Key(message.getDestinationUri().getHost().getBytes(Charsets.UTF_8));
 
 		final List<Node> foundNodes = this.kadNode.findNode(destKey);
 		if (foundNodes.size() == 0) {

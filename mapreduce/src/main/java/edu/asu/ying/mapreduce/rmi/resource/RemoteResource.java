@@ -10,7 +10,7 @@ import java.net.URI;
  * <p>
  * Required parts of a resource URI are:
  * <ul>
- *     <li>{@code scheme} - is always "resource".</li>
+ *     <li>{@code scheme} - is always {@code resource}.</li>
  *     <li>{@code host} - describes the location information for the resource; its meaning is implementation specific.
  *     </li>
  *     <li>{@code path} - is the resource type.</li>
@@ -30,6 +30,5 @@ import java.net.URI;
 public interface RemoteResource
 	extends Serializable
 {
-	public URI getUri();
-	public Serializable getResource();
+	URI getUri();
 }

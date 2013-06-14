@@ -1,5 +1,6 @@
 package edu.asu.ying.mapreduce.rmi.resource;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import edu.asu.ying.mapreduce.messaging.MessageBase;
@@ -64,7 +65,8 @@ public class GetResourceMessage
 
 	public final void setResourceUri(final URI uri) {
 		this.properties.put("resource-uri", uri);
-		this.properties.put("resource-typename", uri.getPath());
+		// Trim the leading slash from the path
+		this.properties.put("resource-typename", CharMatcher.is('/').trimFrom(uri.getPath()));
 		this.properties.put("resource-name", uri.getQuery());
 	}
 	public final String getResourceType() {

@@ -18,12 +18,12 @@ public interface MessageDispatch
 	 * Use {@link FutureMessage#filter} to specify the exact message to receive.
 	 * @return a promise of a future message.
 	 */
-	public FutureMessage getFutureMessage();
+	FutureMessage getFutureMessage();
 	/**
 	 * Gets a {@link FutureMessage} matching {@code filter} that will be fulfilled when the dispatch receives a message.
 	 * @param filter the filter that will select the message to return.
 	 * @return a promise of a future message.
 	 */
 	// TODO: Improve the filter application interface
-	public FutureMessage getFutureMessage(final MessageFilter filter);
+	FutureMessage getFutureMessage(final MessageFilter filter);
 }
