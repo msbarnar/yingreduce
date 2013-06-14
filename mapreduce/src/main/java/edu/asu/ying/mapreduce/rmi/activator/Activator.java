@@ -1,5 +1,7 @@
 package edu.asu.ying.mapreduce.rmi.activator;
 
+import edu.asu.ying.mapreduce.rmi.resource.RemoteResource;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -33,6 +35,7 @@ import java.util.Map;
  * object provisioning. 
  */
 public interface Activator
+	extends Remote, RemoteResource
 {
 	/**
 	 * Obtains a {@link java.rmi.Remote} reference to an instance of the class {@code type}.

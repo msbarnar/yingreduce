@@ -9,6 +9,8 @@ import edu.asu.ying.mapreduce.messaging.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.SendMessageStream;
 import edu.asu.ying.mapreduce.messaging.SimpleMessageDispatch;
 import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
+import edu.asu.ying.mapreduce.rmi.activator.Activator;
+import edu.asu.ying.mapreduce.rmi.activator.kad.KadActivator;
 import il.technion.ewolf.kbr.*;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
@@ -18,7 +20,7 @@ import java.util.Random;
 
 /**
  * The {@link KadChannel} constructs the message and channel sink chains necessary to connect high-level peer
- * operations (e.g. {@link edu.asu.ying.mapreduce.rmi.finder.ResourceFinder} to the underlying Kademlia network stack.
+ * operations (e.g. {@link edu.asu.ying.mapreduce.rmi.resource.ResourceFinder} to the underlying Kademlia network stack.
  */
 public final class KadChannel
 	extends AbstractModule
@@ -61,6 +63,7 @@ public final class KadChannel
 
 	@Override
 	protected void configure() {
+		bind(Activator.class).to(KadActivator.class);
 	}
 
 	/**

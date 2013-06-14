@@ -1,8 +1,11 @@
 package edu.asu.ying.mapreduce.messaging;
 
-import edu.asu.ying.mapreduce.messaging.filter.AbstractMessageFilter;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
+import edu.asu.ying.mapreduce.messaging.filter.MessageFilterBase;
 
 import java.util.*;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -14,6 +17,13 @@ public class SimpleMessageDispatch
 {
 	// All future messages to fulfill
 	private final List<FutureMessage> futures = new ArrayList<>();
+	// Executor that runs message callbacks
+	// Spawns as many threads as needed, but reuses old threads. Unused threads older than 60s are killed.
+	private final ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+
+	private final FutureMessage createFutureMessage() {
+		return new FutureMessage(this.executor);
+	}
 
 	/**
 	 * Gets a {@link FutureMessage} that will be fulfilled when the dispatch receives a message.
@@ -31,17 +41,17 @@ public class SimpleMessageDispatch
 
 		// Don't add anything to the list while it's being iterated
 		synchronized (this.futures) {
-			final FutureMessage future = new FutureMessage();
+			final FutureMessage future = this.createFutureMessage();
 			this.futures.add(future);
 			return future;
 		}
 	}
 
 	@Override
-	public FutureMessage getFutureMessage(final AbstractMessageFilter filter) {
+	public FutureMessage getFutureMessage(final MessageFilterBase filter) {
 		// Solves the race condition in getFutureMessage() by specifying the filter before adding the message
 		synchronized (this.futures) {
-			final FutureMessage future = new FutureMessage();
+			final FutureMessage future = this.createFutureMessage();
 			future.filter.set(filter);
 			this.futures.add(future);
 			return future;
@@ -54,6 +64,9 @@ public class SimpleMessageDispatch
 	 */
 	@Override
 	public void write(final Message message) {
+		// FIXME: message can be dispatched to any number of objects. At present, we're relying on the honor system
+		// with regards to them not changing it before another object gets it.
+
 		// Don't let anybody change the list while we're iterating
 		synchronized (this.futures) {
 			final Iterator<FutureMessage> iter = this.futures.iterator();

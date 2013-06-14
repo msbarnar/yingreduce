@@ -1,7 +1,6 @@
 package edu.asu.ying.mapreduce.messaging;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import com.google.common.util.concurrent.*;
 import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
 
 import java.util.concurrent.ExecutionException;
@@ -17,12 +16,28 @@ public final class FutureMessage
 	public final MessageFilter filter = new MessageFilter();
 
 	private final SettableFuture<Message> future;
+	private final ListeningExecutorService executor;
 
 	public FutureMessage() {
 		this.future = SettableFuture.create();
+		this.executor = null;
 	}
 	public FutureMessage(final SettableFuture<Message> future) {
 		this.future = future;
+		this.executor = null;
+	}
+	public FutureMessage(final ListeningExecutorService executor) {
+		this.future = SettableFuture.create();
+		this.executor = executor;
+	}
+
+
+	public final void addCallback(final FutureCallback<Message> callback) {
+		if (this.executor == null) {
+			Futures.addCallback(this.future, callback);
+		} else {
+			Futures.addCallback(this.future, callback, this.executor);
+		}
 	}
 
 	/**

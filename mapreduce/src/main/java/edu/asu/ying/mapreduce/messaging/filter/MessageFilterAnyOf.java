@@ -12,7 +12,7 @@ import java.util.Map;
  * Filters messages that match any one of the criteria applied to this filter.
  */
 public class MessageFilterAnyOf
-	extends AbstractMessageFilter
+	extends MessageFilterBase
 {
 	public MessageFilterAnyOf() {
 	}

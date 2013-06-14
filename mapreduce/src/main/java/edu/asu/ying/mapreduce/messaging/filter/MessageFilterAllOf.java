@@ -11,7 +11,7 @@ import java.util.*;
  * Filters messages that match every one of the criteria applied to this filter.
  */
 public class MessageFilterAllOf
-	extends AbstractMessageFilter
+	extends MessageFilterBase
 {
 	public MessageFilterAllOf() {
 	}

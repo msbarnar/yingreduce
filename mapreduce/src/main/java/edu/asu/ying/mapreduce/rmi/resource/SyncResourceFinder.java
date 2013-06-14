@@ -1,11 +1,9 @@
-package edu.asu.ying.mapreduce.rmi.finder.kad;
+package edu.asu.ying.mapreduce.rmi.resource;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.*;
 import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
-import edu.asu.ying.mapreduce.net.RemoteResource;
-import edu.asu.ying.mapreduce.rmi.finder.ResourceFinder;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * The {@link KadResourceFinder} locates {@link RemoteResource} objects on a Kademlia network and returns
+ * The {@link SyncResourceFinder} locates {@link RemoteResource} objects on a Kademlia network and returns
  * their references.
  * <p>
  * The types of resources located, organized by the {@link java.net.URI} {@code scheme} part are:
@@ -26,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  *     <li>{@code activator}: a {@link java.rmi.Remote} object activator that returns remote object references.</li>
  * </ul>
  */
-public final class KadResourceFinder
+public final class SyncResourceFinder
 	implements ResourceFinder
 {
 	// We pass messages here to send them
@@ -39,15 +37,15 @@ public final class KadResourceFinder
 	 * @param sendStream the message output stream that will convey messages to remote hosts.
 	 */
 	@Inject
-	public KadResourceFinder(final @SendMessageStream MessageOutputStream sendStream,
-	                         final MessageDispatch responseDispatch) {
+	public SyncResourceFinder(final @SendMessageStream MessageOutputStream sendStream,
+	                          final MessageDispatch responseDispatch) {
 
 		this.messageOutput = sendStream;
 		this.responseDispatch = responseDispatch;
 	}
 
 	/**
-	 * Constructs a {@link GetResourceMessage} with the resource identifier and node key in the URI.
+	 * Constructs a {@link edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage} with the resource identifier and node key in the URI.
 	 * @param uri the identifier used to locate the resource.
 	 * @return a future response to be fulfilled by the {@link MessageDispatch} when it receives a response.
 	 * @throws URISyntaxException if the URI is not a valid {@link RemoteResource} identifier.

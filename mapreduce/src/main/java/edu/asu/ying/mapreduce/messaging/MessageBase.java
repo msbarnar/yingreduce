@@ -46,6 +46,15 @@ public abstract class MessageBase
 		this.setDestinationUri(destinationUri);
 	}
 
+	public <T> T getNullableProperty(final String key, final Class<T> type) {
+		try {
+			return type.cast(this.properties.get(key));
+		} catch (final ClassCastException e) {
+			// TODO: logging
+			e.printStackTrace();
+			return null;
+		}
+	}
 	/*
 	 * Accessors
 	 */
@@ -74,25 +83,13 @@ public abstract class MessageBase
 	public void setSourceUri(final URI uri) { this.properties.put("source-uri", uri); }
 	@Override
 	public URI getSourceUri() {
-		try {
-			return (URI) this.properties.get("source-uri");
-		} catch (final ClassCastException e) {
-			// TODO: Logging
-			e.printStackTrace();
-			return null;
-		}
+		return this.getNullableProperty("source-uri", URI.class);
 	}
 
 	public void setDestinationUri(final URI uri) { this.properties.put("destination-uri", uri); }
 	@Override
 	public URI getDestinationUri() {
-		try {
-			return (URI) this.properties.get("destination-uri");
-		} catch (final ClassCastException e) {
-			// TODO: Logging
-			e.printStackTrace();
-			return null;
-		}
+		return this.getNullableProperty("destination-uri", URI.class);
 	}
 
 	public void setReplication(final int replication) { this.properties.put("replication", replication); }
@@ -102,17 +99,12 @@ public abstract class MessageBase
 	 */
 	@Override
 	public int getReplication() {
-		final Optional<Serializable> replication = Optional.fromNullable(this.properties.get("replication"));
-		if (!replication.isPresent()) {
+		final Integer repl = this.getNullableProperty("replication", Integer.class);
+		if (repl == null) {
 			this.setReplication(1);
+			return 1;
 		} else {
-			try {
-				return (Integer) replication.get();
-			} catch (final ClassCastException e) {
-			}
+			return repl;
 		}
-		// Default case
-		this.setReplication(1);
-		return 1;
 	}
 }

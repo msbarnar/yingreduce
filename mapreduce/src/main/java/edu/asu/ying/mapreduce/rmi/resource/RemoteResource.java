@@ -1,5 +1,6 @@
-package edu.asu.ying.mapreduce.net;
+package edu.asu.ying.mapreduce.rmi.resource;
 
+import java.io.Serializable;
 import java.net.URI;
 
 
@@ -27,7 +28,8 @@ import java.net.URI;
  * {@code resource://localhost:9000/image?MyImage}
  */
 public interface RemoteResource
+	extends Serializable
 {
 	public URI getUri();
-	public Object getResource();
+	public Serializable getResource();
 }

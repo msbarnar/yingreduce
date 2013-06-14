@@ -1,27 +1,30 @@
-package edu.asu.ying.mapreduce.rmi.finder.kad;
+package edu.asu.ying.mapreduce.rmi.resource;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import edu.asu.ying.mapreduce.messaging.MessageBase;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 
 /**
- * A {@link GetResourceMessage} indicates to a remote node that we would like a remote reference to one of its resources.
+ * A {@link GetResourceMessage} indicates to a remote node that we would like a remote reference to one of its
+ * resources.
  * <p>
  * The following properties are defined by this message:
  * <ul>
- *     <li>{@code destination-uri}: </li>
+ *     {@code resource-uri} - the full resource URI.
+ *     {@code resource-typename} - the name of the type of the resource. This can be a class name or arbitrary identifier.
+ *     {@code resource-name} - (nullable) the unique name of the resource, if it has one.
  * </ul>
  */
 public class GetResourceMessage
 	extends MessageBase
 {
-	// Identifies the resource we want and host we want it from
-	private final URI resourceUri;
-
 	/**
-	 * Initializes the message with a given {@link edu.asu.ying.mapreduce.net.RemoteResource} URI.
+	 * Initializes the message with a given {@link edu.asu.ying.mapreduce.rmi.resource.RemoteResource} URI.
 	 * @param resourceUri the fully formed URI of the resource. {@see RemoteResource} for formatting details.
 	 * @throws URISyntaxException
 	 */
@@ -32,7 +35,7 @@ public class GetResourceMessage
 		if (!resourceUri.getScheme().toLowerCase().equals("resource")) {
 			throw new URISyntaxException(resourceUri.toString(), "GetResource URI scheme part must be 'resource'");
 		}
-		this.resourceUri = resourceUri;
+		this.setResourceUri(resourceUri);
 	}
 
 	/**
@@ -57,5 +60,27 @@ public class GetResourceMessage
 			throws URISyntaxException {
 		this(new URI("resource", destinationUri.getUserInfo(), destinationUri.getHost(), destinationUri.getPort(),
 		             resourceType, resourceName, null));
+	}
+
+	public final void setResourceUri(final URI uri) {
+		this.properties.put("resource-uri", uri);
+		this.properties.put("resource-typename", uri.getPath());
+		this.properties.put("resource-name", uri.getQuery());
+	}
+	public final String getResourceType() {
+		final Optional<Serializable> typeName = Optional.fromNullable(this.properties.get("resource-typename"));
+		if (typeName.isPresent()) {
+			return Strings.emptyToNull(String.valueOf(typeName));
+		} else {
+			return null;
+		}
+	}
+	public final String getResourceName() {
+		final Optional<Serializable> name = Optional.fromNullable(this.properties.get("resource-name"));
+		if (name.isPresent()) {
+			return Strings.emptyToNull(String.valueOf(name));
+		} else {
+			return null;
+		}
 	}
 }

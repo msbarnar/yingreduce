@@ -10,14 +10,14 @@ import java.util.*;
 /**
  * Base class for message filters
  */
-public abstract class AbstractMessageFilter
+public abstract class MessageFilterBase
 {
 	// Specifies that this filter is used
 	protected boolean isActive = false;
 
-	public AbstractMessageFilter allOf;
-	public AbstractMessageFilter anyOf;
-	public AbstractMessageFilter noneOf;
+	public MessageFilterBase allOf;
+	public MessageFilterBase anyOf;
+	public MessageFilterBase noneOf;
 
 	protected final List<Class<? extends Message>> byClass = new ArrayList<>();
 	protected final List<String> byId = new ArrayList<>();
@@ -34,16 +34,16 @@ public abstract class AbstractMessageFilter
 		}
 	}
 
-	public AbstractMessageFilter() {
+	public MessageFilterBase() {
 	}
 
-	public final void bind(final MessageFilter root) {
+	public void bind(final MessageFilter root) {
 		this.allOf = root.allOf;
 		this.anyOf = root.anyOf;
 		this.noneOf = root.noneOf;
 	}
 
-	public final AbstractMessageFilter type(final Class<? extends Message> clazz) {
+	public MessageFilterBase type(final Class<? extends Message> clazz) {
 		synchronized (this) {
 			this.isActive = true;
 			this.byClass.add(clazz);
@@ -51,7 +51,7 @@ public abstract class AbstractMessageFilter
 		}
 	}
 
-	public final AbstractMessageFilter id(final String id) {
+	public MessageFilterBase id(final String id) {
 		synchronized (this) {
 			this.isActive = true;
 			this.byId.add(id);
@@ -59,7 +59,7 @@ public abstract class AbstractMessageFilter
 		}
 	}
 
-	public final AbstractMessageFilter sourceUi(final URI uri) {
+	public MessageFilterBase sourceUri(final URI uri) {
 		synchronized (this) {
 			this.isActive = true;
 			this.bySourceUri.add(uri);
@@ -67,7 +67,7 @@ public abstract class AbstractMessageFilter
 		}
 	}
 
-	public final AbstractMessageFilter property(final Serializable key, final Serializable value) {
+	public MessageFilterBase property(final Serializable key, final Serializable value) {
 		synchronized (this) {
 			this.isActive = true;
 			List<Serializable> vals = this.byProperty.get(key);
