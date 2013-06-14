@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.kad;
+package edu.asu.ying.mapreduce.messaging.kad;
 
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.*;

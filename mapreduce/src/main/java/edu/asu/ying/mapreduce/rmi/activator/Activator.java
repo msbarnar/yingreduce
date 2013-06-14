@@ -18,7 +18,7 @@ import java.util.Map;
  * implementation draws its references from factories that may produce objects on the following bases:
  * <ul>
  * <li>Singleton</li>
- * <li>Client-Activated (active for the lifetime of the remote reference)</li>
+ * <li>Client-Activated (isActive for the lifetime of the remote reference)</li>
  * <li>Single-Call (one instance per method invocation)</li>
  * </ul>
  * <p>

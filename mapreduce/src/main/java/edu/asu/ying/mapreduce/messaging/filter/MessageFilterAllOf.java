@@ -8,25 +8,27 @@ import java.util.*;
 
 
 /**
- *
+ * Filters messages that match every one of the criteria applied to this filter.
  */
 public class MessageFilterAllOf
 	extends AbstractMessageFilter
 {
-	public MessageFilterAllOf(final MessageFilterRoot root) {
-		super(root);
+	public MessageFilterAllOf() {
 	}
 
 	/**
 	 * Returns true only if the message matches every filter applied.
 	 * @param message the message to match.
 	 */
+	@Override
 	public final boolean match(final Message message) {
-		// Fail fast on mismatch
-		if (!matchClass(message)) { return false; }
-		if (!matchId(message)) { return false; }
-		if (!matchSourceUri(message)) { return false; }
-		if (!matchProps(message)) { return false; }
+		if (this.isActive) {
+			// Fail fast on mismatch
+			if (!matchClass(message)) { return false; }
+			if (!matchId(message)) { return false; }
+			if (!matchSourceUri(message)) { return false; }
+			if (!matchProps(message)) { return false; }
+		}
 
 		return true;
 	}

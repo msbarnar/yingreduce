@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.messaging;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import edu.asu.ying.mapreduce.messaging.filter.AbstractMessageFilter;
 
 
 /**
@@ -12,15 +12,16 @@ public interface MessageDispatch
 {
 	// TODO: convert to fluent interface
 	/**
-	 * Gets a {@link ListenableFuture} that will be fulfilled when the dispatch receives a message with a specific ID.
-	 * @param id the ID of the message to forward.
-	 * @return a promise of a future message with the given ID.
+	 * Gets a {@link FutureMessage} that will be fulfilled when the dispatch receives a message.
+	 * <p>
+	 * Use {@link FutureMessage#filter} to specify the exact message to receive.
+	 * @return a promise of a future message.
 	 */
-	public ListenableFuture<Message> getFutureMessageById(final String id);
+	public FutureMessage getFutureMessage();
 	/**
-	 * Gets a {@link ListenableFuture} that will be fulfilled when the dispatch receives a message of a specific class.
-	 * @param messageClass the class of the message to forward.
-	 * @return a promise of a future message with the given classs.
+	 * Gets a {@link FutureMessage} matching {@code filter} that will be fulfilled when the dispatch receives a message.
+	 * @param filter the filter that will select the message to return.
+	 * @return a promise of a future message.
 	 */
-	public ListenableFuture<Message> getFutureMessageByClass(final Class<? extends Message> messageClass);
+	public FutureMessage getFutureMessage(final AbstractMessageFilter filter);
 }

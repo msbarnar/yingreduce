@@ -12,43 +12,75 @@ import java.util.*;
  */
 public abstract class AbstractMessageFilter
 {
-	protected final AbstractMessageFilter allOf;
-	protected final AbstractMessageFilter anyOf;
+	// Specifies that this filter is used
+	protected boolean isActive = false;
+
+	public AbstractMessageFilter allOf;
+	public AbstractMessageFilter anyOf;
+	public AbstractMessageFilter noneOf;
 
 	protected final List<Class<? extends Message>> byClass = new ArrayList<>();
 	protected final List<String> byId = new ArrayList<>();
 	protected final List<URI> bySourceUri = new ArrayList<>();
 	protected final Map<Serializable, List<Serializable>> byProperty = new HashMap<>();
 
-	public AbstractMessageFilter(final MessageFilterRoot root) {
+	public void clear() {
+		synchronized (this) {
+			this.isActive = false;
+			this.byClass.clear();
+			this.byId.clear();
+			this.bySourceUri.clear();
+			this.byProperty.clear();
+		}
+	}
+
+	public AbstractMessageFilter() {
+	}
+
+	public final void bind(final MessageFilter root) {
 		this.allOf = root.allOf;
 		this.anyOf = root.anyOf;
+		this.noneOf = root.noneOf;
 	}
 
 	public final AbstractMessageFilter type(final Class<? extends Message> clazz) {
-		this.byClass.add(clazz);
-		return this;
+		synchronized (this) {
+			this.isActive = true;
+			this.byClass.add(clazz);
+			return this;
+		}
 	}
 
 	public final AbstractMessageFilter id(final String id) {
-		this.byId.add(id);
-		return this;
+		synchronized (this) {
+			this.isActive = true;
+			this.byId.add(id);
+			return this;
+		}
 	}
 
 	public final AbstractMessageFilter sourceUi(final URI uri) {
-		this.bySourceUri.add(uri);
-		return this;
+		synchronized (this) {
+			this.isActive = true;
+			this.bySourceUri.add(uri);
+			return this;
+		}
 	}
 
 	public final AbstractMessageFilter property(final Serializable key, final Serializable value) {
-		List<Serializable> vals = this.byProperty.get(key);
-		if (vals == null) {
-			vals = new ArrayList<>();
-			this.byProperty.put(key, vals);
+		synchronized (this) {
+			this.isActive = true;
+			List<Serializable> vals = this.byProperty.get(key);
+			if (vals == null) {
+				vals = new ArrayList<>();
+				this.byProperty.put(key, vals);
+			}
+			vals.add(value);
+			return this;
 		}
-		vals.add(value);
-		return this;
 	}
+
+	public boolean isActive() { return this.isActive; }
 
 	public abstract boolean match(final Message message);
 }

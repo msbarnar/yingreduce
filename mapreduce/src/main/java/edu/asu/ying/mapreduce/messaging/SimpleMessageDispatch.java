@@ -1,14 +1,8 @@
 package edu.asu.ying.mapreduce.messaging;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
+import edu.asu.ying.mapreduce.messaging.filter.AbstractMessageFilter;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import java.util.*;
 
 
 /**
@@ -18,45 +12,40 @@ import com.google.common.util.concurrent.SettableFuture;
 public class SimpleMessageDispatch
 	implements MessageDispatch
 {
-	// Lookup table for message ID -> futures to fulfill
-	private final Map<String, List<ListenableFuture<Message>>> idFutureMap = new HashMap<>();
-	// Lookup table for message class -> futures
-	private final Map<Class<?>, List<ListenableFuture<Message>>> classFutureMap = new HashMap<>();
+	// All future messages to fulfill
+	private final List<FutureMessage> futures = new ArrayList<>();
 
 	/**
-	 * Registers a {@link ListenableFuture} to be fulfilled by a message with a specific ID.
-	 * @param messageId the ID of the message to wait for.
-	 * @return a {@link ListenableFuture} promise of a message with the given ID.
+	 * Gets a {@link FutureMessage} that will be fulfilled when the dispatch receives a message.
+	 * <p>
+	 * Use {@link FutureMessage#filter} to specify the exact message to receive.
+	 * @return a promise of a future message.
 	 */
-	public final ListenableFuture<Message> getFutureMessageById(final String messageId) {
-		final ListenableFuture<Message> future = SettableFuture.create();
-		// Add the future to the lookup table
-		List<ListenableFuture<Message>> futures = this.idFutureMap.get(messageId);
-		if (futures == null) {
-			futures = new ArrayList<>();
-			this.idFutureMap.put(messageId, futures);
-		}
-		futures.add(future);
+	public final FutureMessage getFutureMessage() {
+		// FIXME: race condition
+		//  1) Thread 1: The user gets a FutureMessage, and it is added to the list
+		//  2) Thread 2: writes a message to the dispatch; the FutureMessage is set
+		//  3) Thread 1: The user sets the filters on the message
+		// Fix for now by making the default filter match nothing; the race condition then produces false negatives
+		// instead of false positives.
 
-		return future;
+		// Don't add anything to the list while it's being iterated
+		synchronized (this.futures) {
+			final FutureMessage future = new FutureMessage();
+			this.futures.add(future);
+			return future;
+		}
 	}
 
-	/**
-	 * Registers a {@link ListenableFuture} to be fulfilled by a message of a specific class.
-	 * @param messageClass the class of the message to wait for.
-	 * @return a {@link ListenableFuture} promise of a message of the given class.
-	 */
-	public final ListenableFuture<Message> getFutureMessageById(final Class<Message> messageClass) {
-		final ListenableFuture<Message> future = SettableFuture.create();
-		// Add the future to the lookup table
-		List<ListenableFuture<Message>> futures = this.classFutureMap.get(messageClass);
-		if (futures == null) {
-			futures = new ArrayList<>();
-			this.classFutureMap.put(messageClass, futures);
+	@Override
+	public FutureMessage getFutureMessage(final AbstractMessageFilter filter) {
+		// Solves the race condition in getFutureMessage() by specifying the filter before adding the message
+		synchronized (this.futures) {
+			final FutureMessage future = new FutureMessage();
+			future.filter.set(filter);
+			this.futures.add(future);
+			return future;
 		}
-		futures.add(future);
-
-		return future;
 	}
 
 	/**
@@ -65,28 +54,17 @@ public class SimpleMessageDispatch
 	 */
 	@Override
 	public void write(final Message message) {
-		// Accumulate all of the futures until the end
-		final Stack<SettableFuture<Message>> futures = new Stack<>();
-
-		Optional<List<ListenableFuture<Message>>> matches;
-		// Match on class
-		matches = Optional.fromNullable(this.classFutureMap.get(message.getClass()));
-		if (matches.isPresent()) {
-			// Fulfill the futures and remove them from the map
-			for (final ListenableFuture<Message> future : matches.get()) {
-				((SettableFuture<Message>) future).set(message);
+		// Don't let anybody change the list while we're iterating
+		synchronized (this.futures) {
+			final Iterator<FutureMessage> iter = this.futures.iterator();
+			while (iter.hasNext()) {
+				final FutureMessage future = iter.next();
+				// If a future matches the message, set it once and get rid of it so we don't set it again
+				if (future.match(message)) {
+					future.set(message);
+					iter.remove();
+				}
 			}
-			this.classFutureMap.remove(message.getClass());
-		}
-
-		// Match on message ID
-		matches = Optional.fromNullable(this.idFutureMap.get(message.getId()));
-		if (matches.isPresent()) {
-			// Fulfill the futures and remove them from the map
-			for (final ListenableFuture<Message> future : matches.get()) {
-				((SettableFuture<Message>) future).set(message);
-			}
-			this.idFutureMap.remove(message.getClass());
 		}
 	}
 }

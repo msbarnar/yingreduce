@@ -1,9 +1,9 @@
 package edu.asu.ying.mapreduce.rmi.finder.kad;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.*;
+import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
 import edu.asu.ying.mapreduce.net.RemoteResource;
 import edu.asu.ying.mapreduce.rmi.finder.ResourceFinder;
 
@@ -59,8 +59,9 @@ public final class KadResourceFinder
 			throws URISyntaxException, IOException {
 		// Build the message from the URI
 		final Message message = new GetResourceMessage(uri);
-		// Register to get a response from the message dispatch
-		final ListenableFuture<Message> response = this.responseDispatch.getFutureMessageById(message.getId());
+		// Register to get a response from the message dispatch matching the request by ID
+		final FutureMessage response
+				= this.responseDispatch.getFutureMessage(new MessageFilter().allOf.id(message.getId()));
 		// Write the message to the network
 		this.messageOutput.write(message);
 

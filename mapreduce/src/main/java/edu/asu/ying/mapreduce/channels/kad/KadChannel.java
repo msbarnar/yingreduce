@@ -8,18 +8,12 @@ import edu.asu.ying.mapreduce.messaging.MessageDispatch;
 import edu.asu.ying.mapreduce.messaging.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.SendMessageStream;
 import edu.asu.ying.mapreduce.messaging.SimpleMessageDispatch;
-import edu.asu.ying.mapreduce.net.kad.KadMessageHandler;
+import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
 import il.technion.ewolf.kbr.*;
-import il.technion.ewolf.kbr.concurrent.CompletionHandler;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.Collection;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Future;
 
 
 /**
@@ -36,7 +30,7 @@ public final class KadChannel
 		INSTANCE;
 		private final KeybasedRouting kadNode;
 
-		private KadNodeProvider() throws IOException {
+		private KadNodeProvider() {
 			final int port = 5000 + (new Random()).nextInt(1000);
 			final Injector injector = Guice.createInjector(new KadNetModule()
                                          .setProperty("openkad.keyfactory.keysize", String.valueOf(20))
@@ -44,7 +38,11 @@ public final class KadChannel
                                          .setProperty("openkad.seed", String.valueOf(port))
                                          .setProperty("openkad.net.udp.port", String.valueOf(port)));
 			this.kadNode = injector.getInstance(KeybasedRouting.class);
-			this.kadNode.create();
+			try {
+				this.kadNode.create();
+			} catch (final IOException e) {
+				throw new ExceptionInInitializerError(e);
+			}
 		}
 	}
 

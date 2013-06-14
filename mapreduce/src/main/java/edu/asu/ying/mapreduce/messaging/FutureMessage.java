@@ -1,7 +1,8 @@
 package edu.asu.ying.mapreduce.messaging;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import edu.asu.ying.mapreduce.messaging.filter.MessageFilterRoot;
+import edu.asu.ying.mapreduce.messaging.filter.MessageFilter;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -13,33 +14,48 @@ import java.util.concurrent.TimeoutException;
  */
 public final class FutureMessage
 {
-	public static final MessageFilterRoot filter = new MessageFilterRoot();
+	public final MessageFilter filter = new MessageFilter();
 
 	private final SettableFuture<Message> future;
 
+	public FutureMessage() {
+		this.future = SettableFuture.create();
+	}
 	public FutureMessage(final SettableFuture<Message> future) {
 		this.future = future;
-		this.filter.anyOf.id("hi").type(Message.class).property("foo", "bar").property("foo", "baz");
 	}
 
 	/**
-	 * Sets the {@link SettableFuture}, but first filters the message. If the filter does not match on the message,
-	 * the value is not set.
-	 * @param message the value to set
-	 * @return true if the value is set; false if not set because of failure to match, or if the future was already set.
+	 * Returns true if {@code message} matches the filter.
 	 */
-	public final boolean set(final Message message) {
-		if (this.filter.match(message)) {
-			return this.future.set(message);
+	public final boolean match(final Message message) {
+		return this.filter.match(message);
+	}
+
+	/**
+	 * Sets the future value only if the message matches the filter.
+	 * @returns true if the value was set, false if not due to mismatch or future already being set.
+	 */
+	public final boolean setIfMatch(final Message message) {
+		if (this.match(message)) {
+			return this.set(message);
 		} else {
 			return false;
 		}
 	}
 
-	public final SettableFuture<Message> getFuture() { return this.future; }
+	public final ListenableFuture<Message> getFuture() { return this.future; }
 
-	// Convenience methods
+	/*
+	 * Convenience methods
+	 */
 
+	/**
+	 * @see SettableFuture#set(Object)
+	 */
+	public final boolean set(final Message message) {
+		return this.future.set(message);
+	}
 	/**
 	 * @see com.google.common.util.concurrent.SettableFuture#get()
 	 */
