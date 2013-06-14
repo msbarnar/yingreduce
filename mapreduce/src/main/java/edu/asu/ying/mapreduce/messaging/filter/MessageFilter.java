@@ -58,7 +58,7 @@ public class MessageFilter
 	}
 
 	/**
-	 * The default implementation for the MessageFilter is to require all of the filters.
+	 * The default implementation for the MessageFilterMatcher is to require all of the filters.
 	 * @param clazz the message class that must be matched.
 	 */
 	@Override
@@ -68,7 +68,7 @@ public class MessageFilter
 	}
 
 	/**
-	 * The default implementation for the MessageFilter is to require all of the filters.
+	 * The default implementation for the MessageFilterMatcher is to require all of the filters.
 	 * @param id the message ID that must be matched.
 	 */
 	@Override
@@ -78,7 +78,7 @@ public class MessageFilter
 	}
 
 	/**
-	 * The default implementation for the MessageFilter is to require all of the filters.
+	 * The default implementation for the MessageFilterMatcher is to require all of the filters.
 	 * @param uri the message source URI that must be matched.
 	 */
 	@Override
@@ -88,7 +88,7 @@ public class MessageFilter
 	}
 
 	/**
-	 * The default implementation for the MessageFilter is to require all of the filters.
+	 * The default implementation for the MessageFilterMatcher is to require all of the filters.
 	 * @param key the key of the message property that will be matched.
 	 * @param value the value of the property that must be matched.
 	 */
