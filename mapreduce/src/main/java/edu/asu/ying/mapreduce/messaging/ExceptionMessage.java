@@ -29,7 +29,7 @@ public class ExceptionMessage
 	protected void setCause(final Throwable cause) { this.properties.put("exception-cause", cause); }
 
 	/**
-	 * @return a {@link RemoteException} wrapping the {@link java.lang.Throwable} that was thrown by the remote host.
+	 * @return a {@link RemoteException} wrapping the {@link java.lang.Throwable} that was thrown on the remote host.
 	 */
 	public RemoteException getException() {
 		final Optional<Serializable> cause = Optional.fromNullable(this.properties.get("exception-cause"));

@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 /**
- * {@link KadMessageHandler} chains messages received by a {@link il.technion.ewolf.kbr.KeybasedRouting} object
+ * {@link KadMessageHandler} chains messages received on a {@link il.technion.ewolf.kbr.KeybasedRouting} object
  * to a {@link edu.asu.ying.mapreduce.messaging.io.MessageOutputStream}.
  */
 public final class KadMessageHandler

@@ -49,7 +49,7 @@ public final class KadSendMessageStream
 	}
 
 	/**
-	 * Sends a message to the host identified by {@link edu.asu.ying.mapreduce.messaging.Message#getDestinationUri()}.
+	 * Sends a message to the host identified on {@link edu.asu.ying.mapreduce.messaging.Message#getDestinationUri()}.
 	 * @param message the message to send, complete with the destination URI.
 	 * @throws IOException if the host is unable to be located or sending the message fails.
 	 */
@@ -73,7 +73,7 @@ public final class KadSendMessageStream
 		}
 
 		final String scheme = message.getDestinationUri().getScheme();
-		// Send the message to the k nearest nodes (defined by the message's replication property)
+		// Send the message to the k nearest nodes (defined on the message's replication property)
 		final Iterator<Node> iter = foundNodes.iterator();
 		for (int i = 0; iter.hasNext() && (i < message.getReplication()); i++) {
 			this.kadNode.sendMessage(iter.next(), scheme, message);
@@ -81,7 +81,7 @@ public final class KadSendMessageStream
 	}
 
 	/**
-	 * Sends a message to the hosts identified by {@link edu.asu.ying.mapreduce.messaging.Message#getDestinationUri()},
+	 * Sends a message to the hosts identified on {@link edu.asu.ying.mapreduce.messaging.Message#getDestinationUri()},
 	 * and gets verification of reception from the remote hosts.
 	 * <p>
 	 * The verification message from each host will be {@link edu.asu.ying.mapreduce.messaging.AcknowledgementMessage}
@@ -91,7 +91,7 @@ public final class KadSendMessageStream
 	 * Use the {@link edu.asu.ying.mapreduce.messaging.Message#getSourceUri()} property of each response to identify
 	 * which hosts responded.
 	 * @param message the message to send, complete with the destination URI.
-	 * @return the verification of reception returned by the remote hosts.
+	 * @return the verification of reception returned on the remote hosts.
 	 * @throws IOException if the host is unable to be located, sending the message fails, or a timely response is not
 	 * received.
 	 */
@@ -106,10 +106,10 @@ public final class KadSendMessageStream
 			throw new UnknownHostException();
 		}
 
-		// Collect future responses by destination URI
+		// Collect future responses on destination URI
 		final Map<ResourceIdentifier, Future<Serializable>> responses = new HashMap<>();
 
-		// Send the message to the k nearest nodes (defined by the message's replication property)
+		// Send the message to the k nearest nodes (defined on the message's replication property)
 		final Iterator<Node> iter = foundNodes.iterator();
 		for (int i = 0; iter.hasNext() && (i < message.getReplication()); i++) {
 			// TODO: un-hardcode the openKad tag

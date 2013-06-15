@@ -43,7 +43,7 @@ public class SimpleMessageDispatch
 		//  1) Thread 1: The user gets a FutureMessage, and it is added to the list
 		//  2) Thread 2: writes a message to the dispatch; the FutureMessage is set
 		//  3) Thread 1: The user sets the filters on the message
-		// Fix for now by making the default filter match nothing; the race condition then produces false negatives
+		// Fix for now on making the default filter match nothing; the race condition then produces false negatives
 		// instead of false positives.
 
 		// Don't add anything to the list while it's being iterated
@@ -56,7 +56,7 @@ public class SimpleMessageDispatch
 
 	@Override
 	public FutureMessage getFutureMessage(final MessageFilter filter) {
-		// Solves the race condition in getFutureMessage() by specifying the filter before adding the message
+		// Solves the race condition in getFutureMessage() on specifying the filter before adding the message
 		synchronized (this.futures) {
 			final FutureMessage future = this.createFutureMessage();
 			future.filter.set(filter);

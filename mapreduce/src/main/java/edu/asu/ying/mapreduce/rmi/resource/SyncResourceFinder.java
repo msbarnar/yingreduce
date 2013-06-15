@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * The {@link SyncResourceFinder} locates {@link RemoteResource} objects on a Kademlia network and returns
  * their references.
  * <p>
- * The types of resources located, organized by the {@link ResourceIdentifier} {@code scheme} part are:
+ * The types of resources located, organized on the {@link ResourceIdentifier} {@code scheme} part are:
  * <ul>
  *     <li>{@code activator}: a {@link java.rmi.Remote} object activator that returns remote object references.</li>
  * </ul>
@@ -48,7 +48,7 @@ public final class SyncResourceFinder
 	 * Constructs a {@link edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage} with the resource identifier and node
 	 * key in the URI.
 	 * @param uri the identifier used to locate the resource.
-	 * @return a future response to be fulfilled by the {@link MessageDispatch} when it receives a response.
+	 * @return a future response to be fulfilled on the {@link MessageDispatch} when it receives a response.
 	 * @throws IOException if the underlying network implementation throws an exception or no response was received
 	 * from the remote host.
 	 */
@@ -57,7 +57,7 @@ public final class SyncResourceFinder
 			throws URISyntaxException, IOException {
 		// Build the message from the URI
 		final Message message = new GetResourceMessage(uri);
-		// Register to get a response from the message dispatch matching the request by ID
+		// Register to get a response from the message dispatch matching the request on ID
 		final FutureMessage futureResponse = this.responseDispatch.getFutureMessage();
 		futureResponse.filter.allOf.id(message.getId()).type(GetResourceResponse.class);
 		// Write the message to the network

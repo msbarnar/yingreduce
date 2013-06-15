@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
  * <p>
  * The ID of this message will be the same as that of the {@link GetResourceMessage} that instigated it.
  * <p>
- * The following properties are defined by this message:
+ * The following properties are defined on this message:
  * <ul>
  *     <li>{@code resource} - (nullable) the resource reference, if found.</li>
  *     <li>{@code exception} - (nullable) the exception if one was thrown.</li>

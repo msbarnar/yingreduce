@@ -51,7 +51,7 @@ public class MessageFilter
 			if (this.matchAny) {
 				return true;
 			} else {
-				// Match nothing by default
+				// Match nothing on default
 				return false;
 			}
 		}

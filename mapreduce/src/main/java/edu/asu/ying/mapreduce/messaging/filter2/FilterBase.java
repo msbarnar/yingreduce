@@ -2,17 +2,16 @@ package edu.asu.ying.mapreduce.messaging.filter2;
 
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 
-public abstract class FilterNodeBase
-	implements FilterNode
+public abstract class FilterBase
+	implements Filter
 {
-	protected final List<FilterNode> children;
+	protected final List<Filter> children;
 
-	protected FilterNodeBase(final FilterNode ... filters) {
+	protected FilterBase(final Filter... filters) {
 		this.children = Lists.newArrayList(filters);
 	}
 

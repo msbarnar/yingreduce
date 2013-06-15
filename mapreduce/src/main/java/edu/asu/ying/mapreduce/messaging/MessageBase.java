@@ -12,10 +12,10 @@ import java.util.UUID;
 /**
  * Base class for a basic {@link Message}.
  * <p>
- * The following properties are defined by this message:
+ * The following properties are defined on this message:
  * <ul>
  *     <li>{@code id} - the universally unique identifier of this message.</li>
- *     <li>{@code destination-uri} - the URI of the destination host of this message, used by the network layer for
+ *     <li>{@code destination-uri} - the URI of the destination host of this message, used on the network layer for
  *     routing.</li>
  *     <li>{@code replication} - the maximum number of hosts matching the destination URI to which this message will be
  *     send.</li>

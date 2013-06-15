@@ -6,7 +6,7 @@ import java.util.List;
 
 
 /**
- * The {@link ResourceFinder} facilitates the location and accession of {@link RemoteResource} objects by implementing the
+ * The {@link ResourceFinder} facilitates the location and accession of {@link RemoteResource} objects on implementing the
  * interpretation of the {@link ResourceIdentifier} and communicating with the underlying network.
  */
 public interface ResourceFinder

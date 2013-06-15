@@ -22,7 +22,7 @@ import java.util.List;
 public class FutureMessages
 {
 	/**
-	 * Returns a {@link List} of {@link ListenableFuture}, each of which will be fulfilled by one or fewer
+	 * Returns a {@link List} of {@link ListenableFuture}, each of which will be fulfilled on one or fewer
 	 * {@link Message} objects that satisfy the {@link MessageFilter} given in {@code on}.
 	 */
 	public final List<ListenableFuture<? extends Message>> filter(final MessageFilter on) {

@@ -17,7 +17,7 @@ import java.util.Map;
  * distributed about the network.
  * <p>
  * Each table is divided into one or more pages with each page containing {@code k} maximum elements. When a page is
- * full, or the table is committed, the page is distributed to nodes chosen by hashing the table ID with the page index.
+ * full, or the table is committed, the page is distributed to nodes chosen on hashing the table ID with the page index.
  *
  * @see RemoteResource
  */

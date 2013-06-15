@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
  * A {@link GetResourceMessage} indicates to a remote node that we would like a remote reference to one of its
  * resources.
  * <p>
- * The following properties are defined by this message:
+ * The following properties are defined on this message:
  * <ul>
  *     {@code resource-uri} - the full resource URI.
  *     {@code resource-typename} - the name of the type of the resource. This can be a class name or arbitrary identifier.

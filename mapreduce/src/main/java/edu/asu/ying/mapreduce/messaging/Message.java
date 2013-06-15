@@ -28,7 +28,7 @@ public interface Message
 	ResourceIdentifier getDestinationUri();
 
 	/**
-	 * Replication allows a message to be delivered to at moest k hosts that are matched by its URI.
+	 * Replication allows a message to be delivered to at moest k hosts that are matched on its URI.
 	 * @return the maximum number of hosts to which the message should be replicated.
 	 */
 	int getReplication();
