@@ -1,7 +1,10 @@
 package edu.asu.ying.mapreduce.rmi.resource;
 
 import com.google.common.base.Optional;
+import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.messaging.MessageBase;
+
+import java.net.URISyntaxException;
 
 
 /**
@@ -19,25 +22,26 @@ import edu.asu.ying.mapreduce.messaging.MessageBase;
 public final class GetResourceResponse
 	extends MessageBase
 {
-	public GetResourceResponse(final String id) {
-		this.setId(id);
+	public GetResourceResponse(final Message request) {
+		super(request.getSourceUri());
+		this.setId(request.getId());
 	}
 	/**
 	 * Initializes the response with a resource reference.
-	 * @param id the ID of the {@link GetResourceMessage} to which this is a response.
+	 * @param request the message to which this is a response.
 	 * @param resource the resource reference.
 	 */
-	public GetResourceResponse(final String id, final RemoteResource resource) {
-		this.setId(id);
+	public GetResourceResponse(final Message request, final RemoteResource resource) {
+		this(request);
 		this.setResource(resource);
 	}
 	/**
 	 * Initializes an exceptional response.
-	 * @param id the ID of the {@link GetResourceMessage} to which this is a response.
+	 * @param request the message to which this is a response.
 	 * @param exception the exception to return instead of the resource.
 	 */
-	public GetResourceResponse(final String id, final Throwable exception) {
-		this.setId(id);
+	public GetResourceResponse(final Message request, final Throwable exception) {
+		this(request);
 		this.setException(exception);
 	}
 

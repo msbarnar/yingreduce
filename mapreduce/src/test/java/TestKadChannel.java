@@ -5,6 +5,7 @@ import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceFinder;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,10 +27,14 @@ public class TestKadChannel
 		final LocalNode node = injector.getInstance(LocalNode.class);
 
 		final ResourceFinder finder = injector.getInstance(ResourceFinder.class);
-		final String host = UUID.randomUUID().toString().substring(0, 20);
+		final String host = Base64.encodeBase64String(UUID.randomUUID().toString().substring(0, 20).getBytes());
 		final ResourceIdentifier hostUri = new ResourceIdentifier("resource", host, -1, "activator");
 		final Activator activator = (Activator) finder.findResource(hostUri);
 
-		Assert.assertEquals(activator.echo(host), host);
+		Assert.assertNotEquals(activator, null);
+
+		if (activator != null) {
+			Assert.assertEquals(activator.echo(host), host);
+		}
 	}
 }

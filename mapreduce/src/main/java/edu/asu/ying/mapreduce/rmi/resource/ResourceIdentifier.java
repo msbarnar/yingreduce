@@ -21,6 +21,8 @@ public final class ResourceIdentifier
 {
 	private static final long SerialVersionUID = 1L;
 
+	private static final String SEPARATOR = "\\";
+
 	private enum Part {
 		Scheme,
 		Address,
@@ -48,7 +50,7 @@ public final class ResourceIdentifier
 		Preconditions.checkNotNull(Strings.emptyToNull(scheme));
 		Preconditions.checkNotNull(Strings.emptyToNull(address));
 
-		this.identifier = scheme.concat("/").concat(address);
+		this.identifier = scheme.concat(SEPARATOR).concat(address);
 		this.parse();
 	}
 	public ResourceIdentifier(final String scheme, final String host, final int port)
@@ -58,9 +60,9 @@ public final class ResourceIdentifier
 		Preconditions.checkNotNull(Strings.emptyToNull(host));
 
 		if (port > 0) {
-			this.identifier = String.format("%s/%s:%d", scheme, host, port);
+			this.identifier = String.format("%s%s%s:%d", scheme, SEPARATOR, host, port);
 		} else {
-			this.identifier = scheme.concat("/").concat(host);
+			this.identifier = scheme.concat(SEPARATOR).concat(host);
 		}
 		this.parse();
 	}
@@ -72,9 +74,9 @@ public final class ResourceIdentifier
 		Preconditions.checkNotNull(Strings.emptyToNull(path));
 
 		if (port > 0) {
-			this.identifier = String.format("%s/%s:%d/%s", scheme, host, port, path);
+			this.identifier = String.format("%s%s%s:%d%s%s", scheme, SEPARATOR, host, port, SEPARATOR, path);
 		} else {
-			this.identifier = scheme.concat("/").concat(host).concat("/").concat(path);
+			this.identifier = scheme.concat(SEPARATOR).concat(host).concat(SEPARATOR).concat(path);
 		}
 		this.parse();
 	}
@@ -88,15 +90,17 @@ public final class ResourceIdentifier
 		Preconditions.checkNotNull(Strings.emptyToNull(name));
 
 		if (port > 0) {
-			this.identifier = String.format("%s/%s:%d/%s/%s", scheme, host, port, path, name);
+			this.identifier = String.format("%s%s%s:%d%s%s%s%s", scheme, SEPARATOR, host, port, SEPARATOR, path,
+			                                SEPARATOR, name);
 		} else {
-			this.identifier = scheme.concat("/").concat(host).concat("/").concat(path).concat("/").concat(name);
+			this.identifier = scheme.concat(SEPARATOR).concat(host).concat(SEPARATOR).concat(path).concat(SEPARATOR)
+			                        .concat(name);
 		}
 		this.parse();
 	}
 
 	private final void parse() throws URISyntaxException {
-		this.parts = Lists.newArrayList(Splitter.on('/').trimResults().split(this.identifier));
+		this.parts = Lists.newArrayList(Splitter.on(SEPARATOR).trimResults().split(this.identifier));
 		if (Strings.isNullOrEmpty(this.getNullable(Part.Scheme))) {
 			throw new URISyntaxException(this.identifier, "Scheme cannot be empty");
 		}

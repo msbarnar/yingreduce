@@ -9,6 +9,7 @@ import edu.asu.ying.mapreduce.rmi.resource.GetResourceResponse;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceProvider;
 import edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -56,7 +57,7 @@ public final class ActivatorProvider
 		// FutureMessage is a one-time deal; make sure we put another in the dispatch queue
 		this.bind();
 
-		final GetResourceResponse response = new GetResourceResponse(message.getId());
+		final GetResourceResponse response = new GetResourceResponse(message);
 
 		try {
 			// Get an proxy to allow accession of the Activator object.
@@ -65,6 +66,13 @@ public final class ActivatorProvider
 			response.setResource(activatorProxy);
 		} catch (final RemoteException e) {
 			response.setException(e);
+		}
+
+		try {
+			this.sendStream.write(response);
+		} catch (final IOException e) {
+			// TODO: logging
+			e.printStackTrace();
 		}
 	}
 

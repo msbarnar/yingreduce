@@ -45,7 +45,8 @@ public final class SyncResourceFinder
 	}
 
 	/**
-	 * Constructs a {@link edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage} with the resource identifier and node key in the URI.
+	 * Constructs a {@link edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage} with the resource identifier and node
+	 * key in the URI.
 	 * @param uri the identifier used to locate the resource.
 	 * @return a future response to be fulfilled by the {@link MessageDispatch} when it receives a response.
 	 * @throws IOException if the underlying network implementation throws an exception or no response was received
@@ -57,15 +58,15 @@ public final class SyncResourceFinder
 		// Build the message from the URI
 		final Message message = new GetResourceMessage(uri);
 		// Register to get a response from the message dispatch matching the request by ID
-		final FutureMessage response = this.responseDispatch.getFutureMessage();
-		response.filter.allOf.id(message.getId()).type(GetResourceResponse.class);
+		final FutureMessage futureResponse = this.responseDispatch.getFutureMessage();
+		futureResponse.filter.allOf.id(message.getId()).type(GetResourceResponse.class);
 		// Write the message to the network
 		this.messageOutput.write(message);
 
 		// Wait for a response; timeout after 20 seconds
 		final Message responseMessage;
 		try {
-			responseMessage = response.get(20, TimeUnit.SECONDS);
+			responseMessage = futureResponse.get(20, TimeUnit.SECONDS);
 		} catch (final InterruptedException | ExecutionException | TimeoutException e) {
 			throw new IOException(e);
 		}
@@ -75,12 +76,19 @@ public final class SyncResourceFinder
 			throw ((ExceptionMessage) responseMessage).getException();
 		}
 
-		if (!(responseMessage instanceof GetResourceMessage)) {
+		if (!(responseMessage instanceof GetResourceResponse)) {
 			throw new UnexpectedMessageException(responseMessage, GetResourceMessage.class);
 		}
 
-		final Optional<Serializable> resources =
-				Optional.fromNullable(((GetResourceMessage) responseMessage).getProperties().get("resources"));
+		final GetResourceResponse response = (GetResourceResponse) responseMessage;
+
+		final Optional<Serializable> exception = Optional.fromNullable(response.getProperties().get("exception"));
+		if (exception.isPresent()) {
+			// TODO: logging
+			((Throwable) exception.get()).printStackTrace();
+			return null;
+		}
+		final Optional<Serializable> resources = Optional.fromNullable(response.getProperties().get("resources"));
 
 		// No resources found or property of the wrong type
 		if (!resources.isPresent() || !(resources.get() instanceof List)) {

@@ -45,7 +45,7 @@ public final class KadSendMessageStream
 	 * {@code node/node-key"}
 	 */
 	private final ResourceIdentifier makeLocalUri() throws URISyntaxException {
-		return new ResourceIdentifier("node", this.kadNode.getLocalNode().getKey().toString());
+		return new ResourceIdentifier("node", this.kadNode.getLocalNode().getKey().toBase64());
 	}
 
 	/**
@@ -55,10 +55,16 @@ public final class KadSendMessageStream
 	 */
 	@Override
 	public final void write(final Message message) throws IOException {
-		message.setSourceUri(this.localUri);
+		try {
+			message.setSourceUri(new ResourceIdentifier(message.getDestinationUri().getScheme(),
+		                                            this.localUri.getAddress()));
+		} catch (final URISyntaxException e) {
+			throw new IOException(e);
+		}
 		// Identify the destination nodes and send the message to them
 		// This line just decided what charset keys are in forever
-		final Key destKey = new Key(message.getDestinationUri().getHost().getBytes(Charsets.UTF_8));
+		final String host = message.getDestinationUri().getHost();
+		final Key destKey = new Key(message.getDestinationUri().getHost());
 
 		final List<Node> foundNodes = this.kadNode.findNode(destKey);
 		if (foundNodes.size() == 0) {
