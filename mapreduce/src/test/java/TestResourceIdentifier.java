@@ -2,6 +2,7 @@ import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.net.URISyntaxException;
 import java.util.Random;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class TestResourceIdentifier
 {
 	@Test
-	public void HostAndPort() {
+	public void HostAndPort() throws URISyntaxException {
 		final int randPort = 1 + (new Random()).nextInt(10000);
 		final String randHost = UUID.randomUUID().toString();
 
@@ -27,7 +28,7 @@ public class TestResourceIdentifier
 	}
 
 	@Test
-	public void HostOnly() {
+	public void HostOnly() throws URISyntaxException {
 		final String randHost = UUID.randomUUID().toString();
 		final String test = String.format("scheme/%s/path/name", randHost);
 		final ResourceIdentifier uri = new ResourceIdentifier(test);
@@ -40,7 +41,7 @@ public class TestResourceIdentifier
 	}
 
 	@Test
-	public void HostTwoPorts() {
+	public void HostTwoPorts() throws URISyntaxException {
 		final int randPort = 1 + (new Random()).nextInt(10000);
 		final String randHost = UUID.randomUUID().toString();
 

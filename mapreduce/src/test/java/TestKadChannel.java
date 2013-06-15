@@ -27,7 +27,7 @@ public class TestKadChannel
 
 		final ResourceFinder finder = injector.getInstance(ResourceFinder.class);
 		final String host = UUID.randomUUID().toString().substring(0, 20);
-		final ResourceIdentifier hostUri = new ResourceIdentifier(String.format("resource/%s/activator", host));
+		final ResourceIdentifier hostUri = new ResourceIdentifier("resource", host, -1, "activator");
 		final Activator activator = (Activator) finder.findResource(hostUri);
 
 		Assert.assertEquals(activator.echo(host), host);

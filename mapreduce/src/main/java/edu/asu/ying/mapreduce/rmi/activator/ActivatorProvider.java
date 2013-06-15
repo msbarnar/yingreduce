@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.rmi.activator;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import edu.asu.ying.mapreduce.messaging.*;
 import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.rmi.resource.GetResourceResponse;
@@ -27,7 +28,7 @@ public final class ActivatorProvider
 	private final Activator activator;
 
 	@Inject
-	public ActivatorProvider(final MessageDispatch dispatch,
+	private ActivatorProvider(final @Named("resource") MessageDispatch dispatch,
 	                         final @SendMessageStream MessageOutputStream sendStream,
 	                         final Activator activator) {
 		this.dispatch = dispatch;

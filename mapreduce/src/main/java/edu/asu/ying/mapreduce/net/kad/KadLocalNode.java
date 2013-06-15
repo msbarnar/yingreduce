@@ -18,22 +18,15 @@ public final class KadLocalNode
 	implements LocalNode
 {
 	private final KeybasedRouting kadNode;
-	private final KadMessageHandler handler;
-	private final MessageDispatch dispatch;
 	private final ActivatorProvider activatorProvider;
 
 	@Inject
-	public KadLocalNode(final KeybasedRouting kadNode, final KadMessageHandler handler,
-	                    final MessageDispatch dispatch, final ActivatorProvider activatorProvider) {
+	private KadLocalNode(final KeybasedRouting kadNode, final ActivatorProvider activatorProvider) {
 		this.kadNode = kadNode;
-		this.handler = handler;
-		this.dispatch = dispatch;
 		this.activatorProvider = activatorProvider;
 	}
 
 	@Override
 	public final void join(final ResourceIdentifier bootstrap) throws IOException {
 	}
-
-	public final MessageDispatch getMessageDispatch() { return this.dispatch; }
 }

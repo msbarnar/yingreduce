@@ -29,7 +29,7 @@ public class GetResourceMessage
 	 */
 	public GetResourceMessage(final ResourceIdentifier resourceUri) throws URISyntaxException {
 		// Set the destination URI from only the host and port of the resource URI
-		super(new ResourceIdentifier(String.format("/%s:%d", resourceUri.getHost(), resourceUri.getPort())));
+		super(new ResourceIdentifier("node", resourceUri.getHost(), resourceUri.getPort()));
 
 		if (!resourceUri.getScheme().toLowerCase().equals("resource")) {
 			throw new URISyntaxException(resourceUri.toString(), "GetResource URI scheme part must be 'resource'", 0);

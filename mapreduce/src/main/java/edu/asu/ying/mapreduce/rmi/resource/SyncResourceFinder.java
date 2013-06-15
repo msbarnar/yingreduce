@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.rmi.resource;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import edu.asu.ying.mapreduce.messaging.*;
 import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 
@@ -36,8 +37,8 @@ public final class SyncResourceFinder
 	 * @param sendStream the message output stream that will convey messages to remote hosts.
 	 */
 	@Inject
-	public SyncResourceFinder(final @SendMessageStream MessageOutputStream sendStream,
-	                          final MessageDispatch responseDispatch) {
+	private SyncResourceFinder(final @SendMessageStream MessageOutputStream sendStream,
+	                          final @Named("resource") MessageDispatch responseDispatch) {
 
 		this.messageOutput = sendStream;
 		this.responseDispatch = responseDispatch;

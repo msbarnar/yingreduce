@@ -1,6 +1,7 @@
 package edu.asu.ying.mapreduce.channels.kad;
 
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.ExceptionMessage;
 import edu.asu.ying.mapreduce.messaging.Message;
@@ -20,17 +22,17 @@ import il.technion.ewolf.kbr.Node;
 
 
 /**
- * {@link KadSendChannel} is a {@link MessageOutputStream} that serializes messages to remote nodes on the Kademlia
+ * {@link KadSendMessageStream} is a {@link MessageOutputStream} that serializes messages to remote nodes on the Kademlia
  * network.
  */
-public final class KadSendChannel
+public final class KadSendMessageStream
 	implements MessageOutputStream
 {
 	private final KeybasedRouting kadNode;
 	private final ResourceIdentifier localUri;
 
 	@Inject
-	public KadSendChannel(final KeybasedRouting kadNode) {
+	private KadSendMessageStream(final KeybasedRouting kadNode) throws URISyntaxException {
 		this.kadNode = kadNode;
 		this.localUri = this.makeLocalUri();
 	}
@@ -42,8 +44,8 @@ public final class KadSendChannel
 	 * <p>
 	 * {@code node/node-key"}
 	 */
-	private final ResourceIdentifier makeLocalUri() {
-		return new ResourceIdentifier("node/".concat(this.kadNode.getLocalNode().getKey().toString()));
+	private final ResourceIdentifier makeLocalUri() throws URISyntaxException {
+		return new ResourceIdentifier("node", this.kadNode.getLocalNode().getKey().toString());
 	}
 
 	/**
@@ -63,11 +65,12 @@ public final class KadSendChannel
 			// This should never happen
 			throw new UnknownHostException();
 		}
+
+		final String scheme = message.getDestinationUri().getScheme();
 		// Send the message to the k nearest nodes (defined by the message's replication property)
 		final Iterator<Node> iter = foundNodes.iterator();
 		for (int i = 0; iter.hasNext() && (i < message.getReplication()); i++) {
-			// TODO: un-hardcode the openKad tag
-			this.kadNode.sendMessage(iter.next(), "mapreduce", message);
+			this.kadNode.sendMessage(iter.next(), scheme, message);
 		}
 	}
 

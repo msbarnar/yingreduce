@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import com.google.inject.name.Named;
 import edu.asu.ying.mapreduce.messaging.MessageDispatch;
 import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.SendMessageStream;
@@ -19,6 +20,8 @@ import il.technion.ewolf.kbr.*;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -54,14 +57,19 @@ public final class KadChannel
 
 
 	/**
-	 * Singleton {@link MessageDispatch} provider.
+	 * String -> Singleton {@link MessageDispatch} provider.
 	 */
 	private enum MessageDispatchProvider {
 		INSTANCE;
-		private final MessageDispatch dispatch;
+		private final Map<String, MessageDispatch> dispatches = new HashMap<>();
 
-		private MessageDispatchProvider() {
-			this.dispatch = new SimpleMessageDispatch();
+		private final MessageDispatch getDispatch(final String scheme) {
+			MessageDispatch dispatch = this.dispatches.get(scheme);
+			if (dispatch == null) {
+				dispatch = new SimpleMessageDispatch(scheme);
+				this.dispatches.put(scheme, dispatch);
+			}
+			return dispatch;
 		}
 	}
 
@@ -70,25 +78,25 @@ public final class KadChannel
 		bind(Activator.class).to(KadServerActivator.class);
 		bind(ResourceFinder.class).to(SyncResourceFinder.class);
 		bind(LocalNode.class).to(KadLocalNode.class);
-	}
-
-	/**
-	 * Provides a {@link KadMessageHandler} that listens to the local node and writes to a {@link MessageDispatch}.
-	 */
-	@Provides
-	private final KadMessageHandler provideMessageHandler() {
-		final Injector injector = Guice.createInjector(this);
-		return new KadMessageHandler(injector.getInstance(KeybasedRouting.class),
-		                             injector.getInstance(MessageDispatch.class));
+		bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class).to(KadSendMessageStream.class);
 	}
 
 	/**
 	 * Provides an instance of {@link MessageDispatch} for objects to register to receive specific messages from the
 	 * network.
 	 */
+	// TODO: find a way to provide arbitrarily named instances
 	@Provides
-	private final MessageDispatch provideMessageDispatch() {
-		return MessageDispatchProvider.INSTANCE.dispatch;
+	@Named("resource")
+	private final MessageDispatch provideMessageDispatch(final KeybasedRouting kadNode) {
+		return provideSchemedDispatch("resource", kadNode);
+	}
+
+	private final MessageDispatch provideSchemedDispatch(final String scheme, final KeybasedRouting kadNode) {
+		final MessageDispatch dispatch = MessageDispatchProvider.INSTANCE.getDispatch("resource");
+		// Attach a handler to the kad node on behalf of the dispatch
+		final KadMessageHandler handler = new KadMessageHandler(scheme, kadNode, dispatch);
+		return dispatch;
 	}
 
 	/**
@@ -98,15 +106,5 @@ public final class KadChannel
 	@Provides
 	private final KeybasedRouting provideKeybasedRouting() {
 		return KadNodeProvider.INSTANCE.kadNode;
-	}
-
-	/**
-	 * Provides a message output stream that is tied to a {@link KadSendChannel} such that messages written to the
-	 * stream are sent into the network.
-	 */
-	@Provides @SendMessageStream
-	private final MessageOutputStream provideSendMessageStream() {
-		Injector injector = Guice.createInjector(this);
-		return new KadSendChannel(injector.getInstance(KeybasedRouting.class));
 	}
 }

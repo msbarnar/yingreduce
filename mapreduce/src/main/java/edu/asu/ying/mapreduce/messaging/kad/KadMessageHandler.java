@@ -25,16 +25,13 @@ public final class KadMessageHandler
 	// The stream they are written to
 	private final MessageOutputStream messageStream;
 
-	// Map message tags (the "scheme" part of the URI) to separate dispatches
-	private final Map<String, MessageDispatch> dispatchMap = new HashMap<>();
+	public KadMessageHandler(final String scheme, final KeybasedRouting inputNode,
+	                         final MessageOutputStream messageStream) {
 
-	@Inject
-	public KadMessageHandler(final KeybasedRouting inputNode, final MessageOutputStream messageStream) {
 		this.kadNode = inputNode;
 		this.messageStream = messageStream;
 
-		// TODO: un-hardcore tags
-		this.kadNode.register("mapreduce", this);
+		this.kadNode.register(scheme, this);
 	}
 
 	/**

@@ -15,11 +15,18 @@ import java.util.concurrent.Executors;
 public class SimpleMessageDispatch
 	implements MessageDispatch
 {
+	// FIXME: doesn't do anything; just makes it easier to identify in debugging
+	private final String scheme;
+
 	// All future messages to fulfill
 	private final List<FutureMessage> futures = new ArrayList<>();
 	// Executor that runs message callbacks
 	// Spawns as many threads as needed, but reuses old threads. Unused threads older than 60s are killed.
 	private final ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+
+	public SimpleMessageDispatch(final String scheme) {
+		this.scheme = scheme;
+	}
 
 	private final FutureMessage createFutureMessage() {
 		return new FutureMessage(this.executor);

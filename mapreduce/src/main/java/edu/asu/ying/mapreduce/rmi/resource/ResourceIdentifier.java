@@ -1,11 +1,15 @@
 package edu.asu.ying.mapreduce.rmi.resource;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.List;
 
 
@@ -30,13 +34,72 @@ public final class ResourceIdentifier
 	private transient String host;
 	private transient int port;
 
-	public ResourceIdentifier(final String identifier) {
+	public ResourceIdentifier(final String identifier)
+			throws IllegalArgumentException, URISyntaxException {
+
+		Preconditions.checkNotNull(Strings.emptyToNull(identifier));
+
 		this.identifier = identifier;
 		this.parse();
 	}
+	public ResourceIdentifier(final String scheme, final String address)
+			throws IllegalArgumentException, URISyntaxException {
 
-	private final void parse() {
-		this.parts = Lists.newArrayList(Splitter.on('/').trimResults().split(identifier));
+		Preconditions.checkNotNull(Strings.emptyToNull(scheme));
+		Preconditions.checkNotNull(Strings.emptyToNull(address));
+
+		this.identifier = scheme.concat("/").concat(address);
+		this.parse();
+	}
+	public ResourceIdentifier(final String scheme, final String host, final int port)
+			throws IllegalArgumentException, URISyntaxException {
+
+		Preconditions.checkNotNull(Strings.emptyToNull(scheme));
+		Preconditions.checkNotNull(Strings.emptyToNull(host));
+
+		if (port > 0) {
+			this.identifier = String.format("%s/%s:%d", scheme, host, port);
+		} else {
+			this.identifier = scheme.concat("/").concat(host);
+		}
+		this.parse();
+	}
+	public ResourceIdentifier(final String scheme, final String host, final int port, final String path)
+			throws IllegalArgumentException, URISyntaxException {
+
+		Preconditions.checkNotNull(Strings.emptyToNull(scheme));
+		Preconditions.checkNotNull(Strings.emptyToNull(host));
+		Preconditions.checkNotNull(Strings.emptyToNull(path));
+
+		if (port > 0) {
+			this.identifier = String.format("%s/%s:%d/%s", scheme, host, port, path);
+		} else {
+			this.identifier = scheme.concat("/").concat(host).concat("/").concat(path);
+		}
+		this.parse();
+	}
+	public ResourceIdentifier(final String scheme, final String host, final int port,
+	                          final String path, final String name)
+			throws IllegalArgumentException, URISyntaxException {
+
+		Preconditions.checkNotNull(Strings.emptyToNull(scheme));
+		Preconditions.checkNotNull(Strings.emptyToNull(host));
+		Preconditions.checkNotNull(Strings.emptyToNull(path));
+		Preconditions.checkNotNull(Strings.emptyToNull(name));
+
+		if (port > 0) {
+			this.identifier = String.format("%s/%s:%d/%s/%s", scheme, host, port, path, name);
+		} else {
+			this.identifier = scheme.concat("/").concat(host).concat("/").concat(path).concat("/").concat(name);
+		}
+		this.parse();
+	}
+
+	private final void parse() throws URISyntaxException {
+		this.parts = Lists.newArrayList(Splitter.on('/').trimResults().split(this.identifier));
+		if (Strings.isNullOrEmpty(this.getNullable(Part.Scheme))) {
+			throw new URISyntaxException(this.identifier, "Scheme cannot be empty");
+		}
 		final String address = this.getNullable(Part.Address);
 
 		this.host = address;
@@ -70,8 +133,10 @@ public final class ResourceIdentifier
 	public final String getPath() { return getNullable(Part.Path); }
 	public final String getName() { return getNullable(Part.Name); }
 
+	@Override
 	public final String toString() { return this.identifier; }
 
+	@Override
 	public final boolean equals(final Object rhs) {
 		if (rhs == null) {
 			return false;
@@ -85,6 +150,10 @@ public final class ResourceIdentifier
 	private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
 		ois.defaultReadObject();
 		// Reparse the identifier string
-		this.parse();
+		try {
+			this.parse();
+		} catch (final URISyntaxException e) {
+			throw new IOException(e);
+		}
 	}
 }
