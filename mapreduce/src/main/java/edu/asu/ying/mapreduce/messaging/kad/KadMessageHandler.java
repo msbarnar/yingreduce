@@ -1,21 +1,18 @@
 package edu.asu.ying.mapreduce.messaging.kad;
 
-import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.*;
-import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.MessageHandler;
 import il.technion.ewolf.kbr.Node;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
  * {@link KadMessageHandler} chains messages received on a {@link il.technion.ewolf.kbr.KeybasedRouting} object
- * to a {@link edu.asu.ying.mapreduce.messaging.io.MessageOutputStream}.
+ * to a {@link edu.asu.ying.mapreduce.io.MessageOutputStream}.
  */
 public final class KadMessageHandler
 	implements MessageHandler

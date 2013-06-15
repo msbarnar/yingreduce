@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import edu.asu.ying.mapreduce.messaging.*;
-import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.rmi.resource.GetResourceResponse;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceProvider;
 import edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage;

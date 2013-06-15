@@ -10,7 +10,7 @@ import static java.lang.annotation.ElementType.METHOD;
 
 
 /**
- * Marks a field or parameters as receiving an injected {@link edu.asu.ying.mapreduce.messaging.io.MessageOutputStream} that will send messages to
+ * Marks a field or parameters as receiving an injected {@link edu.asu.ying.mapreduce.io.MessageOutputStream} that will send messages to
  * remote hosts.
  * <p>
  * Apply to a method with {@link com.google.inject.Provides} to provide an implementation of that stream.

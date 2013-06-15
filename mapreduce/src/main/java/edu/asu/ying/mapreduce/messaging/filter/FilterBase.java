@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.messaging.filter2;
+package edu.asu.ying.mapreduce.messaging.filter;
 
 import com.google.common.collect.Lists;
 

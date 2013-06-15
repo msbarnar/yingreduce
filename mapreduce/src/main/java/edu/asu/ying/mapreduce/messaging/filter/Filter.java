@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.messaging.filter2;
+package edu.asu.ying.mapreduce.messaging.filter;
 
 /**
  * A {@code Filter} is a node in the tree of filters.

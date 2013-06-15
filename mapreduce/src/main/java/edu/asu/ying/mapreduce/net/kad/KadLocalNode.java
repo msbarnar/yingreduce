@@ -1,7 +1,5 @@
 package edu.asu.ying.mapreduce.net.kad;
 
-import edu.asu.ying.mapreduce.messaging.MessageDispatch;
-import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.rmi.activator.ActivatorProvider;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;

@@ -9,11 +9,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.ExceptionMessage;
 import edu.asu.ying.mapreduce.messaging.Message;
-import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.NoResponseException;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 import il.technion.ewolf.kbr.KeybasedRouting;

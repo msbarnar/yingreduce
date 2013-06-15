@@ -1,6 +1,6 @@
-import edu.asu.ying.mapreduce.messaging.filter2.Filter;
-import edu.asu.ying.mapreduce.messaging.filter2.Filter.on;
-import edu.asu.ying.mapreduce.messaging.filter2.FilterMessage;
+import edu.asu.ying.mapreduce.messaging.filter.Filter;
+import edu.asu.ying.mapreduce.messaging.filter.Filter.on;
+import edu.asu.ying.mapreduce.messaging.filter.FilterMessage;
 import edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage;
 import edu.asu.ying.mapreduce.rmi.resource.GetResourceResponse;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;

@@ -1,11 +1,9 @@
 package edu.asu.ying.mapreduce.events;
 
 
-import edu.asu.ying.mapreduce.messaging.filter2.Filter;
+import edu.asu.ying.mapreduce.messaging.filter.Filter;
 
-import java.util.AbstractMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 
 /**
@@ -13,18 +11,25 @@ import java.util.Vector;
  */
 public final class FilteredValueEvent<V>
 {
-	private final Vector<Map.Entry<Filter, EventHandler<V>>> handlers = new Vector<>();
+	private final List<Map.Entry<Filter, EventHandler<V>>> handlers = new ArrayList<>();
 
 	public final void attach(final Filter filter, final EventHandler<V> handler) {
 		this.handlers.add(new AbstractMap.SimpleEntry<>(filter, handler));
 	}
-	public final boolean detach(final EventHandler<V> handler) {
-		return this.handlers.remove(handler);
+	public final boolean detach(final Filter filter, final EventHandler<V> handler) {
+		return this.handlers.remove(new AbstractMap.SimpleEntry<>(filter, handler));
 	}
 
-	public final void fire(final Object sender, final V args) {
-		for (final EventHandler<V> handler : this.handlers) {
-			handler.onEvent(sender, args);
+	public final void fire(final Object sender, final V value) {
+		final Iterator<Map.Entry<Filter, EventHandler<V>>> iter = this.handlers.iterator();
+		while (iter.hasNext()) {
+			final Map.Entry<Filter, EventHandler<V>> handler = iter.next();
+			if (handler.getKey().match(value)) {
+				// A return value of false means the handler is refusing further events
+				if (!handler.getValue().onEvent(sender, value)) {
+					iter.remove();
+				}
+			}
 		}
 	}
 }

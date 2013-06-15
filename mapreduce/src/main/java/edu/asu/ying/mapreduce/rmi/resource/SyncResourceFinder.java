@@ -4,12 +4,10 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import edu.asu.ying.mapreduce.messaging.*;
-import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.io.MessageOutputStream;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;

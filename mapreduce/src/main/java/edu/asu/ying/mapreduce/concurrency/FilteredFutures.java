@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import edu.asu.ying.mapreduce.events.EventHandler;
 import edu.asu.ying.mapreduce.events.FilteredValueEvent;
-import edu.asu.ying.mapreduce.messaging.filter2.Filter;
+import edu.asu.ying.mapreduce.messaging.filter.Filter;
 
 import java.util.*;
 
@@ -15,7 +15,7 @@ import java.util.*;
 public class FilteredFutures<V>
 	implements EventHandler<V>
 {
-	public static <V> FilteredFutures<V> create(final FilteredValueEvent<V> event) {
+	public static <V> FilteredFutures<V> getFrom(final FilteredValueEvent<V> event) {
 		return new FilteredFutures<>(event);
 	}
 
@@ -31,6 +31,12 @@ public class FilteredFutures<V>
 		this.event = event;
 	}
 
+	/**
+	 * Initializes {@code count} futures, but does not begin listening.
+	 * </p>
+	 * Supply a filter with {@link FilteredFutures#filter} to begin receiving values.
+	 * @param count the number of future values to receive.
+	 */
 	public final FilteredFutures<V> get(final int count) {
 		this.unfulfilledFutures = new ArrayDeque<>(count);
 		for (int i = 0; i < count; i++) {
@@ -40,7 +46,16 @@ public class FilteredFutures<V>
 		return this;
 	}
 
+	/**
+	 * Applies the given filter and begins listening for values that match it.
+	 * @param on the filter on which values will be matched.
+	 * @return a list of {@link ListenableFuture} that will be fulfilled when values matching the filter arrive.
+	 */
 	public final List<ListenableFuture<V>> filter(final Filter on) {
+		// Default to returning one future
+		if (this.unfulfilledFutures == null) {
+			this.get(1);
+		}
 		this.filter = on;
 		// Now that we have a filter we can start listening
 		this.event.attach(this.filter, this);
@@ -55,13 +70,15 @@ public class FilteredFutures<V>
 	 * @param value the value to set on the future.
 	 */
 	@Override
-	public void onEvent(final Object sender, final V value) {
+	public boolean onEvent(final Object sender, final V value) {
 		// Fulfill futures until there are none left to fulfill
 		if (this.unfulfilledFutures.peek() != null) {
 			this.unfulfilledFutures.pop().set(value);
+			// Return true if we have more futures, false if not
+			return (this.unfulfilledFutures.peek() != null);
 		} else {
-			// No more futures to set, so stop listening
-			this.event.detach(this);
+			// No more futures to set; return false to signal refusal of further events
+			return false;
 		}
 	}
 }
