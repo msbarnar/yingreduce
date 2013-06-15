@@ -12,7 +12,7 @@ import java.util.*;
  */
 public abstract class MessageFilterBase
 {
-	// Specifies that this filter is used
+	// Specifies that this match is used
 	protected boolean isActive = false;
 
 	public MessageFilterBase allOf;

@@ -41,14 +41,14 @@ public final class FutureMessage
 	}
 
 	/**
-	 * Returns true if {@code message} matches the filter.
+	 * Returns true if {@code message} matches the match.
 	 */
 	public final boolean match(final Message message) {
 		return this.filter.match(message);
 	}
 
 	/**
-	 * Sets the future value only if the message matches the filter.
+	 * Sets the future value only if the message matches the match.
 	 * @returns true if the value was set, false if not due to mismatch or future already being set.
 	 */
 	public final boolean setIfMatch(final Message message) {

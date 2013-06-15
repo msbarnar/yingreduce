@@ -3,7 +3,7 @@ package edu.asu.ying.mapreduce.messaging.filter;
 import edu.asu.ying.mapreduce.messaging.Message;
 
 /**
- * Filters messages that match exactly zero of the criteria applied to this filter.
+ * Filters messages that match exactly zero of the criteria applied to this match.
  * <p>
  * {@link MessageFilterNoneOf} is the binary opposite of {@link MessageFilterAnyOf}.
  */

@@ -15,7 +15,7 @@ import java.util.List;
  * fulfilled, the {@code FutureMessages} instance goes out of scope.
  * </p>
  * In the background, a call to {@code FutureMessages} queues the returned futures and sets up a
- * {@link FilteredMessageCallback} on the incoming message handler.</br>
+ * {@link edu.asu.ying.mapreduce.events.FilteredMessageCallback} on the incoming message handler.</br>
  * As the message handler receives messages, it checks them against every registered {@code FilteredCallback} and
  * passes them to any callbacks that match.
  */

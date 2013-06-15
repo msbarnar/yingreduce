@@ -9,7 +9,7 @@ import java.util.Map;
 
 
 /**
- * Filters messages that match any one of the criteria applied to this filter.
+ * Filters messages that match any one of the criteria applied to this match.
  */
 public class MessageFilterAnyOf
 	extends MessageFilterBase
@@ -18,7 +18,7 @@ public class MessageFilterAnyOf
 	}
 
 	/**
-	 * Returns true only if the message matches every filter applied.
+	 * Returns true only if the message matches every match applied.
 	 * @param message the message to match.
 	 */
 	@Override

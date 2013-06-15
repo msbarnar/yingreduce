@@ -8,7 +8,7 @@ import java.util.*;
 
 
 /**
- * Filters messages that match every one of the criteria applied to this filter.
+ * Filters messages that match every one of the criteria applied to this match.
  */
 public class MessageFilterAllOf
 	extends MessageFilterBase
@@ -17,7 +17,7 @@ public class MessageFilterAllOf
 	}
 
 	/**
-	 * Returns true only if the message matches every filter applied.
+	 * Returns true only if the message matches every match applied.
 	 * @param message the message to match.
 	 */
 	@Override

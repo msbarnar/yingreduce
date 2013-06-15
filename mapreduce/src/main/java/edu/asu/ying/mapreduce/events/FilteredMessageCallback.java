@@ -1,4 +1,7 @@
-package edu.asu.ying.mapreduce.messaging;
+package edu.asu.ying.mapreduce.events;
+
+import edu.asu.ying.mapreduce.messaging.Message;
+
 
 /**
  * A {@link FilteredMessageCallback} is a target of message callbacks from {@link FilteredMessageHandler}.

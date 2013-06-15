@@ -20,10 +20,10 @@ public interface MessageDispatch
 	 */
 	FutureMessage getFutureMessage();
 	/**
-	 * Gets a {@link FutureMessage} matching {@code filter} that will be fulfilled when the dispatch receives a message.
-	 * @param filter the filter that will select the message to return.
+	 * Gets a {@link FutureMessage} matching {@code match} that will be fulfilled when the dispatch receives a message.
+	 * @param filter the match that will select the message to return.
 	 * @return a promise of a future message.
 	 */
-	// TODO: Improve the filter application interface
+	// TODO: Improve the match application interface
 	FutureMessage getFutureMessage(final MessageFilter filter);
 }

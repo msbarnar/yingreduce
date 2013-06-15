@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 
 /**
- * The root message filter; combines different {@link MessageFilterBase} into a single filter.
+ * The root message match; combines different {@link MessageFilterBase} into a single match.
  */
 public class MessageFilter
 	extends MessageFilterBase
