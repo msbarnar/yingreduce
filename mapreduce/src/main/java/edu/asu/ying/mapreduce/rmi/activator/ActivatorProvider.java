@@ -62,7 +62,7 @@ public final class ActivatorProvider
 		try {
 			// Get an proxy to allow accession of the Activator object.
 			final Activator activatorProxy
-					= (Activator) UnicastRemoteObject.exportObject(this.activator);
+					= (Activator) UnicastRemoteObject.exportObject(this.activator, 3333);
 			response.setResource(activatorProxy);
 		} catch (final RemoteException e) {
 			response.setException(e);

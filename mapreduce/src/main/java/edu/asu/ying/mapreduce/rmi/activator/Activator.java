@@ -35,7 +35,7 @@ import java.util.Map;
  * object provisioning. 
  */
 public interface Activator
-	extends Remote, RemoteResource
+	extends RemoteResource
 {
 	/**
 	 * Obtains a {@link java.rmi.Remote} reference to an instance of the class {@code type}.
@@ -45,7 +45,8 @@ public interface Activator
 	 * @throws RemoteException if the remote {@link Activator} resource was unavailable or could not be
 	 * found, or if a problem occurred while obtaining the reference.
 	 */
-	Remote getReference(final Class<?> type, final Map<String, String> properties) throws RemoteException;
+	<T extends Remote> T getReference(final Class<T> type, final Map<String, String> properties)
+			throws RemoteException;
 
-	String echo(final String message);
+	String echo(final String message) throws RemoteException;
 }

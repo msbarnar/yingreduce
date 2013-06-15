@@ -14,6 +14,7 @@ import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KadLocalNode;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
+import edu.asu.ying.mapreduce.rmi.activator.kad.RemoteTest;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceFinder;
 import edu.asu.ying.mapreduce.rmi.resource.SyncResourceFinder;
 import il.technion.ewolf.kbr.*;
@@ -79,6 +80,7 @@ public final class KadChannel
 		bind(ResourceFinder.class).to(SyncResourceFinder.class);
 		bind(LocalNode.class).to(KadLocalNode.class);
 		bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class).to(KadSendMessageStream.class);
+		bind(RemoteTest.class).to(KadServerActivator.RemoteTestImpl.class);
 	}
 
 	/**

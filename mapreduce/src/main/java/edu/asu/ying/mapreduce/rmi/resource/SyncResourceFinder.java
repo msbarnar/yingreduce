@@ -53,7 +53,7 @@ public final class SyncResourceFinder
 	 * from the remote host.
 	 */
 	@Override
-	public final List<RemoteResource> findResource(final ResourceIdentifier uri)
+	public final RemoteResource findResource(final ResourceIdentifier uri)
 			throws URISyntaxException, IOException {
 		// Build the message from the URI
 		final Message message = new GetResourceMessage(uri);
@@ -82,19 +82,13 @@ public final class SyncResourceFinder
 
 		final GetResourceResponse response = (GetResourceResponse) responseMessage;
 
-		final Optional<Serializable> exception = Optional.fromNullable(response.getProperties().get("exception"));
+		final Optional<Throwable> exception = Optional.fromNullable(response.getException());
 		if (exception.isPresent()) {
 			// TODO: logging
-			((Throwable) exception.get()).printStackTrace();
-			return null;
-		}
-		final Optional<Serializable> resources = Optional.fromNullable(response.getProperties().get("resources"));
-
-		// No resources found or property of the wrong type
-		if (!resources.isPresent() || !(resources.get() instanceof List)) {
+			exception.get().printStackTrace();
 			return null;
 		}
 
-		return (List<RemoteResource>) resources.get();
+		return response.getResource();
 	}
 }

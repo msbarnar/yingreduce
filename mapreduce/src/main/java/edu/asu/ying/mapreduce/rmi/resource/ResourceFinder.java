@@ -18,5 +18,5 @@ public interface ResourceFinder
 	 * @return one or more remote references to matching resources, or null if no resource was found.
 	 * @throws IOException if the underlying network accession throws an exception.
 	 */
-	List<RemoteResource> findResource(final ResourceIdentifier uri) throws URISyntaxException, IOException;
+	RemoteResource findResource(final ResourceIdentifier uri) throws URISyntaxException, IOException;
 }

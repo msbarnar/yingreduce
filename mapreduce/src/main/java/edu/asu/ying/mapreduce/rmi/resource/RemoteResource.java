@@ -1,6 +1,8 @@
 package edu.asu.ying.mapreduce.rmi.resource;
 
 import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 
 /**
@@ -27,7 +29,7 @@ import java.io.Serializable;
  * {@code resource://localhost:9000/image?MyImage}
  */
 public interface RemoteResource
-	extends Serializable
+	extends Remote, Serializable
 {
-	ResourceIdentifier getUri();
+	ResourceIdentifier getUri() throws RemoteException;
 }

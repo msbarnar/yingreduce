@@ -2,6 +2,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import edu.asu.ying.mapreduce.channels.kad.KadChannel;
 import edu.asu.ying.mapreduce.net.LocalNode;
+import edu.asu.ying.mapreduce.rmi.activator.kad.RemoteTest;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceFinder;
@@ -34,7 +35,12 @@ public class TestKadChannel
 		Assert.assertNotEquals(activator, null);
 
 		if (activator != null) {
+			System.out.println("Sending: ".concat(host));
+			final String resp = activator.echo(host);
+			System.out.println("Response: ".concat(resp));
 			Assert.assertEquals(activator.echo(host), host);
+			final RemoteTest test = activator.getReference(RemoteTest.class, null);
+			System.out.println(test.getString());
 		}
 	}
 }
