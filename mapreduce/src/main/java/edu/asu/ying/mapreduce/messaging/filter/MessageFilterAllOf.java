@@ -1,9 +1,9 @@
 package edu.asu.ying.mapreduce.messaging.filter;
 
 import edu.asu.ying.mapreduce.messaging.Message;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.*;
 
 
@@ -65,8 +65,8 @@ public class MessageFilterAllOf
 	private final boolean matchSourceUri(final Message message) {
 		boolean match = true;
 
-		final URI msgSourceUri = message.getSourceUri();
-		for (final URI uri : this.bySourceUri) {
+		final ResourceIdentifier msgSourceUri = message.getSourceUri();
+		for (final ResourceIdentifier uri : this.bySourceUri) {
 			if (!msgSourceUri.equals(uri)) {
 				match = false;
 				break;

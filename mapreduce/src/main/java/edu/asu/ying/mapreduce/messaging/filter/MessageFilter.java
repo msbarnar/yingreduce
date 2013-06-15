@@ -2,9 +2,9 @@ package edu.asu.ying.mapreduce.messaging.filter;
 
 
 import edu.asu.ying.mapreduce.messaging.Message;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 
 import java.io.Serializable;
-import java.net.URI;
 
 
 /**
@@ -82,7 +82,7 @@ public class MessageFilter
 	 * @param uri the message source URI that must be matched.
 	 */
 	@Override
-	public final MessageFilterBase sourceUri(final URI uri) {
+	public final MessageFilterBase sourceUri(final ResourceIdentifier uri) {
 		this.allOf.sourceUri(uri);
 		return this;
 	}

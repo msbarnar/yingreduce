@@ -2,7 +2,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import edu.asu.ying.mapreduce.channels.kad.KadChannel;
 import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.net.NetworkIdentifier;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceFinder;
 import org.junit.Assert;
@@ -26,9 +26,9 @@ public class TestKadChannel
 		final LocalNode node = injector.getInstance(LocalNode.class);
 
 		final ResourceFinder finder = injector.getInstance(ResourceFinder.class);
-		String host = UriUtils.encodeHost(UUID.randomUUID().toString().substring(0, 20));
-		final Activator activator = (Activator) finder.findResource(
-				new NetworkIdentifier("resource://".concat(host).concat("/activator")));
+		final String host = UUID.randomUUID().toString().substring(0, 20);
+		final ResourceIdentifier hostUri = new ResourceIdentifier(String.format("resource/%s/activator", host));
+		final Activator activator = (Activator) finder.findResource(hostUri);
 
 		Assert.assertEquals(activator.echo(host), host);
 	}

@@ -1,9 +1,9 @@
 package edu.asu.ying.mapreduce.messaging;
 
 import com.google.common.base.Optional;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -24,6 +24,8 @@ import java.util.UUID;
 public abstract class MessageBase
 	implements Message
 {
+	private static final long SerialVersionUID = 1L;
+
 	protected final Map<Serializable, Serializable> properties = new HashMap<Serializable, Serializable>();
 
 	/*
@@ -39,10 +41,10 @@ public abstract class MessageBase
 	public MessageBase(final String id) {
 		this.setId(id);
 	}
-	public MessageBase(final URI destinationUri) {
+	public MessageBase(final ResourceIdentifier destinationUri) {
 		this.setDestinationUri(destinationUri);
 	}
-	public MessageBase(final String id, final URI destinationUri) {
+	public MessageBase(final String id, final ResourceIdentifier destinationUri) {
 		this.setDestinationUri(destinationUri);
 	}
 
@@ -80,16 +82,16 @@ public abstract class MessageBase
 	@Override
 	public Map<Serializable, Serializable> getProperties() { return this.properties; }
 
-	public void setSourceUri(final URI uri) { this.properties.put("source-uri", uri); }
+	public void setSourceUri(final ResourceIdentifier uri) { this.properties.put("source-uri", uri); }
 	@Override
-	public URI getSourceUri() {
-		return this.getNullableProperty("source-uri", URI.class);
+	public ResourceIdentifier getSourceUri() {
+		return this.getNullableProperty("source-uri", ResourceIdentifier.class);
 	}
 
-	public void setDestinationUri(final URI uri) { this.properties.put("destination-uri", uri); }
+	public void setDestinationUri(final ResourceIdentifier uri) { this.properties.put("destination-uri", uri); }
 	@Override
-	public URI getDestinationUri() {
-		return this.getNullableProperty("destination-uri", URI.class);
+	public ResourceIdentifier getDestinationUri() {
+		return this.getNullableProperty("destination-uri", ResourceIdentifier.class);
 	}
 
 	public void setReplication(final int replication) { this.properties.put("replication", replication); }

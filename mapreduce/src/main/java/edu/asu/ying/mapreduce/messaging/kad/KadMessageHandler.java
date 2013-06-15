@@ -9,6 +9,8 @@ import il.technion.ewolf.kbr.Node;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -23,6 +25,8 @@ public final class KadMessageHandler
 	// The stream they are written to
 	private final MessageOutputStream messageStream;
 
+	// Map message tags (the "scheme" part of the URI) to separate dispatches
+	private final Map<String, MessageDispatch> dispatchMap = new HashMap<>();
 
 	@Inject
 	public KadMessageHandler(final KeybasedRouting inputNode, final MessageOutputStream messageStream) {

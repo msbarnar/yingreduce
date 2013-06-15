@@ -1,9 +1,9 @@
 package edu.asu.ying.mapreduce.messaging;
 
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
+
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Map;
-import java.util.UUID;
 
 
 /**
@@ -22,10 +22,10 @@ public interface Message
 	 */
 	String getId();
 
-	URI getSourceUri();
-	void setSourceUri(final URI uri);
+	ResourceIdentifier getSourceUri();
+	void setSourceUri(final ResourceIdentifier uri);
 
-	URI getDestinationUri();
+	ResourceIdentifier getDestinationUri();
 
 	/**
 	 * Replication allows a message to be delivered to at moest k hosts that are matched by its URI.

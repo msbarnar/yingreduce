@@ -1,9 +1,9 @@
 package edu.asu.ying.mapreduce.messaging.filter;
 
 import edu.asu.ying.mapreduce.messaging.Message;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.*;
 
 
@@ -21,7 +21,7 @@ public abstract class MessageFilterBase
 
 	protected final List<Class<? extends Message>> byClass = new ArrayList<>();
 	protected final List<String> byId = new ArrayList<>();
-	protected final List<URI> bySourceUri = new ArrayList<>();
+	protected final List<ResourceIdentifier> bySourceUri = new ArrayList<>();
 	protected final Map<Serializable, List<Serializable>> byProperty = new HashMap<>();
 
 	public void clear() {
@@ -59,7 +59,7 @@ public abstract class MessageFilterBase
 		}
 	}
 
-	public MessageFilterBase sourceUri(final URI uri) {
+	public MessageFilterBase sourceUri(final ResourceIdentifier uri) {
 		synchronized (this) {
 			this.isActive = true;
 			this.bySourceUri.add(uri);

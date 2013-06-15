@@ -7,7 +7,6 @@ import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * The {@link SyncResourceFinder} locates {@link RemoteResource} objects on a Kademlia network and returns
  * their references.
  * <p>
- * The types of resources located, organized by the {@link java.net.URI} {@code scheme} part are:
+ * The types of resources located, organized by the {@link ResourceIdentifier} {@code scheme} part are:
  * <ul>
  *     <li>{@code activator}: a {@link java.rmi.Remote} object activator that returns remote object references.</li>
  * </ul>
@@ -48,18 +47,17 @@ public final class SyncResourceFinder
 	 * Constructs a {@link edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage} with the resource identifier and node key in the URI.
 	 * @param uri the identifier used to locate the resource.
 	 * @return a future response to be fulfilled by the {@link MessageDispatch} when it receives a response.
-	 * @throws URISyntaxException if the URI is not a valid {@link RemoteResource} identifier.
 	 * @throws IOException if the underlying network implementation throws an exception or no response was received
 	 * from the remote host.
 	 */
 	@Override
-	public final List<RemoteResource> findResource(final URI uri)
+	public final List<RemoteResource> findResource(final ResourceIdentifier uri)
 			throws URISyntaxException, IOException {
 		// Build the message from the URI
 		final Message message = new GetResourceMessage(uri);
 		// Register to get a response from the message dispatch matching the request by ID
 		final FutureMessage response = this.responseDispatch.getFutureMessage();
-		response.filter.allOf.id(message.getId());
+		response.filter.allOf.id(message.getId()).type(GetResourceResponse.class);
 		// Write the message to the network
 		this.messageOutput.write(message);
 

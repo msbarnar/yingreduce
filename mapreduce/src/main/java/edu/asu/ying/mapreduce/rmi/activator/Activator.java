@@ -28,9 +28,9 @@ import java.util.Map;
  * {@link java.rmi.server.UnicastRemoteObject#exportObject(Remote)}, but the actual method is implementation
  * specific.
  * <p>
- * {@link Activator} is a {@link RemoteResource} that can be located by a {@link java.net.URI} where the
- * {@code scheme} is {@code activator} and the {@code host} is the implementation-specific
- * host identifier.
+ * {@link Activator} is a {@link RemoteResource} that can be located by a
+ * {@link edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier} where the {@code scheme} is {@code activator} and the
+ * {@code host} is the implementation-specific host identifier.
  * <br>The {@code authority} part may be used by the implementing activator to apply authorization rules to 
  * object provisioning. 
  */

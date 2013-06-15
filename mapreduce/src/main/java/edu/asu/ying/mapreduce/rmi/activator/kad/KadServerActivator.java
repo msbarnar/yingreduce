@@ -1,9 +1,9 @@
 package edu.asu.ying.mapreduce.rmi.activator.kad;
 
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -28,7 +28,7 @@ public final class KadServerActivator
 	}
 
 	@Override
-	public final URI getUri() {
+	public final ResourceIdentifier getUri() {
 		return null;
 	}
 }

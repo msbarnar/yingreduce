@@ -1,12 +1,11 @@
 package edu.asu.ying.mapreduce.rmi.resource;
 
 import java.io.Serializable;
-import java.net.URI;
 
 
 /**
  * A {@link RemoteResource} is a reference to a resource that exists outside the current context and can be discovered,
- * accessed, or referenced using a {@link java.net.URI}.
+ * accessed, or referenced using a {@link ResourceIdentifier}.
  * <p>
  * Required parts of a resource URI are:
  * <ul>
@@ -30,5 +29,5 @@ import java.net.URI;
 public interface RemoteResource
 	extends Serializable
 {
-	URI getUri();
+	ResourceIdentifier getUri();
 }

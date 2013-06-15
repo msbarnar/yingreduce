@@ -1,8 +1,6 @@
 package edu.asu.ying.mapreduce.channels.kad;
 
 import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.io.IOException;
@@ -15,6 +13,7 @@ import edu.asu.ying.mapreduce.messaging.ExceptionMessage;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.messaging.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.NoResponseException;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.Node;
@@ -28,7 +27,7 @@ public final class KadSendChannel
 	implements MessageOutputStream
 {
 	private final KeybasedRouting kadNode;
-	private final URI localUri;
+	private final ResourceIdentifier localUri;
 
 	@Inject
 	public KadSendChannel(final KeybasedRouting kadNode) {
@@ -37,23 +36,14 @@ public final class KadSendChannel
 	}
 
 	/**
-	 * Returns the URI associated with the local host.
+	 * Returns the {@link ResourceIdentifier} associated with the local host.
 	 * <p>
-	 * The node URI format is as follows:
+	 * The node identifier format is as follows:
 	 * <p>
-	 * {@code node://node-key/"}
+	 * {@code node/node-key"}
 	 */
-	private final URI makeLocalUri() {
-		final Node localNode = this.kadNode.getLocalNode();
-		try {
-			// Escape the key for URI syntax
-			final String localNodeAddress = UriUtils.encodeHost(localNode.getKey().toString());
-			return new URI("node", localNodeAddress, null, null);
-		} catch (final URISyntaxException e) {
-			// TODO: logging
-			e.printStackTrace();
-			return null;
-		}
+	private final ResourceIdentifier makeLocalUri() {
+		return new ResourceIdentifier("node/".concat(this.kadNode.getLocalNode().getKey().toString()));
 	}
 
 	/**
@@ -108,7 +98,7 @@ public final class KadSendChannel
 		}
 
 		// Collect future responses by destination URI
-		final Map<URI, Future<Serializable>> responses = new HashMap<>();
+		final Map<ResourceIdentifier, Future<Serializable>> responses = new HashMap<>();
 
 		// Send the message to the k nearest nodes (defined by the message's replication property)
 		final Iterator<Node> iter = foundNodes.iterator();
@@ -119,7 +109,7 @@ public final class KadSendChannel
 
 		// Collect response messages
 		final List<Message> ret = new ArrayList<>();
-		for (final Map.Entry<URI, Future<Serializable>> response : responses.entrySet()) {
+		for (final Map.Entry<ResourceIdentifier, Future<Serializable>> response : responses.entrySet()) {
 			Message result;
 			try {
 				result = (Message) response.getValue().get();

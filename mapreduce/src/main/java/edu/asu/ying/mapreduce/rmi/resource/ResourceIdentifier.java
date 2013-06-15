@@ -1,49 +1,58 @@
-package edu.asu.ying.mapreduce.net;
+package edu.asu.ying.mapreduce.rmi.resource;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Stack;
 
 
 /**
  * Identifies an item on the network.
  */
-public final class NetworkIdentifier
+public final class ResourceIdentifier
+	implements Serializable
 {
+	private static final long SerialVersionUID = 1L;
+
 	private enum Part {
 		Scheme,
 		Address,
-		Path
+		Path,
+		Name
 	}
-	private final String identifier;
-	private final List<String> parts;
-	private final String host;
-	private final int port;
 
-	public NetworkIdentifier(final String identifier) {
+	private final String identifier;
+	// Not serialized; reparse on deserialization
+	private transient List<String> parts;
+	private transient String host;
+	private transient int port;
+
+	public ResourceIdentifier(final String identifier) {
 		this.identifier = identifier;
+		this.parse();
+	}
+
+	private final void parse() {
 		this.parts = Lists.newArrayList(Splitter.on('/').trimResults().split(identifier));
 		final String address = this.getNullable(Part.Address);
 
-		String host = address;
-		int port = -1;
+		this.host = address;
+		this.port = -1;
+
 		if (address != null) {
 			final List<String> hostParts
 					= Lists.newArrayList(Splitter.on(':').trimResults().split(address));
 			if (hostParts.size() > 1) {
 				try {
-					port = Integer.parseInt(hostParts.get(hostParts.size()-1));
-					host = hostParts.get(0);
+					this.port = Integer.parseInt(hostParts.get(hostParts.size()-1));
+					this.host = hostParts.get(0);
 				} catch (final NumberFormatException e) {
 				}
 			}
 		}
-		this.host = host;
-		this.port = port;
 	}
 
 	private final String getNullable(final Part part) {
@@ -59,6 +68,7 @@ public final class NetworkIdentifier
 	public final String getHost() { return this.host; }
 	public final int getPort() { return this.port; }
 	public final String getPath() { return getNullable(Part.Path); }
+	public final String getName() { return getNullable(Part.Name); }
 
 	public final String toString() { return this.identifier; }
 
@@ -70,5 +80,11 @@ public final class NetworkIdentifier
 			return this.identifier == null;
 		}
 		return rhs.toString().equals(this.identifier);
+	}
+
+	private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
+		ois.defaultReadObject();
+		// Reparse the identifier string
+		this.parse();
 	}
 }

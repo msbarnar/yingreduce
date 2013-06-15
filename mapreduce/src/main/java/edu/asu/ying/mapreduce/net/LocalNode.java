@@ -1,7 +1,8 @@
 package edu.asu.ying.mapreduce.net;
 
+import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
+
 import java.io.IOException;
-import java.net.URI;
 
 
 /**
@@ -9,5 +10,5 @@ import java.net.URI;
  */
 public interface LocalNode
 {
-	void join(final URI bootstrap) throws IOException;
+	void join(final ResourceIdentifier bootstrap) throws IOException;
 }
