@@ -1,12 +1,10 @@
 package edu.asu.ying.mapreduce.messaging;
 
 import com.google.common.base.Optional;
-import edu.asu.ying.mapreduce.Properties;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.common.Properties;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -15,17 +13,28 @@ import java.util.UUID;
  * <p>
  * The following properties are defined on this message:
  * <ul>
- *     <li>{@code id} - the universally unique identifier of this message.</li>
- *     <li>{@code destination-uri} - the URI of the destination host of this message, used on the network layer for
- *     routing.</li>
- *     <li>{@code replication} - the maximum number of hosts matching the destination URI to which this message will be
- *     send.</li>
+ *     <li>{@code message.id} - the universally unique identifier of this message.</li>
+ *     <li>{@code message.uri.destination} - the URI of the node for which this message is destined.</li>
+ *     <li>{@code message.uri.source} - the URI of the node from which this node originated.</li>
+ *     <li>{@code message.exception} - an exception, if one was thrown.</li>
  * </ul>
  */
 public abstract class MessageBase
 	implements Message
 {
 	private static final long SerialVersionUID = 1L;
+
+	/**
+	 * Defines the keys of the properties defined by this message.
+	 */
+	public static final class Property {
+		public static final String Scheme = "";
+		public static final String MessageId = "message.id";
+		public static final String DestinationURI = "message.uri.destination";
+		public static final String SourceURI = "message.uri.source";
+		public static final String Exception = "exception";
+		public static final String Arguments = "arguments";
+	}
 
 	protected final Properties properties = new Properties();
 
@@ -49,28 +58,25 @@ public abstract class MessageBase
 		this.setDestinationUri(destinationUri);
 	}
 
-	public <T> T getNullableProperty(final String key, final Class<T> type) {
-		try {
-			return type.cast(this.properties.get(key));
-		} catch (final ClassCastException e) {
-			// TODO: logging
-			e.printStackTrace();
-			return null;
-		}
-	}
 	/*
 	 * Accessors
 	 */
-	public void setId(final String id) { this.properties.put("id", id); }
 	/**
 	 * Initializes the message ID with a random {@link UUID}.
 	 */
-	public void setId() { this.setId(UUID.randomUUID().toString()); }
-	public void setId(final UUID id) { this.setId(id.toString()); }
+	public void setId() {
+		this.setId(UUID.randomUUID().toString());
+	}
+	public void setId(final String id) {
+		this.properties.put(Property.MessageId, id);
+	}
+	public void setId(final UUID id) {
+		this.setId(id.toString());
+	}
 
 	@Override
 	public String getId() {
-		final Optional<Serializable> id = Optional.fromNullable(this.properties.get("id"));
+		final Optional<Serializable> id = Optional.fromNullable(this.properties.get(Property.MessageId));
 		if (!id.isPresent()) {
 			// We can't have no id; set a random one.
 			this.setId();
@@ -81,18 +87,38 @@ public abstract class MessageBase
 	}
 
 	@Override
-	public Properties getProperties() { return this.properties; }
-
-	public void setSourceUri(final ResourceIdentifier uri) { this.properties.put("source-uri", uri); }
-	@Override
-	public ResourceIdentifier getSourceUri() {
-		return this.getNullableProperty("source-uri", ResourceIdentifier.class);
+	public Properties getProperties() {
+		return this.properties;
 	}
 
-	public void setDestinationUri(final ResourceIdentifier uri) { this.properties.put("destination-uri", uri); }
+	public void setSourceUri(final ResourceIdentifier uri) {
+		this.properties.put(Property.SourceURI, uri);
+	}
+	@Override
+	public ResourceIdentifier getSourceUri() {
+		return this.properties.getDynamicCast(Property.SourceURI, ResourceIdentifier.class);
+	}
+
+	public void setDestinationUri(final ResourceIdentifier uri) {
+		this.properties.put(Property.DestinationURI, uri);
+	}
 	@Override
 	public ResourceIdentifier getDestinationUri() {
-		return this.getNullableProperty("destination-uri", ResourceIdentifier.class);
+		return this.properties.getDynamicCast(Property.DestinationURI, ResourceIdentifier.class);
+	}
+
+	public final void setException(final Throwable exception) {
+		this.properties.put(Property.Exception, exception);
+	}
+	public final Throwable getException() {
+		return this.properties.getDynamicCast(Property.Exception, Throwable.class);
+	}
+
+	public final void setArguments(final Properties args) {
+		this.properties.put(Property.Arguments, args);
+	}
+	public final Properties getArguments() {
+		return this.properties.getDynamicCast(Property.Arguments, Properties.class);
 	}
 
 	/**
@@ -100,5 +126,7 @@ public abstract class MessageBase
 	 * @return a number equal to or greater than 1 (default).
 	 */
 	@Override
-	public int getReplication() { return this.getDestinationUri().getReplication(); }
+	public int getReplication() {
+		return this.getDestinationUri().getReplication();
+	}
 }

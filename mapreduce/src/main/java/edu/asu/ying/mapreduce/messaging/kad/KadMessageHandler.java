@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.messaging.kad;
 
 import edu.asu.ying.mapreduce.messaging.*;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.net.InvalidContentException;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.MessageHandler;
 import il.technion.ewolf.kbr.Node;
@@ -17,18 +18,15 @@ import java.io.Serializable;
 public final class KadMessageHandler
 	implements MessageHandler
 {
-	// The node we receive messages from
-	private final KeybasedRouting kadNode;
 	// The stream they are written to
 	private final MessageOutputStream messageStream;
 
 	public KadMessageHandler(final String scheme, final KeybasedRouting inputNode,
 	                         final MessageOutputStream messageStream) {
 
-		this.kadNode = inputNode;
 		this.messageStream = messageStream;
 
-		this.kadNode.register(scheme, this);
+		inputNode.register(scheme, this);
 	}
 
 	/**

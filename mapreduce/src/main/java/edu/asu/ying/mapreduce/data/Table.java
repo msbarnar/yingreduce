@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.data;
 
-import edu.asu.ying.mapreduce.rmi.resource.RemoteResource;
+import edu.asu.ying.mapreduce.net.resource.RemoteResource;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -25,6 +25,13 @@ public interface Table
 	extends Map<Serializable, Serializable>, RemoteResource
 {
 	/**
+	 * Persists dirty pages. On a client node, this means distributing them to the network. On a server node, the table
+	 * may be persisted to disk or cache.
+	 * @throws IOException
+	 */
+	void commit() throws IOException;
+
+	/**
 	 * A {@link Page} is the unit of transmission of a {@link Table}.
 	 * <p>
 	 * When elements of a {@code Table} are distributed on the network, they are first gathered into
@@ -33,8 +40,7 @@ public interface Table
 	 *
 	 * @see RemoteResource
 	 */
-	interface Page
-			extends Serializable, RemoteResource
+	interface Page extends Serializable, RemoteResource
 	{
 		/**
 		 * Every {@code Page} belongs to a {@link Table}; this is that table's ID.
@@ -51,11 +57,4 @@ public interface Table
 		 */
 		Map<Serializable, Serializable> getElements();
 	}
-
-	/**
-	 * Persists dirty pages. On a client node, this means distributing them to the network. On a server node, the table
-	 * may be persisted to disk or cache.
-	 * @throws IOException
-	 */
-	void commit() throws IOException;
 }

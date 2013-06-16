@@ -1,8 +1,8 @@
 import com.google.common.util.concurrent.ListenableFuture;
-import edu.asu.ying.mapreduce.concurrency.FilteredFutures;
-import edu.asu.ying.mapreduce.events.FilteredValueEvent;
-import edu.asu.ying.mapreduce.messaging.filter.Filter;
-import edu.asu.ying.mapreduce.messaging.filter.Filter.on;
+import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
+import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.filter.Filter;
+import edu.asu.ying.mapreduce.common.filter.Filter.on;
 import org.junit.Assert;
 import org.junit.Test;
 

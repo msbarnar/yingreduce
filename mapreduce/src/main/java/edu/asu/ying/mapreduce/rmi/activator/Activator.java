@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.rmi.activator;
 
-import edu.asu.ying.mapreduce.rmi.resource.RemoteResource;
+import edu.asu.ying.mapreduce.net.resource.RemoteResource;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -29,7 +29,7 @@ import java.util.Map;
  * specific.
  * <p>
  * {@link Activator} is a {@link RemoteResource} that can be located on a
- * {@link edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier} where the {@code scheme} is {@code activator} and the
+ * {@link edu.asu.ying.mapreduce.net.resource.ResourceIdentifier} where the {@code scheme} is {@code activator} and the
  * {@code host} is the implementation-specific host identifier.
  * <br>The {@code authority} part may be used on the implementing activator to apply authorization rules to
  * object provisioning. 

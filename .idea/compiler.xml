@@ -24,8 +24,6 @@
         <processorPath useClasspath="true" />
         <module name="mapreduce" />
         <module name="openkad" />
-        <module name="RMIClient" />
-        <module name="RMIServer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.7">

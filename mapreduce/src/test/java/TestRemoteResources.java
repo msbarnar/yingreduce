@@ -1,13 +1,13 @@
 import com.google.inject.*;
-import edu.asu.ying.mapreduce.events.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.messaging.Message;
-import edu.asu.ying.mapreduce.messaging.SendMessageStream;
+import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.resource.RemoteResources;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceResponse;
+import edu.asu.ying.mapreduce.net.resource.RemoteResources;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
 import org.junit.Test;
 
 import java.io.IOException;

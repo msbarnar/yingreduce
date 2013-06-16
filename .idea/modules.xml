@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/prototyping/RMIClient/RMIClient.iml" filepath="$PROJECT_DIR$/prototyping/RMIClient/RMIClient.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prototyping/RMI/RMIServer.iml" filepath="$PROJECT_DIR$/prototyping/RMI/RMIServer.iml" />
       <module fileurl="file://$PROJECT_DIR$/mapreduce/mapreduce.iml" filepath="$PROJECT_DIR$/mapreduce/mapreduce.iml" />
       <module fileurl="file://$PROJECT_DIR$/openkad/openkad.iml" filepath="$PROJECT_DIR$/openkad/openkad.iml" />
     </modules>

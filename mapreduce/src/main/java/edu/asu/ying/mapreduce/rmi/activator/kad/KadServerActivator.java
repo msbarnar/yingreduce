@@ -3,11 +3,10 @@ package edu.asu.ying.mapreduce.rmi.activator.kad;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import edu.asu.ying.mapreduce.channels.kad.KadChannel;
+import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
-import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -30,10 +29,11 @@ public final class KadServerActivator
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public final <T extends Remote> T getReference(final Class<T> type, final Map<String, String> properties) throws RemoteException {
 		// TODO: use UnicastRemoteObject.exportObject
 		System.out.println(String.format("GET INSTANCE: %s", type.toString()));
-		final Injector injector = Guice.createInjector(new KadChannel());
+		final Injector injector = Guice.createInjector(new KademliaNetwork());
 		final Remote instance;
 		instance = injector.getInstance(type);
 		return (T) UnicastRemoteObject.exportObject(instance, 3334);

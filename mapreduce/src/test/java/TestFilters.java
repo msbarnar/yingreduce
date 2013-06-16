@@ -1,9 +1,9 @@
-import edu.asu.ying.mapreduce.messaging.filter.Filter;
-import edu.asu.ying.mapreduce.messaging.filter.Filter.on;
-import edu.asu.ying.mapreduce.messaging.filter.FilterMessage;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceRequest;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceResponse;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.common.filter.Filter;
+import edu.asu.ying.mapreduce.common.filter.Filter.on;
+import edu.asu.ying.mapreduce.messaging.FilterMessage;
+import edu.asu.ying.mapreduce.net.resource.ResourceRequest;
+import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 

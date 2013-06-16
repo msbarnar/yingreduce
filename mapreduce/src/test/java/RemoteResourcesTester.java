@@ -3,10 +3,10 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import edu.asu.ying.mapreduce.Properties;
+import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.resource.RemoteResources;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.RemoteResources;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import org.junit.Assert;
 
 import java.util.List;
