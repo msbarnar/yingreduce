@@ -31,5 +31,5 @@ import java.rmi.RemoteException;
 public interface RemoteResource
 	extends Remote, Serializable
 {
-	ResourceIdentifier getUri() throws RemoteException;
+	ResourceIdentifier getResourceUri() throws RemoteException;
 }

@@ -45,7 +45,7 @@ public final class KadServerActivator
 	}
 
 	@Override
-	public final ResourceIdentifier getUri() throws RemoteException {
-		throw new RemoteException("getUri");
+	public final ResourceIdentifier getResourceUri() throws RemoteException {
+		throw new RemoteException("getResourceUri");
 	}
 }

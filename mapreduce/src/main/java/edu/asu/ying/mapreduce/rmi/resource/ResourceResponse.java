@@ -1,17 +1,14 @@
 package edu.asu.ying.mapreduce.rmi.resource;
 
-import com.google.common.base.Optional;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.messaging.MessageBase;
 
-import java.net.URISyntaxException;
-
 
 /**
- * {@link GetResourceResponse} is sent in response to {@link GetResourceMessage} and contains either a reference to the
+ * {@link ResourceResponse} is sent in response to {@link ResourceRequest} and contains either a reference to the
  * resource or an exception.
  * <p>
- * The ID of this message will be the same as that of the {@link GetResourceMessage} that instigated it.
+ * The ID of this message will be the same as that of the {@link ResourceRequest} that instigated it.
  * <p>
  * The following properties are defined on this message:
  * <ul>
@@ -19,10 +16,10 @@ import java.net.URISyntaxException;
  *     <li>{@code exception} - (nullable) the exception if one was thrown.</li>
  * </ul>
  */
-public final class GetResourceResponse
+public final class ResourceResponse
 	extends MessageBase
 {
-	public GetResourceResponse(final Message request) {
+	public ResourceResponse(final Message request) {
 		super(request.getSourceUri());
 		this.setId(request.getId());
 	}
@@ -31,7 +28,7 @@ public final class GetResourceResponse
 	 * @param request the message to which this is a response.
 	 * @param resource the resource reference.
 	 */
-	public GetResourceResponse(final Message request, final RemoteResource resource) {
+	public ResourceResponse(final Message request, final RemoteResource resource) {
 		this(request);
 		this.setResource(resource);
 	}
@@ -40,7 +37,7 @@ public final class GetResourceResponse
 	 * @param request the message to which this is a response.
 	 * @param exception the exception to return instead of the resource.
 	 */
-	public GetResourceResponse(final Message request, final Throwable exception) {
+	public ResourceResponse(final Message request, final Throwable exception) {
 		this(request);
 		this.setException(exception);
 	}

@@ -1,8 +1,8 @@
 import edu.asu.ying.mapreduce.messaging.filter.Filter;
 import edu.asu.ying.mapreduce.messaging.filter.Filter.on;
 import edu.asu.ying.mapreduce.messaging.filter.FilterMessage;
-import edu.asu.ying.mapreduce.rmi.resource.GetResourceMessage;
-import edu.asu.ying.mapreduce.rmi.resource.GetResourceResponse;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceRequest;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceResponse;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,22 +18,22 @@ public class TestFilters
 		final Filter filter =
 				on.allOf(
 						on.anyOf(
-								on.classIs(GetResourceMessage.class),
-								on.classIs(GetResourceResponse.class)
+								on.classIs(ResourceRequest.class),
+								on.classIs(ResourceResponse.class)
 						),
 						FilterMessage.on.id("yes"),
 						FilterMessage.on.property("test", "hi")
 				);
 
-		GetResourceMessage msg1 = new GetResourceMessage(new ResourceIdentifier("resource\\host\\path"));
+		ResourceRequest msg1 = new ResourceRequest(new ResourceIdentifier("resource\\host\\path"));
 		msg1.setId("yes");
 		msg1.getProperties().put("test", "hi");
-		GetResourceMessage msg2 = new GetResourceMessage(new ResourceIdentifier("resource\\host\\path"));
+		ResourceRequest msg2 = new ResourceRequest(new ResourceIdentifier("resource\\host\\path"));
 		msg2.setId("no");
-		GetResourceResponse rsp1 = new GetResourceResponse(msg1);
+		ResourceResponse rsp1 = new ResourceResponse(msg1);
 		rsp1.setId("yes");
 		rsp1.getProperties().put("test", "hi");
-		GetResourceResponse rsp2 = new GetResourceResponse(msg1);
+		ResourceResponse rsp2 = new ResourceResponse(msg1);
 		rsp2.setId("no");
 		rsp2.getProperties().put("test", "bye");
 

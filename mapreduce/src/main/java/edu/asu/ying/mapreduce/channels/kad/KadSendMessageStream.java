@@ -48,12 +48,14 @@ public final class KadSendMessageStream
 	}
 
 	/**
-	 * Sends a message to the host identified on {@link edu.asu.ying.mapreduce.messaging.Message#getDestinationUri()}.
+	 * Sends a message to the host identified on {@link Message#getDestinationUri()}.
+	 * </p>
+	 * The actual number of messages sent is specified by {@link Message#getReplication()}.
 	 * @param message the message to send, complete with the destination URI.
-	 * @throws IOException if the host is unable to be located or sending the message fails.
+	 * @return the number of message sent.
 	 */
 	@Override
-	public final void write(final Message message) throws IOException {
+	public final int write(final Message message) throws IOException {
 		try {
 			message.setSourceUri(new ResourceIdentifier(message.getDestinationUri().getScheme(),
 		                                            this.localUri.getAddress()));
@@ -74,9 +76,11 @@ public final class KadSendMessageStream
 		final String scheme = message.getDestinationUri().getScheme();
 		// Send the message to the k nearest nodes (defined on the message's replication property)
 		final Iterator<Node> iter = foundNodes.iterator();
-		for (int i = 0; iter.hasNext() && (i < message.getReplication()); i++) {
+		int messageCount;
+		for (messageCount = 0; iter.hasNext() && (messageCount < message.getReplication()); messageCount++) {
 			this.kadNode.sendMessage(iter.next(), scheme, message);
 		}
+		return messageCount;
 	}
 
 	/**

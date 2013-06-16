@@ -1,6 +1,7 @@
 package edu.asu.ying.mapreduce.messaging;
 
 import com.google.common.base.Optional;
+import edu.asu.ying.mapreduce.Properties;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public abstract class MessageBase
 {
 	private static final long SerialVersionUID = 1L;
 
-	protected final Map<Serializable, Serializable> properties = new HashMap<Serializable, Serializable>();
+	protected final Properties properties = new Properties();
 
 	/*
 	 * Constructors
@@ -80,7 +81,7 @@ public abstract class MessageBase
 	}
 
 	@Override
-	public Map<Serializable, Serializable> getProperties() { return this.properties; }
+	public Properties getProperties() { return this.properties; }
 
 	public void setSourceUri(final ResourceIdentifier uri) { this.properties.put("source-uri", uri); }
 	@Override
@@ -94,19 +95,10 @@ public abstract class MessageBase
 		return this.getNullableProperty("destination-uri", ResourceIdentifier.class);
 	}
 
-	public void setReplication(final int replication) { this.properties.put("replication", replication); }
 	/**
 	 * Replication is the maximum number of hosts matching the destination URI to which this message will be delivered.
 	 * @return a number equal to or greater than 1 (default).
 	 */
 	@Override
-	public int getReplication() {
-		final Integer repl = this.getNullableProperty("replication", Integer.class);
-		if (repl == null) {
-			this.setReplication(1);
-			return 1;
-		} else {
-			return repl;
-		}
-	}
+	public int getReplication() { return this.getDestinationUri().getReplication(); }
 }

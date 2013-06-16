@@ -15,6 +15,10 @@ import java.util.List;
 
 /**
  * Identifies an item on the network.
+ * </p>
+ * Format:
+ * </p>
+ * {@code scheme\(replication)host:port\path\name}
  */
 public final class ResourceIdentifier
 	implements Serializable
@@ -34,7 +38,8 @@ public final class ResourceIdentifier
 	// Not serialized; reparse on deserialization
 	private transient List<String> parts;
 	private transient String host;
-	private transient int port;
+	private transient int port = -1;
+	private transient int replication = 1;
 
 	public ResourceIdentifier(final String identifier)
 			throws IllegalArgumentException, URISyntaxException {
@@ -106,19 +111,32 @@ public final class ResourceIdentifier
 		}
 		final String address = this.getNullable(Part.Address);
 
-		this.host = address;
-		this.port = -1;
-
 		if (address != null) {
-			final List<String> hostParts
-					= Lists.newArrayList(Splitter.on(':').trimResults().split(address));
+			final List<String> hostParts = Lists.newArrayList(Splitter.on(':').trimResults().split(address));
+			// Parse replication
+			final String firstPart = hostParts.get(0);
+			this.host = firstPart;
+			if (firstPart.charAt(0) == '(') {
+				final int closeParen = firstPart.indexOf(')');
+				if (closeParen > 0) {
+					try {
+						this.replication = Integer.parseInt(firstPart.substring(1, closeParen));
+						// Set the host minus the replication
+						this.host = firstPart.substring(closeParen+1);
+					} catch (final NumberFormatException e) {
+					}
+				}
+			}
 			if (hostParts.size() > 1) {
 				try {
 					this.port = Integer.parseInt(hostParts.get(hostParts.size()-1));
-					this.host = hostParts.get(0);
 				} catch (final NumberFormatException e) {
 				}
 			}
+		}
+
+		if (this.replication < 1) {
+			this.replication = 1;
 		}
 	}
 
@@ -136,7 +154,8 @@ public final class ResourceIdentifier
 	public final int getPort() { return this.port; }
 	public final String getPath() { return getNullable(Part.Path); }
 	public final String getName() { return getNullable(Part.Name); }
-
+	public final int getReplication() { return this.replication;
+	}
 	@Override
 	public final String toString() { return this.identifier; }
 

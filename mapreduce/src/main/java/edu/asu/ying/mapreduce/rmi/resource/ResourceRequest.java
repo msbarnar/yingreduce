@@ -1,6 +1,5 @@
 package edu.asu.ying.mapreduce.rmi.resource;
 
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import edu.asu.ying.mapreduce.messaging.MessageBase;
@@ -10,7 +9,7 @@ import java.net.URISyntaxException;
 
 
 /**
- * A {@link GetResourceMessage} indicates to a remote node that we would like a remote reference to one of its
+ * A {@link ResourceRequest} indicates to a remote node that we would like a remote reference to one of its
  * resources.
  * <p>
  * The following properties are defined on this message:
@@ -20,14 +19,14 @@ import java.net.URISyntaxException;
  *     {@code resource-name} - (nullable) the unique name of the resource, if it has one.
  * </ul>
  */
-public class GetResourceMessage
+public class ResourceRequest
 	extends MessageBase
 {
 	/**
 	 * Initializes the message with a given {@link edu.asu.ying.mapreduce.rmi.resource.RemoteResource} URI.
 	 * @param resourceUri the fully formed URI of the resource. {@see RemoteResource} for formatting details.
 	 */
-	public GetResourceMessage(final ResourceIdentifier resourceUri) throws URISyntaxException {
+	public ResourceRequest(final ResourceIdentifier resourceUri) throws URISyntaxException {
 		// Set the destination URI from only the host and port of the resource URI
 		super(new ResourceIdentifier(resourceUri.getScheme(), resourceUri.getAddress()));
 

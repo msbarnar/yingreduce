@@ -10,13 +10,32 @@ import java.util.*;
 
 
 /**
- * {@code FilteredFutures}
+ * {@code FilteredFutures} provides future values from a {@link FilteredValueEvent} that match a given {@link Filter}.
  */
 public class FilteredFutures<V>
 	implements EventHandler<V>
 {
-	public static <V> FilteredFutures<V> getFrom(final FilteredValueEvent<V> event) {
+	/**
+	 * Returns a {@code FilteredFutures} instance that receives values from the given {@link FilteredValueEvent}.
+	 * @param event the event that provides values to filter.
+	 * @param <V> the type of value to receive
+	 * @return a {@code FilteredFutures} instance attached to the given event.
+	 */
+	public static <V> FilteredFutures<V> getFutureValuesFrom(final FilteredValueEvent<V> event) {
 		return new FilteredFutures<>(event);
+	}
+
+	/**
+	 * Cancels any unfulfilled futures in a list.
+	 * @param remainingFutures the list of futures in which all unfulfilled items will be cancelled.
+	 */
+	public static <V> void cancelRemaining(final List<ListenableFuture<V>> remainingFutures,
+	                                       final boolean mayInterruptIfRunning) {
+		for (final ListenableFuture<V> future : remainingFutures) {
+			if (!future.isCancelled() && !future.isDone()) {
+				future.cancel(mayInterruptIfRunning);
+			}
+		}
 	}
 
 	// Register on this event to receive values from it
@@ -71,6 +90,10 @@ public class FilteredFutures<V>
 	 */
 	@Override
 	public boolean onEvent(final Object sender, final V value) {
+		// Clear all cancelled futures
+		while ((this.unfulfilledFutures.peek() != null) && this.unfulfilledFutures.peek().isCancelled()) {
+			this.unfulfilledFutures.pop();
+		}
 		// Fulfill futures until there are none left to fulfill
 		if (this.unfulfilledFutures.peek() != null) {
 			this.unfulfilledFutures.pop().set(value);

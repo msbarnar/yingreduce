@@ -1,5 +1,6 @@
 package edu.asu.ying.mapreduce.messaging;
 
+import edu.asu.ying.mapreduce.Properties;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.Map;
 public interface Message
 	extends Serializable
 {
-	Map<Serializable, Serializable> getProperties();
+	Properties getProperties();
 
 	/**
 	 * The message's ID is a universally unique identifier used to link received responses to their previously

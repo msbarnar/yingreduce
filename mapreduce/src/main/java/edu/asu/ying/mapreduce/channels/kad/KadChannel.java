@@ -7,15 +7,12 @@ import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.SendMessageStream;
-import edu.asu.ying.mapreduce.messaging.SimpleMessageDispatch;
 import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KadLocalNode;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.RemoteTest;
-import edu.asu.ying.mapreduce.rmi.resource.ResourceFinder;
-import edu.asu.ying.mapreduce.rmi.resource.SyncResourceFinder;
 import il.technion.ewolf.kbr.*;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
@@ -26,8 +23,8 @@ import java.util.Random;
 
 
 /**
- * The {@link KadChannel} constructs the message and channel sink chains necessary to connect high-level peer
- * operations (e.g. {@link edu.asu.ying.mapreduce.rmi.resource.ResourceFinder} to the underlying Kademlia network stack.
+ * The {@code KadChannel} wires all of the high-level operations
+ * (e.g. {@link edu.asu.ying.mapreduce.rmi.resource.RemoteResources}) to the underlying Kademlia network classes.
  */
 public final class KadChannel
 	extends AbstractModule
@@ -55,49 +52,12 @@ public final class KadChannel
 		}
 	}
 
-
-	/**
-	 * String -> Singleton {@link MessageDispatch} provider.
-	 */
-	private enum MessageDispatchProvider {
-		INSTANCE;
-		private final Map<String, MessageDispatch> dispatches = new HashMap<>();
-
-		private final MessageDispatch getDispatch(final String scheme) {
-			MessageDispatch dispatch = this.dispatches.get(scheme);
-			if (dispatch == null) {
-				dispatch = new SimpleMessageDispatch(scheme);
-				this.dispatches.put(scheme, dispatch);
-			}
-			return dispatch;
-		}
-	}
-
 	@Override
 	protected void configure() {
 		bind(Activator.class).to(KadServerActivator.class);
-		bind(ResourceFinder.class).to(SyncResourceFinder.class);
 		bind(LocalNode.class).to(KadLocalNode.class);
 		bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class).to(KadSendMessageStream.class);
 		bind(RemoteTest.class).to(KadServerActivator.RemoteTestImpl.class);
-	}
-
-	/**
-	 * Provides an instance of {@link MessageDispatch} for objects to register to receive specific messages from the
-	 * network.
-	 */
-	// TODO: find a way to provide arbitrarily named instances
-	@Provides
-	@Named("resource")
-	private final MessageDispatch provideMessageDispatch(final KeybasedRouting kadNode) {
-		return provideSchemedDispatch("resource", kadNode);
-	}
-
-	private final MessageDispatch provideSchemedDispatch(final String scheme, final KeybasedRouting kadNode) {
-		final MessageDispatch dispatch = MessageDispatchProvider.INSTANCE.getDispatch("resource");
-		// Attach a handler to the kad node on behalf of the dispatch
-		final KadMessageHandler handler = new KadMessageHandler(scheme, kadNode, dispatch);
-		return dispatch;
 	}
 
 	/**
