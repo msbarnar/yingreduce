@@ -1,5 +1,8 @@
 package edu.asu.ying.mapreduce.common.filter;
 
+import com.google.common.base.Preconditions;
+
+
 /**
  * A {@code Filter} is a node in the tree of filters.
  */
@@ -40,7 +43,9 @@ public interface Filter
 		private static final class FilterOnEquals<T> implements Filter
 		{
 			private final T value;
-			FilterOnEquals(final T value) { this.value = value; }
+			FilterOnEquals(final T value) {
+				this.value = value;
+			}
 
 			@Override public final <V> boolean match(final V value) {
 				if (this.value == null) {
@@ -55,12 +60,12 @@ public interface Filter
 		private static final class FilterOnClass implements Filter
 		{
 			private final Class<?> clazz;
-			FilterOnClass(final Class<?> clazz) { this.clazz = clazz; }
+			FilterOnClass(final Class<?> clazz) {
+				Preconditions.checkNotNull(clazz);
+				this.clazz = clazz;
+			}
 
 			@Override public final <V> boolean match(final V value) {
-				if (this.clazz == null) {
-					return false;
-				}
 				return this.clazz.equals(value.getClass());
 			}
 		}

@@ -1,5 +1,7 @@
 package edu.asu.ying.mapreduce.messaging;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterBase;
 
@@ -34,11 +36,10 @@ public abstract class FilterMessage
 	 */
 	@Override
 	public <V> boolean match(final V value) {
-		final Message message = this.dynamicCast(value);
-		if (message == null) {
+		if (!(value instanceof Message)) {
 			return false;
 		} else {
-			return this.match(message);
+			return this.match((Message) value);
 		}
 	}
 
@@ -48,14 +49,15 @@ public abstract class FilterMessage
 	private static final class FilterOnId extends FilterMessage
 	{
 		private final String id;
-		private FilterOnId(final String id) { this.id = id; }
+		private FilterOnId(final String id) {
+			Preconditions.checkNotNull(Strings.emptyToNull(id));
+			this.id = id;
+		}
 
 		@Override protected boolean match(final Message message) {
-			if (this.id == null) {
-				return message.getId() == null;
-			} else {
-				return this.id.equals(message.getId());
-			}
+			if (message == null) return false;
+
+			return this.id.equals(message.getId());
 		}
 	}
 
@@ -63,14 +65,15 @@ public abstract class FilterMessage
 	{
 		private final Serializable key, value;
 		private FilterOnProperty(final Serializable key, final Serializable value) {
+			Preconditions.checkNotNull(key);
+
 			this.key = key;
 			this.value = value;
 		}
 
 		@Override protected boolean match(final Message message) {
-			if (this.key == null) {
-				return false;
-			}
+			if (message == null) return false;
+
 			final Serializable messageValue = message.getProperties().get(this.key);
 			if (this.value == null) {
 				return messageValue == null;
