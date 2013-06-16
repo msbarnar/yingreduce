@@ -2,20 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9ffc779c-2642-4842-aeac-60344a3ce6bc" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_findbugs_jsr305_1_3_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/ExceptionMessage.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/ExceptionMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/events/FilteredValueEvent.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/events/FilteredValueEvent.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/Properties.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/Properties.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resource/ResourceMessage.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resource/ResourceMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/mapreduce.iml" afterPath="$PROJECT_DIR$/mapreduce/mapreduce.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/pom.xml" afterPath="$PROJECT_DIR$/mapreduce/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371411372423" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371413105948" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272739738" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272043017" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371274691692" ignored="false" />
@@ -29,7 +21,7 @@
     <file path="/pom.xml" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371101479176" ignored="false" />
     <file path="/SendMessageSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371094551550" ignored="false" />
     <file path="/GetResourceMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371264534227" ignored="false" />
-    <file path="/MessageBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371413095943" ignored="false" />
+    <file path="/MessageBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371413305904" ignored="false" />
     <file path="/ExceptionMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371413056800" ignored="false" />
     <file path="/UnexpectedMessageException.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371091826447" ignored="false" />
     <file path="/KadSendSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371093836932" ignored="false" />
@@ -217,7 +209,7 @@
       <file leaf-file-name="MessageBase.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="84" column="27" selection-start="2307" selection-end="2307" vertical-scroll-proportion="-0.6975945">
+            <state line="55" column="5" selection-start="1666" selection-end="1666" vertical-scroll-proportion="0.5103093">
               <folding />
             </state>
           </provider>
@@ -1166,7 +1158,11 @@
       <created>1371411373509</created>
       <updated>1371411373509</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Enforcing use of @Nullable">
+      <created>1371413107073</created>
+      <updated>1371413107073</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1259,7 +1255,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed a race condition in Event and FIlteredValueEvent where the handlers list could be changed while being iterated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enforcing use of @Nullable" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1273,7 +1269,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Message filtering (almost)" />
     <MESSAGE value="Message filtering" />
     <MESSAGE value="Message filtering + tests&#10;" />
     <MESSAGE value="ActivatorProvider is wired to respond to GetResourceMessage.&#10;Need to decide on the outermost interface for the channel; probably just by exposing ResourceFinder" />
@@ -1298,6 +1293,7 @@
     <MESSAGE value="Sketching todo for tomorrow; notebook page 106. First: remove cruft" />
     <MESSAGE value="Cleaning up; formatting, code inspection" />
     <MESSAGE value="Fixed a race condition in Event and FIlteredValueEvent where the handlers list could be changed while being iterated" />
+    <MESSAGE value="Enforcing use of @Nullable" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1424,7 +1420,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="27" selection-start="2307" selection-end="2307" vertical-scroll-proportion="-0.6975945">
+        <state line="55" column="5" selection-start="1666" selection-end="1666" vertical-scroll-proportion="0.5103093">
           <folding />
         </state>
       </provider>

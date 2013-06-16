@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.UUID;
@@ -57,6 +58,7 @@ public abstract class MessageBase
 		this.setDestinationUri(destinationUri);
 	}
 	public MessageBase(final String id, final ResourceIdentifier destinationUri) {
+		this.setId(id);
 		this.setDestinationUri(destinationUri);
 	}
 
@@ -69,6 +71,10 @@ public abstract class MessageBase
 	public void setId() {
 		this.setId(UUID.randomUUID().toString());
 	}
+
+	/**
+	 * Initializes the message ID with a string. If {@code id} is null or empty, a random ID will be set.
+	 */
 	public void setId(final String id) {
 		// Don't allow empty strings
 		if (id.isEmpty()) {
@@ -90,7 +96,14 @@ public abstract class MessageBase
 			return this.getId();
 		}
 
-		return String.valueOf(id.get());
+		final String szId = String.valueOf(id.get());
+		// Don't allow empty ID
+		if (szId.isEmpty()) {
+			this.setId();
+			return this.getId();
+		} else {
+			return szId;
+		}
 	}
 
 	@Override
@@ -102,7 +115,7 @@ public abstract class MessageBase
 		this.properties.put(Property.SourceURI, uri);
 	}
 	@Override
-	public ResourceIdentifier getSourceUri() {
+	public @Nullable ResourceIdentifier getSourceUri() {
 		return this.properties.getDynamicCast(Property.SourceURI, ResourceIdentifier.class);
 	}
 
@@ -110,7 +123,7 @@ public abstract class MessageBase
 		this.properties.put(Property.DestinationURI, uri);
 	}
 	@Override
-	public ResourceIdentifier getDestinationUri() {
+	public @Nullable ResourceIdentifier getDestinationUri() {
 		return this.properties.getDynamicCast(Property.DestinationURI, ResourceIdentifier.class);
 	}
 
@@ -120,7 +133,7 @@ public abstract class MessageBase
 	/**
 	 * Gets a {@link RemoteException} wrapping the underlying cause from the remote host.
 	 */
-	public final RemoteException getException() {
+	public final @Nullable RemoteException getException() {
 		final Optional<Serializable> cause = Optional.fromNullable(this.properties.get(Property.Exception));
 		if (!cause.isPresent()) {
 			return null;
@@ -132,10 +145,10 @@ public abstract class MessageBase
 		return new RemoteException("Remote node returned an exception.", (Throwable) cause.get());
 	}
 
-	public final void setArguments(final Properties args) {
+	public final void setArguments(final @Nullable Properties args) {
 		this.properties.put(Property.Arguments, args);
 	}
-	public final Properties getArguments() {
+	public final @Nullable Properties getArguments() {
 		return this.properties.getDynamicCast(Property.Arguments, Properties.class);
 	}
 
