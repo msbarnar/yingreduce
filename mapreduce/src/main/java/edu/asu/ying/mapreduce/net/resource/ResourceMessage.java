@@ -35,6 +35,8 @@ public abstract class ResourceMessage
 
 	private static final long SerialVersionUID = 1L;
 
+	public ResourceMessage() {
+	}
 	public ResourceMessage(final ResourceIdentifier destinationUri) {
 		super(destinationUri);
 	}

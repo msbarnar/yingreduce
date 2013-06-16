@@ -13,6 +13,7 @@ import java.util.Map;
  *
  */
 public final class Properties
+	implements Serializable
 {
 	public static final Properties Empty = new Properties(ImmutableMap.<Serializable, Serializable>of());
 

@@ -1,5 +1,8 @@
 package edu.asu.ying.mapreduce.net.resource;
 
+import com.google.common.base.Preconditions;
+
+import javax.annotation.Nullable;
 import java.rmi.RemoteException;
 
 
@@ -12,9 +15,17 @@ public final class ResourceException
 	private static final long SerialVersionUID = 1L;
 
 	private final Throwable cause;
+	private final ResourceIdentifier resourceUri;
 
-	public ResourceException(final Throwable cause) {
+	public ResourceException(final ResourceIdentifier resourceUri, final Throwable cause) {
+		Preconditions.checkNotNull(resourceUri);
+		Preconditions.checkNotNull(cause);
+
+		this.resourceUri = resourceUri;
 		this.cause = cause;
+	}
+	public ResourceException(final Throwable cause) {
+		this(ResourceIdentifier.Empty, cause);
 	}
 
 	public final Throwable getCause() {
@@ -23,6 +34,6 @@ public final class ResourceException
 
 	@Override
 	public final ResourceIdentifier getResourceUri() throws RemoteException {
-		return null;
+		return this.resourceUri;
 	}
 }

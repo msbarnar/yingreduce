@@ -1,5 +1,6 @@
 package edu.asu.ying.mapreduce.net.resource;
 
+import com.google.common.base.Preconditions;
 import edu.asu.ying.mapreduce.messaging.Message;
 
 import java.net.URISyntaxException;
@@ -40,7 +41,9 @@ public final class ResourceResponse
 	private ResourceResponse(final Message request)
 			throws URISyntaxException {
 
-		super(request.getSourceUri());
+		Preconditions.checkNotNull(request);
+		this.setDestinationUri(request.getSourceUri());
+
 		this.setId(request.getId());
 	}
 	/**
@@ -63,10 +66,13 @@ public final class ResourceResponse
 			throws URISyntaxException {
 
 		this(request);
+
+		Preconditions.checkNotNull(throwable);
 		this.setException(throwable);
 	}
 
 	protected final void setResourceInstance(final RemoteResource resource) {
+		Preconditions.checkNotNull(resource);
 		this.properties.put(Property.ResourceInstance, resource);
 	}
 	public final RemoteResource getResourceInstance() {

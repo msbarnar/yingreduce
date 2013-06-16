@@ -22,6 +22,8 @@ import java.util.List;
 public final class ResourceIdentifier
 	implements Serializable
 {
+	public static final ResourceIdentifier Empty = new ResourceIdentifier();
+
 	private static final long SerialVersionUID = 1L;
 
 	private static final String SEPARATOR = "\\";
@@ -39,6 +41,10 @@ public final class ResourceIdentifier
 	private transient String host;
 	private transient int port = -1;
 	private transient int replication = 1;
+
+	private ResourceIdentifier() {
+		this.identifier = "";
+	}
 
 	public ResourceIdentifier(final String identifier)
 			throws IllegalArgumentException, URISyntaxException {

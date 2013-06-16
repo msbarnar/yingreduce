@@ -1,6 +1,7 @@
 package edu.asu.ying.mapreduce.messaging;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
@@ -31,7 +32,6 @@ public abstract class MessageBase
 	 * Defines the keys of the properties defined by this message.
 	 */
 	public static final class Property {
-		public static final String Scheme = "";
 		public static final String MessageId = "message.id";
 		public static final String DestinationURI = "message.uri.destination";
 		public static final String SourceURI = "message.uri.source";
@@ -76,6 +76,7 @@ public abstract class MessageBase
 	 * Initializes the message ID with a string. If {@code id} is null or empty, a random ID will be set.
 	 */
 	public void setId(final String id) {
+		Preconditions.checkNotNull(id);
 		// Don't allow empty strings
 		if (id.isEmpty()) {
 			this.setId();
@@ -112,14 +113,16 @@ public abstract class MessageBase
 	}
 
 	public void setSourceUri(final ResourceIdentifier uri) {
+		Preconditions.checkNotNull(uri);
 		this.properties.put(Property.SourceURI, uri);
 	}
 	@Override
-	public @Nullable ResourceIdentifier getSourceUri() {
+	public ResourceIdentifier getSourceUri() {
 		return this.properties.getDynamicCast(Property.SourceURI, ResourceIdentifier.class);
 	}
 
 	public void setDestinationUri(final ResourceIdentifier uri) {
+		Preconditions.checkNotNull(uri);
 		this.properties.put(Property.DestinationURI, uri);
 	}
 	@Override
@@ -128,6 +131,7 @@ public abstract class MessageBase
 	}
 
 	public final void setException(final Throwable exception) {
+		Preconditions.checkNotNull(exception);
 		this.properties.put(Property.Exception, exception);
 	}
 	/**
@@ -145,11 +149,17 @@ public abstract class MessageBase
 		return new RemoteException("Remote node returned an exception.", (Throwable) cause.get());
 	}
 
-	public final void setArguments(final @Nullable Properties args) {
+	public final void setArguments(final Properties args) {
+		Preconditions.checkNotNull(args);
 		this.properties.put(Property.Arguments, args);
 	}
-	public final @Nullable Properties getArguments() {
-		return this.properties.getDynamicCast(Property.Arguments, Properties.class);
+	public final Properties getArguments() {
+		final Properties arguments = this.properties.getDynamicCast(Property.Arguments, Properties.class);
+		if (arguments == null) {
+			return Properties.Empty;
+		} else {
+			return arguments;
+		}
 	}
 
 	/**
