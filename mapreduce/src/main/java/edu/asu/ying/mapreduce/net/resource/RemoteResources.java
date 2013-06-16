@@ -68,7 +68,7 @@ public final class RemoteResources<V extends RemoteResource>
 
 		// Get future responses to our request
 		final Deque<ListenableFuture<Message>> responses
-				= new ArrayDeque<>(FilteredFutures.getFutureValuesFrom(this.onIncomingMessage)
+				= new ArrayDeque<>(FilteredFutures.getFrom(this.onIncomingMessage)
 					                 .get(request.getReplication())
 									 .filter(
 											 Filter.on.allOf(

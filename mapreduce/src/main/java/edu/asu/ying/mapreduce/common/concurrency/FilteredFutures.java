@@ -21,7 +21,7 @@ public class FilteredFutures<V>
 	 * @param <V> the type of value to receive
 	 * @return a {@code FilteredFutures} instance attached to the given event.
 	 */
-	public static <V> FilteredFutures<V> getFutureValuesFrom(final FilteredValueEvent<V> event) {
+	public static <V> FilteredFutures<V> getFrom(final FilteredValueEvent<V> event) {
 		return new FilteredFutures<>(event);
 	}
 
