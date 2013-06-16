@@ -20,7 +20,7 @@ public class TestFilteredFutures
 
 		Filter numberFilter = Filter.on.anyOf(on.doesEqual(1));
 
-		final ListenableFuture<Integer> future = FilteredFutures.getFrom(numberEvent).filter(numberFilter).get(0);
+		final ListenableFuture<Integer> future = FilteredFutures.getFutureValuesFrom(numberEvent).filter(numberFilter).get(0);
 
 		Assert.assertFalse(future.isDone());
 
@@ -39,7 +39,7 @@ public class TestFilteredFutures
 		Filter numberFilter = Filter.on.anyOf(on.doesEqual(1), on.doesEqual(3), on.doesEqual(6));
 
 		List<ListenableFuture<Integer>> futureNumbers
-				= FilteredFutures.getFrom(numberEvent).get(3).filter(numberFilter);
+				= FilteredFutures.getFutureValuesFrom(numberEvent).get(3).filter(numberFilter);
 
 		for (final ListenableFuture<Integer> future : futureNumbers) {
 			Assert.assertFalse(future.isDone());

@@ -12,11 +12,15 @@ import edu.asu.ying.mapreduce.messaging.SendMessageStream;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.resource.RemoteResources;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.rmi.resource.ResourceResponse;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -28,10 +32,20 @@ public class TestRemoteResources
 	// Simulates a message handler getting messages from the network
 	private final FilteredValueEvent<Message> onIncomingMessages = new FilteredValueEvent<>();
 
+	private class TestActivator implements Activator {
+		@Override
+		public <T extends Remote> T getReference(final Class<T> type, final Map<String, String> properties)
+				throws RemoteException { return null; }
+		@Override
+		public String echo(final String message) throws RemoteException { return message; }
+		@Override
+		public ResourceIdentifier getResourceUri() throws RemoteException { return null; }
+	}
 	private class TestOutputStream implements MessageOutputStream {
 		@Override
 		public int write(final Message message) throws IOException {
-			System.out.println("Message written: ".concat(message.getClass().getName().toString()));
+			System.out.println("Message written: ".concat(message.getClass().getName()));
+			TestRemoteResources.this.onIncomingMessages.fire(this, new ResourceResponse(message, new TestActivator()));
 			return message.getReplication();
 		}
 	}
@@ -59,7 +73,9 @@ public class TestRemoteResources
 				);
 
 		for (final ListenableFuture<Activator> activator : activators) {
-			Assert.assertNotNull(activator.get());
+			Activator ac = activator.get();
+			Assert.assertNotNull(ac);
+			System.out.println("Echo: ".concat(ac.echo("hi")));
 		}
 	}
 }
