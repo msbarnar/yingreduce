@@ -2,18 +2,37 @@ package edu.asu.ying.mapreduce.common;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  *
  */
 public final class Properties
-	extends HashMap<Serializable, Serializable>
 {
+	public static final Properties Empty = new Properties(ImmutableMap.<Serializable, Serializable>of());
+
 	private static final long SerialVersionUID = 1L;
+
+	private final Map<Serializable, Serializable> properties;
+
+	public Properties() {
+		this.properties = new HashMap<Serializable, Serializable>();
+	}
+	public Properties(final Map<Serializable, Serializable> of) {
+		this.properties = of;
+	}
+
+	public final Serializable get(final Serializable key) {
+		return this.properties.get(key);
+	}
+	public final Serializable put(final Serializable key, final Serializable value) {
+		return this.properties.put(key, value);
+	}
 
 	/**
 	 * Gets the value of a property cast to the given class.
