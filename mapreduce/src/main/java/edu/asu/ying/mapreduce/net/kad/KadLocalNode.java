@@ -1,7 +1,6 @@
 package edu.asu.ying.mapreduce.net.kad;
 
 import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.rmi.activator.ActivatorProvider;
 import edu.asu.ying.mapreduce.rmi.resource.ResourceIdentifier;
 import il.technion.ewolf.kbr.KeybasedRouting;
 
@@ -16,12 +15,10 @@ public final class KadLocalNode
 	implements LocalNode
 {
 	private final KeybasedRouting kadNode;
-	private final ActivatorProvider activatorProvider;
 
 	@Inject
-	private KadLocalNode(final KeybasedRouting kadNode, final ActivatorProvider activatorProvider) {
+	private KadLocalNode(final KeybasedRouting kadNode) {
 		this.kadNode = kadNode;
-		this.activatorProvider = activatorProvider;
 	}
 
 	@Override

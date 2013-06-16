@@ -154,8 +154,8 @@ public final class ResourceIdentifier
 	public final int getPort() { return this.port; }
 	public final String getPath() { return getNullable(Part.Path); }
 	public final String getName() { return getNullable(Part.Name); }
-	public final int getReplication() { return this.replication;
-	}
+	public final int getReplication() { return this.replication; }
+
 	@Override
 	public final String toString() { return this.identifier; }
 

@@ -4,10 +4,9 @@ import com.google.common.util.concurrent.*;
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.Properties;
 import edu.asu.ying.mapreduce.concurrency.FilteredFutures;
-import edu.asu.ying.mapreduce.events.EventHandler;
 import edu.asu.ying.mapreduce.events.FilteredValueEvent;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.messaging.IncomingMessages;
+import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.messaging.SendMessageStream;
 import edu.asu.ying.mapreduce.messaging.filter.Filter;
@@ -23,7 +22,9 @@ import java.util.concurrent.Executors;
 
 
 /**
- * {@code RemoteActivators} provides future {@link edu.asu.ying.mapreduce.rmi.activator.Activator} proxies to instances on remote nodes.
+ * {@code RemoteResources} facilitates asynchronous getting of {@link RemoteResource} objects from remote nodes.
+ * </p>
+ * The class is parameterized on the type of resource that it gets.
  */
 public final class RemoteResources<V extends RemoteResource>
 	implements FutureCallback<Message>
@@ -33,7 +34,6 @@ public final class RemoteResources<V extends RemoteResource>
 	 */
 
 	// Used to send messages on the network
-	// FIXME: Avoid field injection
 	private final MessageOutputStream sendStream;
 	private final FilteredValueEvent<Message> onIncomingMessage;
 
@@ -41,9 +41,6 @@ public final class RemoteResources<V extends RemoteResource>
 	private final ListeningExecutorService executor
 			= MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
 
-	private ResourceIdentifier targetUri;
-	private Properties requestArgs;
-	private Message request;
 	// We technically can synchronize on the non-final unfulfilledResources deque, but we technically can do a lot
 	// of things that we shouldn't.
 	private final Object resourcesLock = new Object();
@@ -51,7 +48,7 @@ public final class RemoteResources<V extends RemoteResource>
 
 	@Inject
 	private RemoteResources(@SendMessageStream MessageOutputStream sendStream,
-	                        @IncomingMessages FilteredValueEvent<Message> onIncomingMessage) {
+	                        @IncomingMessageEvent FilteredValueEvent<Message> onIncomingMessage) {
 
 		this.sendStream = sendStream;
 		this.onIncomingMessage = onIncomingMessage;
@@ -67,19 +64,17 @@ public final class RemoteResources<V extends RemoteResource>
 	public final List<ListenableFuture<V>> get(final ResourceIdentifier uri, final Properties args)
 			throws URISyntaxException, IOException {
 		// Set up the request
-		this.targetUri = uri;
-		this.requestArgs = args;
-		this.request = this.createRequest();
+		final Message request = this.createRequest(uri, args);
 
 		// Get future responses to our request
 		final Deque<ListenableFuture<Message>> responses
 				= new ArrayDeque<>(FilteredFutures.getFutureValuesFrom(this.onIncomingMessage)
-					                 .get(this.request.getReplication())
+					                 .get(request.getReplication())
 									 .filter(
-										Filter.on.allOf(
-											Filter.on.classIs(ResourceResponse.class),
-									        FilterMessage.on.id(this.request.getId())
-									    )
+											 Filter.on.allOf(
+													 Filter.on.classIs(ResourceResponse.class),
+													 FilterMessage.on.id(request.getId())
+											 )
 									 ));
 
 		// Set up the return value
@@ -95,7 +90,7 @@ public final class RemoteResources<V extends RemoteResource>
 		// we've finished returning a copy of it.
 		synchronized (this.resourcesLock) {
 			// Send the request
-			final int messagesSent = this.sendStream.write(this.request);
+			final int messagesSent = this.sendStream.write(request);
 			// Trim the expected responses in case some of the messages failed to send
 
 			for (int i = 0; i < (responses.size() - messagesSent); i++) {
@@ -120,7 +115,6 @@ public final class RemoteResources<V extends RemoteResource>
 		// Responses can return exceptions, so fail on that
 		if (response.getException() != null) {
 			this.onFailure(response.getException());
-			return;
 		} else {
 			// Avoid popping off this deque while anyone else is iterating it
 			synchronized (this.resourcesLock) {
@@ -148,9 +142,11 @@ public final class RemoteResources<V extends RemoteResource>
 	/**
 	 * Creates a {@link ResourceRequest} for the resource at the given URI.
 	 */
-	private final Message createRequest() throws URISyntaxException {
-		final ResourceRequest request = new ResourceRequest(this.targetUri);
-		request.getProperties().put("arguments", this.requestArgs);
+	private Message createRequest(final ResourceIdentifier uri, final Properties args)
+			throws URISyntaxException {
+
+		final ResourceRequest request = new ResourceRequest(uri);
+		request.getProperties().put("arguments", args);
 		return request;
 	}
 }

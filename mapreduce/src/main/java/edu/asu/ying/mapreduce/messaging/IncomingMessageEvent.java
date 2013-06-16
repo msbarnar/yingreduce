@@ -15,4 +15,5 @@ import static java.lang.annotation.ElementType.METHOD;
  * Apply to a method with {@link com.google.inject.Provides} to provide an implementation of that source.
  */
 @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
-public @interface IncomingMessages {}
+public @interface IncomingMessageEvent
+{}
