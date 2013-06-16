@@ -1,10 +1,12 @@
 package edu.asu.ying.mapreduce.messaging;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.UUID;
 
 
@@ -68,7 +70,12 @@ public abstract class MessageBase
 		this.setId(UUID.randomUUID().toString());
 	}
 	public void setId(final String id) {
-		this.properties.put(Property.MessageId, id);
+		// Don't allow empty strings
+		if (id.isEmpty()) {
+			this.setId();
+		} else {
+			this.properties.put(Property.MessageId, id);
+		}
 	}
 	public void setId(final UUID id) {
 		this.setId(id.toString());
@@ -110,8 +117,19 @@ public abstract class MessageBase
 	public final void setException(final Throwable exception) {
 		this.properties.put(Property.Exception, exception);
 	}
-	public final Throwable getException() {
-		return this.properties.getDynamicCast(Property.Exception, Throwable.class);
+	/**
+	 * Gets a {@link RemoteException} wrapping the underlying cause from the remote host.
+	 */
+	public final RemoteException getException() {
+		final Optional<Serializable> cause = Optional.fromNullable(this.properties.get(Property.Exception));
+		if (!cause.isPresent()) {
+			return null;
+		}
+		if (!(cause.get() instanceof Throwable)) {
+			return new RemoteException(String.valueOf(cause.get()));
+		}
+
+		return new RemoteException("Remote node returned an exception.", (Throwable) cause.get());
 	}
 
 	public final void setArguments(final Properties args) {

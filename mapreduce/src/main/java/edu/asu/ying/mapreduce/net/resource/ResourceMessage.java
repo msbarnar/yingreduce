@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.net.resource;
 
 import edu.asu.ying.mapreduce.messaging.MessageBase;
 
+import javax.annotation.Nullable;
 import java.net.URISyntaxException;
 
 
@@ -18,11 +19,10 @@ import java.net.URISyntaxException;
 public abstract class ResourceMessage
 		extends MessageBase
 {
-	private static final long SerialVersionUID = 1L;
-
 	public static boolean isValidResourceUri(final ResourceIdentifier uri) {
 		return uri.getScheme().toLowerCase().equals(Property.Scheme);
 	}
+
 	/**
 	 * Defines the keys of the properties defined by this message.
 	 */
@@ -33,6 +33,8 @@ public abstract class ResourceMessage
 		public static final String ResourceName = "resource.instance.name";
 	}
 
+	private static final long SerialVersionUID = 1L;
+
 	public ResourceMessage(final ResourceIdentifier destinationUri) {
 		super(destinationUri);
 	}
@@ -42,7 +44,7 @@ public abstract class ResourceMessage
 		this.setResourceTypeName(uri.getPath());
 		this.setResourceName(uri.getName());
 	}
-	public final ResourceIdentifier getResourceUri() {
+	public final @Nullable ResourceIdentifier getResourceUri() {
 		return this.properties.getDynamicCast(Property.ResourceUri, ResourceIdentifier.class);
 	}
 
@@ -50,13 +52,13 @@ public abstract class ResourceMessage
 		this.properties.put(Property.ResourceTypeName, typeName);
 	}
 	public final String getResourceTypeName() {
-		return this.properties.getEmptyAsNull(Property.ResourceTypeName);
+		return this.properties.getNullAsEmpty(Property.ResourceTypeName);
 	}
 
 	protected final void setResourceName(final String name) {
 		this.properties.put(Property.ResourceName, name);
 	}
 	public final String getResourceName() {
-		return this.properties.getEmptyAsNull(Property.ResourceName);
+		return this.properties.getNullAsEmpty(Property.ResourceName);
 	}
 }

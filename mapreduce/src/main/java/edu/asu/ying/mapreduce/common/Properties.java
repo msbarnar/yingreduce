@@ -34,14 +34,14 @@ public final class Properties
 	}
 
 	/**
-	 * Gets the value of the property as a {@link String}, returning null if the value is null or empty.
+	 * Gets the value of the property as a {@link String}, returning an empty string if the value was null.
 	 */
-	public final String getEmptyAsNull(final String key) {
+	public final String getNullAsEmpty(final String key) {
 		final Optional<Serializable> value = Optional.fromNullable(this.get(key));
 		if (value.isPresent()) {
 			return Strings.emptyToNull(String.valueOf(value));
 		} else {
-			return null;
+			return "";
 		}
 	}
 }
