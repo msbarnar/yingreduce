@@ -11,6 +11,7 @@ import edu.asu.ying.mapreduce.messaging.ExceptionMessage;
 import edu.asu.ying.mapreduce.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.messaging.Message;
+import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
 import edu.asu.ying.mapreduce.net.resources.ResourceRequest;
 import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
@@ -46,11 +47,11 @@ public final class ActivatorRequestHandler
 	private final Provider<Activator> activatorProvider;
 
 	/**
-	 * Binds the provider to the {@link edu.asu.ying.mapreduce.messaging.IncomingMessageEvent} with an appropriate
-	 * filter for receiving {@link Activator} requests.
+	 * Binds the provider to the {@link ResourceMessageEvent} with an appropriate filter for receiving
+	 * {@link Activator} requests.
 	 */
 	@Inject
-	private ActivatorRequestHandler(final @IncomingMessageEvent FilteredValueEvent<Message> onIncomingMessage,
+	private ActivatorRequestHandler(final @ResourceMessageEvent FilteredValueEvent<Message> onIncomingMessage,
 	                                final @SendMessageStream MessageOutputStream sendMessageStream,
 	                                final Provider<Activator> activatorProvider) {
 

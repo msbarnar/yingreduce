@@ -49,7 +49,7 @@ public final class RemoteResourceFinder<V extends RemoteResource>
 
 	@Inject
 	private RemoteResourceFinder(@SendMessageStream MessageOutputStream sendStream,
-	                             @IncomingMessageEvent FilteredValueEvent<Message> onIncomingMessage) {
+	                             @ResourceMessageEvent FilteredValueEvent<Message> onIncomingMessage) {
 
 		this.sendStream = sendStream;
 		this.onIncomingMessage = onIncomingMessage;
