@@ -22,12 +22,12 @@ import java.util.concurrent.Executors;
 
 
 /**
- * {@code RemoteResources} facilitates asynchronous getting of {@link RemoteResource} objects from remote nodes.
+ * {@code RemoteResourceFinder} facilitates asynchronous getting of {@link RemoteResource} objects from remote nodes.
  * </p>
  * The class is parameterized on the type of resource that it gets.
  */
-public final class RemoteResources<V extends RemoteResource>
-	implements FutureCallback<Message>
+public final class RemoteResourceFinder<V extends RemoteResource>
+	implements ClientResourceProvider, FutureCallback<Message>
 {
 	/********************************************************************
 	 * Getting resources
@@ -47,8 +47,8 @@ public final class RemoteResources<V extends RemoteResource>
 	private Deque<SettableFuture<V>> unfulfilledResources;
 
 	@Inject
-	private RemoteResources(@SendMessageStream MessageOutputStream sendStream,
-	                        @IncomingMessageEvent FilteredValueEvent<Message> onIncomingMessage) {
+	private RemoteResourceFinder(@SendMessageStream MessageOutputStream sendStream,
+	                             @IncomingMessageEvent FilteredValueEvent<Message> onIncomingMessage) {
 
 		this.sendStream = sendStream;
 		this.onIncomingMessage = onIncomingMessage;
@@ -61,7 +61,8 @@ public final class RemoteResources<V extends RemoteResource>
 	 * @param args properties to supply the resource provider.
 	 * @return a number of promises not greater than the value of {@code replication} in the URI (default 1).
 	 */
-	public final List<ListenableFuture<V>> get(final ResourceIdentifier uri, final Properties args)
+	@Override
+	public final List<ListenableFuture<V>> getFutureResources(final ResourceIdentifier uri, final Properties args)
 			throws URISyntaxException, IOException {
 		// Set up the request
 		final Message request = this.createRequest(uri, args);

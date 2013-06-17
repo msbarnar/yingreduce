@@ -19,6 +19,7 @@ public class FilteredValueEventBase<TValue>
 	 * @param filter the filter which selects values of which to notify {@code handler}.
 	 * @param handler the handler to be notified.
 	 */
+	@Override
 	public final void attach(final Filter filter, final EventHandler<TValue> handler) {
 		synchronized (this.handlers) {
 			this.handlers.add(new AbstractMap.SimpleEntry<>(filter, handler));
@@ -30,6 +31,7 @@ public class FilteredValueEventBase<TValue>
 	 * @param handler the handler previously attached handler.
 	 * @return true if the handler was detached.
 	 */
+	@Override
 	public final boolean detach(final Filter filter, final EventHandler<TValue> handler) {
 		synchronized (this.handlers) {
 			return this.handlers.remove(new AbstractMap.SimpleEntry<>(filter, handler));
@@ -44,6 +46,7 @@ public class FilteredValueEventBase<TValue>
 	 * @param sender the object firing the event, from whom the {@code value} came.
 	 * @param value the value of which to notify event handlers.
 	 */
+	@Override
 	public final void fire(final Object sender, final @Nullable TValue value) {
 		synchronized (this.handlers) {
 			final Iterator<Map.Entry<Filter, EventHandler<TValue>>> iter = this.handlers.iterator();
