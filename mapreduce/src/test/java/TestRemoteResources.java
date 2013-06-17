@@ -1,5 +1,4 @@
 import com.google.inject.*;
-import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.messaging.Message;

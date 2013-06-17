@@ -8,6 +8,7 @@ import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
+import edu.asu.ying.mapreduce.rmi.activator.ServerActivator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.RemoteTest;
 import il.technion.ewolf.kbr.*;
@@ -49,7 +50,7 @@ public final class KademliaNetwork
 
 	@Override
 	protected void configure() {
-		bind(Activator.class).to(KadServerActivator.class);
+		bind(Activator.class).annotatedWith(ServerActivator.class).to(KadServerActivator.class);
 		bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class).to(KadSendMessageStream.class);
 		bind(RemoteTest.class).to(KadServerActivator.RemoteTestImpl.class);
 	}

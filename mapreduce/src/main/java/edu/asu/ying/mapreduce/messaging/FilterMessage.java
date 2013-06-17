@@ -11,6 +11,7 @@ import java.io.Serializable;
 /**
  * {@code FilterMessage} provides common filters for {@link Message} types.
  */
+// TODO: Abstract this to an interface
 public abstract class FilterMessage
 	extends FilterBase
 {
