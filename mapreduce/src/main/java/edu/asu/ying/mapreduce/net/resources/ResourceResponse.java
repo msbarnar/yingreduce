@@ -23,57 +23,52 @@ public final class ResourceResponse
 {
 	public static ResourceResponse inResponseTo(final Message request)
 			throws URISyntaxException {
-		return new ResourceResponse(request);
+
+		return (ResourceResponse) new ResourceResponse().makeResponseTo(request);
 	}
 	public static ResourceResponse inResponseTo(final Message request, final RemoteResource resource)
 			throws URISyntaxException {
-		return new ResourceResponse(request, resource);
+
+		return (ResourceResponse) new ResourceResponse(resource).makeResponseTo(request);
 	}
 	public static ResourceResponse inResponseTo(final Message request, final Throwable throwable)
 			throws URISyntaxException {
-		return new ResourceResponse(request, throwable);
+
+		return (ResourceResponse) new ResourceResponse(throwable).makeResponseTo(request);
 	}
 
 	public static final class Property {
 		public static final String ResourceInstance = "resources.instance.ref";
 	}
 
-	private ResourceResponse(final Message request)
+	private ResourceResponse()
 			throws URISyntaxException {
-
-		Preconditions.checkNotNull(request);
-		this.setDestinationUri(request.getSourceUri());
-
-		this.setId(request.getId());
 		// Responses should only go to the node that sent the request
 		this.setReplication(1);
 	}
 	/**
 	 * Initializes the response with a resources reference.
-	 * @param request the message to which this is a response.
 	 * @param resource the resources reference.
 	 */
-	private ResourceResponse(final Message request, final RemoteResource resource)
+	private ResourceResponse(final RemoteResource resource)
 			throws URISyntaxException {
 
-		this(request);
+		this();
 		this.setResourceInstance(resource);
 	}
 	/**
 	 * Initializes an exceptional response.
-	 * @param request the message to which this is a response.
 	 * @param throwable the throwable to return instead of the resources.
 	 */
-	private ResourceResponse(final Message request, final Throwable throwable)
+	private ResourceResponse(final Throwable throwable)
 			throws URISyntaxException {
 
-		this(request);
-
+		this();
 		Preconditions.checkNotNull(throwable);
 		this.setException(throwable);
 	}
 
-	protected final void setResourceInstance(final RemoteResource resource) {
+	public final void setResourceInstance(final RemoteResource resource) {
 		Preconditions.checkNotNull(resource);
 		this.properties.put(Property.ResourceInstance, resource);
 	}

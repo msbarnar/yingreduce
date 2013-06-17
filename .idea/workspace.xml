@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9ffc779c-2642-4842-aeac-60344a3ce6bc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/FilterMessage.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/FilterMessage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceResponse.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceResponse.java" />
@@ -11,7 +11,7 @@
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371505370162" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371507975684" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272739738" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272043017" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371274691692" ignored="false" />
@@ -25,7 +25,7 @@
     <file path="/pom.xml" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371101479176" ignored="false" />
     <file path="/SendMessageSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371094551550" ignored="false" />
     <file path="/GetResourceMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371264534227" ignored="false" />
-    <file path="/MessageBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371507926243" ignored="false" />
+    <file path="/MessageBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371508858185" ignored="false" />
     <file path="/ExceptionMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371413056800" ignored="false" />
     <file path="/UnexpectedMessageException.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371091826447" ignored="false" />
     <file path="/KadSendSink.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371093836932" ignored="false" />
@@ -132,7 +132,7 @@
     <file path="/RemoteResourcesTester.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371367996990" ignored="false" />
     <file path="/ResourceRequest.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371414551930" ignored="false" />
     <file path="/ResourceMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371414577645" ignored="false" />
-    <file path="/ResourceResponse.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371507808453" ignored="false" />
+    <file path="/ResourceResponse.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371509176217" ignored="false" />
     <file path="/KademliaNetwork.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371441674125" ignored="false" />
     <file path="/FilterBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371377465699" ignored="false" />
     <file path="/FilterMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371506685399" ignored="false" />
@@ -142,7 +142,8 @@
     <file path="/ClientResourceProvider.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371501821395" ignored="false" />
     <file path="/ServerResourceProvider.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371505246170" ignored="false" />
     <file path="/RemoteResourceFinder.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371505341132" ignored="false" />
-    <file path="/ServerActivatorProvider.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371507773821" ignored="false" />
+    <file path="/ServerActivatorProvider.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371509764060" ignored="false" />
+    <file path="/ResponseMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371508724089" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -209,49 +210,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ServerResourceProvider.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ServerResourceProvider.java">
+      <file leaf-file-name="ResourceException.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceException.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="0" selection-start="761" selection-end="761" vertical-scroll-proportion="0.0">
+            <state line="10" column="19" selection-start="232" selection-end="232" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ServerActivatorProvider.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ServerActivatorProvider.java">
+      <file leaf-file-name="RemoteResourceFinder.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/client/RemoteResourceFinder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="9" selection-start="2412" selection-end="2412" vertical-scroll-proportion="0.0">
+            <state line="132" column="34" selection-start="5301" selection-end="5301" vertical-scroll-proportion="0.521978">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ResourceResponse.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceResponse.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="48" column="27" selection-start="1652" selection-end="1666" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MessageBase.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="71" selection-start="1203" selection-end="1203" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ResourceIdentifier.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="126" column="34" selection-start="4262" selection-end="4262" vertical-scroll-proportion="0.53846157">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -274,8 +248,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/concurrency/FilteredFutures.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resource/ResourceProvider.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resource/RemoteResources.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/events/FilteredValueEventBase.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resource/ClientResourceProvider.java" />
@@ -286,10 +258,12 @@
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/RemoteResourceFinder.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/client/RemoteResourceFinder.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/FilterMessage.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ServerActivatorProvider.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceResponse.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/ResponseMessage.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceResponse.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ServerActivatorProvider.java" />
       </list>
     </option>
   </component>
@@ -1409,7 +1383,11 @@
       <created>1371505370128</created>
       <updated>1371505370128</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Moved replication out of ResourceIdentifier into Message">
+      <created>1371507976188</created>
+      <updated>1371507976188</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1434,7 +1412,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="4" y="22" width="1916" height="1058" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1450,7 +1428,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16791444" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19786096" sideWeight="0.67164177" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19786096" sideWeight="0.67164177" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="left" auto_hide="true" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.19786096" sideWeight="0.20106383" order="3" side_tool="true" content_ui="tabs" x="135" y="146" width="1716" height="858" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1502,7 +1480,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added filtering messages by URIs&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved replication out of ResourceIdentifier into Message" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1516,7 +1494,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Writing table interface" />
     <MESSAGE value="Rename map to table to avoid future confusion with map()" />
     <MESSAGE value="Need to roll my own URI that allows arbitrary hosts" />
     <MESSAGE value="Removing occurrences of URI" />
@@ -1541,6 +1518,7 @@
     <MESSAGE value="Decoupled FilteredValueEvent" />
     <MESSAGE value="Decoupled RemoteResources (now RemoteResourceFinder, implements ClientResourceProvider)" />
     <MESSAGE value="Added filtering messages by URIs&#10;" />
+    <MESSAGE value="Moved replication out of ResourceIdentifier into Message" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1550,38 +1528,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/activator/Activator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="7" selection-start="2299" selection-end="2299" vertical-scroll-proportion="0.69078946">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/events/FilteredValueEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="45" selection-start="182" selection-end="182" vertical-scroll-proportion="0.13157895">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/concurrency/FilteredFutures.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="7" selection-start="853" selection-end="853" vertical-scroll-proportion="0.2631579">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/events/FilteredValueEventBase.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="13" selection-start="1770" selection-end="1770" vertical-scroll-proportion="0.63736266">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/client/ClientResourceProvider.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="12" column="3" selection-start="352" selection-end="352" vertical-scroll-proportion="0.1978022">
@@ -1609,22 +1555,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ServerResourceProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="761" selection-end="761" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/client/RemoteResourceFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="35" selection-start="1168" selection-end="1168" vertical-scroll-proportion="-0.53296703">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/Filter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="32" selection-start="452" selection-end="452" vertical-scroll-proportion="0.31318682">
@@ -1641,15 +1571,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ServerActivatorProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="9" selection-start="2412" selection-end="2412" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceMessage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="56" column="5" selection-start="1926" selection-end="1926" vertical-scroll-proportion="0.75274724">
@@ -1659,24 +1580,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceResponse.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="27" selection-start="1652" selection-end="1666" vertical-scroll-proportion="0.0">
+        <state line="40" column="39" selection-start="943" selection-end="943" vertical-scroll-proportion="-1.6538461">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/ExceptionMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="23" selection-start="350" selection-end="350" vertical-scroll-proportion="0.14835165">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/Message.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="7" selection-start="963" selection-end="963" vertical-scroll-proportion="0.52747256">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/messaging/MessageBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="71" selection-start="1203" selection-end="1203" vertical-scroll-proportion="0.0">
+        <state line="186" column="44" selection-start="5419" selection-end="5419" vertical-scroll-proportion="0.88461536">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceResponse.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="126" column="34" selection-start="4262" selection-end="4262" vertical-scroll-proportion="0.53846157">
+        <state line="69" column="0" selection-start="2183" selection-end="2183" vertical-scroll-proportion="0.75274724">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/activator/kad/KadServerActivator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="53" selection-start="1039" selection-end="1039" vertical-scroll-proportion="0.3791209">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ServerActivatorProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="58" column="0" selection-start="2553" selection-end="2553" vertical-scroll-proportion="0.47252747">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ServerResourceProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="1" selection-start="758" selection-end="758" vertical-scroll-proportion="0.21428572">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="19" selection-start="232" selection-end="232" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/client/RemoteResourceFinder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="132" column="34" selection-start="5301" selection-end="5301" vertical-scroll-proportion="0.521978">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

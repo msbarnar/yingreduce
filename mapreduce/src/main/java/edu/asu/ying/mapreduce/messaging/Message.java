@@ -32,4 +32,11 @@ public interface Message
 	 * @return the maximum number of hosts to which the message should be replicated.
 	 */
 	int getReplication();
+
+	/**
+	 * Makes this message into a response to {@code request}.
+	 * @param request the message to which to respond.
+	 * @return this message.
+	 */
+	Message makeResponseTo(final Message request);
 }

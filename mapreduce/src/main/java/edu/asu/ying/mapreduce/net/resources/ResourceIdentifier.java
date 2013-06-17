@@ -40,7 +40,6 @@ public final class ResourceIdentifier
 	private transient List<String> parts;
 	private transient String host = "";
 	private transient int port = -1;
-	private transient int replication = 1;
 
 	private ResourceIdentifier() {
 		this.identifier = "";
@@ -134,10 +133,6 @@ public final class ResourceIdentifier
 
 			// Make sure the address is host:port (get rid of replication)
 			this.parts.set(Part.Address.ordinal(), this.host.concat(":").concat(String.valueOf(this.port)));
-		}
-
-		if (this.replication < 1) {
-			this.replication = 1;
 		}
 	}
 

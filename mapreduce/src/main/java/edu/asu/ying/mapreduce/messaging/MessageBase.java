@@ -177,4 +177,16 @@ public abstract class MessageBase
 	protected void setReplication(final int replication) {
 		this.properties.put(Property.Replication, replication);
 	}
+
+	/**
+	 * Makes this message into a response to {@code request}.
+	 * @param request the message to which to respond.
+	 * @return this message.
+	 */
+	public final Message makeResponseTo(final Message request) {
+		Preconditions.checkNotNull(request);
+		this.setDestinationUri(request.getSourceUri());
+		this.setId(request.getId());
+		return this;
+	}
 }
