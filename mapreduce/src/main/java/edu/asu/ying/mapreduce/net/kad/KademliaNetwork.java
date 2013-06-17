@@ -4,17 +4,25 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
+import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
+import edu.asu.ying.mapreduce.messaging.Message;
+import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
+import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.activator.ServerActivator;
+import edu.asu.ying.mapreduce.rmi.activator.kad.KadActivatorProvider;
 import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.RemoteTest;
 import il.technion.ewolf.kbr.*;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -25,6 +33,9 @@ import java.util.Random;
 public final class KademliaNetwork
 	extends AbstractModule
 {
+	// Singleton message handlers, by scheme
+	private final Map<String, KadMessageHandler> messageHandlers = new HashMap<>();
+
 	/**
 	 * Singleton {@link KeybasedRouting} provider for all Kademlia traffic
 	 */
@@ -50,17 +61,42 @@ public final class KademliaNetwork
 
 	@Override
 	protected void configure() {
-		bind(Activator.class).annotatedWith(ServerActivator.class).to(KadServerActivator.class);
+		bind(Activator.class).annotatedWith(ServerActivator.class).toProvider(KadActivatorProvider.class);
 		bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class).to(KadSendMessageStream.class);
 		bind(RemoteTest.class).to(KadServerActivator.RemoteTestImpl.class);
 	}
+
 
 	/**
 	 * Provides an instance of {@link KeybasedRouting} to send and receive channels for their underlying network
 	 * communication.
 	 */
 	@Provides
-	private KeybasedRouting provideKeybasedRouting() {
+	private final KeybasedRouting provideKeybasedRouting() {
 		return KadNodeProvider.INSTANCE.kadNode;
+	}
+
+	/*
+	 * Message handler providers
+	 */
+	@Provides
+	@ResourceMessageEvent
+	private final FilteredValueEvent<Message> provideResourceMessageEvent() {
+		return this.getMessageHandler("resource").getIncomingMessageEvent();
+	}
+
+	private final KadMessageHandler getMessageHandler(final String scheme) {
+		KadMessageHandler handler = this.messageHandlers.get(scheme);
+		if (handler == null) {
+			synchronized (this.messageHandlers) {
+				if (this.messageHandlers.get(scheme) == null) {
+					final Injector injector = Guice.createInjector(this);
+					handler = injector.getInstance(KadMessageHandler.class);
+					handler.bind(scheme);
+					this.messageHandlers.put(scheme, handler);
+				}
+			}
+		}
+		return handler;
 	}
 }

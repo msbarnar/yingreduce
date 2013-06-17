@@ -24,15 +24,21 @@ import java.rmi.server.UnicastRemoteObject;
 
 
 /**
- * {@code ServerActivatorProvider} receives {@link ResourceRequest} messages with the destination URI scheme
+ * {@code ActivatorRequestHandler} receives {@link ResourceRequest} messages with the destination URI path
  * "{@code activator}" and returns a {@link java.rmi.Remote} reference to an {@link Activator}.
  */
-public final class ServerActivatorProvider
+/*
+ * Injected dependencies:
+ * @IncomingMessageEvent
+ * @SendMessageStream
+ * Provider<Activator>
+ */
+public final class ActivatorRequestHandler
 	implements ServerResourceProvider, EventHandler<Message>
 {
 	private final static String ACTIVATOR_SCHEME = "activator";
 
-	// Receives incoming ResourceRequest messages with the URI scheme "activator".
+	// Receives incoming ResourceRequest messages with the URI path "activator".
 	private final FilteredValueEvent<Message> onIncomingMessage;
 	// Sends our responses
 	private final MessageOutputStream sendMessageStream;
@@ -44,7 +50,7 @@ public final class ServerActivatorProvider
 	 * filter for receiving {@link Activator} requests.
 	 */
 	@Inject
-	private ServerActivatorProvider(final @IncomingMessageEvent FilteredValueEvent<Message> onIncomingMessage,
+	private ActivatorRequestHandler(final @IncomingMessageEvent FilteredValueEvent<Message> onIncomingMessage,
 	                                final @SendMessageStream MessageOutputStream sendMessageStream,
 	                                final Provider<Activator> activatorProvider) {
 
@@ -53,7 +59,7 @@ public final class ServerActivatorProvider
 		this.onIncomingMessage = onIncomingMessage;
 		this.onIncomingMessage.attach(Filter.on.allOf(
 										Filter.on.classIs(ResourceRequest.class),
-		                                FilterMessage.on.destinationUri.scheme(ACTIVATOR_SCHEME))
+		                                FilterMessage.on.destinationUri.path(ACTIVATOR_SCHEME))
 										, this);
 	}
 

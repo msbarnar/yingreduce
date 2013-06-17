@@ -12,7 +12,6 @@ import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.net.resources.*;
-import edu.asu.ying.mapreduce.net.resources.client.ClientResourceProvider;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -29,7 +28,7 @@ import java.util.concurrent.Executors;
  * {@code RemoteResourceFinder} is parameterized on the type of resources that it gets.
  */
 public final class RemoteResourceFinder<V extends RemoteResource>
-	implements ClientResourceProvider, FutureCallback<Message>
+	implements FutureCallback<Message>
 {
 	/********************************************************************
 	 * Getting resources
@@ -63,7 +62,6 @@ public final class RemoteResourceFinder<V extends RemoteResource>
 	 * @param args properties to supply the resources provider.
 	 * @return a number of promises not greater than the value of {@code replication} in the URI (default 1).
 	 */
-	@Override
 	public final List<ListenableFuture<V>> getFutureResources(final ResourceIdentifier uri, final Properties args)
 			throws URISyntaxException, IOException {
 		// Set up the request
