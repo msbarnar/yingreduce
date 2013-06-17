@@ -45,6 +45,8 @@ public final class ResourceResponse
 		this.setDestinationUri(request.getSourceUri());
 
 		this.setId(request.getId());
+		// Responses should only go to the node that sent the request
+		this.setReplication(1);
 	}
 	/**
 	 * Initializes the response with a resources reference.

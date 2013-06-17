@@ -32,6 +32,7 @@ public abstract class MessageBase
 	 */
 	public static final class Property {
 		public static final String MessageId = "message.id";
+		public static final String Replication = "message.replication";
 		public static final String DestinationURI = "message.uri.destination";
 		public static final String SourceURI = "message.uri.source";
 		public static final String Exception = "exception";
@@ -167,6 +168,13 @@ public abstract class MessageBase
 	 */
 	@Override
 	public int getReplication() {
-		return this.getDestinationUri().getReplication();
+		try {
+			return Integer.parseInt(this.properties.getNullAsEmpty(Property.Replication));
+		} catch (final NumberFormatException e) {
+			return -1;
+		}
+	}
+	protected void setReplication(final int replication) {
+		this.properties.put(Property.Replication, replication);
 	}
 }

@@ -100,7 +100,7 @@ public abstract class FilterMessage
 		}
 	}
 
-	private static final class FilterOnUri
+	public static final class FilterOnUri
 	{
 		// Messages have multiple URIs
 		private enum WhichUri {
