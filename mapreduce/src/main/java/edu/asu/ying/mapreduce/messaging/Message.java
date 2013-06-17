@@ -1,7 +1,7 @@
 package edu.asu.ying.mapreduce.messaging;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
 import java.io.Serializable;
 

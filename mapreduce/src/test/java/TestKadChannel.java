@@ -17,7 +17,7 @@ public class TestKadChannel
 
 		final ResourceFinder finder = injector.getInstance(ResourceFinder.class);
 		final String host = Base64.encodeBase64String(UUID.randomUUID().toString().substring(0, 20).getBytes());
-		final ResourceIdentifier hostUri = new ResourceIdentifier("resource", host, -1, "activator");
+		final ResourceIdentifier hostUri = new ResourceIdentifier("resources", host, -1, "activator");
 		final Activator activator = (Activator) finder.findResource(hostUri);
 
 		Assert.assertNotEquals(activator, null);

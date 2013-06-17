@@ -1,9 +1,9 @@
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.Filter.on;
 import edu.asu.ying.mapreduce.messaging.FilterMessage;
-import edu.asu.ying.mapreduce.net.resource.ResourceRequest;
-import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceRequest;
+import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,10 +25,10 @@ public class TestFilters
 						FilterMessage.on.property("test", "hi")
 				);
 
-		ResourceRequest msg1 = new ResourceRequest(new ResourceIdentifier("resource\\host\\path"));
+		ResourceRequest msg1 = new ResourceRequest(new ResourceIdentifier("resources\\host\\path"));
 		msg1.setId("yes");
 		msg1.getProperties().put("test", "hi");
-		ResourceRequest msg2 = new ResourceRequest(new ResourceIdentifier("resource\\host\\path"));
+		ResourceRequest msg2 = new ResourceRequest(new ResourceIdentifier("resources\\host\\path"));
 		msg2.setId("no");
 		ResourceResponse rsp1 = new ResourceResponse(msg1);
 		rsp1.setId("yes");

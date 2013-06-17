@@ -8,7 +8,7 @@ import java.io.IOException;
 import com.google.inject.Inject;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.Node;

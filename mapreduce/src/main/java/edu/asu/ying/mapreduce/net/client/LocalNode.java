@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.net.client;
 
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
 import java.io.IOException;
 

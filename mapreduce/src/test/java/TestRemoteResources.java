@@ -3,10 +3,10 @@ import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
-import edu.asu.ying.mapreduce.net.resource.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
 import org.junit.Test;
 
 import java.io.IOException;

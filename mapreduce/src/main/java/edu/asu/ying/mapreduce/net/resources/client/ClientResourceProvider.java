@@ -1,7 +1,8 @@
-package edu.asu.ying.mapreduce.net.resource;
+package edu.asu.ying.mapreduce.net.resources.client;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.asu.ying.mapreduce.common.Properties;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

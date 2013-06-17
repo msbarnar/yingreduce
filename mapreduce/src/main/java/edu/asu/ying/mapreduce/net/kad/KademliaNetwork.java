@@ -20,7 +20,7 @@ import java.util.Random;
 
 /**
  * The {@code KademliaNetwork} wires all of the high-level operations
- * (e.g. {@link edu.asu.ying.mapreduce.net.resource.RemoteResourceFinder}) to the underlying Kademlia network classes.
+ * (e.g. {@link edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder}) to the underlying Kademlia network classes.
  */
 public final class KademliaNetwork
 	extends AbstractModule

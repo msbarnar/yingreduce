@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.rmi.activator;
 
-import edu.asu.ying.mapreduce.net.resource.RemoteResource;
+import edu.asu.ying.mapreduce.net.resources.RemoteResource;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -29,7 +29,7 @@ import java.util.Map;
  * specific.
  * <p>
  * {@link Activator} is a {@link RemoteResource} that can be located on a
- * {@link edu.asu.ying.mapreduce.net.resource.ResourceIdentifier} where the {@code scheme} is {@code activator} and the
+ * {@link edu.asu.ying.mapreduce.net.resources.ResourceIdentifier} where the {@code scheme} is {@code activator} and the
  * {@code host} is the implementation-specific host identifier.
  * <br>The {@code authority} part may be used on the implementing activator to apply authorization rules to
  * object provisioning. 
@@ -42,7 +42,7 @@ public interface Activator
 	 * @param type the class of the instance to obtain a reference to.
 	 * @param properties may be used on the activator implementation when instantiating the object.
 	 * @return a {@link java.rmi.Remote} reference to a remote object.
-	 * @throws RemoteException if the remote {@link Activator} resource was unavailable or could not be
+	 * @throws RemoteException if the remote {@link Activator} resources was unavailable or could not be
 	 * found, or if a problem occurred while obtaining the reference.
 	 */
 	<T extends Remote> T getReference(final Class<T> type, final Map<String, String> properties)

@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.resource;
+package edu.asu.ying.mapreduce.net.resources;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -28,7 +28,7 @@ public final class ResourceIdentifier
 
 	private static final String SEPARATOR = "\\";
 
-	private enum Part {
+	public enum Part {
 		Scheme,
 		Address,
 		Path,
@@ -38,7 +38,7 @@ public final class ResourceIdentifier
 	private final String identifier;
 	// Not serialized; reparse on deserialization
 	private transient List<String> parts;
-	private transient String host;
+	private transient String host = "";
 	private transient int port = -1;
 	private transient int replication = 1;
 
@@ -111,10 +111,10 @@ public final class ResourceIdentifier
 
 	private void parse() throws URISyntaxException {
 		this.parts = Lists.newArrayList(Splitter.on(SEPARATOR).trimResults().split(this.identifier));
-		if (Strings.isNullOrEmpty(this.getPartOrNull(Part.Scheme))) {
+		if (Strings.isNullOrEmpty(this.getPartOrEmpty(Part.Scheme))) {
 			throw new URISyntaxException(this.identifier, "Scheme cannot be empty");
 		}
-		final String address = this.getPartOrNull(Part.Address);
+		final String address = this.getPartOrEmpty(Part.Address);
 
 		if (address != null) {
 			final List<String> hostParts = Lists.newArrayList(Splitter.on(':').trimResults().split(address));
@@ -151,25 +151,25 @@ public final class ResourceIdentifier
 	/**
 	 * Gets the string value of the specified part or, if the part does not have a value, the empty string.
 	 */
-	private String getPartOrNull(final Part part) {
+	private String getPartOrEmpty(final Part part) {
 		try {
 			return this.parts.get(part.ordinal());
 		} catch (final IndexOutOfBoundsException e) {
-			return null;
+			return "";
 		}
 	}
 
 	/**
 	 * Gets the part of the identifier that specifies to which service this identifier is delegated.
 	 * </p>
-	 * E.g. an identifier with the scheme "resource" represents a {@link RemoteResource}.
+	 * E.g. an identifier with the scheme "resources" represents a {@link RemoteResource}.
 	 */
-	public final String getScheme()     { return getPartOrNull(Part.Scheme); }
-	public final String getAddress()    { return getPartOrNull(Part.Address); }
+	public final String getScheme()     { return getPartOrEmpty(Part.Scheme); }
+	public final String getAddress()    { return getPartOrEmpty(Part.Address); }
 	public final String getHost()       { return this.host; }
 	public final int getPort()          { return this.port; }
-	public final String getPath()       { return getPartOrNull(Part.Path); }
-	public final String getName()       { return getPartOrNull(Part.Name); }
+	public final String getPath()       { return getPartOrEmpty(Part.Path); }
+	public final String getName()       { return getPartOrEmpty(Part.Name); }
 	public final int getReplication()   { return this.replication; }
 
 	/**

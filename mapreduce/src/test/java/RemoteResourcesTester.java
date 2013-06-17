@@ -4,9 +4,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resource.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 import org.junit.Assert;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public final class RemoteResourcesTester {
 
 		List<ListenableFuture<Activator>> activators =
 				remoteActivators.get(
-						new ResourceIdentifier("resource\\(10)localhost\\activator"),
+						new ResourceIdentifier("resources\\(10)localhost\\activator"),
 						new Properties()
 				);
 

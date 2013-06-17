@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.resource;
+package edu.asu.ying.mapreduce.net.resources;
 
 import com.google.common.base.Preconditions;
 
@@ -21,12 +21,12 @@ public final class ResourceRequest
 	}
 
 	/**
-	 * Initializes the message with a given {@link edu.asu.ying.mapreduce.net.resource.RemoteResource} URI.
-	 * @param resourceUri the fully formed URI of the resource. {@see RemoteResource} for formatting details.
+	 * Initializes the message with a given {@link edu.asu.ying.mapreduce.net.resources.RemoteResource} URI.
+	 * @param resourceUri the fully formed URI of the resources. {@see RemoteResource} for formatting details.
 	 */
 	private ResourceRequest(final ResourceIdentifier resourceUri) throws URISyntaxException {
 		Preconditions.checkNotNull(resourceUri);
-		// Set the destination URI from only the host and port of the resource URI
+		// Set the destination URI from only the host and port of the resources URI
 		this.setDestinationUri(new ResourceIdentifier(resourceUri.getScheme(), resourceUri.getAddress()));
 
 		if (!ResourceMessage.isValidResourceUri(resourceUri)) {

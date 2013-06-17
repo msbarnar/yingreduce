@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.resource;
+package edu.asu.ying.mapreduce.net.resources;
 
 import com.google.common.base.Preconditions;
 import edu.asu.ying.mapreduce.messaging.Message;
@@ -8,13 +8,13 @@ import java.net.URISyntaxException;
 
 /**
  * {@link ResourceResponse} is sent in response to {@link ResourceRequest} and contains either a reference to the
- * resource or an exception.
+ * resources or an exception.
  * <p>
  * The ID of this message will be the same as that of the {@link ResourceRequest} that instigated it.
  * <p>
  * The following properties are defined on this message:
  * <ul>
- *     <li>{@code resource.reference} - (optional) the resource reference, if found.</li>
+ *     <li>{@code resources.reference} - (optional) the resources reference, if found.</li>
  *     <li>{@code throwable} - (optional) the exception if one was thrown.</li>
  * </ul>
  */
@@ -35,7 +35,7 @@ public final class ResourceResponse
 	}
 
 	public static final class Property {
-		public static final String ResourceInstance = "resource.instance.ref";
+		public static final String ResourceInstance = "resources.instance.ref";
 	}
 
 	private ResourceResponse(final Message request)
@@ -47,9 +47,9 @@ public final class ResourceResponse
 		this.setId(request.getId());
 	}
 	/**
-	 * Initializes the response with a resource reference.
+	 * Initializes the response with a resources reference.
 	 * @param request the message to which this is a response.
-	 * @param resource the resource reference.
+	 * @param resource the resources reference.
 	 */
 	private ResourceResponse(final Message request, final RemoteResource resource)
 			throws URISyntaxException {
@@ -60,7 +60,7 @@ public final class ResourceResponse
 	/**
 	 * Initializes an exceptional response.
 	 * @param request the message to which this is a response.
-	 * @param throwable the throwable to return instead of the resource.
+	 * @param throwable the throwable to return instead of the resources.
 	 */
 	private ResourceResponse(final Message request, final Throwable throwable)
 			throws URISyntaxException {

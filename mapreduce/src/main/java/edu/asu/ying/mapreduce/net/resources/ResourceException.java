@@ -1,8 +1,7 @@
-package edu.asu.ying.mapreduce.net.resource;
+package edu.asu.ying.mapreduce.net.resources;
 
 import com.google.common.base.Preconditions;
 
-import javax.annotation.Nullable;
 import java.rmi.RemoteException;
 
 

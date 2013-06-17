@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.data;
 
-import edu.asu.ying.mapreduce.net.resource.RemoteResource;
+import edu.asu.ying.mapreduce.net.resources.RemoteResource;
 
 import java.io.IOException;
 import java.io.Serializable;

@@ -23,15 +23,19 @@ public interface Filter
 			return new on.FilterOnEquals<>(value);
 		}
 		public static <T> FilterOnClass classIs(final Class<T> type) {
+			Preconditions.checkNotNull(type);
 			return new on.FilterOnClass(type);
 		}
 		public static Filter allOf(final Filter... filters) {
+			Preconditions.checkNotNull(filters);
 			return new on.FilterAllOf(filters);
 		}
 		public static Filter anyOf(final Filter... filters) {
+			Preconditions.checkNotNull(filters);
 			return new on.FilterAnyOf(filters);
 		}
 		public static Filter noneOf(final Filter... filters) {
+			Preconditions.checkNotNull(filters);
 			return new on.FilterNoneOf(filters);
 		}
 

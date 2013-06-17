@@ -1,9 +1,8 @@
-package edu.asu.ying.mapreduce.net.resource;
+package edu.asu.ying.mapreduce.net.resources;
 
 import edu.asu.ying.mapreduce.messaging.MessageBase;
 
 import javax.annotation.Nullable;
-import java.net.URISyntaxException;
 
 
 /**
@@ -11,9 +10,9 @@ import java.net.URISyntaxException;
  * </p>
  * The following properties are defined on this message:
  * <ul>
- *     {@code resource.uri} - the full resource URI, including address.
- *     {@code resource.type.name} - the name of the type of resource referenced.
- *     {@code resource.instance.name} - (optional) the name of the specific instance of the resource.
+ *     {@code resources.uri} - the full resources URI, including address.
+ *     {@code resources.type.name} - the name of the type of resources referenced.
+ *     {@code resources.instance.name} - (optional) the name of the specific instance of the resources.
  * </ul>
 */
 public abstract class ResourceMessage
@@ -27,10 +26,10 @@ public abstract class ResourceMessage
 	 * Defines the keys of the properties defined by this message.
 	 */
 	public static final class Property {
-		public static final String Scheme = "resource";
-		public static final String ResourceUri = "resource.uri";
-		public static final String ResourceTypeName = "resource.type.name";
-		public static final String ResourceName = "resource.instance.name";
+		public static final String Scheme = "resources";
+		public static final String ResourceUri = "resources.uri";
+		public static final String ResourceTypeName = "resources.type.name";
+		public static final String ResourceName = "resources.instance.name";
 	}
 
 	private static final long SerialVersionUID = 1L;

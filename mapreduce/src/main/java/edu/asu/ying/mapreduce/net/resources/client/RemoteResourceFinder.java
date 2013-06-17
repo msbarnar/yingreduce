@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.resource;
+package edu.asu.ying.mapreduce.net.resources.client;
 
 import com.google.common.util.concurrent.*;
 import com.google.inject.Inject;
@@ -11,6 +11,8 @@ import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.messaging.FilterMessage;
+import edu.asu.ying.mapreduce.net.resources.*;
+import edu.asu.ying.mapreduce.net.resources.client.ClientResourceProvider;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,9 +24,9 @@ import java.util.concurrent.Executors;
 
 
 /**
- * {@code RemoteResourceFinder} facilitates asynchronous getting of {@link RemoteResource} objects from remote nodes.
+ * {@code RemoteResourceFinder} facilitates asynchronous getting of {@link edu.asu.ying.mapreduce.net.resources.RemoteResource} objects from remote nodes.
  * </p>
- * The class is parameterized on the type of resource that it gets.
+ * {@code RemoteResourceFinder} is parameterized on the type of resources that it gets.
  */
 public final class RemoteResourceFinder<V extends RemoteResource>
 	implements ClientResourceProvider, FutureCallback<Message>
@@ -55,10 +57,10 @@ public final class RemoteResourceFinder<V extends RemoteResource>
 	}
 
 	/**
-	 * Gets {@code k} promises of a single resource from {@code k} different nodes.
-	 * @param uri the address of the node(s) whose resource to get. The number of nodes contacted is specified by the
+	 * Gets {@code k} promises of a single resources from {@code k} different nodes.
+	 * @param uri the address of the node(s) whose resources to get. The number of nodes contacted is specified by the
 	 *            {@code replication} part of the URI.
-	 * @param args properties to supply the resource provider.
+	 * @param args properties to supply the resources provider.
 	 * @return a number of promises not greater than the value of {@code replication} in the URI (default 1).
 	 */
 	@Override
@@ -130,7 +132,7 @@ public final class RemoteResourceFinder<V extends RemoteResource>
 	@Override
 	@SuppressWarnings("unchecked")
 	public void onFailure(final Throwable throwable) {
-		// Set a resource exception instead of the resource they wanted
+		// Set a resources exception instead of the resources they wanted
 		// Avoid popping off this deque while anyone else is iterating it
 		synchronized (this.resourcesLock) {
 			if (this.unfulfilledResources.peek() != null) {
@@ -141,7 +143,7 @@ public final class RemoteResourceFinder<V extends RemoteResource>
 	}
 
 	/**
-	 * Creates a {@link ResourceRequest} for the resource at the given URI.
+	 * Creates a {@link edu.asu.ying.mapreduce.net.resources.ResourceRequest} for the resources at the given URI.
 	 */
 	private Message createRequest(final ResourceIdentifier uri, final Properties args)
 			throws URISyntaxException {

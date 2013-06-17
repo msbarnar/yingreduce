@@ -2,9 +2,8 @@ package edu.asu.ying.mapreduce.messaging;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;

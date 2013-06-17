@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
