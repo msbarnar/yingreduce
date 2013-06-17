@@ -8,13 +8,11 @@ import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
-import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.activator.ServerActivator;
-import edu.asu.ying.mapreduce.rmi.activator.kad.KadActivatorProvider;
 import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.RemoteTest;
 import il.technion.ewolf.kbr.*;
@@ -35,6 +33,8 @@ public final class KademliaNetwork
 {
 	// Singleton message handlers, by scheme
 	private final Map<String, KadMessageHandler> messageHandlers = new HashMap<>();
+	// Singleton Activator instance
+	private Activator activatorInstance;
 
 	/**
 	 * Singleton {@link KeybasedRouting} provider for all Kademlia traffic
@@ -61,7 +61,6 @@ public final class KademliaNetwork
 
 	@Override
 	protected void configure() {
-		bind(Activator.class).annotatedWith(ServerActivator.class).toProvider(KadActivatorProvider.class);
 		bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class).to(KadSendMessageStream.class);
 		bind(RemoteTest.class).to(KadServerActivator.RemoteTestImpl.class);
 	}
@@ -98,5 +97,18 @@ public final class KademliaNetwork
 			}
 		}
 		return handler;
+	}
+
+	@Provides
+	@ServerActivator
+	private final Activator provideServerActivator() {
+		if (this.activatorInstance == null) {
+			synchronized (this.activatorInstance) {
+				if (this.activatorInstance == null) {
+					this.activatorInstance = new KadServerActivator();
+				}
+			}
+		}
+		return this.activatorInstance;
 	}
 }
