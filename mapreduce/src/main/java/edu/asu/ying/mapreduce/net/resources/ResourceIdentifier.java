@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -22,203 +25,227 @@ public final class ResourceIdentifier
 
   private static final long SerialVersionUID = 1L;
 
-  private static final String SEPARATOR = "\\";
+  private static final String DELIMITER = "\\";
 
-  public enum Part {
-    Scheme,
-    Address,
-    Path,
-    Name
+  protected final Map<String, String> parts = new HashMap<>();
+  protected String identifier;
+
+  protected static final int DEFAULT_REPLICATION = 1;
+  protected static final int DEFAULT_PORT = -1;
+
+  protected static final class Part {
+    public static final String Scheme = "scheme";
+    public static final String Replication = "replication";
+    public static final String Host = "host";
+    public static final String Port = "port";
+    public static final String Path = "path";
+    public static final String Name = "name";
   }
-
-  private final String identifier;
-  // Not serialized; reparse on deserialization
-  private transient List<String> parts;
-  private transient String host = "";
-  private transient int port = -1;
-  private transient int replication = 1;
 
   private ResourceIdentifier() {
-    this.identifier = "";
   }
 
-  public ResourceIdentifier(final String identifier)
-      throws IllegalArgumentException, URISyntaxException {
-
-    Preconditions.checkNotNull(Strings.emptyToNull(identifier));
-
-    this.identifier = identifier;
-    this.parse();
-  }
-
-  public ResourceIdentifier(final String scheme, final String address)
-      throws IllegalArgumentException, URISyntaxException {
-
-    Preconditions.checkNotNull(Strings.emptyToNull(scheme));
-    Preconditions.checkNotNull(Strings.emptyToNull(address));
-
-    this.identifier = scheme.concat(SEPARATOR).concat(address);
-    this.parse();
-  }
-
-  public ResourceIdentifier(final String scheme, final String host, final int port)
-      throws IllegalArgumentException, URISyntaxException {
-
-    Preconditions.checkNotNull(Strings.emptyToNull(scheme));
-    Preconditions.checkNotNull(Strings.emptyToNull(host));
-
-    if (port > 0) {
-      this.identifier = String.format("%s%s%s:%d", scheme, SEPARATOR, host, port);
-    } else {
-      this.identifier = scheme.concat(SEPARATOR).concat(host);
+  public ResourceIdentifier(final String identifier) {
+    if (Strings.isNullOrEmpty(identifier)) {
+      throw new IllegalArgumentException(identifier);
     }
-    this.parse();
+    this.parse(identifier);
   }
 
-  public ResourceIdentifier(final String scheme, final String host, final int port,
-                            final String path)
-      throws IllegalArgumentException, URISyntaxException {
-
-    Preconditions.checkNotNull(Strings.emptyToNull(scheme));
-    Preconditions.checkNotNull(Strings.emptyToNull(host));
-    Preconditions.checkNotNull(Strings.emptyToNull(path));
-
-    if (port > 0) {
-      this.identifier =
-          String.format("%s%s%s:%d%s%s", scheme, SEPARATOR, host, port, SEPARATOR, path);
-    } else {
-      this.identifier = scheme.concat(SEPARATOR).concat(host).concat(SEPARATOR).concat(path);
-    }
-    this.parse();
+  public ResourceIdentifier(final String scheme, final String address) {
+    this.setScheme(scheme);
+    this.parseAddress(address);
   }
 
-  public ResourceIdentifier(final String scheme, final String host, final int port,
-                            final String path, final String name)
-      throws IllegalArgumentException, URISyntaxException {
-
-    Preconditions.checkNotNull(Strings.emptyToNull(scheme));
-    Preconditions.checkNotNull(Strings.emptyToNull(host));
-    Preconditions.checkNotNull(Strings.emptyToNull(path));
-    Preconditions.checkNotNull(Strings.emptyToNull(name));
-
-    if (port > 0) {
-      this.identifier =
-          String.format("%s%s%s:%d%s%s%s%s", scheme, SEPARATOR, host, port, SEPARATOR, path,
-                        SEPARATOR, name);
-    } else {
-      this.identifier =
-          scheme.concat(SEPARATOR).concat(host).concat(SEPARATOR).concat(path).concat(SEPARATOR)
-              .concat(name);
-    }
-    this.parse();
+  public ResourceIdentifier(final String scheme, final String host, final int port) {
+    this.setScheme(scheme);
+    this.setHost(host);
+    this.setPort(port);
   }
 
-  private void parse() throws URISyntaxException {
-    this.parts = Lists.newArrayList(Splitter.on(SEPARATOR).trimResults().split(this.identifier));
-    if (Strings.isNullOrEmpty(this.getPartOrEmpty(Part.Scheme))) {
-      throw new URISyntaxException(this.identifier, "Scheme cannot be empty");
-    }
-    final String address = this.getPartOrEmpty(Part.Address);
+  protected void parse(final String identifier) {
+    final Iterator<String> iter = Splitter.on(DELIMITER).trimResults().split(identifier).iterator();
 
-    // Force scheme and address lowercase
-    this.parts.set(Part.Scheme.ordinal(), this.parts.get(Part.Scheme.ordinal()).toLowerCase());
-    this.parts.set(Part.Address.ordinal(), this.parts.get(Part.Address.ordinal()).toLowerCase());
-
-    if (address != null) {
-      final
-      List<String>
-          hostParts =
-          Lists.newArrayList(Splitter.on(':').trimResults().split(address));
-      // Parse replication
-      final String firstPart = hostParts.get(0);
-      this.host = firstPart;
-      if (firstPart.charAt(0) == '(') {
-        final int closeParen = firstPart.indexOf(')');
-        if (closeParen > 0) {
-          try {
-            this.replication = Integer.parseInt(firstPart.substring(1, closeParen));
-            // Set the host minus the replication
-            this.host = firstPart.substring(closeParen + 1);
-          } catch (final NumberFormatException e) {
-          }
-        }
+    for (int i = 0; iter.hasNext(); i++) {
+      final String part = iter.next();
+      // Defines the order of the parts in the identifier
+      switch (i) {
+        case 0: this.setScheme(part); break;
+        case 1: this.parseAddress(part); break;
+        case 2: this.setPath(part); break;
+        case 3: this.setName(part); break;
       }
-      if (hostParts.size() > 1) {
+    }
+  }
+
+  protected void parseAddress(final String address) {
+    final List<String> parts = Lists.newArrayList(Splitter.on(':').trimResults().split(address));
+    // Try to set the port from the last part
+    if (parts.size() > 1) {
+      final String szPort = parts.get(parts.size()-1);
+      try {
+        this.setPort(Integer.parseInt(szPort));
+      } catch (final NumberFormatException e) {
+        throw new IllegalArgumentException("Invalid port.", e);
+      }
+    }
+
+    // The point from where we start getting the host
+    // If there is a replication string, this will be > 0
+    int substrStart = 0;
+    // Find the replication at the beginning of the string
+    final String firstPart = parts.get(0);
+    if (firstPart.charAt(0) == '(') {
+      substrStart = 1;
+      // Find the closing brace of the replication
+      final int replEnd = firstPart.indexOf(')');
+      if (replEnd > 0) {
+        substrStart = replEnd+1;
+        final String szRepl = firstPart.substring(1, replEnd);
         try {
-          this.port = Integer.parseInt(hostParts.get(hostParts.size() - 1));
+          this.setReplication(Integer.parseInt(szRepl));
         } catch (final NumberFormatException e) {
+          throw new IllegalArgumentException("Invalid replication parameter.", e);
         }
+      } else {
+        throw new IllegalArgumentException("Incomplete replication parameter: ".concat(address));
       }
-
-      // Make sure the address is host:port (get rid of replication)
-      this.parts
-          .set(Part.Address.ordinal(), this.host.concat(":").concat(String.valueOf(this.port)));
     }
 
-    if (this.replication < 1) {
-      this.replication = 1;
-    }
+    // The host is everything from after the first ')' to the first ':'
+    this.setHost(firstPart.substring(substrStart));
+  }
+
+  protected void clear() {
+    this.setScheme("");
+    this.setReplication(-1);
+    this.setHost("");
+    this.setPort(-1);
+    this.setPath("");
+    this.setName("");
   }
 
   /**
    * Gets the string value of the specified part or, if the part does not have a value, the empty
    * string.
    */
-  private String getPartOrEmpty(final Part part) {
-    try {
-      return this.parts.get(part.ordinal());
-    } catch (final IndexOutOfBoundsException e) {
+  private String getPartOrEmpty(final String part) {
+    final String value = this.parts.get(part);
+    if (value == null) {
       return "";
+    } else {
+      return value;
     }
   }
 
-  /**
-   * Gets the part of the identifier that specifies to which service this identifier is delegated.
-   * </p> E.g. an identifier with the scheme "resources" represents a {@link RemoteResource}.
-   */
+  protected final void setScheme(String scheme) {
+    if (Strings.isNullOrEmpty(scheme)) {
+      throw new IllegalArgumentException("Scheme cannot be null or empty.");
+    }
+    this.parts.put(Part.Scheme, scheme);
+    this.makeIdentifier();
+  }
   public final String getScheme() {
     return getPartOrEmpty(Part.Scheme);
   }
 
-  public final String getAddress() {
-    return getPartOrEmpty(Part.Address);
+  protected final void setHost(String host) {
+    if (Strings.isNullOrEmpty(host)) {
+      throw new IllegalArgumentException("Host cannot be null or empty.");
+    }
+    this.parts.put(Part.Host, host);
+    this.makeIdentifier();
+  }
+  public final String getHost() {
+    return getPartOrEmpty(Part.Host);
   }
 
-  public final String getHost() {
-    return this.host;
+  protected final void setPort(int port) {
+    if (port <= 0) {
+     port = DEFAULT_PORT;
+    }
+    this.parts.put(Part.Port, String.valueOf(port));
+    this.makeIdentifier();
   }
 
   public final int getPort() {
-    return this.port;
+    try {
+      return Integer.parseInt(this.getPartOrEmpty(Part.Port));
+    } catch (final NumberFormatException e) {
+      // Default
+      this.setPort(DEFAULT_PORT);
+      return DEFAULT_PORT;
+    }
+  }
+
+  public final String getAddress() {
+    return this.getHost().concat(":").concat(String.valueOf(this.getPort()));
+  }
+
+  protected final void setPath(String path) {
+    if (path == null) {
+      path = "";
+    }
+    this.parts.put(Part.Path, path);
+    this.makeIdentifier();
   }
 
   public final String getPath() {
     return getPartOrEmpty(Part.Path);
   }
 
+  protected final void setName(String name) {
+    if (name == null) {
+      name = "";
+    }
+    this.parts.put(Part.Name, name);
+    this.makeIdentifier();
+  }
+
   public final String getName() {
     return getPartOrEmpty(Part.Name);
   }
 
-  public final int getReplication() {
-    return this.replication;
+  protected final void setReplication(int replication) {
+    // It doesn't make any sense to have an address with 0 replication (target nodes)
+    if (replication <= 0) {
+      replication = DEFAULT_REPLICATION;
+    }
+    this.parts.put(Part.Replication, String.valueOf(replication));
+    this.makeIdentifier();
   }
 
-  /**
-   * Deserializes the identifier string normally and then parses it into the identifier parts.
-   */
-  private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
-    ois.defaultReadObject();
-    // Reparse the identifier string
+  public final int getReplication() {
     try {
-      this.parse();
-    } catch (final URISyntaxException e) {
-      throw new IOException(e);
+      return Integer.parseInt(this.getPartOrEmpty(Part.Replication));
+    } catch (final NumberFormatException e) {
+      // Default
+      this.setReplication(DEFAULT_REPLICATION);
+      return DEFAULT_REPLICATION;
     }
+  }
+
+  protected void makeIdentifier() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append(this.getScheme());
+    sb.append(DELIMITER);
+    sb.append('(');
+    sb.append(this.getReplication());
+    sb.append(')');
+    sb.append(this.getAddress());
+    sb.append(DELIMITER);
+    sb.append(this.getPath());
+    sb.append(DELIMITER);
+    sb.append(this.getName());
+
+    this.identifier = sb.toString();
   }
 
   @Override
   public final String toString() {
+    if (Strings.isNullOrEmpty(this.identifier)) {
+      this.makeIdentifier();
+    }
     return this.identifier;
   }
 
