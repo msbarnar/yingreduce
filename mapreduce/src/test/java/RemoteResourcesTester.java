@@ -29,8 +29,8 @@ public final class RemoteResourcesTester {
 		final RemoteResourceFinder<Activator> remoteActivators = this.getter.get();
 
 		List<ListenableFuture<Activator>> activators =
-				remoteActivators.get(
-						new ResourceIdentifier("resources\\(10)localhost\\activator"),
+				remoteActivators.getFutureResources(
+						new ResourceIdentifier("resource\\localhost\\activator"),
 						new Properties()
 				);
 

@@ -95,7 +95,8 @@ public final class RemoteResourceFinder<V extends RemoteResource>
 			// Trim the expected responses in case some of the messages failed to send
 
 			for (int i = 0; i < (responses.size() - messagesSent); i++) {
-				if (responses.peekLast().cancel(false)) {
+				final ListenableFuture<Message> last = responses.peekLast();
+				if (last != null && last.cancel(false)) {
 					responses.removeLast();
 					this.unfulfilledResources.removeLast();
 				}

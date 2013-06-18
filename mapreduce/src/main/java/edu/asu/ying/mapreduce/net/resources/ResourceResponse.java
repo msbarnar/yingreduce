@@ -38,7 +38,7 @@ public final class ResourceResponse
 	}
 
 	public static final class Property {
-		public static final String ResourceInstance = "resources.instance.ref";
+		public static final String ResourceInstance = "resource.instance.ref";
 	}
 
 	private ResourceResponse()

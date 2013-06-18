@@ -124,6 +124,7 @@ public abstract class MessageBase
 	public void setDestinationUri(final ResourceIdentifier uri) {
 		Preconditions.checkNotNull(uri);
 		this.properties.put(Property.DestinationURI, uri);
+		this.setReplication(uri.getReplication());
 	}
 	@Override
 	public @Nullable ResourceIdentifier getDestinationUri() {
@@ -171,7 +172,7 @@ public abstract class MessageBase
 		try {
 			return Integer.parseInt(this.properties.getNullAsEmpty(Property.Replication));
 		} catch (final NumberFormatException e) {
-			return -1;
+			return 1;
 		}
 	}
 	protected void setReplication(final int replication) {

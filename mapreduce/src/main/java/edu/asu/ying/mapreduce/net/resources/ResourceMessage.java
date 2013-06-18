@@ -26,10 +26,10 @@ public abstract class ResourceMessage
 	 * Defines the keys of the properties defined by this message.
 	 */
 	public static final class Property {
-		public static final String Scheme = "resources";
-		public static final String ResourceUri = "resources.uri";
-		public static final String ResourceTypeName = "resources.type.name";
-		public static final String ResourceName = "resources.instance.name";
+		public static final String Scheme = "resource";
+		public static final String ResourceUri = "resource.uri";
+		public static final String ResourceTypeName = "resource.type.name";
+		public static final String ResourceName = "resource.instance.name";
 	}
 
 	private static final long SerialVersionUID = 1L;

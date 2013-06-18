@@ -40,6 +40,7 @@ public final class ResourceIdentifier
 	private transient List<String> parts;
 	private transient String host = "";
 	private transient int port = -1;
+	private transient int replication = 1;
 
 	private ResourceIdentifier() {
 		this.identifier = "";
@@ -124,6 +125,17 @@ public final class ResourceIdentifier
 			// Parse replication
 			final String firstPart = hostParts.get(0);
 			this.host = firstPart;
+			if (firstPart.charAt(0) == '(') {
+				final int closeParen = firstPart.indexOf(')');
+				if (closeParen > 0) {
+					try {
+						this.replication = Integer.parseInt(firstPart.substring(1, closeParen));
+						// Set the host minus the replication
+						this.host = firstPart.substring(closeParen+1);
+					} catch (final NumberFormatException e) {
+					}
+				}
+			}
 			if (hostParts.size() > 1) {
 				try {
 					this.port = Integer.parseInt(hostParts.get(hostParts.size()-1));
@@ -134,6 +146,10 @@ public final class ResourceIdentifier
 			// Make sure the address is host:port (get rid of replication)
 			this.parts.set(Part.Address.ordinal(), this.host.concat(":").concat(String.valueOf(this.port)));
 		}
+
+		if (this.replication < 1) {
+			this.replication = 1;
+	}
 	}
 
 	/**
@@ -158,6 +174,7 @@ public final class ResourceIdentifier
 	public final int getPort()          { return this.port; }
 	public final String getPath()       { return getPartOrEmpty(Part.Path); }
 	public final String getName()       { return getPartOrEmpty(Part.Name); }
+	public final int getReplication()   { return this.replication; }
 
 	/**
 	 * Deserializes the identifier string normally and then parses it into the identifier parts.

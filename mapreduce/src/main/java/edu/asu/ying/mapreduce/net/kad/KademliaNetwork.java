@@ -86,6 +86,13 @@ public final class KademliaNetwork
 		}
 		return this.localNode;
 	}
+
+	@Provides
+	@ServerActivator
+	private final Activator provideServerActivator() {
+		return this.provideLocalNode().getActivator();
+	}
+
 	/*
 	 * Message handler providers
 	 */
@@ -93,4 +100,5 @@ public final class KademliaNetwork
 	@ResourceMessageEvent
 	private final FilteredValueEvent<Message> provideResourceMessageEvent() {
 		return this.provideLocalNode().getMessageHandler("resource").getIncomingMessageEvent();
-	}}
+	}
+}

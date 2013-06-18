@@ -1,8 +1,11 @@
 import com.google.inject.*;
+import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.events.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
+import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
 import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
@@ -10,6 +13,7 @@ import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -22,7 +26,7 @@ public class TestRemoteResources
 		extends AbstractModule
 {
 	// Simulates a message handler getting messages from the network
-	private final FilteredValueEvent<Message> onIncomingMessages = new FilteredValueEvent<>();
+	private final FilteredValueEvent<Message> onIncomingMessages = new FilteredValueEventBase<>();
 
 	private class MockActivator
 			implements Activator {
@@ -47,12 +51,18 @@ public class TestRemoteResources
 			implements MessageOutputStream {
 		@Override
 		public int write(final Message message) throws IOException {
-			for (int i = 0; i < message.getReplication(); i++) {
-				TestRemoteResources.this.onIncomingMessages.fire(this, new ResourceResponse(message,
-				                                                                            new MockActivator(i))
-																);
+			try {
+				message.setSourceUri(new ResourceIdentifier("node\\localhost"));
+				for (int i = 0; i < message.getReplication(); i++) {
+					TestRemoteResources.this.onIncomingMessages.fire(this, ResourceResponse.inResponseTo(message,
+				                                                                                     new MockActivator(i))
+																	);
+
+				}
+				return message.getReplication();
+			} catch (final URISyntaxException e) {
+					throw new IOException(e);
 			}
-			return message.getReplication();
 		}
 	}
 
@@ -63,7 +73,7 @@ public class TestRemoteResources
 	}
 
 	@Provides
-	@IncomingMessageEvent
+	@ResourceMessageEvent
 	private FilteredValueEvent<Message> provideIncomingMessagesEvent() {
 		return this.onIncomingMessages;
 	}

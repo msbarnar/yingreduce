@@ -1,5 +1,7 @@
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
+import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.events.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.Filter.on;
 import org.junit.Assert;
@@ -15,7 +17,7 @@ public class TestFilteredFutures
 {
 	@Test
 	public void ItReturnedTheRightOneOfThree() throws Exception {
-		FilteredValueEvent<Integer> numberEvent = new FilteredValueEvent<>();
+		FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<>();
 
 		Filter numberFilter = Filter.on.anyOf(on.doesEqual(1));
 
@@ -33,7 +35,7 @@ public class TestFilteredFutures
 
 	@Test
 	public void ItReturnedTheRightThreeOfNine() throws Exception {
-		FilteredValueEvent<Integer> numberEvent = new FilteredValueEvent<>();
+		FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<>();
 
 		Filter numberFilter = Filter.on.anyOf(on.doesEqual(1), on.doesEqual(3), on.doesEqual(6));
 

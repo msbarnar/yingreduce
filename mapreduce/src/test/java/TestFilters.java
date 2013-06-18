@@ -25,15 +25,15 @@ public class TestFilters
 						FilterMessage.on.property("test", "hi")
 				);
 
-		ResourceRequest msg1 = new ResourceRequest(new ResourceIdentifier("resources\\host\\path"));
+		ResourceRequest msg1 = ResourceRequest.locatedBy(new ResourceIdentifier("resources\\host\\path"));
 		msg1.setId("yes");
 		msg1.getProperties().put("test", "hi");
-		ResourceRequest msg2 = new ResourceRequest(new ResourceIdentifier("resources\\host\\path"));
+		ResourceRequest msg2 = ResourceRequest.locatedBy(new ResourceIdentifier("resources\\host\\path"));
 		msg2.setId("no");
-		ResourceResponse rsp1 = new ResourceResponse(msg1);
+		ResourceResponse rsp1 = ResourceResponse.inResponseTo(msg1);
 		rsp1.setId("yes");
 		rsp1.getProperties().put("test", "hi");
-		ResourceResponse rsp2 = new ResourceResponse(msg1);
+		ResourceResponse rsp2 = ResourceResponse.inResponseTo(msg2);
 		rsp2.setId("no");
 		rsp2.getProperties().put("test", "bye");
 
