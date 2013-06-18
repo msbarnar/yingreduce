@@ -6,33 +6,37 @@ import java.net.URISyntaxException;
 
 
 /**
- * A {@link ResourceRequest} indicates to a remote node that we would like a remote reference to one of its
- * resources.
+ * A {@link ResourceRequest} indicates to a remote node that we would like a remote reference to one
+ * of its resources.
  */
 public final class ResourceRequest
-	extends ResourceMessage
-{
-	private static final long SerialVersionUID = 1L;
+    extends ResourceMessage {
 
-	public static ResourceRequest locatedBy(final ResourceIdentifier uri)
-			throws URISyntaxException {
+  private static final long SerialVersionUID = 1L;
 
-		return new ResourceRequest(uri);
-	}
+  public static ResourceRequest locatedBy(final ResourceIdentifier uri)
+      throws URISyntaxException {
 
-	/**
-	 * Initializes the message with a given {@link edu.asu.ying.mapreduce.net.resources.RemoteResource} URI.
-	 * @param resourceUri the fully formed URI of the resources. {@see RemoteResource} for formatting details.
-	 */
-	private ResourceRequest(final ResourceIdentifier resourceUri) throws URISyntaxException {
-		Preconditions.checkNotNull(resourceUri);
-		// Set the destination URI from only the host and port of the resources URI
-		this.setDestinationUri(new ResourceIdentifier(resourceUri.getScheme(), resourceUri.getAddress()));
-		this.setReplication(resourceUri.getReplication());
+    return new ResourceRequest(uri);
+  }
 
-		if (!ResourceMessage.isValidResourceUri(resourceUri)) {
-			throw new URISyntaxException(resourceUri.toString(), "Not a valid ResourceMessage URI", 0);
-		}
-		this.setResourceUri(resourceUri);
-	}
+  /**
+   * Initializes the message with a given {@link edu.asu.ying.mapreduce.net.resources.RemoteResource}
+   * URI.
+   *
+   * @param resourceUri the fully formed URI of the resources. {@see RemoteResource} for formatting
+   *                    details.
+   */
+  private ResourceRequest(final ResourceIdentifier resourceUri) throws URISyntaxException {
+    Preconditions.checkNotNull(resourceUri);
+    // Set the destination URI from only the host and port of the resources URI
+    this.setDestinationUri(
+        new ResourceIdentifier(resourceUri.getScheme(), resourceUri.getAddress()));
+    this.setReplication(resourceUri.getReplication());
+
+    if (!ResourceMessage.isValidResourceUri(resourceUri)) {
+      throw new URISyntaxException(resourceUri.toString(), "Not a valid ResourceMessage URI", 0);
+    }
+    this.setResourceUri(resourceUri);
+  }
 }

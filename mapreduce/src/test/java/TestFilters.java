@@ -1,6 +1,6 @@
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.Filter.on;
-import edu.asu.ying.mapreduce.messaging.FilterMessage;
+import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.net.resources.ResourceRequest;
 import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;

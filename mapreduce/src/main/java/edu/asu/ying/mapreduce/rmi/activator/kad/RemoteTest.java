@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
  *
  */
 public interface RemoteTest
-	extends Remote
-{
-	public String getString() throws RemoteException;
+    extends Remote {
+
+  public String getString() throws RemoteException;
 }

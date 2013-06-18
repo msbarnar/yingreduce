@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.resources;
+package edu.asu.ying.mapreduce.net.messaging;
 
 import com.google.inject.BindingAnnotation;
 
@@ -13,13 +13,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Marks a field or parameters as receiving an injected message source that provides incoming
- * messages from the network. </p> Messages will be only those with the scheme {@code resource}. <p>
- * Apply to a method with {@link com.google.inject.Provides} to provide an implementation of that
- * source.
+ * messages from the network. <p> Apply to a method with {@link com.google.inject.Provides} to
+ * provide an implementation of that source.
  */
 @BindingAnnotation
 @Target({FIELD, PARAMETER, METHOD})
 @Retention(RUNTIME)
-public @interface ResourceMessageEvent {
+public @interface IncomingMessageEvent {
 
 }

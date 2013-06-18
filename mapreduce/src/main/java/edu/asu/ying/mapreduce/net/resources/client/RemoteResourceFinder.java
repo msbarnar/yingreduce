@@ -1,17 +1,12 @@
 package edu.asu.ying.mapreduce.net.resources.client;
 
-import com.google.common.util.concurrent.*;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
 import com.google.inject.Inject;
-import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
-import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
-import edu.asu.ying.mapreduce.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.messaging.IncomingMessageEvent;
-import edu.asu.ying.mapreduce.messaging.Message;
-import edu.asu.ying.mapreduce.io.SendMessageStream;
-import edu.asu.ying.mapreduce.common.filter.Filter;
-import edu.asu.ying.mapreduce.messaging.FilterMessage;
-import edu.asu.ying.mapreduce.net.resources.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,134 +16,153 @@ import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import edu.asu.ying.mapreduce.common.Properties;
+import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
+import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.filter.Filter;
+import edu.asu.ying.mapreduce.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.io.SendMessageStream;
+import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
+import edu.asu.ying.mapreduce.net.messaging.Message;
+import edu.asu.ying.mapreduce.net.resources.RemoteResource;
+import edu.asu.ying.mapreduce.net.resources.ResourceException;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
+import edu.asu.ying.mapreduce.net.resources.ResourceRequest;
+import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
+
 
 /**
- * {@code RemoteResourceFinder} facilitates asynchronous getting of {@link edu.asu.ying.mapreduce.net.resources.RemoteResource} objects from remote nodes.
- * </p>
- * {@code RemoteResourceFinder} is parameterized on the type of resources that it gets.
+ * {@code RemoteResourceFinder} facilitates asynchronous getting of {@link
+ * edu.asu.ying.mapreduce.net.resources.RemoteResource} objects from remote nodes. </p> {@code
+ * RemoteResourceFinder} is parameterized on the type of resources that it gets.
  */
 public final class RemoteResourceFinder<V extends RemoteResource>
-	implements FutureCallback<Message>
-{
-	/********************************************************************
-	 * Getting resources
-	 */
+    implements FutureCallback<Message> {
 
-	// Used to send messages on the network
-	private final MessageOutputStream sendStream;
-	private final FilteredValueEvent<Message> onIncomingMessage;
+  /**
+   * ***************************************************************** Getting resources
+   */
 
-	// Spawns our listening threads that wait for incoming messages.
-	private final ListeningExecutorService executor
-			= MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+  // Used to send messages on the network
+  private final MessageOutputStream sendStream;
+  private final FilteredValueEvent<Message> onIncomingMessage;
 
-	// We technically can synchronize on the non-final unfulfilledResources deque, but we technically can do a lot
-	// of things that we shouldn't.
-	private final Object resourcesLock = new Object();
-	private Deque<SettableFuture<V>> unfulfilledResources;
+  // Spawns our listening threads that wait for incoming messages.
+  private final ListeningExecutorService executor
+      = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
 
-	@Inject
-	private RemoteResourceFinder(@SendMessageStream MessageOutputStream sendStream,
-	                             @ResourceMessageEvent FilteredValueEvent<Message> onIncomingMessage) {
+  // We technically can synchronize on the non-final unfulfilledResources deque, but we technically can do a lot
+  // of things that we shouldn't.
+  private final Object resourcesLock = new Object();
+  private Deque<SettableFuture<V>> unfulfilledResources;
 
-		this.sendStream = sendStream;
-		this.onIncomingMessage = onIncomingMessage;
-	}
+  @Inject
+  private RemoteResourceFinder(@SendMessageStream MessageOutputStream sendStream,
+                               @ResourceMessageEvent FilteredValueEvent<Message> onIncomingMessage) {
 
-	/**
-	 * Gets {@code k} promises of a single resources from {@code k} different nodes.
-	 * @param uri the address of the node(s) whose resources to get. The number of nodes contacted is specified by the
-	 *            {@code replication} part of the URI.
-	 * @param args properties to supply the resources provider.
-	 * @return a number of promises not greater than the value of {@code replication} in the URI (default 1).
-	 */
-	public final List<ListenableFuture<V>> getFutureResources(final ResourceIdentifier uri, final Properties args)
-			throws URISyntaxException, IOException {
-		// Set up the request
-		final Message request = this.createRequest(uri, args);
+    this.sendStream = sendStream;
+    this.onIncomingMessage = onIncomingMessage;
+  }
 
-		// Get future responses to our request
-		final Deque<ListenableFuture<Message>> responses
-				= new ArrayDeque<>(FilteredFutures.getFrom(this.onIncomingMessage)
-					                 .get(request.getReplication())
-									 .filter(
-											 Filter.on.allOf(
-													 Filter.on.classIs(ResourceResponse.class),
-													 FilterMessage.on.id(request.getId())
-											 )
-									 ));
+  /**
+   * Gets {@code k} promises of a single resources from {@code k} different nodes.
+   *
+   * @param uri  the address of the node(s) whose resources to get. The number of nodes contacted is
+   *             specified by the {@code replication} part of the URI.
+   * @param args properties to supply the resources provider.
+   * @return a number of promises not greater than the value of {@code replication} in the URI
+   *         (default 1).
+   */
+  public final List<ListenableFuture<V>> getFutureResources(final ResourceIdentifier uri,
+                                                            final Properties args)
+      throws URISyntaxException, IOException {
+    // Set up the request
+    final Message request = this.createRequest(uri, args);
 
-		// Set up the return value
-		this.unfulfilledResources = new ArrayDeque<>(responses.size());
-		// Listen for the response futures being set
-		for (final ListenableFuture<Message> response : responses) {
-			Futures.addCallback(response, this, this.executor);
-			this.unfulfilledResources.push(SettableFuture.<V>create());
-		}
+    // Get future responses to our request
+    final Deque<ListenableFuture<Message>> responses
+        = new ArrayDeque<>(FilteredFutures.getFrom(this.onIncomingMessage)
+                               .get(request.getReplication())
+                               .filter(
+                                   Filter.on.allOf(
+                                       Filter.on.classIs(ResourceResponse.class),
+                                       FilterMessage.on.id(request.getId())
+                                   )
+                               ));
 
-		// We're currently getting messages from the event thread, but we have some work to do on the
-		// unfulfilled futures before we return them, so block the other thread from popping off the deque until
-		// we've finished returning a copy of it.
-		synchronized (this.resourcesLock) {
-			// Send the request
-			final int messagesSent = this.sendStream.write(request);
-			// Trim the expected responses in case some of the messages failed to send
+    // Set up the return value
+    this.unfulfilledResources = new ArrayDeque<>(responses.size());
+    // Listen for the response futures being set
+    for (final ListenableFuture<Message> response : responses) {
+      Futures.addCallback(response, this, this.executor);
+      this.unfulfilledResources.push(SettableFuture.<V>create());
+    }
 
-			for (int i = 0; i < (responses.size() - messagesSent); i++) {
-				final ListenableFuture<Message> last = responses.peekLast();
-				if (last != null && last.cancel(false)) {
-					responses.removeLast();
-					this.unfulfilledResources.removeLast();
-				}
-			}
+    // We're currently getting messages from the event thread, but we have some work to do on the
+    // unfulfilled futures before we return them, so block the other thread from popping off the deque until
+    // we've finished returning a copy of it.
+    synchronized (this.resourcesLock) {
+      // Send the request
+      final int messagesSent = this.sendStream.write(request);
+      // Trim the expected responses in case some of the messages failed to send
 
-			// Similarly, don't let the other thread pop from this deque while we're iterating it for a copy
-			return new ArrayList<ListenableFuture<V>>(this.unfulfilledResources);
-		}
-	}
+      for (int i = 0; i < (responses.size() - messagesSent); i++) {
+        final ListenableFuture<Message> last = responses.peekLast();
+        if (last != null && last.cancel(false)) {
+          responses.removeLast();
+          this.unfulfilledResources.removeLast();
+        }
+      }
 
-	/**
-	 * Callback for message arrival; fulfills one of the unfulfilled resources
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public void onSuccess(final Message message) {
-		final ResourceResponse response = (ResourceResponse) message;
-		// Responses can return exceptions, so fail on that
-		if (response.getException() != null) {
-			this.onFailure(response.getException());
-		} else {
-			// Avoid popping off this deque while anyone else is iterating it
-			synchronized (this.resourcesLock) {
-				if (this.unfulfilledResources.peek() != null) {
-					// Supress warning: V is constrained on RemoteResource
-					this.unfulfilledResources.pop().set((V) response.getResourceInstance());
-				}
-			}
-		}
-	}
+      // Similarly, don't let the other thread pop from this deque while we're iterating it for a copy
+      return new ArrayList<ListenableFuture<V>>(this.unfulfilledResources);
+    }
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void onFailure(final Throwable throwable) {
-		// Set a resources exception instead of the resources they wanted
-		// Avoid popping off this deque while anyone else is iterating it
-		synchronized (this.resourcesLock) {
-			if (this.unfulfilledResources.peek() != null) {
-				// Supress warning: V is constrained on RemoteResource
-				this.unfulfilledResources.pop().set((V) new ResourceException(throwable));
-			}
-		}
-	}
+  /**
+   * Callback for message arrival; fulfills one of the unfulfilled resources
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public void onSuccess(final Message message) {
+    final ResourceResponse response = (ResourceResponse) message;
+    // Responses can return exceptions, so fail on that
+    if (response.getException() != null) {
+      this.onFailure(response.getException());
+    } else {
+      // Avoid popping off this deque while anyone else is iterating it
+      synchronized (this.resourcesLock) {
+        if (this.unfulfilledResources.peek() != null) {
+          // Supress warning: V is constrained on RemoteResource
+          this.unfulfilledResources.pop().set((V) response.getResourceInstance());
+        }
+      }
+    }
+  }
 
-	/**
-	 * Creates a {@link edu.asu.ying.mapreduce.net.resources.ResourceRequest} for the resources at the given URI.
-	 */
-	private Message createRequest(final ResourceIdentifier uri, final Properties args)
-			throws URISyntaxException {
+  @Override
+  @SuppressWarnings("unchecked")
+  public void onFailure(final Throwable throwable) {
+    // Set a resources exception instead of the resources they wanted
+    // Avoid popping off this deque while anyone else is iterating it
+    synchronized (this.resourcesLock) {
+      if (this.unfulfilledResources.peek() != null) {
+        // Supress warning: V is constrained on RemoteResource
+        this.unfulfilledResources.pop().set((V) new ResourceException(throwable));
+      }
+    }
+  }
 
-		final ResourceRequest request = ResourceRequest.locatedBy(uri);
-		request.setArguments(args);
-		return request;
-	}
+  /**
+   * Creates a {@link edu.asu.ying.mapreduce.net.resources.ResourceRequest} for the resources at the
+   * given URI.
+   */
+  private Message createRequest(final ResourceIdentifier uri, final Properties args)
+      throws URISyntaxException {
+
+    final ResourceRequest request = ResourceRequest.locatedBy(uri);
+    request.setArguments(args);
+    return request;
+  }
 }

@@ -5,22 +5,21 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 
-
 public abstract class FilterBase
-	implements Filter
-{
-	protected final List<Filter> children;
+    implements Filter {
 
-	protected FilterBase(final Filter... filters) {
-		this.children = Lists.newArrayList(filters);
-	}
+  protected final List<Filter> children;
 
-	@SuppressWarnings("unchecked")
-	protected <T> T dynamicCast(final Object value) {
-		try {
-			return (T) value;
-		} catch (final ClassCastException e) {
-			return null;
-		}
-	}
+  protected FilterBase(final Filter... filters) {
+    this.children = Lists.newArrayList(filters);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected <T> T dynamicCast(final Object value) {
+    try {
+      return (T) value;
+    } catch (final ClassCastException e) {
+      return null;
+    }
+  }
 }

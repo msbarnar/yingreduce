@@ -9,30 +9,31 @@ import java.rmi.RemoteException;
  * Implements a {@link RemoteResource} that threw an exception in provision.
  */
 public final class ResourceException
-	implements RemoteResource
-{
-	private static final long SerialVersionUID = 1L;
+    implements RemoteResource {
 
-	private final Throwable cause;
-	private final ResourceIdentifier resourceUri;
+  private static final long SerialVersionUID = 1L;
 
-	public ResourceException(final ResourceIdentifier resourceUri, final Throwable cause) {
-		Preconditions.checkNotNull(resourceUri);
-		Preconditions.checkNotNull(cause);
+  private final Throwable cause;
+  private final ResourceIdentifier resourceUri;
 
-		this.resourceUri = resourceUri;
-		this.cause = cause;
-	}
-	public ResourceException(final Throwable cause) {
-		this(ResourceIdentifier.Empty, cause);
-	}
+  public ResourceException(final ResourceIdentifier resourceUri, final Throwable cause) {
+    Preconditions.checkNotNull(resourceUri);
+    Preconditions.checkNotNull(cause);
 
-	public final Throwable getCause() {
-		return this.cause;
-	}
+    this.resourceUri = resourceUri;
+    this.cause = cause;
+  }
 
-	@Override
-	public final ResourceIdentifier getResourceUri() throws RemoteException {
-		return this.resourceUri;
-	}
+  public ResourceException(final Throwable cause) {
+    this(ResourceIdentifier.Empty, cause);
+  }
+
+  public final Throwable getCause() {
+    return this.cause;
+  }
+
+  @Override
+  public final ResourceIdentifier getResourceUri() throws RemoteException {
+    return this.resourceUri;
+  }
 }
