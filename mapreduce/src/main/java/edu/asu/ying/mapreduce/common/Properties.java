@@ -70,7 +70,7 @@ public final class Properties
 
 		final Optional<Serializable> value = Optional.fromNullable(this.get(key));
 		if (value.isPresent()) {
-			return Strings.emptyToNull(String.valueOf(value));
+			return Strings.emptyToNull(String.valueOf(value.get()));
 		} else {
 			return "";
 		}

@@ -28,6 +28,7 @@ public final class ResourceRequest
 		Preconditions.checkNotNull(resourceUri);
 		// Set the destination URI from only the host and port of the resources URI
 		this.setDestinationUri(new ResourceIdentifier(resourceUri.getScheme(), resourceUri.getAddress()));
+		this.setReplication(resourceUri.getReplication());
 
 		if (!ResourceMessage.isValidResourceUri(resourceUri)) {
 			throw new URISyntaxException(resourceUri.toString(), "Not a valid ResourceMessage URI", 0);
