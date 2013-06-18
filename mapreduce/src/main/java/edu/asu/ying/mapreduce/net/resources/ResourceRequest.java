@@ -28,15 +28,11 @@ public final class ResourceRequest
    *                    details.
    */
   private ResourceRequest(final ResourceIdentifier resourceUri) throws URISyntaxException {
-    Preconditions.checkNotNull(resourceUri);
     // Set the destination URI from only the host and port of the resources URI
-    this.setDestinationUri(
-        new ResourceIdentifier(resourceUri.getScheme(), resourceUri.getAddress()));
-    this.setReplication(resourceUri.getReplication());
+    super(resourceUri);
 
     if (!ResourceMessage.isValidResourceUri(resourceUri)) {
       throw new URISyntaxException(resourceUri.toString(), "Not a valid ResourceMessage URI", 0);
     }
-    this.setResourceUri(resourceUri);
   }
 }

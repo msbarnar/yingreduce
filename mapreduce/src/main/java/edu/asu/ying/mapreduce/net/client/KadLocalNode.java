@@ -40,12 +40,21 @@ public class KadLocalNode
 
   @Inject
   private KadLocalNode(final Provider<MessageHandler> messageHandlerProvider,
-                       final @Named(
-                           "activator") Provider<ResourceRequestHandler> activatorRequestHandlerProvider) {
+                       final @Named("activator")
+                       Provider<ResourceRequestHandler> activatorRequestHandlerProvider) {
+
     this.messageHandlerProvider = messageHandlerProvider;
     this.activatorRequestHandlerProvider = activatorRequestHandlerProvider;
   }
 
+  /**
+   * Binds the message handling services to the network.
+   * </p>
+   * It is important that this is called after the {@link LocalNode} is fully constructed because
+   * the message handling services create a dependency cycle with the local node's message handlers.
+   * </p>
+   * The local node is injected as a singleton, so once it is constructed the cyckle is broken.
+   */
   public void bind() {
     // Start the activator request handler
     this.activatorRequestHandlerProvider.get();

@@ -1,3 +1,5 @@
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -20,37 +22,54 @@ import java.util.UUID;
  *
  */
 public class TestResourceFinder
+  implements FutureCallback<Activator>
 {
-	@Test
-	public void ClientGetsOwnActivator() throws Exception {
-		// Open a channel with no peers and get an activator; it should be our own
-		final KademliaNetwork channel = new KademliaNetwork();
-		// Get an activator
-		final Injector injector = Guice.createInjector(channel);
-		// Getting an instance of the local node starts it
-		final LocalNode node = injector.getInstance(LocalNode.class);
-      node.bind();
+  @Test
+  @SuppressWarnings("unchecked")
+  public void ClientGetsOwnActivator() throws Exception {
+    // Open a channel with no peers and get an activator; it should be our own
+    final KademliaNetwork channel = new KademliaNetwork();
+    // Get an activator
+    final Injector injector = Guice.createInjector(channel);
+    // Getting an instance of the local node starts it
+    // bind is necessary because the message handlers cannot be bound at construction due to
+    // a cyclic dependency.
+    final LocalNode node = injector.getInstance(LocalNode.class);
+    node.bind();
 
-		final RemoteResourceFinder<Activator> finder = injector.getInstance(RemoteResourceFinder.class);
+    // Unchecked
+    final RemoteResourceFinder<Activator> finder = injector.getInstance(RemoteResourceFinder.class);
 
-		final String host = Base64.encodeBase64String(UUID.randomUUID().toString().substring(0, 20).getBytes());
-		final ResourceIdentifier hostUri = new ResourceIdentifier("resource", host, -1, "activator");
+    final String host = Base64.encodeBase64String(
+        UUID.randomUUID().toString().substring(0, 20).getBytes());
+    final ResourceIdentifier hostUri = new ResourceIdentifier("resource", host, -1, "activator");
 
-		final List<ListenableFuture<Activator>> futures = finder.getFutureResources(hostUri, Properties.Empty);
-		Thread.sleep(3000);
+    final List<ListenableFuture<Activator>> futures = finder.getFutureResources(hostUri,
+                                                                                Properties.Empty);
 
-		for (final ListenableFuture<Activator> future : futures) {
-			Assert.assertTrue(future.isDone());
-			final Activator activator = future.get();
+    for (final ListenableFuture<Activator> future : futures) {
+      final Activator activator = future.get();
+      Assert.assertNotNull(activator);
 
-			if (activator != null) {
-				System.out.println("Sending: ".concat(host));
-				final String resp = activator.echo(host);
-				System.out.println("Response: ".concat(resp));
-				Assert.assertEquals(activator.echo(host), host);
-				final RemoteTest test = activator.getReference(RemoteTest.class, null);
-				System.out.println(test.getString());
-			}
-		}
-	}
+      System.out.println("These should be equal:");
+      System.out.println(host);
+      final String resp = activator.echo(host);
+      System.out.println(resp);
+      Assert.assertEquals(activator.echo(host), host);
+      final RemoteTest test = activator.getReference(RemoteTest.class, null);
+      System.out.println();
+      System.out.println("These should be equal:");
+      System.out.println("Hello! This is only a test.");
+      System.out.println(test.getString());
+      Assert.assertEquals("Hello! This is only a test.", test.getString());
+    }
+  }
+
+  @Override
+  public void onSuccess(Activator result) {
+  }
+
+  @Override
+  public void onFailure(Throwable t) {
+  }
 }

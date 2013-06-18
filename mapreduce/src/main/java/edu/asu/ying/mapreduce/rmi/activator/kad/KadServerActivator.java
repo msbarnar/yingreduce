@@ -38,7 +38,7 @@ public final class KadServerActivator
                                                  final Map<String, String> properties)
       throws RemoteException {
     // TODO: use UnicastRemoteObject.exportObject
-    System.out.println(String.format("GET INSTANCE: %s", type.toString()));
+    System.out.println(String.format("\nServer: Get Instance: %s", type.toString()));
     final Injector injector = Guice.createInjector(new KademliaNetwork());
     final Remote instance;
     instance = injector.getInstance(type);

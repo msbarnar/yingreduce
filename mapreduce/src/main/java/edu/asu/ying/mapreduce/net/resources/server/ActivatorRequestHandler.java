@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Random;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -117,7 +118,8 @@ public final class ActivatorRequestHandler
     final Activator instance;
     try {
       // Export the RMI Remote proxy and return it in the message
-      instance = (Activator) UnicastRemoteObject.exportObject(this.activatorProvider.get());
+      instance = (Activator) UnicastRemoteObject.exportObject(this.activatorProvider.get(),
+                                                              8000+(new Random()).nextInt(2000));
       response.setResourceInstance(instance);
     } catch (final RemoteException e) {
       response.setException(e);
