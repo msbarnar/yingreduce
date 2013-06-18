@@ -20,6 +20,8 @@ import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
 import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
 import edu.asu.ying.mapreduce.common.filter.Filter;
+import edu.asu.ying.mapreduce.common.filter.FilterClass;
+import edu.asu.ying.mapreduce.common.filter.FilterString;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
@@ -86,8 +88,8 @@ public final class RemoteResourceFinder<V extends RemoteResource>
                                .get(request.getReplication())
                                .filter(
                                    Filter.on.allOf(
-                                       Filter.on.classIs(ResourceResponse.class),
-                                       FilterMessage.on.id(request.getId())
+                                       FilterClass.is(ResourceResponse.class),
+                                       FilterMessage.id(FilterString.equalTo(request.getId()))
                                    )
                                ));
 

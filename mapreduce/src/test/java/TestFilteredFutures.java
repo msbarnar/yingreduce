@@ -19,7 +19,7 @@ public class TestFilteredFutures
 	public void ItReturnedTheRightOneOfThree() throws Exception {
 		FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<>();
 
-		Filter numberFilter = Filter.on.anyOf(on.doesEqual(1));
+		Filter numberFilter = Filter.on.anyOf(on.equalTo(1));
 
 		final ListenableFuture<Integer> future = FilteredFutures.getFrom(numberEvent).filter(numberFilter).get(0);
 
@@ -37,7 +37,7 @@ public class TestFilteredFutures
 	public void ItReturnedTheRightThreeOfNine() throws Exception {
 		FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<>();
 
-		Filter numberFilter = Filter.on.anyOf(on.doesEqual(1), on.doesEqual(3), on.doesEqual(6));
+		Filter numberFilter = Filter.on.anyOf(on.equalTo(1), on.equalTo(3), on.equalTo(6));
 
 		List<ListenableFuture<Integer>> futureNumbers
 				= FilteredFutures.getFrom(numberEvent).get(3).filter(numberFilter);

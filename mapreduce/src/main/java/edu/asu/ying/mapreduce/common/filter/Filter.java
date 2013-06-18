@@ -15,17 +15,12 @@ public interface Filter {
   <V> boolean match(final V value);
 
   /**
-   * ********************************************************* Common filters
+   * Common filters
    */
   public static final class on {
 
-    public static <T> FilterOnEquals<T> doesEqual(final T value) {
+    public static <T> FilterOnEquals<T> equalTo(final T value) {
       return new on.FilterOnEquals<>(value);
-    }
-
-    public static <T> FilterOnClass classIs(final Class<T> type) {
-      Preconditions.checkNotNull(type);
-      return new on.FilterOnClass(type);
     }
 
     public static Filter allOf(final Filter... filters) {
@@ -63,24 +58,6 @@ public interface Filter {
           return value == null;
         }
         return this.value.equals(value);
-      }
-    }
-
-    /**
-     * {@code FilterOnClass} Matches values that have the appropriate class.
-     */
-    private static final class FilterOnClass implements Filter {
-
-      private final Class<?> clazz;
-
-      FilterOnClass(final Class<?> clazz) {
-        Preconditions.checkNotNull(clazz);
-        this.clazz = clazz;
-      }
-
-      @Override
-      public final <V> boolean match(final V value) {
-        return this.clazz.equals(value.getClass());
       }
     }
 

@@ -1,4 +1,7 @@
+import edu.asu.ying.mapreduce.common.filter.FilterClass;
 import edu.asu.ying.mapreduce.common.filter.Filter;
+import edu.asu.ying.mapreduce.common.filter.FilterInteger;
+import edu.asu.ying.mapreduce.common.filter.FilterString;
 import edu.asu.ying.mapreduce.common.filter.Filter.on;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.net.resources.ResourceRequest;
@@ -18,11 +21,11 @@ public class TestFilters
 		final Filter filter =
 				on.allOf(
 						on.anyOf(
-								on.classIs(ResourceRequest.class),
-								on.classIs(ResourceResponse.class)
+								FilterClass.is(ResourceRequest.class),
+								FilterClass.is(ResourceResponse.class)
 						),
-						FilterMessage.on.id("yes"),
-						FilterMessage.on.property("test", "hi")
+						FilterMessage.id(FilterString.equalTo("yes")),
+						FilterMessage.property("test", "hi")
 				);
 
 		ResourceRequest msg1 = ResourceRequest.locatedBy(new ResourceIdentifier("resource\\host\\path"));
@@ -49,8 +52,8 @@ public class TestFilters
 	public void MatchAllOf() {
 		final Filter filter =
 				on.allOf(
-						on.doesEqual(5),
-						on.classIs(Integer.class)
+						FilterInteger.equalTo(5),
+						FilterClass.is(Integer.class)
 				);
 		Assert.assertTrue(filter.match(5));
 		Assert.assertFalse(filter.match(50));
@@ -61,9 +64,9 @@ public class TestFilters
 	public void MatchAnyOf() {
 		final Filter filter =
 				on.anyOf(
-						on.doesEqual(5),
-						on.doesEqual(6),
-						on.classIs(Double.class)
+                    FilterInteger.equalTo(5),
+                    FilterInteger.equalTo(6),
+                    FilterClass.is(Double.class)
 				);
 		Assert.assertTrue(filter.match(5));
 		Assert.assertTrue(filter.match(6));
@@ -75,8 +78,8 @@ public class TestFilters
 	public void MatchNoneOf() {
 		final Filter filter =
 				on.noneOf(
-						on.doesEqual(5),
-						on.classIs(String.class)
+                    FilterInteger.equalTo(5),
+                    FilterClass.is(String.class)
 				);
 		Assert.assertTrue(filter.match(4));
 		Assert.assertFalse(filter.match(5));

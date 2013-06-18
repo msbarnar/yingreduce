@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 import edu.asu.ying.mapreduce.common.events.EventHandler;
 import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
 import edu.asu.ying.mapreduce.common.filter.Filter;
+import edu.asu.ying.mapreduce.common.filter.FilterClass;
+import edu.asu.ying.mapreduce.common.filter.FilterString;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.net.messaging.ExceptionMessage;
@@ -65,8 +67,8 @@ public final class ActivatorRequestHandler
     this.sendMessageStream = sendMessageStream;
     this.onIncomingMessage = onIncomingMessage;
     this.onIncomingMessage.attach(Filter.on.allOf(
-        Filter.on.classIs(ResourceRequest.class),
-        FilterMessage.on.destinationUri.path(ACTIVATOR_SCHEME))
+        FilterClass.is(ResourceRequest.class),
+        FilterMessage.destinationUri.path(FilterString.equalTo(ACTIVATOR_SCHEME)))
         , this);
   }
 

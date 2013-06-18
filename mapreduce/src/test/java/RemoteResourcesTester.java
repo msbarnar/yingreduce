@@ -16,11 +16,11 @@ import java.util.List;
  *
  */
 public final class RemoteResourcesTester {
-	private final Provider<RemoteResourceFinder> getter;
+	private final Provider<RemoteResourceFinder<Activator>> getter;
 	private int numResults = 0;
 
 	@Inject
-	private RemoteResourcesTester(final Provider<RemoteResourceFinder> getter) {
+	private RemoteResourcesTester(final Provider<RemoteResourceFinder<Activator>> getter) {
 		this.getter = getter;
 	}
 

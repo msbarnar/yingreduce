@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterBase;
+import edu.asu.ying.mapreduce.common.filter.FilterInteger;
+import edu.asu.ying.mapreduce.common.filter.FilterString;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
 
@@ -21,35 +23,31 @@ public abstract class FilterMessage
   /**
    * Interface to message filters.
    */
-  public static class on {
-
-    /**
-     * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getId()}.
-     */
-    public static Filter id(final String id) {
-      Preconditions.checkNotNull(id);
-      return new FilterMessage.FilterOnId(id);
-    }
-
-    /**
-     * Filters messages based on the value of a specific property identified by {@code key}. </p>
-     * Allows checking for null property values, though {@link edu.asu.ying.mapreduce.common.Properties}
-     * does not allow them.
-     */
-    public static Filter property(final Serializable key, final @Nullable Serializable value) {
-      Preconditions.checkNotNull(key);
-      return new FilterMessage.FilterOnProperty(key, value);
-    }
-
-    /**
-     * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getDestinationUri()}.
-     */
-    public static final FilterOnUri destinationUri = FilterOnUri.onDestination;
-    /**
-     * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getSourceUri()}.
-     */
-    public static final FilterOnUri sourceUri = FilterOnUri.onSource;
+  /**
+   * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getId()}.
+   */
+  public static Filter id(final FilterString filter) {
+    return new FilterMessage.FilterOnId(filter);
   }
+
+  /**
+   * Filters messages based on the value of a specific property identified by {@code key}. </p>
+   * Allows checking for null property values, though {@link edu.asu.ying.mapreduce.common.Properties}
+   * does not allow them.
+   */
+  public static Filter property(final Serializable key, final @Nullable Serializable value) {
+    Preconditions.checkNotNull(key);
+    return new FilterMessage.FilterOnProperty(key, value);
+  }
+
+  /**
+   * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getDestinationUri()}.
+   */
+  public static final FilterOnUri destinationUri = FilterOnUri.onDestination;
+  /**
+   * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getSourceUri()}.
+   */
+  public static final FilterOnUri sourceUri = FilterOnUri.onSource;
 
   /**
    * The filtering method for message filters.
@@ -73,16 +71,16 @@ public abstract class FilterMessage
    */
   private static final class FilterOnId extends FilterMessage {
 
-    private final String id;
+    private final FilterString filter;
 
-    private FilterOnId(final String id) {
-      Preconditions.checkNotNull(Strings.emptyToNull(id));
-      this.id = id;
+    private FilterOnId(final FilterString filter) {
+      Preconditions.checkNotNull(filter);
+      this.filter = filter;
     }
 
     @Override
     protected boolean match(final Message message) {
-      return this.id.equals(message.getId());
+      return this.filter.match(message.getId());
     }
   }
 
@@ -142,33 +140,28 @@ public abstract class FilterMessage
     /*
      * Part Selectors
      */
-    public final Filter scheme(final String scheme) {
-      Preconditions.checkNotNull(scheme);
-      return new FilterOnUriPart(this.which, Part.Scheme, scheme);
+    public final Filter scheme(final FilterString filter) {
+      return new FilterOnUriPart(this.which, Part.Scheme, filter);
     }
 
-    public final Filter address(final String address) {
-      Preconditions.checkNotNull(address);
-      return new FilterOnUriPart(this.which, Part.Address, address);
+    public final Filter address(final FilterString filter) {
+      return new FilterOnUriPart(this.which, Part.Address, filter);
     }
 
-    public final Filter host(final String host) {
-      Preconditions.checkNotNull(host);
-      return new FilterOnUriPart(this.which, Part.Host, host);
+    public final Filter host(final FilterString filter) {
+      return new FilterOnUriPart(this.which, Part.Host, filter);
     }
 
-    public final Filter port(final int port) {
-      return new FilterOnUriPart(this.which, Part.Port, port);
+    public final Filter port(final FilterInteger filter) {
+      return new FilterOnUriPart(this.which, Part.Port, filter);
     }
 
-    public final Filter path(final String path) {
-      Preconditions.checkNotNull(path);
-      return new FilterOnUriPart(this.which, Part.Path, path);
+    public final Filter path(final FilterString filter) {
+      return new FilterOnUriPart(this.which, Part.Path, filter);
     }
 
-    public final Filter name(final String name) {
-      Preconditions.checkNotNull(name);
-      return new FilterOnUriPart(this.which, Part.Name, name);
+    public final Filter name(final FilterString filter) {
+      return new FilterOnUriPart(this.which, Part.Name, filter);
     }
 
     /**
@@ -179,13 +172,13 @@ public abstract class FilterMessage
 
       private final WhichUri which;
       private final FilterOnUri.Part part;
-      private final Object value;
+      private final Filter filter;
 
       private FilterOnUriPart(final WhichUri which, final FilterOnUri.Part part,
-                              final Object value) {
+                              final Filter filter) {
         this.which = which;
         this.part = part;
-        this.value = value;
+        this.filter = filter;
       }
 
       @Override
@@ -200,17 +193,17 @@ public abstract class FilterMessage
         }
         switch (this.part) {
           case Scheme:
-            return this.value.equals(uri.getScheme());
+            return this.filter.match(uri.getScheme());
           case Address:
-            return this.value.equals(uri.getAddress());
+            return this.filter.match(uri.getAddress());
           case Host:
-            return this.value.equals(uri.getHost());
+            return this.filter.match(uri.getHost());
           case Port:
-            return this.value.equals(uri.getPort());
+            return this.filter.match(uri.getPort());
           case Path:
-            return this.value.equals(uri.getPath());
+            return this.filter.match(uri.getPath());
           case Name:
-            return this.value.equals(uri.getName());
+            return this.filter.match(uri.getName());
           default:
             return false;
         }
