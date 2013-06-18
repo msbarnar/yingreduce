@@ -17,7 +17,7 @@ public class TestResourceIdentifier
 		final int randPort = 1 + (new Random()).nextInt(10000);
 		final String randHost = UUID.randomUUID().toString();
 
-		final String test = String.format("scheme/%s:%d/path/name", randHost, randPort);
+		final String test = String.format("scheme\\%s:%d\\path\\name", randHost, randPort);
 		final ResourceIdentifier uri = new ResourceIdentifier(test);
 
 		Assert.assertEquals("scheme", uri.getScheme());
@@ -30,7 +30,7 @@ public class TestResourceIdentifier
 	@Test
 	public void HostOnly() throws URISyntaxException {
 		final String randHost = UUID.randomUUID().toString();
-		final String test = String.format("scheme/%s/path/name", randHost);
+		final String test = String.format("scheme\\%s\\path\\name", randHost);
 		final ResourceIdentifier uri = new ResourceIdentifier(test);
 
 		Assert.assertEquals("scheme", uri.getScheme());
@@ -45,7 +45,7 @@ public class TestResourceIdentifier
 		final int randPort = 1 + (new Random()).nextInt(10000);
 		final String randHost = UUID.randomUUID().toString();
 
-		final String test = String.format("scheme/%s:50:%d/path/name", randHost, randPort);
+		final String test = String.format("scheme\\%s:50:%d\\path\\name", randHost, randPort);
 		final ResourceIdentifier uri = new ResourceIdentifier(test);
 
 		Assert.assertEquals("scheme", uri.getScheme());

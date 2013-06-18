@@ -4,6 +4,7 @@ import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
 import java.io.Serializable;
+import java.net.URISyntaxException;
 
 
 /**
@@ -24,6 +25,7 @@ public interface Message
 
 	ResourceIdentifier getSourceUri();
 	void setSourceUri(final ResourceIdentifier uri);
+	void setSourceUri(final String uri) throws URISyntaxException;
 
 	ResourceIdentifier getDestinationUri();
 

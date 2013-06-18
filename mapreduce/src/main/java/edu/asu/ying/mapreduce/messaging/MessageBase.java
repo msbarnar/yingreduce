@@ -7,6 +7,7 @@ import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
@@ -115,6 +116,9 @@ public abstract class MessageBase
 	public void setSourceUri(final ResourceIdentifier uri) {
 		Preconditions.checkNotNull(uri);
 		this.properties.put(Property.SourceURI, uri);
+	}
+	public void setSourceUri(final String uri) throws URISyntaxException {
+		this.setSourceUri(new ResourceIdentifier(uri));
 	}
 	@Override
 	public ResourceIdentifier getSourceUri() {

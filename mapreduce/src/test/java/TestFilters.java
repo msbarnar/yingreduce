@@ -25,10 +25,12 @@ public class TestFilters
 						FilterMessage.on.property("test", "hi")
 				);
 
-		ResourceRequest msg1 = ResourceRequest.locatedBy(new ResourceIdentifier("resources\\host\\path"));
+		ResourceRequest msg1 = ResourceRequest.locatedBy(new ResourceIdentifier("resource\\host\\path"));
+		msg1.setSourceUri("node\\localhost");
 		msg1.setId("yes");
 		msg1.getProperties().put("test", "hi");
-		ResourceRequest msg2 = ResourceRequest.locatedBy(new ResourceIdentifier("resources\\host\\path"));
+		ResourceRequest msg2 = ResourceRequest.locatedBy(new ResourceIdentifier("resource\\host\\path"));
+		msg2.setSourceUri("node\\localhost");
 		msg2.setId("no");
 		ResourceResponse rsp1 = ResourceResponse.inResponseTo(msg1);
 		rsp1.setId("yes");
