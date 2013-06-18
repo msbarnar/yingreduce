@@ -10,6 +10,8 @@ import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.messaging.Message;
 import edu.asu.ying.mapreduce.messaging.kad.KadMessageHandler;
+import edu.asu.ying.mapreduce.net.client.KadLocalNode;
+import edu.asu.ying.mapreduce.net.client.LocalNode;
 import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.activator.ServerActivator;
@@ -31,10 +33,8 @@ import java.util.Random;
 public final class KademliaNetwork
 	extends AbstractModule
 {
-	// Singleton message handlers, by scheme
-	private final Map<String, KadMessageHandler> messageHandlers = new HashMap<>();
-	// Singleton Activator instance
-	private Activator activatorInstance;
+	// Singleton local node
+	private LocalNode localNode;
 
 	/**
 	 * Singleton {@link KeybasedRouting} provider for all Kademlia traffic
@@ -65,7 +65,6 @@ public final class KademliaNetwork
 		bind(RemoteTest.class).to(KadServerActivator.RemoteTestImpl.class);
 	}
 
-
 	/**
 	 * Provides an instance of {@link KeybasedRouting} to send and receive channels for their underlying network
 	 * communication.
@@ -75,40 +74,23 @@ public final class KademliaNetwork
 		return KadNodeProvider.INSTANCE.kadNode;
 	}
 
+	@Provides
+	private final LocalNode provideLocalNode() {
+		if (this.localNode == null) {
+			synchronized (this.localNode) {
+				if (this.localNode == null) {
+					final Injector injector = Guice.createInjector(this);
+					this.localNode = injector.getInstance(KadLocalNode.class);
+				}
+			}
+		}
+		return this.localNode;
+	}
 	/*
 	 * Message handler providers
 	 */
 	@Provides
 	@ResourceMessageEvent
 	private final FilteredValueEvent<Message> provideResourceMessageEvent() {
-		return this.getMessageHandler("resource").getIncomingMessageEvent();
-	}
-
-	private final KadMessageHandler getMessageHandler(final String scheme) {
-		KadMessageHandler handler = this.messageHandlers.get(scheme);
-		if (handler == null) {
-			synchronized (this.messageHandlers) {
-				if (this.messageHandlers.get(scheme) == null) {
-					final Injector injector = Guice.createInjector(this);
-					handler = injector.getInstance(KadMessageHandler.class);
-					handler.bind(scheme);
-					this.messageHandlers.put(scheme, handler);
-				}
-			}
-		}
-		return handler;
-	}
-
-	@Provides
-	@ServerActivator
-	private final Activator provideServerActivator() {
-		if (this.activatorInstance == null) {
-			synchronized (this.activatorInstance) {
-				if (this.activatorInstance == null) {
-					this.activatorInstance = new KadServerActivator();
-				}
-			}
-		}
-		return this.activatorInstance;
-	}
-}
+		return this.provideLocalNode().getMessageHandler("resource").getIncomingMessageEvent();
+	}}
