@@ -6,13 +6,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ffc779c-2642-4842-aeac-60344a3ce6bc" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ActivatorIdentifier.java" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/scheduling/Scheduler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/scheduling/server/ServerTaskScheduler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/TaskBase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/test/java/TestScheduler.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/activator/kad/RemoteTest.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/io/kad/KadSendMessageStream.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/io/kad/KadSendMessageStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/activator/kad/KadServerActivator.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/activator/kad/KadServerActivator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/kad/KademliaNetwork.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/kad/KademliaNetwork.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/map/MapTask.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/map/MapTask.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/Task.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/Task.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/test/java/TestResourceFinder.java" afterPath="$PROJECT_DIR$/mapreduce/src/test/java/TestResourceFinder.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371591235729" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371594256267" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272739738" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272043017" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371274691692" ignored="false" />
@@ -89,13 +99,13 @@
     <file path="/DistributedTableProvider.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371237287901" ignored="false" />
     <file path="/DistributedTableProxyProvider.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371237264653" ignored="false" />
     <file path="/TestKadChannel.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371521704901" ignored="false" />
-    <file path="/KadServerActivator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371377485896" ignored="false" />
+    <file path="/KadServerActivator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371613637372" ignored="false" />
     <file path="/LocalNode.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371527023847" ignored="false" />
     <file path="/KadLocalNode.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371528921307" ignored="false" />
     <file path="/UriUtil.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371242177489" ignored="false" />
     <file path="/NetworkIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371254563815" ignored="false" />
     <file path="/a.dummy" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371366483078" ignored="false" />
-    <file path="/ResourceIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371594176867" ignored="false" />
+    <file path="/ResourceIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371613777613" ignored="false" />
     <file path="/TestResourceIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371264136905" ignored="false" />
     <file path="/KadSendMessageStream.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371523532841" ignored="false" />
     <file path="/Key.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371265534980" ignored="false" />
@@ -134,7 +144,7 @@
     <file path="/ResourceRequest.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371527366295" ignored="false" />
     <file path="/ResourceMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371414577645" ignored="false" />
     <file path="/ResourceResponse.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371509176217" ignored="false" />
-    <file path="/KademliaNetwork.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371525137378" ignored="false" />
+    <file path="/KademliaNetwork.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371613832785" ignored="false" />
     <file path="/FilterBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371377465699" ignored="false" />
     <file path="/FilterMessage.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371582310737" ignored="false" />
     <file path="/ServerActivator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371441574231" ignored="false" />
@@ -149,14 +159,19 @@
     <file path="/ResourceMessageEvent.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371511844391" ignored="false" />
     <file path="/MessageHandler.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371522279770" ignored="false" />
     <file path="/ActivatorRequestHandler.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371583131983" ignored="false" />
-    <file path="/TestResourceFinder.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371528903066" ignored="false" />
+    <file path="/TestResourceFinder.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371613676291" ignored="false" />
     <file path="/ClassMatcher.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371581409627" ignored="false" />
     <file path="/Matcher.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371580257397" ignored="false" />
     <file path="/FilterString.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371582939041" ignored="false" />
     <file path="/FilterInteger.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371582944992" ignored="false" />
-    <file path="/Task.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371590832076" ignored="false" />
-    <file path="/MapTask.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371591120765" ignored="false" />
+    <file path="/Task.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371608860786" ignored="false" />
+    <file path="/MapTask.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371609028924" ignored="false" />
     <file path="/ActivatorIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371594229049" ignored="false" />
+    <file path="/TaskBase.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371609002156" ignored="false" />
+    <file path="/Scheduler.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371613961831" ignored="false" />
+    <file path="/PortProvider.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371613619273" ignored="false" />
+    <file path="/ServerTaskScheduler.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371613943842" ignored="false" />
+    <file path="/TestScheduler.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371614154137" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,29 +238,48 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Task.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/Task.java">
+      <file leaf-file-name="TestResourceFinder.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/test/java/TestResourceFinder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="61" selection-start="232" selection-end="232" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="47" column="52" selection-start="1875" selection-end="1875" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#826#856#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MapTask.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/map/MapTask.java">
+      <file leaf-file-name="TestScheduler.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/test/java/TestScheduler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="0" selection-start="690" selection-end="690" vertical-scroll-proportion="0.32967034">
-              <folding />
+            <state line="36" column="16" selection-start="1366" selection-end="1366" vertical-scroll-proportion="0.6461794">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1094#1144#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ResourceIdentifier.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java">
+      <file leaf-file-name="ServerTaskScheduler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/scheduling/server/ServerTaskScheduler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="0" selection-start="1562" selection-end="1562" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="12" column="43" selection-start="269" selection-end="269" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Scheduler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/scheduling/Scheduler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="0" selection-start="974" selection-end="974" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -269,22 +303,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/ClassFilter.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/FilterClass.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/FilterString.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/FilterInteger.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/messaging/FilterMessage.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/on.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/Filter.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ActivatorRequestHandler.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/test/java/TestFilters.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/client/RemoteResourceFinder.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/test/java/TestFilteredFutures.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/test/java/RemoteResourcesTester.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/Task.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/map/MapTask.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ActivatorIdentifier.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/Task.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/TaskBase.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/map/MapTask.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/PortProvider.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/activator/kad/KadServerActivator.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/test/java/TestResourceFinder.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/kad/KademliaNetwork.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/io/kad/KadSendMessageStream.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/scheduling/server/ServerTaskScheduler.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/scheduling/Scheduler.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/test/java/TestScheduler.java" />
       </list>
     </option>
   </component>
@@ -400,6 +434,32 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -509,6 +569,82 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="rmi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scheduling" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rmi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scheduling" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rmi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="activator" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -536,6 +672,10 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rmi" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -636,6 +776,40 @@
               <option name="myItemId" value="mapreduce" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="net" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kad" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mapreduce" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -687,35 +861,7 @@
       <recent name="edu.asu.ying.mapreduce.common" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.TestFilteredFutures">
-    <configuration default="false" name="TestRemoteResources" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="mapreduce" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestRemoteResources" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="moduleWithDependencies" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="JUnit.TestScheduler.ItAcceptsTasks">
     <configuration default="false" name="All in mapreduce" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="mapreduce" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -802,6 +948,28 @@
       <option name="MAIN_CLASS_NAME" value="TestFilteredFutures" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="TestScheduler.ItAcceptsTasks" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="mapreduce" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestScheduler" />
+      <option name="METHOD_NAME" value="ItAcceptsTasks" />
+      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -905,19 +1073,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.TestRemoteResources" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.All in mapreduce" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.TestResourceFinder.ClientGetsOwnActivator" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.TestFilters" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.TestFilteredFutures" />
+      <item index="0" class="java.lang.String" itemvalue="JUnit.All in mapreduce" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.TestResourceFinder.ClientGetsOwnActivator" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.TestFilters" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.TestFilteredFutures" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.TestScheduler.ItAcceptsTasks" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestFilteredFutures" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.TestFilters" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.TestResourceFinder.ClientGetsOwnActivator" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.All in mapreduce" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.TestRemoteResources" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestScheduler.ItAcceptsTasks" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestResourceFinder.ClientGetsOwnActivator" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.TestFilteredFutures" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.TestFilters" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.All in mapreduce" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
@@ -1153,7 +1321,11 @@
       <created>1371591235843</created>
       <updated>1371591235844</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="ResourceIdentifier a bit better">
+      <created>1371594256619</created>
+      <updated>1371594256619</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1194,7 +1366,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19786096" sideWeight="0.67164177" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3283582" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3283582" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="left" auto_hide="true" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.19786096" sideWeight="0.20106383" order="3" side_tool="true" content_ui="tabs" x="135" y="146" width="1716" height="858" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1246,7 +1418,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Revamping ResourceIdentifier (it sucks)" />
+    <option name="LAST_COMMIT_MESSAGE" value="ResourceIdentifier a bit better" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1260,7 +1432,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="RemoteResources asynchronously retrieves resources" />
     <MESSAGE value="RemoteResources tested--works" />
     <MESSAGE value="Sketching todo for tomorrow; notebook page 106. First: remove cruft" />
     <MESSAGE value="Cleaning up; formatting, code inspection" />
@@ -1285,6 +1456,7 @@
     <MESSAGE value="ResourceFinder and Activator service work" />
     <MESSAGE value="Refactored filters to allow richer comparisons" />
     <MESSAGE value="Revamping ResourceIdentifier (it sucks)" />
+    <MESSAGE value="ResourceIdentifier a bit better" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1294,64 +1466,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/test/java/TestResourceFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="27" selection-start="1366" selection-end="1366" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/client/KadLocalNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="9" selection-start="1966" selection-end="1966" vertical-scroll-proportion="0.33442983">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/FilterClass.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="30" selection-start="400" selection-end="402" vertical-scroll-proportion="0.21052632">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/FilterString.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="30" selection-start="970" selection-end="970" vertical-scroll-proportion="0.57236844">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/FilterInteger.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="21" selection-start="1288" selection-end="1288" vertical-scroll-proportion="0.5427632">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/filter/Filter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="5" selection-start="372" selection-end="372" vertical-scroll-proportion="-1.7910448">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/server/ActivatorRequestHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="47" selection-start="2684" selection-end="2684" vertical-scroll-proportion="0.65174127">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/client/RemoteResourceFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="93" column="34" selection-start="4272" selection-end="4272" vertical-scroll-proportion="-1.0646766">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/test/java/RemoteResourcesTester.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="23" column="29" selection-start="796" selection-end="796" vertical-scroll-proportion="0.27363184">
@@ -1370,7 +1484,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="17" column="1" selection-start="614" selection-end="614" vertical-scroll-proportion="0.2740864">
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1384,22 +1498,97 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/Task.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="61" selection-start="232" selection-end="232" vertical-scroll-proportion="0.0">
+        <state line="13" column="17" selection-start="310" selection-end="310" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/TaskBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="0" selection-start="1562" selection-end="1562" vertical-scroll-proportion="0.0">
+        <state line="5" column="2" selection-start="95" selection-end="95" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/tasks/map/MapTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="0" selection-start="690" selection-end="690" vertical-scroll-proportion="0.32967034">
+        <state line="19" column="0" selection-start="749" selection-end="749" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/activator/ServerActivator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="18" selection-start="713" selection-end="713" vertical-scroll-proportion="0.21428572">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/activator/kad/KadServerActivator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="0" selection-start="1121" selection-end="1121" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/resources/ResourceIdentifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="64" column="0" selection-start="1867" selection-end="1867" vertical-scroll-proportion="0.37362638">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/net/kad/KademliaNetwork.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="74" column="51" selection-start="3259" selection-end="3259" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/io/kad/KadSendMessageStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="4" selection-start="1900" selection-end="1900" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/scheduling/server/ServerTaskScheduler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="43" selection-start="269" selection-end="269" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/scheduling/Scheduler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="0" selection-start="974" selection-end="974" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/test/java/TestResourceFinder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="52" selection-start="1875" selection-end="1875" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#826#856#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/test/java/TestScheduler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="16" selection-start="1366" selection-end="1366" vertical-scroll-proportion="0.6461794">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1094#1144#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -8,6 +8,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
+import java.util.Random;
 
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
@@ -20,29 +21,16 @@ import edu.asu.ying.mapreduce.rmi.activator.Activator;
 public final class KadServerActivator
     implements Activator {
 
-  public static final class RemoteTestImpl implements RemoteTest {
-
-    @Inject
-    public RemoteTestImpl() {
-    }
-
-    @Override
-    public String getString() throws RemoteException {
-      return "Hello! This is only a test.";
-    }
-  }
-
   @Override
   @SuppressWarnings("unchecked")
   public final <T extends Remote> T getReference(final Class<T> type,
                                                  final Map<String, String> properties)
       throws RemoteException {
-    // TODO: use UnicastRemoteObject.exportObject
-    System.out.println(String.format("\nServer: Get Instance: %s", type.toString()));
+
     final Injector injector = Guice.createInjector(new KademliaNetwork());
-    final Remote instance;
-    instance = injector.getInstance(type);
-    return (T) UnicastRemoteObject.exportObject(instance, 3334);
+    final Remote instance = injector.getInstance(type);
+    // TODO: port provision
+    return (T) UnicastRemoteObject.exportObject(instance, 8000 + (new Random()).nextInt(2000));
   }
 
   @Override

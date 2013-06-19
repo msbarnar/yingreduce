@@ -1,6 +1,7 @@
 package edu.asu.ying.mapreduce.tasks.map;
 
 import edu.asu.ying.mapreduce.tasks.Task;
+import edu.asu.ying.mapreduce.tasks.TaskBase;
 
 /**
  * A {@code MapTask} describes an instance of a task of mapping a function to a dataset.
@@ -13,8 +14,8 @@ import edu.asu.ying.mapreduce.tasks.Task;
  *   <li>Respond to state inquiries regarding the task</li>
  * </ol>
  * Further, implementing {@link Task}, the {@code MapTask} carries with it a history of operations
- * performed by different nodes.
+ * performed by the nodes that handle it.
  */
-public class MapTask implements Task {
+public final class MapTask extends TaskBase {
 
 }

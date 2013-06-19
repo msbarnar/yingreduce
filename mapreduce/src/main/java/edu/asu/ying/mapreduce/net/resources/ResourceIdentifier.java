@@ -63,6 +63,20 @@ public final class ResourceIdentifier
     this.setPort(port);
   }
 
+  public ResourceIdentifier(final String scheme, final String host, final int port,
+                            final String path) {
+
+    this(scheme, host, port);
+    this.setPath(path);
+  }
+
+  public ResourceIdentifier(final String scheme, final String host, final int port,
+                            final String path, final String name) {
+
+    this(scheme, host, port, path);
+    this.setName(name);
+  }
+
   protected void parse(final String identifier) {
     final Iterator<String> iter = Splitter.on(DELIMITER).trimResults().split(identifier).iterator();
 

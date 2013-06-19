@@ -10,4 +10,6 @@ import edu.asu.ying.mapreduce.common.Properties;
 public interface Task {
 
   Properties getProperties();
+
+  String getId();
 }

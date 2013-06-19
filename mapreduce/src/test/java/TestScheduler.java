@@ -2,13 +2,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.client.LocalNode;
-import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
-import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.scheduling.Scheduler;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
@@ -17,16 +10,20 @@ import org.junit.Test;
 import java.util.List;
 import java.util.UUID;
 
+import edu.asu.ying.mapreduce.common.Properties;
+import edu.asu.ying.mapreduce.net.client.LocalNode;
+import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
+import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.rmi.activator.Activator;
+import edu.asu.ying.mapreduce.rmi.scheduling.Scheduler;
 
 /**
  *
  */
-public class TestResourceFinder
-  implements FutureCallback<Activator>
-{
+public class TestScheduler implements FutureCallback<Activator> {
   @Test
-  @SuppressWarnings("unchecked")
-  public void ClientGetsOwnActivator() throws Exception {
+  public void ItAcceptsTasks() throws Exception {
     // Open a channel with no peers and get an activator; it should be our own
     final KademliaNetwork channel = new KademliaNetwork();
     // Get an activator
@@ -67,11 +64,11 @@ public class TestResourceFinder
     }
   }
 
-  @Override
-  public void onSuccess(Activator result) {
-  }
+    @Override
+    public void onSuccess(Activator result) {
+    }
 
-  @Override
-  public void onFailure(Throwable t) {
-  }
+    @Override
+    public void onFailure(Throwable t) {
+    }
 }

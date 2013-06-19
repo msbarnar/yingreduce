@@ -24,7 +24,8 @@ import edu.asu.ying.mapreduce.net.resources.server.ResourceRequestHandler;
 import edu.asu.ying.mapreduce.rmi.activator.Activator;
 import edu.asu.ying.mapreduce.rmi.activator.ServerActivator;
 import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
-import edu.asu.ying.mapreduce.rmi.activator.kad.RemoteTest;
+import edu.asu.ying.mapreduce.rmi.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.rmi.scheduling.server.ServerTaskScheduler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
@@ -73,7 +74,7 @@ public final class KademliaNetwork
   protected void configure() {
     bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class)
         .to(KadSendMessageStream.class);
-    bind(RemoteTest.class).to(KadServerActivator.RemoteTestImpl.class);
+    bind(Scheduler.class).to(ServerTaskScheduler.class);
   }
 
   /**

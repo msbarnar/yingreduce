@@ -49,12 +49,9 @@ public final class KadSendMessageStream
    */
   @Override
   public final int write(final Message message) throws IOException {
-    try {
-      message.setSourceUri(new ResourceIdentifier(message.getDestinationUri().getScheme(),
-                                                  this.localUri.getAddress()));
-    } catch (final URISyntaxException e) {
-      throw new IOException(e);
-    }
+    message.setSourceUri(new ResourceIdentifier(message.getDestinationUri().getScheme(),
+                                                this.localUri.getAddress()));
+
     // Identify the destination nodes and send the message to them
     // This line just decided what charset keys are in forever
     final String host = message.getDestinationUri().getHost();
