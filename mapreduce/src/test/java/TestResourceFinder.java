@@ -7,8 +7,7 @@ import edu.asu.ying.mapreduce.net.client.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
-import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.rmi.Activator;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;

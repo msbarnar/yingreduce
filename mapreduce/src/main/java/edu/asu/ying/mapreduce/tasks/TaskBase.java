@@ -17,9 +17,12 @@ import edu.asu.ying.mapreduce.common.Properties;
  */
 public abstract class TaskBase implements Task {
 
+  private static final long SerialVersionUID = 1L;
+
   protected static final class Property {
     static final String TaskId = "task.id";
     static final String TaskStartParameters = "task.parameters.start";
+    static final String TaskHistory = "task.history";
   }
 
   protected final Properties properties = new Properties();
@@ -71,5 +74,17 @@ public abstract class TaskBase implements Task {
       params = TaskStartParameters.Default;
     }
     this.properties.put(Property.TaskStartParameters, params);
+  }
+
+  protected void setTaskHistory(final TaskHistory history) {
+    this.properties.put(Property.TaskHistory, history);
+  }
+  public TaskHistory getHistory() {
+    TaskHistory history = this.properties.getDynamicCast(Property.TaskHistory, TaskHistory.class);
+    if (history == null) {
+      history = new TaskHistory();
+      this.setTaskHistory(history);
+    }
+    return history;
   }
 }

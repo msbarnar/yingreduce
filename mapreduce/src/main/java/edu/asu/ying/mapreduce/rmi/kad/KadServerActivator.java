@@ -1,7 +1,6 @@
-package edu.asu.ying.mapreduce.rmi.activator.kad;
+package edu.asu.ying.mapreduce.rmi.kad;
 
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import java.rmi.Remote;
@@ -12,7 +11,7 @@ import java.util.Random;
 
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
-import edu.asu.ying.mapreduce.rmi.activator.Activator;
+import edu.asu.ying.mapreduce.rmi.Activator;
 
 
 /**

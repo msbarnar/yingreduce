@@ -26,8 +26,8 @@ import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
 import edu.asu.ying.mapreduce.net.resources.ResourceRequest;
 import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
-import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.activator.ServerActivator;
+import edu.asu.ying.mapreduce.rmi.Activator;
+import edu.asu.ying.mapreduce.rmi.ServerActivator;
 
 
 /**

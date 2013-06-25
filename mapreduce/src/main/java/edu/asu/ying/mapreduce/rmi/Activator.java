@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.rmi.activator;
+package edu.asu.ying.mapreduce.rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

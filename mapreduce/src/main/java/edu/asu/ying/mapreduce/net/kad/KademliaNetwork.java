@@ -21,11 +21,10 @@ import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
 import edu.asu.ying.mapreduce.net.resources.server.ActivatorRequestHandler;
 import edu.asu.ying.mapreduce.net.resources.server.ResourceRequestHandler;
-import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.activator.ServerActivator;
-import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
-import edu.asu.ying.mapreduce.rmi.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.rmi.scheduling.server.ServerTaskScheduler;
+import edu.asu.ying.mapreduce.rmi.Activator;
+import edu.asu.ying.mapreduce.rmi.ServerActivator;
+import edu.asu.ying.mapreduce.tasks.Scheduler;
+import edu.asu.ying.mapreduce.tasks.scheduling.server.ServerTaskScheduler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 

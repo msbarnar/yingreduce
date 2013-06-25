@@ -6,7 +6,7 @@ import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
 import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
-import edu.asu.ying.mapreduce.rmi.activator.Activator;
+import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
 import org.junit.Test;

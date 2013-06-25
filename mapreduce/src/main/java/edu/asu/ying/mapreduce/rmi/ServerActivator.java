@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.rmi.activator;
+package edu.asu.ying.mapreduce.rmi;
 
 import com.google.inject.BindingAnnotation;
 

@@ -16,8 +16,8 @@ import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 import edu.asu.ying.mapreduce.net.resources.server.ResourceRequestHandler;
-import edu.asu.ying.mapreduce.rmi.activator.Activator;
-import edu.asu.ying.mapreduce.rmi.activator.kad.KadServerActivator;
+import edu.asu.ying.mapreduce.rmi.Activator;
+import edu.asu.ying.mapreduce.rmi.kad.KadServerActivator;
 
 
 /**

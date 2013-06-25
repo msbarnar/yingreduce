@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.rmi.scheduling;
+package edu.asu.ying.mapreduce.tasks;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
