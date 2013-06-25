@@ -1,7 +1,12 @@
 package edu.asu.ying.mapreduce.tasks;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
 import java.io.Serializable;
 import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Iterator;
 
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 
@@ -10,7 +15,9 @@ import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
  * </p>
  * It is the scheduler's responsibility to append itself to the history.
  */
-public final class TaskHistory extends ArrayDeque<TaskHistory.Entry> {
+public final class TaskHistory implements Serializable {
+
+  private static final long SerialVersionUID = 1L;
 
   /**
    * {@code SchedulerAction} represents something a scheduler might do with a task.
@@ -67,6 +74,29 @@ public final class TaskHistory extends ArrayDeque<TaskHistory.Entry> {
     }
   }
 
+  private final Deque<Entry> history = new ArrayDeque<>();
+
   public TaskHistory() {
+  }
+
+  public void push(final Entry entry) {
+    this.history.push(entry);
+  }
+
+  /**
+   * Returns an immutable copy of the history.
+   */
+  public ImmutableList<Entry> asList() {
+    return ImmutableList.copyOf(this.history);
+  }
+
+  /**
+   * Returns an iterator over an immutable copy of the history.
+   * </p>
+   * If you are going to use this more than once without modifying the collection, use
+   * {@link #asList} to get a copy of the collection and iterate over that, instead.
+   */
+  public Iterator<Entry> iterator() {
+    return this.asList().iterator();
   }
 }
