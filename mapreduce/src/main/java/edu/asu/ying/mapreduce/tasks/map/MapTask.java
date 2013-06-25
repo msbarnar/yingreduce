@@ -1,5 +1,11 @@
 package edu.asu.ying.mapreduce.tasks.map;
 
+import com.google.common.base.Preconditions;
+
+import java.util.UUID;
+
+import edu.asu.ying.mapreduce.tasks.InvalidTaskException;
+import edu.asu.ying.mapreduce.tasks.ReducerReference;
 import edu.asu.ying.mapreduce.tasks.Task;
 import edu.asu.ying.mapreduce.tasks.TaskBase;
 
@@ -18,4 +24,32 @@ import edu.asu.ying.mapreduce.tasks.TaskBase;
  */
 public final class MapTask extends TaskBase {
 
+  private static final class Property {
+    static final String Reducer = "reducer";
+  }
+
+  public MapTask() {
+    this.setId();
+  }
+  public MapTask(final String id) {
+    this.setId(id);
+  }
+  public MapTask(final UUID id) {
+    this(id.toString());
+  }
+
+  public void validate() throws InvalidTaskException {
+    if (this.getReducer() == null) {
+      throw new InvalidTaskException(this, "No reducing node set");
+    }
+  }
+
+  public final ReducerReference getReducer() {
+    return this.properties.getDynamicCast(Property.Reducer, ReducerReference.class);
+  }
+  public final void setReducer(final ReducerReference reducer) {
+    Preconditions.checkNotNull(reducer);
+
+    this.properties.put(Property.Reducer, reducer);
+  }
 }

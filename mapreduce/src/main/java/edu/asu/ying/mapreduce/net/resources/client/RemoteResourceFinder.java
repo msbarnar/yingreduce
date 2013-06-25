@@ -151,7 +151,7 @@ public final class RemoteResourceFinder<V extends RemoteResource>
     synchronized (this.resourcesLock) {
       if (this.unfulfilledResources.peek() != null) {
         // Supress warning: V is constrained on RemoteResource
-        this.unfulfilledResources.pop().set((V) new ResourceException(throwable));
+        this.unfulfilledResources.pop().setException(throwable);
       }
     }
   }

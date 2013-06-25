@@ -50,20 +50,6 @@ public class TestResourceFinder
     for (final ListenableFuture<Activator> future : futures) {
       final Activator activator = future.get();
       Assert.assertNotNull(activator);
-
-      System.out.println("These should be equal:");
-      System.out.println(host);
-      final String resp = activator.echo(host);
-      System.out.println(resp);
-      Assert.assertEquals(activator.echo(host), host);
-
-      final Scheduler test = activator.getReference(Scheduler.class, null);
-
-      System.out.println();
-      System.out.println("These should be equal:");
-      System.out.println("Hello! This is only a test.");
-      System.out.println(test.getString());
-      Assert.assertEquals("Hello! This is only a test.", test.getString());
     }
   }
 

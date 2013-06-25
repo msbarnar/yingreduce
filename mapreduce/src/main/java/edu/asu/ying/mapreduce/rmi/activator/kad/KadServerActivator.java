@@ -21,6 +21,7 @@ import edu.asu.ying.mapreduce.rmi.activator.Activator;
 public final class KadServerActivator
     implements Activator {
 
+  // TODO: implement client-activated, per-call, singleton
   @Override
   @SuppressWarnings("unchecked")
   public final <T extends Remote> T getReference(final Class<T> type,

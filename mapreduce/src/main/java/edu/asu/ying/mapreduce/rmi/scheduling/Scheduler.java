@@ -3,6 +3,8 @@ package edu.asu.ying.mapreduce.rmi.scheduling;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import edu.asu.ying.mapreduce.tasks.Task;
+
 /**
  * {@code Scheduler} is responsible for the allocation of {@code map} and {@code reduce} tasks.
  * </p>
@@ -19,5 +21,5 @@ import java.rmi.RemoteException;
  */
 public interface Scheduler extends Remote {
 
-  String getString() throws RemoteException;
+  void schedule(final Task task);
 }

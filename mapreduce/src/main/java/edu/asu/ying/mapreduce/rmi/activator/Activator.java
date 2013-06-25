@@ -38,6 +38,4 @@ public interface Activator
    */
   <T extends Remote> T getReference(final Class<T> type, final Map<String, String> properties)
       throws RemoteException;
-
-  String echo(final String message) throws RemoteException;
 }

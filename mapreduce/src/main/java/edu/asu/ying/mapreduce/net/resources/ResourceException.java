@@ -8,8 +8,7 @@ import java.rmi.RemoteException;
 /**
  * Implements a {@link RemoteResource} that threw an exception in provision.
  */
-public final class ResourceException
-    implements RemoteResource {
+public final class ResourceException extends Throwable implements RemoteResource {
 
   private static final long SerialVersionUID = 1L;
 
