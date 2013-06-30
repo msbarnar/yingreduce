@@ -79,8 +79,16 @@ public class ServerTaskScheduler implements Scheduler {
    * This is the initial node if the most recent node to handle the task was the
    * {@code responsible node} for the job.
    */
-  private final boolean isInitialNodeFor(final Task task) {
-    return task.getHistory().last().getNodeRole() == TaskHistory.NodeRole.Responsible;
+  private boolean isInitialNodeFor(final Task task) {
+    final TaskHistory.Entry lastEntry = task.getHistory().last();
+    if (lastEntry == null) {
+      // The responsible node didn't append itself to the history before distributing this task from
+      // the original job.
+      throw new IllegalStateException("Scheduler received task with no responsible node set; don't"
+                                      + " know whether this is the initial node, and won't know the"
+                                      + " origin of the task if we continue forwarding.");
+    }
+    return lastEntry.getNodeRole() == TaskHistory.NodeRole.Responsible;
   }
 
   /**
@@ -90,7 +98,7 @@ public class ServerTaskScheduler implements Scheduler {
    * @param historyEntry details regarding the queuing of the task will be indicated in this entry.
    * @return {@code true} if the task was placed on the queue; {@code false} if the queue was full.
    */
-  private final boolean queueLocally(final Task task, final TaskHistory.Entry historyEntry) {
+  private boolean queueLocally(final Task task, final TaskHistory.Entry historyEntry) {
     final boolean isQueued = this.localQueue.offer(task);
     if (isQueued) {
       // Mark the task as being performed on the initial node
@@ -106,7 +114,7 @@ public class ServerTaskScheduler implements Scheduler {
    * @param historyEntry details regarding the queuing of the task will be indicated in this entry.
    * @return {@code true}.
    */
-  private final boolean queueForward(final Task task, final TaskHistory.Entry historyEntry) {
+  private boolean queueForward(final Task task, final TaskHistory.Entry historyEntry) {
     historyEntry.setSchedulerAction(TaskHistory.SchedulerAction.Forwarded);
     task.getHistory().append(historyEntry);
     return this.forwardingQueue.add(task);
@@ -124,11 +132,11 @@ public class ServerTaskScheduler implements Scheduler {
     return this.remoteQueue;
   }
 
-  private final TaskHistory.Entry createHistoryEntry() {
+  private TaskHistory.Entry createHistoryEntry() {
     return new TaskHistory.Entry(this.getLocalNodeUri());
   }
 
-  private final NodeIdentifier getLocalNodeUri() {
+  private NodeIdentifier getLocalNodeUri() {
     // TODO: Get the local node URI
     return null;
   }
