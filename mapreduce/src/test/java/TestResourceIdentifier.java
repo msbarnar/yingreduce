@@ -1,4 +1,3 @@
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 

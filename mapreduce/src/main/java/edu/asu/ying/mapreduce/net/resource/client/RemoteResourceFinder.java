@@ -26,11 +26,8 @@ import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.net.messaging.Message;
-import edu.asu.ying.mapreduce.net.messaging.ActivatorMessageEvent;
-import edu.asu.ying.mapreduce.net.resource.ActivatorRequest;
-import edu.asu.ying.mapreduce.net.resource.RemoteResource;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
+import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorMessageEvent;
+import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest;
 
 
 /**
@@ -157,7 +154,7 @@ public final class RemoteResourceFinder<V extends RemoteResource>
   }
 
   /**
-   * Creates a {@link edu.asu.ying.mapreduce.net.resource.ActivatorRequest} for the resource at the
+   * Creates a {@link edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest} for the resource at the
    * given URI.
    */
   private Message createRequest(final ResourceIdentifier uri, final Properties args)

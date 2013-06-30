@@ -4,11 +4,10 @@ import edu.asu.ying.mapreduce.common.event.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
-import edu.asu.ying.mapreduce.net.messaging.ActivatorMessageEvent;
+import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorMessageEvent;
 import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -51,7 +50,7 @@ public class TestRemoteResources
 		@Override
 		public int write(final Message message) throws IOException {
 			try {
-				message.setSourceUri(new ResourceIdentifier("node\\localhost"));
+				message.setSourceUrl(new ResourceIdentifier("node\\localhost"));
 				for (int i = 0; i < message.getReplication(); i++) {
 					TestRemoteResources.this.onIncomingMessages.fire(this, ResourceResponse.inResponseTo(message,
 				                                                                                     new MockActivator(i))

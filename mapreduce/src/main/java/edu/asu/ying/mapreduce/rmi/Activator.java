@@ -1,10 +1,9 @@
 package edu.asu.ying.mapreduce.rmi;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
-
-import edu.asu.ying.mapreduce.net.resource.RemoteResource;
 
 /**
  * {@link Activator} is the client node's entry point to remote method invocation on a scheduling
@@ -30,7 +29,7 @@ import edu.asu.ying.mapreduce.net.resource.RemoteResource;
  * using {@link java.rmi.server.UnicastRemoteObject#exportObject(Remote)}, but the actual method is
  * implementation specific.
  */
-public interface Activator extends Remote {
+public interface Activator extends Remote, Serializable {
 
   /**
    * Obtains a {@link java.rmi.Remote} reference to an instance of the class {@code type}.

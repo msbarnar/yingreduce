@@ -10,7 +10,6 @@ import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterBase;
 import edu.asu.ying.mapreduce.common.filter.FilterInteger;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
 
 /**
@@ -44,7 +43,7 @@ public abstract class FilterMessage
    */
   public static final FilterOnUri destinationUri = FilterOnUri.onDestination;
   /**
-   * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getSourceUri()}.
+   * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getSourceUrl()}.
    */
   public static final FilterOnUri sourceUri = FilterOnUri.onSource;
 
@@ -186,7 +185,7 @@ public abstract class FilterMessage
         if (this.which == WhichUri.Destination) {
           uri = message.getDestinationUri();
         } else if (this.which == WhichUri.Source) {
-          uri = message.getSourceUri();
+          uri = message.getSourceUrl();
         } else {
           return false;
         }

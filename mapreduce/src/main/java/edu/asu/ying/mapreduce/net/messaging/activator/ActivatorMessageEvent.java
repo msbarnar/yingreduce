@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.messaging;
+package edu.asu.ying.mapreduce.net.messaging.activator;
 
 import com.google.inject.BindingAnnotation;
 

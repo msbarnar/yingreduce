@@ -4,14 +4,14 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import java.io.Serializable;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.NodeURI;
+import edu.asu.ying.mapreduce.net.NodeURL;
 
 
 /**
@@ -56,13 +56,13 @@ public abstract class MessageBase
     this.setId(id);
   }
 
-  public MessageBase(final ResourceIdentifier destinationUri) {
-    this.setDestinationUri(destinationUri);
+  public MessageBase(final NodeURI destinationNode) {
+    this.setDestinationNode(destinationNode);
   }
 
-  public MessageBase(final String id, final ResourceIdentifier destinationUri) {
+  public MessageBase(final String id, final NodeURI destinationNode) {
     this.setId(id);
-    this.setDestinationUri(destinationUri);
+    this.setDestinationNode(destinationNode);
   }
 
 	/*
@@ -121,36 +121,26 @@ public abstract class MessageBase
     return this.properties;
   }
 
-  public void setSourceUri(final ResourceIdentifier uri) {
-    Preconditions.checkNotNull(uri);
-    this.properties.put(Property.SourceURI, uri);
-  }
-
-  public void setSourceUri(final String uri) throws URISyntaxException {
-    this.setSourceUri(new ResourceIdentifier(uri));
+  public void setSourceNode(final NodeURI sourceNode) {
+    this.properties.put(Property.SourceURI, Preconditions.checkNotNull(sourceNode));
   }
 
   @Override
-  public ResourceIdentifier getSourceUri() {
-    return this.properties.getDynamicCast(Property.SourceURI, ResourceIdentifier.class);
+  public NodeURI getSourceNode() {
+    return this.properties.getDynamicCast(Property.SourceURI, NodeURI.class);
   }
 
-  public void setDestinationUri(final ResourceIdentifier uri) {
-    Preconditions.checkNotNull(uri);
-    this.properties.put(Property.DestinationURI, uri);
-    this.setReplication(uri.getReplication());
+  public void setDestinationNode(final NodeURI destinationNode) {
+    this.properties.put(Property.DestinationURI, Preconditions.checkNotNull(destinationNode));
   }
 
-  @Override
-  public
   @Nullable
-  ResourceIdentifier getDestinationUri() {
-    return this.properties.getDynamicCast(Property.DestinationURI, ResourceIdentifier.class);
+  public NodeURI getDestinationNode() {
+    return this.properties.getDynamicCast(Property.DestinationURI, NodeURI.class);
   }
 
   public final void setException(final Throwable exception) {
-    Preconditions.checkNotNull(exception);
-    this.properties.put(Property.Exception, exception);
+    this.properties.put(Property.Exception, Preconditions.checkNotNull(exception));
   }
 
   /**
@@ -161,8 +151,7 @@ public abstract class MessageBase
   RemoteException getException() {
     final
     Optional<Serializable>
-        cause =
-        Optional.fromNullable(this.properties.get(Property.Exception));
+        cause = Optional.fromNullable(this.properties.get(Property.Exception));
     if (!cause.isPresent()) {
       return null;
     }
@@ -179,10 +168,8 @@ public abstract class MessageBase
   }
 
   public final Properties getArguments() {
-    final
-    Properties
-        arguments =
-        this.properties.getDynamicCast(Property.Arguments, Properties.class);
+    final Properties arguments
+        = this.properties.getDynamicCast(Property.Arguments, Properties.class);
     if (arguments == null) {
       return Properties.Empty;
     } else {
@@ -217,7 +204,7 @@ public abstract class MessageBase
    */
   public final Message makeResponseTo(final Message request) {
     Preconditions.checkNotNull(request);
-    this.setDestinationUri(request.getSourceUri());
+    this.setDestinationNode(request.getSourceNode());
     this.setId(request.getId());
     return this;
   }

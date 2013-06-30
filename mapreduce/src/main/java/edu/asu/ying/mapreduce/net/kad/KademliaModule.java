@@ -13,7 +13,7 @@ import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.net.messaging.ActivatorMessageEvent;
+import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorMessageEvent;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;

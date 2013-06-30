@@ -9,8 +9,6 @@ import java.io.IOException;
 
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resource.server.ResourceRequestHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.ServerActivator;
 import il.technion.ewolf.kbr.KeybasedRouting;

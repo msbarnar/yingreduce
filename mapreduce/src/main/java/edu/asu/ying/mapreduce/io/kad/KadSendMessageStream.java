@@ -10,7 +10,6 @@ import java.util.List;
 
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.messaging.Message;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
@@ -49,7 +48,7 @@ public final class KadSendMessageStream
    */
   @Override
   public final int write(final Message message) throws IOException {
-    message.setSourceUri(new ResourceIdentifier(message.getDestinationUri().getScheme(),
+    message.setSourceUrl(new ResourceIdentifier(message.getDestinationUri().getScheme(),
                                                 this.localUri.getAddress()));
 
     // Identify the destination nodes and send the message to them

@@ -6,7 +6,7 @@ import com.google.inject.Provider;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+
 import org.junit.Assert;
 
 import java.util.List;

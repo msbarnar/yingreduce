@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
-import edu.asu.ying.mapreduce.net.resource.RemoteResource;
-
 
 /**
  * The {@link Table} is a key->value map, the contents of which are distributed about the network.

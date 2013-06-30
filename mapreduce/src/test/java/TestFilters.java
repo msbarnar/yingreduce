@@ -4,9 +4,8 @@ import edu.asu.ying.mapreduce.common.filter.FilterInteger;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
 import edu.asu.ying.mapreduce.common.filter.Filter.on;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
-import edu.asu.ying.mapreduce.net.resource.ActivatorRequest;
-import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest;
+
 import org.junit.Assert;
 import org.junit.Test;
 

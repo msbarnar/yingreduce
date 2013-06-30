@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import edu.asu.ying.mapreduce.rmi.Activator;
 
 

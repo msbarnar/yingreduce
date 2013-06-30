@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.net.URISyntaxException;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.NodeURI;
 
 
 /**
@@ -24,13 +24,11 @@ public interface Message
    */
   String getId();
 
-  ResourceIdentifier getSourceUri();
+  NodeURI getSourceNode();
 
-  void setSourceUri(final ResourceIdentifier uri);
+  void setSourceNode(NodeURI uri);
 
-  void setSourceUri(final String uri) throws URISyntaxException;
-
-  ResourceIdentifier getDestinationUri();
+  NodeURI getDestinationNode();
 
   /**
    * Replication allows a message to be delivered to at moest k hosts that are matched on its URI.
@@ -45,5 +43,5 @@ public interface Message
    * @param request the message to which to respond.
    * @return this message.
    */
-  Message makeResponseTo(final Message request);
+  Message makeResponseTo(Message request);
 }
