@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 /**
- * A message containing arbitrary data to be used by the KeybasedRouting.sendRequest methods
+ * A message containing arbitrary table to be used by the KeybasedRouting.sendRequest methods
  * @author eyal.kibbar@gmail.com
  *
  */

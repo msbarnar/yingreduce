@@ -2,7 +2,7 @@ package edu.asu.ying.mapreduce.net;
 
 import java.net.InetAddress;
 
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
 /**
  * {@code HostIdentifier} is a {@link ResourceIdentifier} that identifies a host in the network

@@ -12,13 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resources.server.ResourceRequestHandler;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.server.ResourceRequestHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.kad.KadServerActivator;
+import il.technion.ewolf.kbr.KeybasedRouting;
 
 
 /**
@@ -27,6 +27,8 @@ import edu.asu.ying.mapreduce.rmi.kad.KadServerActivator;
 @Singleton
 public class KadLocalNode
     implements LocalNode {
+
+  private final KeybasedRouting kbrNode;
 
   // Singleton message handlers, by scheme
   private final Map<String, KadMessageHandler> messageHandlers = new HashMap<>();
@@ -40,10 +42,12 @@ public class KadLocalNode
 
 
   @Inject
-  private KadLocalNode(final Provider<MessageHandler> messageHandlerProvider,
+  private KadLocalNode(final KeybasedRouting kbrNode,
+                       final Provider<MessageHandler> messageHandlerProvider,
                        final @Named("activator")
                        Provider<ResourceRequestHandler> activatorRequestHandlerProvider) {
 
+    this.kbrNode = kbrNode;
     this.messageHandlerProvider = messageHandlerProvider;
     this.activatorRequestHandlerProvider = activatorRequestHandlerProvider;
   }

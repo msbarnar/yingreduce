@@ -1,7 +1,6 @@
 package edu.asu.ying.mapreduce.net.messaging;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 import java.io.Serializable;
 
@@ -11,7 +10,7 @@ import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterBase;
 import edu.asu.ying.mapreduce.common.filter.FilterInteger;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
 
 /**

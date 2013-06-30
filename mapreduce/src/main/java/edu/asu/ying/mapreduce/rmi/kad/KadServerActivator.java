@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Random;
 
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import edu.asu.ying.mapreduce.rmi.Activator;
 
 

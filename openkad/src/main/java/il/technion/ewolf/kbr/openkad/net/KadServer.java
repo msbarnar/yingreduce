@@ -62,7 +62,7 @@ public class KadServer implements Communicator {
 			@Named("openkad.net.udp.sock") final Provider<DatagramSocket> sockProvider,
 			@Named("openkad.net.buffer") final BlockingQueue<DatagramPacket> pkts,
 			@Named("openkad.net.sendbuffer") final BlockingQueue<DatagramPacket> pktsout,
-			@Named("openkad.executors.server") final ExecutorService srvExecutor,
+			@Named("openkad.executors.scheduling") final ExecutorService srvExecutor,
 			@Named("openkad.net.expecters") final Set<MessageDispatcher<?>> expecters,
 			@Named("openkad.net.expecters.nonConsumable") final Set<MessageDispatcher<?>> nonConsumableExpecters,
 
@@ -201,7 +201,7 @@ public class KadServer implements Communicator {
 	}
 
 	/**
-	 * The server loop: 1. accept a message from socket 2. parse message 3.
+	 * The scheduling loop: 1. accept a message from socket 2. parse message 3.
 	 * handle the message in a thread pool
 	 */
 	@Override
@@ -229,7 +229,7 @@ public class KadServer implements Communicator {
 	}
 
 	/**
-	 * Shutdown the server and closes the socket
+	 * Shutdown the scheduling and closes the socket
 	 * 
 	 * @param kadServerThread
 	 */

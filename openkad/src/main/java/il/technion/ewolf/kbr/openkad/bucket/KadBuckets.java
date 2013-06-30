@@ -32,7 +32,7 @@ import com.google.inject.Provider;
 import com.google.inject.name.Named;
 
 /**
- * This is a data structures that holds all the known nodes
+ * This is a table structures that holds all the known nodes
  * It sorts them into buckets according to their keys common prefix
  * with the local node's key.
  * 
@@ -88,7 +88,7 @@ public class KadBuckets implements NodeStorage,KBuckets {
 	}
 	
 	/**
-	 * Register this data structure to listen to incoming messages and update itself
+	 * Register this table structure to listen to incoming messages and update itself
 	 * accordingly.
 	 * Invoke this method after creating the entire system
 	 */
@@ -180,7 +180,7 @@ public class KadBuckets implements NodeStorage,KBuckets {
 	}
 	
 	/**
-	 * Inserts a node to the data structure
+	 * Inserts a node to the table structure
 	 * The can be rejected, depending on the bucket policy
 	 * @param node
 	 */
@@ -194,7 +194,7 @@ public class KadBuckets implements NodeStorage,KBuckets {
 	
 	/**
 	 * 
-	 * @return a list containing all the nodes in the data structure
+	 * @return a list containing all the nodes in the table structure
 	 */
 	public List<Node> getAllNodes() {
 		List<Node> $ = new ArrayList<Node>();
@@ -231,7 +231,7 @@ public class KadBuckets implements NodeStorage,KBuckets {
 	
 	/**
 	 * Gets all nodes with keys closest to the given k.
-	 * The size of the list will be MIN(n, total number of nodes in the data structure)
+	 * The size of the list will be MIN(n, total number of nodes in the table structure)
 	 * @param k the key which the result's nodes are close to
 	 * @param n the maximum number of nodes expected
 	 * @return a list of nodes sorted by proximity to k
@@ -248,7 +248,7 @@ public class KadBuckets implements NodeStorage,KBuckets {
 	
 	/**
 	 * Gets all nodes with keys closest to the given k.
-	 * The size of the list will be MIN(n, total number of nodes in the data structure)
+	 * The size of the list will be MIN(n, total number of nodes in the table structure)
 	 * @param k the key which the result's nodes are close to
 	 * @param n the maximum number of nodes expected
 	 * @return a list of nodes sorted by proximity to the given key's color

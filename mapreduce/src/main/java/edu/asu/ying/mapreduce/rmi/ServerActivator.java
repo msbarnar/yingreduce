@@ -12,7 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 
 /**
- * Marks a field or parameters as receiving an injected server-side {@link Activator}
+ * Marks a field or parameters as receiving an injected scheduling-side {@link Activator}
  * implementation. <p> Apply to a method with {@link com.google.inject.Provides} to provide an
  * implementation of that source.
  */

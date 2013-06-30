@@ -24,7 +24,7 @@ import com.google.inject.name.Named;
 
 /**
  * Handle find node requests by giving the known closest nodes to the requested
- * key from the KBuckets data structure
+ * key from the KBuckets table structure
  * 
  * @author eyal.kibbar@gmail.com
  * 

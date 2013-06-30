@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 /**
- * A message containing arbitrary data to be used by the KeybasedRouting.sendMessage method
+ * A message containing arbitrary table to be used by the KeybasedRouting.sendMessage method
  * @author eyal.kibbar@gmail.com
  *
  */
@@ -37,8 +37,8 @@ public class ContentMessage extends KadMessage {
 	}
 	
 	/**
-	 * Any arbitrary data
-	 * @return the data
+	 * Any arbitrary table
+	 * @return the table
 	 */
 	public Serializable getContent() {
 		return content;

@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.net.messaging;
 
-import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 
 /**
  *

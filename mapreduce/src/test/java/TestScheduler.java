@@ -16,11 +16,11 @@ import java.util.concurrent.CancellationException;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.tasks.Scheduler;
-import edu.asu.ying.mapreduce.tasks.Task;
+import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.task.Task;
 
 /**
  *

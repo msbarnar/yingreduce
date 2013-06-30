@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import edu.asu.ying.mapreduce.common.events.EventHandler;
-import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.event.EventHandler;
+import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 
 
@@ -108,7 +108,7 @@ public class FilteredFutures<V>
       // Return true if we have more futures, false if not
       return (this.unfulfilledFutures.peek() != null);
     } else {
-      // No more futures to set; return false to signal refusal of further events
+      // No more futures to set; return false to signal refusal of further event
       return false;
     }
   }

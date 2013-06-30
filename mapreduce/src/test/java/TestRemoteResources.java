@@ -1,14 +1,14 @@
 import com.google.inject.*;
-import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
-import edu.asu.ying.mapreduce.common.events.FilteredValueEventBase;
+import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.event.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
-import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
-import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.net.resource.ResourceMessageEvent;
+import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resources.ResourceResponse;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 /**
- * Installs a mock {@link edu.asu.ying.mapreduce.io.MessageOutputStream} that tests instead of sending data.
+ * Installs a mock {@link edu.asu.ying.mapreduce.io.MessageOutputStream} that tests instead of sending table.
  */
 public class TestRemoteResources
 		extends AbstractModule

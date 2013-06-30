@@ -10,7 +10,7 @@ import java.util.List;
 
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.messaging.Message;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;

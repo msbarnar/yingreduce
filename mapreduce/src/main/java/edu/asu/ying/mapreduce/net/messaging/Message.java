@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.net.URISyntaxException;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
 
 /**
- * {@link Message} objects carry state information and requests for resources or connection
+ * {@link Message} objects carry state information and requests for resource or connection
  * establishment around the network.
  */
 public interface Message

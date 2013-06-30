@@ -1,9 +1,10 @@
 package edu.asu.ying.mapreduce.net;
 
 import java.io.IOException;
+import java.util.List;
 
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import edu.asu.ying.mapreduce.rmi.Activator;
 
 
@@ -19,4 +20,6 @@ public interface LocalNode {
   MessageHandler getMessageHandler(final String scheme);
 
   Activator getActivator();
+
+  List<RemoteNode> getNeighbors();
 }

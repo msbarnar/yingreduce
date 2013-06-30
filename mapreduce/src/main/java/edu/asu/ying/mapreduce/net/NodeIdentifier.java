@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.net;
 
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
 /**
  * {@code NodeIdentifier} is a {@link ResourceIdentifier} that specifically identifies a node

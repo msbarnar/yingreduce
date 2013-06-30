@@ -11,7 +11,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 
 
 /**

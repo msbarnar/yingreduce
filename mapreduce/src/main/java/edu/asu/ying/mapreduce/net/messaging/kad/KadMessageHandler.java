@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
 
-import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
-import edu.asu.ying.mapreduce.common.events.FilteredValueEventBase;
+import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.event.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.net.InvalidContentException;
 import edu.asu.ying.mapreduce.net.messaging.AcknowledgementMessage;
 import edu.asu.ying.mapreduce.net.messaging.ExceptionMessage;

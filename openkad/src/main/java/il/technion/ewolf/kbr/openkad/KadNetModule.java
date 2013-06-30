@@ -82,8 +82,8 @@ public class KadNetModule extends AbstractModule {
 		// performance params
 
 		// handling incoming messages
-		defaultProps.setProperty("openkad.executors.server.nrthreads", "8");
-		defaultProps.setProperty("openkad.executors.server.max_pending", "128");
+		defaultProps.setProperty("openkad.executors.scheduling.nrthreads", "8");
+		defaultProps.setProperty("openkad.executors.scheduling.max_pending", "128");
 		// handling registered callback
 		defaultProps.setProperty("openkad.executors.client.nrthreads", "1");
 		defaultProps.setProperty("openkad.executors.client.max_pending", "1");
@@ -159,7 +159,7 @@ public class KadNetModule extends AbstractModule {
 		bind(MessageDispatcher.class);
 		// this line causes messages to be also compressed
 		// JsonZippedKadSerializer - is the same without compressing. (takes CPU
-		// resources).
+		// resource).
 		bind(KadSerializer.class).to(JsonZippedKadSerializer.class).in(Scopes.SINGLETON);
 		bind(KadServer.class).in(Scopes.SINGLETON);
 		bind(Communicator.class).to(KadServer.class).in(Scopes.SINGLETON);
@@ -263,10 +263,10 @@ public class KadNetModule extends AbstractModule {
 	}
 
 	@Provides
-	@Named("openkad.executors.server")
+	@Named("openkad.executors.scheduling")
 	@Singleton
-	ExecutorService provideServerExecutor(@Named("openkad.executors.server.nrthreads") final int nrThreads,
-			@Named("openkad.executors.server.max_pending") final int maxPending) {
+	ExecutorService provideServerExecutor(@Named("openkad.executors.scheduling.nrthreads") final int nrThreads,
+			@Named("openkad.executors.scheduling.max_pending") final int maxPending) {
 		return new ThreadPoolExecutor(1, nrThreads, 5, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(maxPending, true));
 	}
 

@@ -4,9 +4,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import org.junit.Assert;
 
 import java.util.List;

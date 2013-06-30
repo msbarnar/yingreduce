@@ -16,7 +16,7 @@ public interface KBuckets extends NodeStorage {
 	public abstract List<Key> randomKeysForAllBuckets();
 
 	/**
-	 * Inserts a node to the data structure
+	 * Inserts a node to the table structure
 	 * The can be rejected, depending on the bucket policy
 	 * @param node
 	 */
@@ -38,7 +38,7 @@ public interface KBuckets extends NodeStorage {
 
 	/**
 	 * Gets all nodes with keys closest to the given k.
-	 * The size of the list will be MIN(n, total number of nodes in the data structure)
+	 * The size of the list will be MIN(n, total number of nodes in the table structure)
 	 * @param k the key which the result's nodes are close to
 	 * @param n the maximum number of nodes expected
 	 * @return a list of nodes sorted by proximity to k
@@ -47,7 +47,7 @@ public interface KBuckets extends NodeStorage {
 
 	/**
 	 * Gets all nodes with keys closest to the given k.
-	 * The size of the list will be MIN(n, total number of nodes in the data structure)
+	 * The size of the list will be MIN(n, total number of nodes in the table structure)
 	 * @param k the key which the result's nodes are close to
 	 * @param n the maximum number of nodes expected
 	 * @return a list of nodes sorted by proximity to the given key's color

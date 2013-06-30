@@ -5,8 +5,8 @@ import com.google.inject.Injector;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
-import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
+import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
 
 import org.apache.commons.codec.binary.Base64;

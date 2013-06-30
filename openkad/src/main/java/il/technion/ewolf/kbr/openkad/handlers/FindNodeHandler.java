@@ -4,7 +4,7 @@ package il.technion.ewolf.kbr.openkad.handlers;
 
 /**
  * Handle find node requests by giving the known closest nodes to the requested key
- * from the KBuckets data structure
+ * from the KBuckets table structure
  * @author eyal.kibbar@gmail.com
  *
  */

@@ -9,7 +9,7 @@ import com.google.inject.name.Named;
 import java.io.IOException;
 import java.util.Random;
 
-import edu.asu.ying.mapreduce.common.events.FilteredValueEvent;
+import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
@@ -17,20 +17,20 @@ import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
-import edu.asu.ying.mapreduce.net.resources.ResourceMessageEvent;
-import edu.asu.ying.mapreduce.net.resources.server.ActivatorRequestHandler;
-import edu.asu.ying.mapreduce.net.resources.server.ResourceRequestHandler;
+import edu.asu.ying.mapreduce.net.resource.ResourceMessageEvent;
+import edu.asu.ying.mapreduce.net.resource.server.ActivatorRequestHandler;
+import edu.asu.ying.mapreduce.net.resource.server.ResourceRequestHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.ServerActivator;
-import edu.asu.ying.mapreduce.tasks.Scheduler;
-import edu.asu.ying.mapreduce.tasks.scheduling.server.ServerTaskScheduler;
+import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.task.scheduling.ServerTaskScheduler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
 
 /**
  * The {@code KademliaNetwork} wires all of the high-level operations (e.g. {@link
- * edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder}) to the underlying Kademlia
+ * edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder}) to the underlying Kademlia
  * network classes.
  */
 public final class KademliaNetwork
