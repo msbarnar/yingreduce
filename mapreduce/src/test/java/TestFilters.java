@@ -4,7 +4,7 @@ import edu.asu.ying.mapreduce.common.filter.FilterInteger;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
 import edu.asu.ying.mapreduce.common.filter.Filter.on;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
-import edu.asu.ying.mapreduce.net.resource.ResourceRequest;
+import edu.asu.ying.mapreduce.net.resource.ActivatorRequest;
 import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
 import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import org.junit.Assert;
@@ -21,18 +21,20 @@ public class TestFilters
 		final Filter filter =
 				on.allOf(
 						on.anyOf(
-								FilterClass.is(ResourceRequest.class),
+								FilterClass.is(ActivatorRequest.class),
 								FilterClass.is(ResourceResponse.class)
 						),
 						FilterMessage.id(FilterString.equalTo("yes")),
 						FilterMessage.property("test", "hi")
 				);
 
-		ResourceRequest msg1 = ResourceRequest.locatedBy(new ResourceIdentifier("resource\\host\\path"));
+		ActivatorRequest
+            msg1 = ActivatorRequest.locatedBy(new ResourceIdentifier("resource\\host\\path"));
 		msg1.setSourceUri("node\\localhost");
 		msg1.setId("yes");
 		msg1.getProperties().put("test", "hi");
-		ResourceRequest msg2 = ResourceRequest.locatedBy(new ResourceIdentifier("resource\\host\\path"));
+		ActivatorRequest
+            msg2 = ActivatorRequest.locatedBy(new ResourceIdentifier("resource\\host\\path"));
 		msg2.setSourceUri("node\\localhost");
 		msg2.setId("no");
 		ResourceResponse rsp1 = ResourceResponse.inResponseTo(msg1);

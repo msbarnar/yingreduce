@@ -8,9 +8,9 @@ import edu.asu.ying.mapreduce.net.messaging.Message;
 
 
 /**
- * {@link ResourceResponse} is sent in response to {@link ResourceRequest} and contains either a
+ * {@link ResourceResponse} is sent in response to {@link ActivatorRequest} and contains either a
  * reference to the resource or an exception. <p> The ID of this message will be the same as that
- * of the {@link ResourceRequest} that instigated it. <p> The following properties are defined on
+ * of the {@link ActivatorRequest} that instigated it. <p> The following properties are defined on
  * this message: <ul> <li>{@code resource.reference} - (optional) the resource reference, if
  * found.</li> <li>{@code throwable} - (optional) the exception if one was thrown.</li> </ul>
  */

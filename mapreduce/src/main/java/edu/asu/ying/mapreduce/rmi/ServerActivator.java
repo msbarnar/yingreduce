@@ -1,24 +1,39 @@
 package edu.asu.ying.mapreduce.rmi;
 
-import com.google.inject.BindingAnnotation;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Map;
+import java.util.Random;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import edu.asu.ying.mapreduce.rmi.Activator;
 
 
 /**
- * Marks a field or parameters as receiving an injected scheduling-side {@link Activator}
- * implementation. <p> Apply to a method with {@link com.google.inject.Provides} to provide an
- * implementation of that source.
+ * Controls creation and lifetime management for remotely activated objects.
  */
-@BindingAnnotation
-@Target({FIELD, PARAMETER, METHOD})
-@Retention(RUNTIME)
-public @interface ServerActivator {
+public final class ServerActivator
+    implements Activator {
 
+  private final Injector injector;
+
+  @Inject
+  private ServerActivator(final Injector injector) {
+    this.injector = injector;
+  }
+
+  // TODO: implement client-activated, per-call, singleton
+  @Override
+  @SuppressWarnings("unchecked")
+  public final <T extends Remote> T getReference(final Class<T> type,
+                                                 final Map<String, String> properties)
+      throws RemoteException {
+
+    final Remote instance = this.injector.getInstance(type);
+    // TODO: smart port provision
+    return (T) UnicastRemoteObject.exportObject(instance, 8000 + (new Random()).nextInt(2000));
+  }
 }

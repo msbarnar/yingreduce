@@ -4,7 +4,7 @@ import edu.asu.ying.mapreduce.common.event.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
-import edu.asu.ying.mapreduce.net.resource.ResourceMessageEvent;
+import edu.asu.ying.mapreduce.net.messaging.ActivatorMessageEvent;
 import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
@@ -72,7 +72,7 @@ public class TestRemoteResources
 	}
 
 	@Provides
-	@ResourceMessageEvent
+	@ActivatorMessageEvent
 	private FilteredValueEvent<Message> provideIncomingMessagesEvent() {
 		return this.onIncomingMessages;
 	}

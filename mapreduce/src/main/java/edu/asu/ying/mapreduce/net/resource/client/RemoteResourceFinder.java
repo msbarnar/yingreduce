@@ -26,10 +26,10 @@ import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.net.messaging.Message;
+import edu.asu.ying.mapreduce.net.messaging.ActivatorMessageEvent;
+import edu.asu.ying.mapreduce.net.resource.ActivatorRequest;
 import edu.asu.ying.mapreduce.net.resource.RemoteResource;
 import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
-import edu.asu.ying.mapreduce.net.resource.ResourceMessageEvent;
-import edu.asu.ying.mapreduce.net.resource.ResourceRequest;
 import edu.asu.ying.mapreduce.net.resource.ResourceResponse;
 
 
@@ -60,7 +60,7 @@ public final class RemoteResourceFinder<V extends RemoteResource>
 
   @Inject
   private RemoteResourceFinder(@SendMessageStream MessageOutputStream sendStream,
-                               @ResourceMessageEvent FilteredValueEvent<Message> onIncomingMessage)
+                               @ActivatorMessageEvent FilteredValueEvent<Message> onIncomingMessage)
   {
 
     this.sendStream = sendStream;
@@ -157,13 +157,13 @@ public final class RemoteResourceFinder<V extends RemoteResource>
   }
 
   /**
-   * Creates a {@link edu.asu.ying.mapreduce.net.resource.ResourceRequest} for the resource at the
+   * Creates a {@link edu.asu.ying.mapreduce.net.resource.ActivatorRequest} for the resource at the
    * given URI.
    */
   private Message createRequest(final ResourceIdentifier uri, final Properties args)
       throws URISyntaxException {
 
-    final ResourceRequest request = ResourceRequest.locatedBy(uri);
+    final ActivatorRequest request = ActivatorRequest.locatedBy(uri);
     request.setArguments(args);
     return request;
   }

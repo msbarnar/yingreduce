@@ -11,4 +11,7 @@ public interface Node {
 
   Scheduler getScheduler();
   Table getTable(final TableID id);
+
+  NodeURI getNodeURI();
+  NodeURL getNodeURL();
 }

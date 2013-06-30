@@ -1,6 +1,7 @@
 package edu.asu.ying.mapreduce.net.messaging.kad;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -25,6 +26,7 @@ import il.technion.ewolf.kbr.Node;
  * will receive messages with URIs like: </p> {@code resource\host:port\type\name} </p> The event
  * can be injected anywhere using the annotation {@link IncomingMessageEvent}.
  */
+@Singleton
 public final class KadMessageHandler
     implements MessageHandler, il.technion.ewolf.kbr.MessageHandler {
 

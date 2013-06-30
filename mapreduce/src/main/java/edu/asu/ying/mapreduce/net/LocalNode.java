@@ -22,7 +22,4 @@ public interface LocalNode extends Node {
   Activator getActivator();
 
   List<RemoteNode> getNeighbors();
-
-  NodeURI getNodeURI();
-  NodeURL getNodeURL();
 }

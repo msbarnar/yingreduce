@@ -4,18 +4,18 @@ import java.net.URISyntaxException;
 
 
 /**
- * A {@link ResourceRequest} indicates to a remote node that we would like a remote reference to one
- * of its resource.
+ * A {@link ActivatorRequest} indicates to a remote node that we would like a remote reference to
+ * its {@link edu.asu.ying.mapreduce.rmi.Activator}.
  */
-public final class ResourceRequest
-    extends ResourceMessage {
+public final class ActivatorRequest
+    extends MessageBase {
 
   private static final long SerialVersionUID = 1L;
 
-  public static ResourceRequest locatedBy(final ResourceIdentifier uri)
+  public static ActivatorRequest locatedBy(final ResourceIdentifier uri)
       throws URISyntaxException {
 
-    return new ResourceRequest(uri);
+    return new ActivatorRequest(uri);
   }
 
   /**
@@ -25,7 +25,7 @@ public final class ResourceRequest
    * @param resourceUri the fully formed URI of the resource. {@see RemoteResource} for formatting
    *                    details.
    */
-  private ResourceRequest(final ResourceIdentifier resourceUri) throws URISyntaxException {
+  private ActivatorRequest(final ResourceIdentifier resourceUri) throws URISyntaxException {
     // Set the destination URI from only the host and port of the resource URI
     super(resourceUri);
 

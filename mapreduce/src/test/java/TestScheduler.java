@@ -15,7 +15,7 @@ import java.util.concurrent.CancellationException;
 
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
+import edu.asu.ying.mapreduce.net.kad.KademliaModule;
 import edu.asu.ying.mapreduce.net.resource.ResourceIdentifier;
 import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
@@ -34,7 +34,7 @@ public class TestScheduler implements FutureCallback<Activator> {
   @SuppressWarnings("unchecked")
   public void ItAcceptsTasks() throws Exception {
     // Open a channel with no peers and get an activator; it should be our own
-    final KademliaNetwork channel = new KademliaNetwork();
+    final KademliaModule channel = new KademliaModule();
     // Get an activator
     final Injector injector = Guice.createInjector(channel);
     // Getting an instance of the local node starts it
