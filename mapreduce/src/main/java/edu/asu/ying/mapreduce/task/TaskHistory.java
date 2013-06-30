@@ -9,8 +9,6 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.mapreduce.net.NodeIdentifier;
-
 /**
  * {@code TaskHistory} keeps a journal of all of the schedulers that observe a particular task.
  * </p>

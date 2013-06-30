@@ -8,7 +8,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.net.NodeIdentifier;
 import edu.asu.ying.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.task.executor.ForwardingTaskQueueExecutor;

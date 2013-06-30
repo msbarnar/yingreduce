@@ -11,7 +11,7 @@ import edu.asu.ying.mapreduce.rmi.Activator;
 /**
  * Provides an interface to the local node and its listening facilities.
  */
-public interface LocalNode {
+public interface LocalNode extends Node {
 
   void bind();
 
@@ -22,4 +22,7 @@ public interface LocalNode {
   Activator getActivator();
 
   List<RemoteNode> getNeighbors();
+
+  NodeURI getNodeURI();
+  NodeURL getNodeURL();
 }
