@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Identifies an item on the network. </p> Format: </p> {@code scheme\(replication)host:port\path\name}
  */
-public final class ResourceIdentifier
+public class ResourceIdentifier
     implements Serializable {
 
   public static final ResourceIdentifier Empty = new ResourceIdentifier();

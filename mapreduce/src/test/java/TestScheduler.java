@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.CancellationException;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.client.LocalNode;
+import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;

@@ -3,7 +3,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.client.LocalNode;
+import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.net.resources.ResourceIdentifier;
 import edu.asu.ying.mapreduce.net.resources.client.RemoteResourceFinder;

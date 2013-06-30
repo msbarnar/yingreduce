@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.client;
+package edu.asu.ying.mapreduce.net;
 
 import java.io.IOException;
 

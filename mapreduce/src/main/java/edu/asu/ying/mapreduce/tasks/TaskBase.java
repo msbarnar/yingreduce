@@ -3,6 +3,7 @@ package edu.asu.ying.mapreduce.tasks;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
+import java.net.InetAddress;
 import java.util.UUID;
 
 import edu.asu.ying.mapreduce.common.Properties;
@@ -23,6 +24,7 @@ public abstract class TaskBase implements Task {
     static final String TaskId = "task.id";
     static final String TaskStartParameters = "task.parameters.start";
     static final String TaskHistory = "task.history";
+    static final String ResponsibleNodeAddress = "task.nodes.responsible.address";
   }
 
   protected final Properties properties = new Properties();
@@ -79,6 +81,11 @@ public abstract class TaskBase implements Task {
   protected void setTaskHistory(final TaskHistory history) {
     this.properties.put(Property.TaskHistory, history);
   }
+
+  /**
+   * The tasks's history is a log of the schedulers that have visited the task and the actions they
+   * have performed.
+   */
   public TaskHistory getHistory() {
     TaskHistory history = this.properties.getDynamicCast(Property.TaskHistory, TaskHistory.class);
     if (history == null) {
@@ -86,5 +93,12 @@ public abstract class TaskBase implements Task {
       this.setTaskHistory(history);
     }
     return history;
+  }
+
+  public void setResponsibleNodeAddress(final InetAddress address) {
+    this.properties.put(Property.ResponsibleNodeAddress, address);
+  }
+  public InetAddress getResponsibleNodeAddress() {
+    return this.properties.getDynamicCast(Property.ResponsibleNodeAddress, InetAddress.class);
   }
 }

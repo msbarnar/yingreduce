@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.client;
+package edu.asu.ying.mapreduce.net.kad;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaNetwork;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;

@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.tasks;
 
 import java.io.Serializable;
 import java.lang.annotation.IncompleteAnnotationException;
+import java.net.InetAddress;
 
 import edu.asu.ying.mapreduce.common.Properties;
 
@@ -26,4 +27,10 @@ public interface Task extends Serializable {
    * Returns a history of all of the schedulers that have observed this task.
    */
   TaskHistory getHistory();
+
+  /**
+   * Returns the IP address of the node responsible for managing the task (the owner of the first
+   * task segment).
+   */
+  InetAddress getResponsibleNodeAddress();
 }
