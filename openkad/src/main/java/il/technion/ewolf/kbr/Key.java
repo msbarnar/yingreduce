@@ -21,6 +21,9 @@ public class Key implements Serializable, Comparable<Key> {
 	public Key(final byte[] bytes) {
 		this.bytes = bytes;
 	}
+	public Key(final String base64) {
+		this.bytes = Base64.decodeBase64(base64);
+	}
 	/**
 	 * Check if a key is 0 key
 	 * 
@@ -70,7 +73,7 @@ public class Key implements Serializable, Comparable<Key> {
 	 */
 	public Key xor(final Key k) {
 		if (k.getByteLength() != getByteLength())
-			throw new IllegalArgumentException("incompatable key for xor");
+			throw new IllegalArgumentException("incompatable key for xor: keys are not the same length");
 		final byte[] b = new byte[getByteLength()];
 		for (int i = 0; i < b.length; ++i)
 			b[i] = (byte) (getBytes()[i] ^ k.getBytes()[i]);
