@@ -5,7 +5,7 @@ import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorMessageEvent;
-import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.rmi.ActivatorFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
 
 import org.junit.Test;
@@ -67,7 +67,7 @@ public class TestRemoteResources
 	@Override
 	protected void configure() {
 		bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class).toInstance(new MockOutputStream());
-		bind(RemoteResourceFinder.class);
+		bind(ActivatorFinder.class);
 	}
 
 	@Provides
@@ -77,8 +77,8 @@ public class TestRemoteResources
 	}
 
 	@Provides
-	private RemoteResourceFinder<?> provideRemoteResources() {
-		return (Guice.createInjector(this)).getInstance(RemoteResourceFinder.class);
+	private ActivatorFinder<?> provideRemoteResources() {
+		return (Guice.createInjector(this)).getInstance(ActivatorFinder.class);
 	}
 
 	@Test

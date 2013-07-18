@@ -20,12 +20,11 @@ public final class ServerActivator
 
   private final Injector injector;
 
-  @Inject
-  private ServerActivator(final Injector injector) {
+  public ServerActivator(final Injector injector) {
     this.injector = injector;
   }
 
-  // TODO: implement client-activated, per-call, singleton
+  // TODO: implement client-activated, per-call, singleton activation modes
   @Override
   @SuppressWarnings("unchecked")
   public final <T extends Remote> T getReference(final Class<T> type,

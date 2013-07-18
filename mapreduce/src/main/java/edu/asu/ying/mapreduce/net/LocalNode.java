@@ -14,11 +14,9 @@ public interface LocalNode extends Node {
 
   void bind();
 
-  void join(final ResourceIdentifier bootstrap) throws IOException;
-
-  MessageHandler getMessageHandler(final String scheme);
-
-  Activator getActivator();
+  void join(final NodeURI bootstrap) throws IOException;
 
   List<RemoteNode> getNeighbors();
+
+  MessageHandler getIncomingMessageHandler();
 }

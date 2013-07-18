@@ -3,6 +3,8 @@ package edu.asu.ying.mapreduce.task.scheduling;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import edu.asu.ying.mapreduce.task.Job;
+import edu.asu.ying.mapreduce.task.JobSchedulingResult;
 import edu.asu.ying.mapreduce.task.Task;
 
 /**
@@ -21,7 +23,9 @@ import edu.asu.ying.mapreduce.task.Task;
  */
 public interface Scheduler extends Remote {
 
-  TaskSchedulingResult schedule(final Task task) throws RemoteException;
+  JobSchedulingResult addJob(final Job job) throws RemoteException;
+
+  TaskSchedulingResult addTask(final Task task) throws RemoteException;
 
   /**
    * Returns a value equal to or greater than {@code 0} that specifies this scheduler's resistance

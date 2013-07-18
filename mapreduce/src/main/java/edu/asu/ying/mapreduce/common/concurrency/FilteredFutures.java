@@ -89,6 +89,19 @@ public class FilteredFutures<V>
   }
 
   /**
+   * Applies the given filter and begins listening for only one response that matches it.
+   * @param on the filter on which values will be matched.
+   * @return a {@link ListenableFuture} that will be fulfilled when a value matching the filter
+   * arrives.
+   */
+  public final ListenableFuture<V> getOne(final Filter on) {
+    this.get(1);
+    // Start listening with the given filter and return one future result.
+    this.event.attach(on, this);
+    return this.unfulfilledFutures.peek();
+  }
+
+  /**
    * Fulfills one pending {@link ListenableFuture}. </p> If there are no more futures to fulfill, the
    * event handler detaches itself from the event.
    *

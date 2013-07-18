@@ -1,16 +1,24 @@
 package edu.asu.ying.mapreduce.net.kad;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 import java.io.IOException;
+import java.util.List;
 
 import edu.asu.ying.mapreduce.net.LocalNode;
+import edu.asu.ying.mapreduce.net.NodeURI;
+import edu.asu.ying.mapreduce.net.RemoteNode;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
+import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequestHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.ServerActivator;
+import edu.asu.ying.mapreduce.table.Table;
+import edu.asu.ying.mapreduce.table.TableID;
+import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 
 
@@ -18,57 +26,60 @@ import il.technion.ewolf.kbr.KeybasedRouting;
  *
  */
 @Singleton
-public class KadLocalNode
+public final class KadLocalNode
     implements LocalNode {
 
   private final KeybasedRouting kbrNode;
 
-  private final MessageHandler incomingMessageHandler;
+  private final Scheduler localScheduler;
 
   // Singleton Activator instance
-  private Activator activatorInstance;
-  private final Object activatorInstanceLock = new Object();
-  // Receives Activator requests and returns activators
-  private final Provider<ResourceRequestHandler> activatorRequestHandlerProvider;
-
+  private final Activator activatorInstance;
 
   @Inject
-  private KadLocalNode(final KeybasedRouting kbrNode,
-                       final MessageHandler incomingMessageHandler,
-                       final @Named("activator")
-                       Provider<ResourceRequestHandler> activatorRequestHandlerProvider) {
+  private KadLocalNode(final Injector injector,
+                       final KeybasedRouting kbrNode) {
 
+    this.activatorInstance = new ServerActivator(injector);
     this.kbrNode = kbrNode;
-    this.incomingMessageHandler = incomingMessageHandler;
-    this.activatorRequestHandlerProvider = activatorRequestHandlerProvider;
-  }
-
-  /**
-   * Binds the message handling services to the network.
-   * </p>
-   * It is important that this is called after the {@link LocalNode} is fully constructed because
-   * the message handling services create a dependency cycle with the local node's message handlers.
-   * </p>
-   * The local node is injected as a singleton, so once it is constructed the cyckle is broken.
-   */
-  public void bind() {
-    // Start the activator request handler
-    this.activatorRequestHandlerProvider.get();
+    this.localScheduler = new LocalScheduler
   }
 
   @Override
-  public void join(final ResourceIdentifier bootstrap) throws IOException {
+  public void bind() {
+  }
+
+  @Override
+  public final void join(final NodeURI bootstrap) throws IOException {
   }
 
   @Override
   public final Activator getActivator() {
-    if (this.activatorInstance == null) {
-      synchronized (this.activatorInstanceLock) {
-        if (this.activatorInstance == null) {
-          this.activatorInstance = new ServerActivator();
-        }
-      }
-    }
     return this.activatorInstance;
+  }
+
+  @Override
+  public List<RemoteNode> getNeighbors() {
+    return null;
+  }
+
+  @Override
+  public MessageHandler getIncomingMessageHandler() {
+    return null;
+  }
+
+  @Override
+  public Scheduler getScheduler() {
+    return null;
+  }
+
+  @Override
+  public Table getTable(TableID id) {
+    return null;
+  }
+
+  @Override
+  public NodeURI getNodeURI() {
+    return null;
   }
 }

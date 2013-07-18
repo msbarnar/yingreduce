@@ -18,7 +18,7 @@ public interface Task extends Serializable {
   TaskStartParameters getTaskStartParameters();
 
   /**
-   * Checks that a task has all of the necessary information before attempting to schedule it.
+   * Checks that a task has all of the necessary information before attempting to addTask it.
    */
   void validate() throws InvalidTaskException;
 

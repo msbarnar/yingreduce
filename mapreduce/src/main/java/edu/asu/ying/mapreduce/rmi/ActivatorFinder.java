@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.resource.client;
+package edu.asu.ying.mapreduce.rmi;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -24,18 +24,15 @@ import edu.asu.ying.mapreduce.common.filter.FilterClass;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
+import edu.asu.ying.mapreduce.net.NodeURI;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.net.messaging.Message;
+import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorMessageEvent;
 import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest;
 
 
-/**
- * {@code RemoteResourceFinder} facilitates asynchronous getting of {@link
- * edu.asu.ying.mapreduce.net.resource.RemoteResource} objects from remote nodes. </p> {@code
- * RemoteResourceFinder} is parameterized on the type of resource that it gets.
- */
-public final class RemoteResourceFinder<V extends RemoteResource>
+public final class ActivatorFinder
     implements FutureCallback<Message> {
 
   /**
@@ -53,15 +50,15 @@ public final class RemoteResourceFinder<V extends RemoteResource>
   // We technically can synchronize on the non-final unfulfilledResources deque, but we technically
   // can do a lot of things that we shouldn't.
   private final Object resourcesLock = new Object();
-  private Deque<SettableFuture<V>> unfulfilledResources;
+  private Deque<SettableFuture<Activator>> unfulfilledActivators;
 
   @Inject
-  private RemoteResourceFinder(@SendMessageStream MessageOutputStream sendStream,
-                               @ActivatorMessageEvent FilteredValueEvent<Message> onIncomingMessage)
+  private ActivatorFinder(@SendMessageStream MessageOutputStream sendStream,
+                          MessageHandler incomingMessageHandler)
   {
 
     this.sendStream = sendStream;
-    this.onIncomingMessage = onIncomingMessage;
+    this.onIncomingMessage = incomingMessageHandler.getIncomingMessageEvent();
   }
 
   /**
@@ -73,7 +70,7 @@ public final class RemoteResourceFinder<V extends RemoteResource>
    * @return a number of promises not greater than the value of {@code replication} in the URI
    *         (default 1).
    */
-  public final List<ListenableFuture<V>> getFutureResources(final ResourceIdentifier uri,
+  public final List<ListenableFuture<Activator>> getFutureActivators(final NodeURI uri,
                                                             final Properties args)
       throws URISyntaxException, IOException {
     // Set up the request
@@ -154,13 +151,13 @@ public final class RemoteResourceFinder<V extends RemoteResource>
   }
 
   /**
-   * Creates a {@link edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest} for the resource at the
-   * given URI.
+   * Creates a {@link edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest} for the
+   * resource at the given URI.
    */
-  private Message createRequest(final ResourceIdentifier uri, final Properties args)
+  private Message createRequest(final NodeURI uri, final Properties args)
       throws URISyntaxException {
 
-    final ActivatorRequest request = ActivatorRequest.locatedBy(uri);
+    final ActivatorRequest request = new ActivatorRequest(uri);
     request.setArguments(args);
     return request;
   }

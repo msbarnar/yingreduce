@@ -1,14 +1,13 @@
 package edu.asu.ying.mapreduce.net.messaging.activator;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.common.event.EventHandler;
@@ -16,9 +15,8 @@ import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 import edu.asu.ying.mapreduce.common.filter.FilterClass;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
-import edu.asu.ying.mapreduce.net.messaging.ExceptionMessage;
-import edu.asu.ying.mapreduce.net.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.net.messaging.Message;
+import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
 
 
@@ -26,6 +24,7 @@ import edu.asu.ying.mapreduce.rmi.Activator;
  * {@code ActivatorRequestHandler} receives {@link ActivatorRequest} messages and returns a
  * {@link java.rmi.Remote} reference to an {@link Activator} instance.
  */
+@Singleton
 public final class ActivatorRequestHandler
     implements EventHandler<Message> {
 
@@ -42,13 +41,13 @@ public final class ActivatorRequestHandler
    */
   @Inject
   private ActivatorRequestHandler(
-      final @ActivatorMessageEvent FilteredValueEvent<Message> onIncomingMessage,
+      final MessageHandler incomingMessageHandler,
       final @SendMessageStream MessageOutputStream sendMessageStream,
       final Activator serverActivator) {
 
     this.serverActivator = serverActivator;
     this.sendMessageStream = sendMessageStream;
-    this.onIncomingMessage = onIncomingMessage;
+    this.onIncomingMessage = incomingMessageHandler.getIncomingMessageEvent();
     this.onIncomingMessage.attach(FilterClass.is(ActivatorRequest.class), this);
   }
 
@@ -58,7 +57,7 @@ public final class ActivatorRequestHandler
    * @return true, so that it always remains bound to the {@code IncomingMessageEvent}.
    */
   @Override
-  public boolean onEvent(final @Nonnull Object sender, final @Nullable Message request) {
+  public boolean onEvent(final Object sender, final @Nullable Message request) {
     if (request == null) {
       return true;
     }
@@ -68,15 +67,9 @@ public final class ActivatorRequestHandler
     } catch (final IOException e) {
       // TODO: logging
       e.printStackTrace();
-      try {
-        response = new ExceptionMessage("Exception sending response", e);
-        this.sendMessageStream.write(response.makeResponseTo(request));
-      } catch (final IOException e2) {
-        // TODO: logging
-        e.printStackTrace();
-      }
     }
 
+    // Always return true to stay bound to the event
     return true;
   }
 

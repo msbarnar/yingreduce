@@ -8,12 +8,10 @@ import com.google.inject.Provides;
 import java.io.IOException;
 import java.util.Random;
 
-import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorMessageEvent;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
@@ -25,7 +23,7 @@ import il.technion.ewolf.kbr.openkad.KadNetModule;
 
 /**
  * The {@code KademliaModule} wires all of the high-level operations (e.g. {@link
- * edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder}) to the underlying Kademlia
+ * edu.asu.ying.mapreduce.rmi.ActivatorFinder}) to the underlying Kademlia
  * network classes.
  */
 public final class KademliaModule
@@ -64,12 +62,8 @@ public final class KademliaModule
     bind(KeybasedRouting.class).toInstance(KadNodeProvider.INSTANCE.kadNode);
 
     // Kad Message Handling
+    // Singleton
     bind(MessageHandler.class).to(KadMessageHandler.class);
-
-    bind(FilteredValueEvent.class).annotatedWith(ActivatorMessageEvent.class)
-        .toInstance(
-            this.provideLocalNode().getMessageHandler("resource").getIncomingMessageEvent()
-        );
 
     // Kad Message Sending
     bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class)
@@ -84,6 +78,7 @@ public final class KademliaModule
 
   @Provides
   private LocalNode provideLocalNode() {
+    // Double locked singleton
     if (KademliaModule.localNode == null) {
       synchronized (KademliaModule.localNodeLock) {
         if (KademliaModule.localNode == null) {

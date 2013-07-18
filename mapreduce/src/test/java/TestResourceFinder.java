@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaModule;
-import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.rmi.ActivatorFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
 
 import org.apache.commons.codec.binary.Base64;
@@ -36,7 +36,7 @@ public class TestResourceFinder
     node.bind();
 
     // Unchecked
-    final RemoteResourceFinder<Activator> finder = injector.getInstance(RemoteResourceFinder.class);
+    final ActivatorFinder<Activator> finder = injector.getInstance(ActivatorFinder.class);
 
     final String host = Base64.encodeBase64String(
         UUID.randomUUID().toString().substring(0, 20).getBytes());

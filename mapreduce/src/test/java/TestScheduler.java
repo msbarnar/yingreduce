@@ -16,7 +16,7 @@ import java.util.concurrent.CancellationException;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaModule;
-import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.rmi.ActivatorFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
 import edu.asu.ying.mapreduce.task.Task;
@@ -43,7 +43,7 @@ public class TestScheduler implements FutureCallback<Activator> {
     node.bind();
 
     // Unchecked
-    final RemoteResourceFinder<Activator> finder = injector.getInstance(RemoteResourceFinder.class);
+    final ActivatorFinder<Activator> finder = injector.getInstance(ActivatorFinder.class);
 
     // Bogus remote node, will find the local node as we aren't in any network
     final String host = Base64.encodeBase64String(
@@ -88,7 +88,7 @@ public class TestScheduler implements FutureCallback<Activator> {
 
     final Scheduler scheduler = activator.getReference(Scheduler.class, null);
     System.out.println("Scheduling task");
-    scheduler.schedule(this.toSchedule);
+    scheduler.addTask(this.toSchedule);
 
     this.finished = true;
   }

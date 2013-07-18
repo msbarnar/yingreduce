@@ -21,4 +21,11 @@ public interface MessageOutputStream {
    * @throws IOException if writing to the stream throws an exception.
    */
   int write(final Message message) throws IOException;
+
+  /**
+   * Asynchronously writes the message to the stream, returning immediately.
+   *
+   * @param message the message to write.
+   */
+  void writeAsync(final Message message) throws IOException;
 }

@@ -1,7 +1,5 @@
 package edu.asu.ying.mapreduce.net;
 
-import edu.asu.ying.mapreduce.table.Table;
-import edu.asu.ying.mapreduce.table.TableID;
 import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
 
 /**
@@ -10,8 +8,6 @@ import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
 public interface Node {
 
   Scheduler getScheduler();
-  Table getTable(final TableID id);
 
   NodeURI getNodeURI();
-  NodeURL getNodeURL();
 }

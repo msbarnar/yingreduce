@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.net.resource.client.RemoteResourceFinder;
+import edu.asu.ying.mapreduce.rmi.ActivatorFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
 
 import org.junit.Assert;
@@ -16,17 +16,17 @@ import java.util.List;
  *
  */
 public final class RemoteResourcesTester {
-	private final Provider<RemoteResourceFinder<Activator>> getter;
+	private final Provider<ActivatorFinder<Activator>> getter;
 	private int numResults = 0;
 
 	@Inject
-	private RemoteResourcesTester(final Provider<RemoteResourceFinder<Activator>> getter) {
+	private RemoteResourcesTester(final Provider<ActivatorFinder<Activator>> getter) {
 		this.getter = getter;
 	}
 
 	public void Test() throws Exception {
 
-		final RemoteResourceFinder<Activator> remoteActivators = this.getter.get();
+		final ActivatorFinder<Activator> remoteActivators = this.getter.get();
 
 		List<ListenableFuture<Activator>> activators =
 				remoteActivators.getFutureResources(

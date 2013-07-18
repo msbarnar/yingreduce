@@ -11,7 +11,6 @@ import edu.asu.ying.mapreduce.common.event.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.net.InvalidContentException;
 import edu.asu.ying.mapreduce.net.messaging.AcknowledgementMessage;
 import edu.asu.ying.mapreduce.net.messaging.ExceptionMessage;
-import edu.asu.ying.mapreduce.net.messaging.IncomingMessageEvent;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import il.technion.ewolf.kbr.KeybasedRouting;

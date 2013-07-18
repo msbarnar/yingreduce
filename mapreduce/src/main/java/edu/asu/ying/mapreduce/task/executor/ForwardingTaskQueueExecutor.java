@@ -92,7 +92,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
     }
 
     try {
-      bestScheduler.schedule(task);
+      bestScheduler.addTask(task);
     } catch (final RemoteException e) {
       // TODO: Logging
       e.printStackTrace();

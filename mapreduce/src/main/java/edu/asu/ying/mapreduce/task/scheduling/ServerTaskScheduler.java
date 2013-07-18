@@ -67,7 +67,7 @@ public class ServerTaskScheduler implements Scheduler {
    * </ol>
    */
   @Override
-  public TaskSchedulingResult schedule(final Task task) throws RemoteException {
+  public TaskSchedulingResult addTask(final Task task) throws RemoteException {
 
     final TaskSchedulingResult result = new TaskSchedulingResult();
 
