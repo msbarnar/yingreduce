@@ -35,7 +35,7 @@ public class IncomingContentHandler<A> implements CompletionHandler<KadMessage, 
 	
 	/**
 	 * 
-	 * @param clientExecutor the executor for all incoming requests that should be handled by the KeybasedRouting user
+	 * @param clientExecutor the execution for all incoming requests that should be handled by the KeybasedRouting user
 	 * @param localNode the local node
 	 * @param kadServer the KadServer used to send messages
 	 */

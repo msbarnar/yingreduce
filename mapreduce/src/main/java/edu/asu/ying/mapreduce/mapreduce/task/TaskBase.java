@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.task;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -9,11 +9,11 @@ import java.util.UUID;
 import edu.asu.ying.mapreduce.common.Properties;
 
 /**
- * {@code TaskBase} is the base class of all distributable task.
+ * {@code TaskBase} is the base class of all distributable mapreduce.
  * </p>
  * Properties defined by this class are:
  * <ul>
- *   <il>{@code task.id} - the universally unique ID of the task</il>
+ *   <il>{@code mapreduce.id} - the universally unique ID of the mapreduce</il>
  * </ul>
  */
 public abstract class TaskBase implements Task {
@@ -21,10 +21,10 @@ public abstract class TaskBase implements Task {
   private static final long SerialVersionUID = 1L;
 
   protected static final class Property {
-    static final String TaskId = "task.id";
-    static final String TaskStartParameters = "task.parameters.start";
-    static final String TaskHistory = "task.history";
-    static final String ResponsibleNodeAddress = "task.nodes.responsible.address";
+    static final String TaskId = "mapreduce.id";
+    static final String TaskStartParameters = "mapreduce.parameters.start";
+    static final String TaskHistory = "mapreduce.history";
+    static final String ResponsibleNodeAddress = "mapreduce.nodes.responsible.address";
   }
 
   protected final Properties properties = new Properties();
@@ -33,27 +33,24 @@ public abstract class TaskBase implements Task {
     return this.properties;
   }
 
-  public String getId() {
-    return this.properties.getNullAsEmpty(Property.TaskId);
+  public TaskID getId() {
+    return this.properties.getDynamicCast(Property.TaskId, TaskID.class);
   }
   /**
    * Sets a random universally unique identifier.
    */
   protected void setId() {
-    this.setId(UUID.randomUUID().toString());
+    this.setId(new TaskID());
   }
-  protected void setId(final UUID uuid) {
-    this.setId(uuid.toString());
-  }
-  protected void setId(final String id) {
-    Preconditions.checkNotNull(Strings.emptyToNull(id));
+  protected void setId(final TaskID id) {
+    Preconditions.checkNotNull(id);
 
     this.properties.put(Property.TaskId, id);
   }
 
   /**
-   * The {@code TaskStartParameters} define the timing of the task's starting.
-   * @return the task's start parameters, or {@link TaskStartParameters#Default} if they are not
+   * The {@code TaskStartParameters} define the timing of the mapreduce's starting.
+   * @return the mapreduce's start parameters, or {@link TaskStartParameters#Default} if they are not
    * set.
    */
   public TaskStartParameters getTaskStartParameters() {
@@ -68,7 +65,7 @@ public abstract class TaskBase implements Task {
   }
 
   /**
-   * Sets the task's start parameters, or {@link TaskStartParameters#Default} if {@code params} is
+   * Sets the mapreduce's start parameters, or {@link TaskStartParameters#Default} if {@code params} is
    * null.
    */
   protected void setTaskStartParameters(TaskStartParameters params) {
@@ -83,7 +80,7 @@ public abstract class TaskBase implements Task {
   }
 
   /**
-   * The task's history is a log of the schedulers that have visited the task and the actions they
+   * The mapreduce's history is a log of the schedulers that have visited the mapreduce and the actions they
    * have performed.
    */
   public TaskHistory getHistory() {
@@ -105,11 +102,11 @@ public abstract class TaskBase implements Task {
   public boolean isCurrentlyAtInitialNode() {
     final TaskHistory.Entry lastEntry = this.getHistory().last();
     if (lastEntry == null) {
-      // The responsible node didn't append itself to the history before distributing this task from
+      // The responsible node didn't append itself to the history before distributing this mapreduce from
       // the original job.
-      throw new IllegalStateException("Scheduler received task with no responsible node set; don't"
+      throw new IllegalStateException("Scheduler received mapreduce with no responsible node set; don't"
                                       + " know whether this is the initial node, and won't know the"
-                                      + " origin of the task if we continue forwarding.");
+                                      + " origin of the mapreduce if we continue forwarding.");
     }
     return lastEntry.getNodeRole() == TaskHistory.NodeRole.Responsible;
   }

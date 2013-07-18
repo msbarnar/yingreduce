@@ -1,5 +1,6 @@
-package edu.asu.ying.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.job;
 
+import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
 import edu.asu.ying.mapreduce.table.TableID;
 
 /**
@@ -7,6 +8,6 @@ import edu.asu.ying.mapreduce.table.TableID;
  */
 public interface Job {
 
-  JobID getJobId();
+  TaskID getJobId();
   TableID getSourceTableId();
 }

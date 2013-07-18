@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 /**
  * {@code NodeURL} specifies the location of a specific node in the network.
  */
-public interface NodeURL {
+public interface NodeURL extends NodeURI {
 
   NodeURI getNodeId();
 

@@ -18,8 +18,8 @@ import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.kad.KademliaModule;
 import edu.asu.ying.mapreduce.rmi.ActivatorFinder;
 import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.task.Task;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.task.Task;
 
 /**
  *
@@ -87,7 +87,7 @@ public class TestScheduler implements FutureCallback<Activator> {
     Assert.assertNotNull(activator);
 
     final Scheduler scheduler = activator.getReference(Scheduler.class, null);
-    System.out.println("Scheduling task");
+    System.out.println("Scheduling mapreduce");
     scheduler.addTask(this.toSchedule);
 
     this.finished = true;

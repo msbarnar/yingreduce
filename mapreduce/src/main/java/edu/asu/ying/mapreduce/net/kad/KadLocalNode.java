@@ -2,9 +2,7 @@ package edu.asu.ying.mapreduce.net.kad;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,12 +11,11 @@ import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.NodeURI;
 import edu.asu.ying.mapreduce.net.RemoteNode;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
-import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequestHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.ServerActivator;
 import edu.asu.ying.mapreduce.table.Table;
 import edu.asu.ying.mapreduce.table.TableID;
-import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 
 

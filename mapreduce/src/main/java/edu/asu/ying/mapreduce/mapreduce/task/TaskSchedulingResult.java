@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.task.scheduling;
+package edu.asu.ying.mapreduce.mapreduce.task;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ public class TaskSchedulingResult implements Serializable {
 
   private static final long SerialVersionUID = 1L;
 
-  // Indicates that the node accepted the task into one of its queues.
+  // Indicates that the node accepted the mapreduce into one of its queues.
   private boolean taskScheduled;
 
   public TaskSchedulingResult() {

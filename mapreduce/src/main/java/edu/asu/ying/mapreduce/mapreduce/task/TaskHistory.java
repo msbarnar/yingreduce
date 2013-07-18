@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.task;
 
 import com.google.common.collect.ImmutableList;
 
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import javax.annotation.Nullable;
 
 /**
- * {@code TaskHistory} keeps a journal of all of the schedulers that observe a particular task.
+ * {@code TaskHistory} keeps a journal of all of the schedulers that observe a particular mapreduce.
  * </p>
  * It is the scheduler's responsibility to append itself to the history.
  */
@@ -19,7 +19,7 @@ public final class TaskHistory implements Serializable {
   private static final long SerialVersionUID = 1L;
 
   /**
-   * {@code SchedulerAction} represents something a scheduler might do with a task.
+   * {@code SchedulerAction} represents something a scheduler might do with a mapreduce.
    */
   public static enum SchedulerAction {
     None,
@@ -29,12 +29,12 @@ public final class TaskHistory implements Serializable {
   }
 
   /**
-   * {@code NodeRole} represents the role that the current node plays in handling the task.
+   * {@code NodeRole} represents the role that the current node plays in handling the mapreduce.
    */
   public static enum NodeRole {
-    Responsible,    // The responsible node delegates the task
-    Initial,        // The initial node contains the table for a particular task segment
-    Child           // A child node was delegated a task by an initial node because the initial
+    Responsible,    // The responsible node delegates the mapreduce
+    Initial,        // The initial node contains the table for a particular mapreduce segment
+    Child           // A child node was delegated a mapreduce by an initial node because the initial
                     // node's Local queue was full.
   }
 
@@ -47,9 +47,9 @@ public final class TaskHistory implements Serializable {
 
     // Any node visiting the history should be able to contact this node by the URI.
     private NodeIdentifier nodeUri;
-    // The role of the visiting node in carrying the task.
+    // The role of the visiting node in carrying the mapreduce.
     private NodeRole nodeRole;
-    // What the visiting scheduler ultimately did with the task.
+    // What the visiting scheduler ultimately did with the mapreduce.
     private SchedulerAction schedulerAction;
 
     public Entry() {

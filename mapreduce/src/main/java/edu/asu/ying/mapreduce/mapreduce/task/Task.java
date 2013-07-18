@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.task;
 
 import java.io.Serializable;
 import java.net.InetAddress;
@@ -14,30 +14,30 @@ public interface Task extends Serializable {
 
   Properties getProperties();
 
-  String getId();
+  TaskID getId();
   TaskStartParameters getTaskStartParameters();
 
   /**
-   * Checks that a task has all of the necessary information before attempting to addTask it.
+   * Checks that a mapreduce has all of the necessary information before attempting to addTask it.
    */
   void validate() throws InvalidTaskException;
 
   /**
-   * Returns a history of all of the schedulers that have observed this task.
+   * Returns a history of all of the schedulers that have observed this mapreduce.
    */
   TaskHistory getHistory();
 
   /**
-   * Returns the IP address of the node responsible for managing the task (the owner of the first
-   * task segment).
+   * Returns the IP address of the node responsible for managing the mapreduce (the owner of the first
+   * mapreduce segment).
    */
   InetAddress getResponsibleNodeAddress();
 
   /**
    * Returns {@code true} if this is the initial node (the node carrying the table) for the specified
-   * task.
+   * mapreduce.
    * </p>
-   * This is the initial node if the most recent node to handle the task was the
+   * This is the initial node if the most recent node to handle the mapreduce was the
    * {@code responsible node} for the job.
    */
   boolean isCurrentlyAtInitialNode();

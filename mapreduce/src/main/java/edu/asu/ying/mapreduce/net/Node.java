@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.net;
 
-import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 
 /**
  * {@code Node} provides the interface common to local and remote nodes.

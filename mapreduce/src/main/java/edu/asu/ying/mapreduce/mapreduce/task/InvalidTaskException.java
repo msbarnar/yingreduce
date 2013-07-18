@@ -1,4 +1,6 @@
-package edu.asu.ying.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.task;
+
+import edu.asu.ying.mapreduce.mapreduce.task.Task;
 
 /**
  *

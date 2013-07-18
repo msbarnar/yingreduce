@@ -56,7 +56,7 @@ public class JoinOperation  {
 			@Named("openkad.local.node") Node localNode,
 			@Named("openkad.timer") Timer timer,
 			@Named("openkad.refresh.interval") long refreshInterval,
-			@Named("openkad.refresh.task") TimerTask refreshTask) {
+			@Named("openkad.refresh.mapreduce") TimerTask refreshTask) {
 		
 		this.kadNodeProvider = kadNodeProvider;
 		this.findNodeOperationProvider = findNodeOperationProvider;
@@ -147,7 +147,7 @@ public class JoinOperation  {
 		try {
 			//timer.scheduleAtFixedRate(refreshTask, refreshInterval, refreshInterval);
 		} catch (IllegalStateException e) {
-			// if I couldn't schedule the refresh task i don't care
+			// if I couldn't schedule the refresh mapreduce i don't care
 		}
 	}
 	

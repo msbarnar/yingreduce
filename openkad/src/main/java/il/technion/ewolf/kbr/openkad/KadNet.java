@@ -90,7 +90,7 @@ public class KadNet implements KeybasedRouting {
 			KeyFactory keyFactory,
 			@Named("openkad.executors.client") ExecutorService clientExecutor,
 			@Named("openkad.bucket.kbuckets.maxsize") int bucketSize,
-			@Named("openkad.refresh.task") TimerTask refreshTask,
+			@Named("openkad.refresh.mapreduce") TimerTask refreshTask,
 			BootstrapNodesSaver bootstrapNodesSaver,
 			
 			//testing

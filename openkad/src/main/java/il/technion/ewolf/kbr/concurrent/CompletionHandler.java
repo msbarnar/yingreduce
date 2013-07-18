@@ -2,11 +2,11 @@ package il.technion.ewolf.kbr.concurrent;
 
 
 /**
- * A generic async task callback
+ * A generic async mapreduce callback
  * 
  * @author eyal.kibbar@gmail.com
  *
- * @param <R> the task's result
+ * @param <R> the mapreduce's result
  * @param <A> an arbitrary attachment
  */
 public interface CompletionHandler<R, A> {

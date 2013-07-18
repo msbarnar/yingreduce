@@ -352,7 +352,7 @@ public class KadNetModule extends AbstractModule {
 	}
 
 	@Provides
-	@Named("openkad.refresh.task")
+	@Named("openkad.refresh.mapreduce")
 	@Singleton
 	TimerTask provideRefreshTask(final Provider<KadFindNodeOperation> findNodeOperationProvider, final KeyFactory keyFactory) {
 

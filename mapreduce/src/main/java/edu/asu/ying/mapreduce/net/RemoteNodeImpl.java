@@ -1,13 +1,11 @@
 package edu.asu.ying.mapreduce.net;
 
-import java.rmi.RemoteException;
-
 import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.ActivatorNotFoundException;
 import edu.asu.ying.mapreduce.table.Table;
 import edu.asu.ying.mapreduce.table.TableID;
-import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 
 /**
  *

@@ -1,24 +1,25 @@
-package edu.asu.ying.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.task;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-/**
- * Uniquely idenfies a {@link Job}.
- */
-public final class JobID {
+
+public final class TaskID implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private final UUID id;
 
-  public JobID() {
+  public TaskID() {
     this.id = UUID.randomUUID();
   }
-  public JobID(final JobID id) {
+  public TaskID(final TaskID id) {
     this.id = id.toUUID();
   }
-  public JobID(final UUID uuid) {
+  public TaskID(final UUID uuid) {
     this.id = uuid;
   }
-  public JobID(final String id) {
+  public TaskID(final String id) {
     this.id = UUID.fromString(id);
   }
 
@@ -39,10 +40,10 @@ public final class JobID {
     if (o == null)
       return false;
 
-    if (!(o instanceof JobID))
+    if (!(o instanceof TaskID))
       return false;
 
-    return this.id.equals(((JobID) o).toUUID());
+    return this.id.equals(((TaskID) o).toUUID());
   }
 
   @Override

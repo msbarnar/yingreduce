@@ -1,14 +1,16 @@
-package edu.asu.ying.mapreduce.task.executor;
+package edu.asu.ying.mapreduce.mapreduce.execution;
 
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.RemoteNode;
-import edu.asu.ying.mapreduce.task.Task;
-import edu.asu.ying.mapreduce.task.TaskHistory;
-import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.task.Task;
+import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 
 /**
  * {@code ForwardingTaskQueueExecutor} removes tasks from the local {@code Forwarding} queue and
@@ -22,6 +24,9 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
   private final BlockingQueue<Task> remoteQueue;
   private final LocalNode localNode;
 
+  // One task at a time
+  private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
+
   public ForwardingTaskQueueExecutor(final Scheduler scheduler,
                                      final BlockingQueue<Task> forwardingQueue,
                                      final BlockingQueue<Task> remoteQueue,
@@ -33,39 +38,40 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
     this.localNode = localNode;
   }
 
-  public final void start() {
+  @Override
+  public void run() {
     // Forward tasks forever
-    for (;;) {
-      Task task = null;
-      try {
-        // Blocks until available
-        task = this.forwardingQueue.take();
-      } catch (final InterruptedException e) {
-        // TODO: Logging
-        e.printStackTrace();
-      }
+    this.threadPool.submit(this);
 
-      if (task == null) {
-        continue;
-      }
+    Task task = null;
+    try {
+      // Blocks until available
+      task = this.forwardingQueue.take();
+    } catch (final InterruptedException e) {
+      // TODO: Logging
+      e.printStackTrace();
+    }
 
-      if (task.isCurrentlyAtInitialNode()) {
-        // Don't put tasks on the initial node's remote queue; that doesn't make any sense.
-        this.forwardTask(task);
-      } else {
-        // Attempt to put the task in the local remote queue, unless it is full
-        if (this.remoteQueue.offer(task)) {
-          // Override the Forwarded action set by the scheduler, indicating that the task was
-          // accepted as a remote task
-          final TaskHistory.Entry lastEntry = task.getHistory().last();
-          if (lastEntry == null) {
-            throw new IllegalStateException("Trying to forward task that has no history; every node"
-                                            + " after this will not know how to route this task.");
-          }
-          lastEntry.setSchedulerAction(TaskHistory.SchedulerAction.QueuedRemotely);
-        } else {
-          this.forwardTask(task);
+    if (task == null) {
+      return;
+    }
+
+    if (task.isCurrentlyAtInitialNode()) {
+      // Don't put tasks on the initial node's remote queue; that doesn't make any sense.
+      this.forwardTask(task);
+    } else {
+      // Attempt to put the mapreduce in the local remote queue, unless it is full
+      if (this.remoteQueue.offer(task)) {
+        // Override the Forwarded action set by the scheduler, indicating that the mapreduce was
+        // accepted as a remote mapreduce
+        final TaskHistory.Entry lastEntry = task.getHistory().last();
+        if (lastEntry == null) {
+          throw new IllegalStateException("Trying to forward task that has no history; every node"
+                                          + " after this will not know how to route this task.");
         }
+        lastEntry.setSchedulerAction(TaskHistory.SchedulerAction.QueuedRemotely);
+      } else {
+        this.forwardTask(task);
       }
     }
   }
@@ -78,6 +84,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
     Scheduler bestScheduler = this.scheduler;
 
     // Unless one of our neighbors has a lower backpressure
+    // TODO: adjust backpressure calculation per weina's suggestions
     for (final RemoteNode node : neighbors) {
       final Scheduler remoteScheduler = node.getScheduler();
       final int remoteBackpressure = remoteScheduler.getBackpressure();

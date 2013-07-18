@@ -15,8 +15,8 @@ import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.task.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.task.scheduling.ServerTaskScheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
@@ -73,7 +73,7 @@ public final class KademliaModule
     bind(Activator.class).toInstance(this.provideLocalNode().getActivator());
 
     // Task Scheduling
-    bind(Scheduler.class).to(ServerTaskScheduler.class);
+    bind(Scheduler.class).to(SchedulerImpl.class);
   }
 
   @Provides

@@ -1,7 +1,7 @@
-package edu.asu.ying.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.task;
 
 /**
- * Allows fine-grained control over the starting of new task.
+ * Allows fine-grained control over the starting of new mapreduce.
  */
 public enum TaskStartParameters {
   StartImmediately;
