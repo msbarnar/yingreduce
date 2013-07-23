@@ -1,5 +1,7 @@
 package edu.asu.ying.mapreduce.io;
 
+import com.google.common.util.concurrent.ListenableFutureTask;
+
 import java.io.IOException;
 
 import edu.asu.ying.mapreduce.net.messaging.Message;
@@ -21,6 +23,7 @@ public interface MessageOutputStream {
    * Asynchronously writes the message to the stream, returning immediately.
    *
    * @param message the message to write.
+   * @return a {@link ListenableFutureTask} providing the value {@code true} when complete.
    */
-  void writeAsync(final Message message) throws IOException;
+  ListenableFutureTask<Boolean> writeAsync(final Message message) throws IOException;
 }
