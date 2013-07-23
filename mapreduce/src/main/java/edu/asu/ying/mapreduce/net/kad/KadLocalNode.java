@@ -5,16 +5,17 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.List;
 
-import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.net.NodeURI;
-import edu.asu.ying.mapreduce.net.RemoteNode;
+import edu.asu.ying.mapreduce.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
+import edu.asu.ying.mapreduce.net.*;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
+import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.rmi.ServerActivator;
-import edu.asu.ying.mapreduce.table.Table;
-import edu.asu.ying.mapreduce.table.TableID;
+import edu.asu.ying.mapreduce.rmi.ActivatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 
@@ -26,33 +27,38 @@ import il.technion.ewolf.kbr.KeybasedRouting;
 public final class KadLocalNode
     implements LocalNode {
 
+  // Local kademlia node
   private final KeybasedRouting kbrNode;
 
-  private final Scheduler localScheduler;
+  // Incoming mapreduce messages (scheduler requests)
+  private final MessageHandler messageIn;
+  // Outgoing mapreduce messages
+  private final MessageOutputStream messageOut;
 
-  // Singleton Activator instance
-  private final Activator activatorInstance;
+  // Provides RMI references to the scheduler
+  private final Activator activator;
+
+  // Schedules mapreduce jobs and tasks
+  private final Scheduler scheduler;
 
   @Inject
-  private KadLocalNode(final Injector injector,
-                       final KeybasedRouting kbrNode) {
+  private KadLocalNode(final Injector injector) {
 
-    this.activatorInstance = new ServerActivator(injector);
-    this.kbrNode = kbrNode;
-    this.localScheduler = new LocalScheduler
-  }
+    // The local Kademlia node for node discovery
+    this.kbrNode = injector.getInstance(KeybasedRouting.class);
 
-  @Override
-  public void bind() {
+    // Set up the message IO
+    this.messageIn = new KadMessageHandler(this.kbrNode);
+    this.messageOut = new KadSendMessageStream(this.kbrNode);
+
+    // Start the activator to provide Scheduler references
+    this.activator = new ActivatorImpl(injector);
+    // Start the scheduler with a reference to the local node for finding neighbors
+    this.scheduler = new SchedulerImpl(this);
   }
 
   @Override
   public final void join(final NodeURI bootstrap) throws IOException {
-  }
-
-  @Override
-  public final Activator getActivator() {
-    return this.activatorInstance;
   }
 
   @Override
@@ -62,17 +68,12 @@ public final class KadLocalNode
 
   @Override
   public MessageHandler getIncomingMessageHandler() {
-    return null;
+    return this.messageHandler;
   }
 
   @Override
-  public Scheduler getScheduler() {
-    return null;
-  }
-
-  @Override
-  public Table getTable(TableID id) {
-    return null;
+  public Scheduler getScheduler() throws RemoteException {
+    return this.activator.getReference(this.scheduler, null);
   }
 
   @Override
