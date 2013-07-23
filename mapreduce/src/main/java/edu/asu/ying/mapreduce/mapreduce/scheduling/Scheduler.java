@@ -25,12 +25,9 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 public interface Scheduler extends Remote {
 
   /**
-   * Adds a job to the system, passing it to the {@code responsible node}.
-   */
-  JobSchedulingResult initiateNewJob(final Job job) throws RemoteException;
-
-  /**
-   * Accepts a job as the {@code responsible node}, queuing it to be delegated as tasks.
+   * Finds the {@code Responsible Node} for the specified job and queues the job on it.
+   * If the local node is the {@code responsible} node, it accepts a job and queues it to be
+   * delegated as tasks to {@code initial} nodes.
    */
   JobSchedulingResult addJob(final Job job) throws RemoteException;
 

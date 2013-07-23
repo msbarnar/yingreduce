@@ -61,10 +61,6 @@ public final class KademliaModule
     // OpenKAD node interface
     bind(KeybasedRouting.class).toInstance(KadNodeProvider.INSTANCE.kadNode);
 
-    // Kad Message Handling
-    // Singleton
-    bind(MessageHandler.class).to(KadMessageHandler.class);
-
     // Kad Message Sending
     bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class)
         .to(KadSendMessageStream.class);

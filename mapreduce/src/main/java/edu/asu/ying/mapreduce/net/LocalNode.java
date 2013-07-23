@@ -12,8 +12,6 @@ import edu.asu.ying.mapreduce.rmi.Activator;
  */
 public interface LocalNode extends Node {
 
-  void bind();
-
   void join(final NodeURI bootstrap) throws IOException;
 
   List<RemoteNode> getNeighbors();

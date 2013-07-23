@@ -28,29 +28,19 @@ import il.technion.ewolf.kbr.Node;
 public final class KadMessageHandler
     implements MessageHandler, il.technion.ewolf.kbr.MessageHandler {
 
-  // Get our messages from here
-  private final KeybasedRouting inputNode;
-
   // Event used to signal other listeners of incoming messages
   private final FilteredValueEvent<Message> incomingMessageEvent = new FilteredValueEventBase<>();
 
   public KadMessageHandler(final KeybasedRouting inputNode) {
-    this.inputNode = inputNode;
-    // Make use of tagged messages
-    this.bind("mapreduce");
+    // TODO: Make use of tagged messages
+    // Bind to the Kademlia message dispatch
+    inputNode.register("mapreduce", this);
+    // We are now receiving messages from the Kademlia network
   }
 
   /**************************************************
    * MessageHandler
    */
-  /**
-   * Binds to the Kademlia message dispatch, receiving messages with the tag {@code scheme}.
-   */
-  private final MessageHandler bind(final String scheme) {
-    this.inputNode.register(scheme, this);
-    return this;
-  }
-
   /**
    * Provides a {@link FilteredValueEvent} that provides incoming messages to other listeners. </p>
    * Any class can receive messages of a specific type by attaching a filter and callback to this

@@ -21,7 +21,7 @@ import java.util.Map;
  * following bases:
  * <ul>
  *   <li>Singleton</li>
- *   <li>Client-Activated (isActive for the lifetime of the remote reference)</li>
+ *   <li>Client-Activated (active for the lifetime of the remote reference)</li>
  *   <li>Single-Call (one instance per method invocation)</li>
  * </ul>
  * </p>
@@ -36,10 +36,18 @@ public interface Activator extends Remote, Serializable {
    *
    * @param type       the class of the instance to obtain a reference to.
    * @param properties may be used on the activator implementation when instantiating the object.
-   * @return a {@link java.rmi.Remote} reference to a remote object.
-   * @throws RemoteException if the remote {@link Activator} resource was unavailable or could not
-   *                         be found, or if a problem occurred while obtaining the reference.
+   * @return a {@link java.rmi.Remote} reference to the instance.
    */
   <T extends Remote> T getReference(final Class<T> type, final Map<String, String> properties)
+      throws RemoteException;
+
+  /**
+   * Obtains a {@link java.rmi.Remote} reference to the specific instance {@code instance}.
+   *
+   * @param instance       the instance to reference.
+   * @param properties may be used on the activator implementation when creating the reference.
+   * @return a {@link java.rmi.Remote} reference to the instance.
+   */
+  <T extends Remote> T getReference(final T instance, final Map<String, String> properties)
       throws RemoteException;
 }

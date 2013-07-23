@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegator;
+import edu.asu.ying.mapreduce.mapreduce.job.JobDelegatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
@@ -47,19 +48,18 @@ public class SchedulerImpl implements Scheduler {
   private final TaskQueueExecutor forwardingExecutor;
   private final TaskQueueExecutor remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
 
-  @Inject
-  private SchedulerImpl(final LocalNode localNode) {
+  public SchedulerImpl(final LocalNode localNode) {
 
-    this.localExecutor.start();
+    this.localExecutor.run();
 
     this.forwardingExecutor = new ForwardingTaskQueueExecutor(this,
                                                               this.forwardingQueue,
                                                               this.remoteQueue, localNode);
-    this.forwardingExecutor.start();
+    this.forwardingExecutor.run();
 
-    this.remoteExecutor.start();
+    this.remoteExecutor.run();
 
-    this.jobDelegator.start();
+    this.jobDelegator.run();
   }
 
   public final int getBackpressure() {
@@ -68,14 +68,8 @@ public class SchedulerImpl implements Scheduler {
 
   /**
    * Finds the {@code Responsible Node} for the specified job and queues the job on it.
-   */
-  @Override
-  public JobSchedulingResult initiateNewJob(Job job) throws RemoteException {
-    return null;
-  }
-
-  /**
-   * Accepts a job as the {@code responsible node}, queuing it to be delegated as tasks.
+   * If the local node is the {@code responsible} node, it accepts a job and queues it to be
+   * delegated as tasks to {@code initial} nodes.
    */
   @Override
   public JobSchedulingResult addJob(Job job) throws RemoteException {

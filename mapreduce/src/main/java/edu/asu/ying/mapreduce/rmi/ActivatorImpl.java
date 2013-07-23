@@ -15,12 +15,12 @@ import edu.asu.ying.mapreduce.rmi.Activator;
 /**
  * Controls creation and lifetime management for remotely activated objects.
  */
-public final class ServerActivator
+public final class ActivatorImpl
     implements Activator {
 
   private final Injector injector;
 
-  public ServerActivator(final Injector injector) {
+  public ActivatorImpl(final Injector injector) {
     this.injector = injector;
   }
 
@@ -33,6 +33,15 @@ public final class ServerActivator
 
     final Remote instance = this.injector.getInstance(type);
     // TODO: smart port provision
-    return (T) UnicastRemoteObject.exportObject(instance, 8000 + (new Random()).nextInt(2000));
+    return (T) UnicastRemoteObject.exportObject(instance, 8000 + (new Random()).nextInt(5000));
+  }
+
+  @Override
+  public final <T extends Remote> T getReference(final T instance,
+                                                 final Map<String, String> properties)
+    throws RemoteException {
+
+    // TODO: smart port provision
+    return (T) UnicastRemoteObject.exportObject(instance, 8000 + (new Random()).nextInt(5000));
   }
 }
