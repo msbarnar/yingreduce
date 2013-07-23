@@ -25,7 +25,6 @@ import il.technion.ewolf.kbr.Node;
  * will receive messages with URIs like: </p> {@code resource\host:port\type\name} </p> The event
  * can be injected anywhere using the annotation {@link IncomingMessageEvent}.
  */
-@Singleton
 public final class KadMessageHandler
     implements MessageHandler, il.technion.ewolf.kbr.MessageHandler {
 
@@ -35,9 +34,10 @@ public final class KadMessageHandler
   // Event used to signal other listeners of incoming messages
   private final FilteredValueEvent<Message> incomingMessageEvent = new FilteredValueEventBase<>();
 
-  @Inject
-  private KadMessageHandler(final KeybasedRouting inputNode) {
+  public KadMessageHandler(final KeybasedRouting inputNode) {
     this.inputNode = inputNode;
+    // Make use of tagged messages
+    this.bind("mapreduce");
   }
 
   /**************************************************
@@ -46,7 +46,7 @@ public final class KadMessageHandler
   /**
    * Binds to the Kademlia message dispatch, receiving messages with the tag {@code scheme}.
    */
-  public final MessageHandler bind(final String scheme) {
+  private final MessageHandler bind(final String scheme) {
     this.inputNode.register(scheme, this);
     return this;
   }
