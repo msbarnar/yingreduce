@@ -48,7 +48,7 @@ public final class KadSendMessageStream
   public final void write(final Message message) throws IOException {
     message.setSourceNode(this.localUri);
 
-    final Key destKey = KadNodeURI.toKademliaKey(message.getDestinationNode());
+    final Key destKey = ((KadNodeURI) message.getDestinationNode()).toKademliaKey();
 
     final List<Node> foundNodes = this.kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {

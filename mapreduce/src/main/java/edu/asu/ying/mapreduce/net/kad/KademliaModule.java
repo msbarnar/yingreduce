@@ -64,12 +64,6 @@ public final class KademliaModule
     // Kad Message Sending
     bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class)
         .to(KadSendMessageStream.class);
-
-    // RMI
-    bind(Activator.class).toInstance(this.provideLocalNode().getActivator());
-
-    // Task Scheduling
-    bind(Scheduler.class).to(SchedulerImpl.class);
   }
 
   @Provides
