@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.net.NodeURI;
-import edu.asu.ying.mapreduce.net.NodeURL;
 
 
 /**

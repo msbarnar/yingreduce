@@ -1,7 +1,6 @@
 package edu.asu.ying.mapreduce.io.kad;
 
 import com.google.common.util.concurrent.ListenableFutureTask;
-import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,10 +10,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.NodeURI;
+import edu.asu.ying.mapreduce.net.kad.KadNodeURI;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
@@ -37,7 +36,7 @@ public final class KadSendMessageStream
   }
 
   private NodeURI createLocalUri() {
-    return new KadNodeURN(this.kadNode.getLocalNode().getKey().toBase64());
+    return KadNodeURI.fromKademliaKey(this.kadNode.getLocalNode().getKey());
   }
 
   /**
@@ -49,7 +48,7 @@ public final class KadSendMessageStream
   public final void write(final Message message) throws IOException {
     message.setSourceNode(this.localUri);
 
-    final Key destKey = message.getDestinationNode().toKey();
+    final Key destKey = KadNodeURI.toKademliaKey(message.getDestinationNode());
 
     final List<Node> foundNodes = this.kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {

@@ -1,6 +1,10 @@
 package edu.asu.ying.mapreduce.net;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * {@code NodeURI} uniquely identifies a node in the network, but does not indicate the
@@ -12,10 +16,9 @@ import java.io.Serializable;
  */
 public interface NodeURI extends Serializable {
 
-  @Override
-  String toString();
-  @Override
-  boolean equals(Object o);
-  @Override
-  int hashCode();
+  @Nonnull
+  String getKey();
+
+  @Nullable
+  InetAddress getAddress();
 }

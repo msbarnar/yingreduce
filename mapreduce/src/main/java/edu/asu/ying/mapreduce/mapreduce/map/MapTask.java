@@ -2,13 +2,10 @@ package edu.asu.ying.mapreduce.mapreduce.map;
 
 import com.google.common.base.Preconditions;
 
-import java.util.UUID;
-
 import edu.asu.ying.mapreduce.mapreduce.task.InvalidTaskException;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskBase;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
-import edu.asu.ying.mapreduce.net.NodeURL;
 
 /**
  * A {@code MapTask} describes an instance of a mapreduce of mapping a function to a dataset.
