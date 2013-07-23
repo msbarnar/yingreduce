@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.net.NodeURI;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
@@ -23,33 +24,25 @@ public final class KadSendMessageStream
     implements MessageOutputStream {
 
   private final KeybasedRouting kadNode;
-  private final ResourceIdentifier localUri;
+  private final NodeURI localUri;
 
-  @Inject
-  private KadSendMessageStream(final KeybasedRouting kadNode) throws URISyntaxException {
+  public KadSendMessageStream(final KeybasedRouting kadNode) throws URISyntaxException {
     this.kadNode = kadNode;
     this.localUri = this.createLocalUri();
   }
 
-  /**
-   * Returns the {@link ResourceIdentifier} associated with the local host. <p> The node identifier
-   * format is as follows: <p> {@code node/node-key"}
-   */
-  private ResourceIdentifier createLocalUri() throws URISyntaxException {
-    return new ResourceIdentifier("node", this.kadNode.getLocalNode().getKey().toBase64());
+  private NodeURI createLocalUri() {
+    return new KadNodeURN(this.kadNode.getLocalNode().getKey().toBase64());
   }
 
   /**
-   * Sends a message to the host identified on {@link Message#getDestinationUri()}. </p> The actual
-   * number of messages sent is specified by {@link Message#getReplication()}.
+   * Sends a message to the host identified on {@link Message#getDestinationNode()}.
    *
    * @param message the message to send, complete with the destination URI.
-   * @return the number of message sent.
    */
   @Override
-  public final int write(final Message message) throws IOException {
-    message.setSourceUrl(new ResourceIdentifier(message.getDestinationUri().getScheme(),
-                                                this.localUri.getAddress()));
+  public final void write(final Message message) throws IOException {
+    message.setSourceNode(this.localUri);
 
     // Identify the destination nodes and send the message to them
     // This line just decided what charset keys are in forever
@@ -71,5 +64,9 @@ public final class KadSendMessageStream
       this.kadNode.sendMessage(iter.next(), scheme, message);
     }
     return messageCount;
+  }
+
+  @Override
+  public final void writeAsync(final Message message) throws IOException {
   }
 }

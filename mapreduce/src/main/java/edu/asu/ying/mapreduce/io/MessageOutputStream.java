@@ -11,16 +11,11 @@ import edu.asu.ying.mapreduce.net.messaging.Message;
 public interface MessageOutputStream {
 
   /**
-   * Writes the message to the stream and returns the number of messages written. </p> The number of
-   * messages written will be between one and the number set by the {@code replication} property of
-   * the message.
+   * Synchronously writes the message to the stream, blocking until the message is written.
    *
    * @param message the message to write.
-   * @return the number of messages written - between one and the message's {@code replication}
-   *         property value.
-   * @throws IOException if writing to the stream throws an exception.
    */
-  int write(final Message message) throws IOException;
+  void write(final Message message) throws IOException;
 
   /**
    * Asynchronously writes the message to the stream, returning immediately.
