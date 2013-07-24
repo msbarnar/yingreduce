@@ -48,10 +48,12 @@ public final class KadLocalNode
   }
 
   @Override
-  public final void join(final NodeURI bootstrap) throws IOException {
+  public final void join(final NodeURL bootstrap) throws IOException {
     try {
       this.kbrNode.join(Arrays.asList(bootstrap.toURI()));
 
+    } catch (final IllegalStateException e) {
+      throw new NodeNotFoundException(bootstrap);
     } catch (final URISyntaxException e) {
       throw new IOException(e);
     }
