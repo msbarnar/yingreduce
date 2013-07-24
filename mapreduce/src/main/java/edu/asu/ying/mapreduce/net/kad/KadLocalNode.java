@@ -5,15 +5,13 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.List;
 
-import edu.asu.ying.mapreduce.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.mapreduce.net.*;
-import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
-import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.ActivatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
@@ -30,11 +28,6 @@ public final class KadLocalNode
   // Local kademlia node
   private final KeybasedRouting kbrNode;
 
-  // Incoming mapreduce messages (scheduler requests)
-  private final MessageHandler messageIn;
-  // Outgoing mapreduce messages
-  private final MessageOutputStream messageOut;
-
   // Provides RMI references to the scheduler
   private final Activator activator;
 
@@ -42,14 +35,11 @@ public final class KadLocalNode
   private final Scheduler scheduler;
 
   @Inject
-  private KadLocalNode(final Injector injector) {
+  private KadLocalNode(final Injector injector,
+                       final KeybasedRouting kbrNode) {
 
     // The local Kademlia node for node discovery
-    this.kbrNode = injector.getInstance(KeybasedRouting.class);
-
-    // Set up the message IO
-    this.messageIn = new KadMessageHandler(this.kbrNode);
-    this.messageOut = new KadSendMessageStream(this.kbrNode);
+    this.kbrNode = kbrNode;
 
     // Start the activator to provide Scheduler references
     this.activator = new ActivatorImpl(injector);
@@ -59,16 +49,17 @@ public final class KadLocalNode
 
   @Override
   public final void join(final NodeURI bootstrap) throws IOException {
+    try {
+      this.kbrNode.join(Arrays.asList(bootstrap.toURI()));
+
+    } catch (final URISyntaxException e) {
+      throw new IOException(e);
+    }
   }
 
   @Override
   public List<RemoteNode> getNeighbors() {
     return null;
-  }
-
-  @Override
-  public MessageHandler getIncomingMessageHandler() {
-    return this.messageHandler;
   }
 
   @Override

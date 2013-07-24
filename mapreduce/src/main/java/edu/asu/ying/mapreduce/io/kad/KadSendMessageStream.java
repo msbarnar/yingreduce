@@ -1,6 +1,8 @@
 package edu.asu.ying.mapreduce.io.kad;
 
 import com.google.common.util.concurrent.ListenableFutureTask;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,7 +32,8 @@ public final class KadSendMessageStream
   private final KeybasedRouting kadNode;
   private final NodeURI localUri;
 
-  public KadSendMessageStream(final KeybasedRouting kadNode) throws URISyntaxException {
+  @Inject
+  private KadSendMessageStream(final KeybasedRouting kadNode) throws URISyntaxException {
     this.kadNode = kadNode;
     this.localUri = this.createLocalUri();
   }

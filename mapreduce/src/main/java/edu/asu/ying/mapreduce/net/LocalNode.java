@@ -15,6 +15,4 @@ public interface LocalNode extends Node {
   void join(final NodeURI bootstrap) throws IOException;
 
   List<RemoteNode> getNeighbors();
-
-  MessageHandler getIncomingMessageHandler();
 }

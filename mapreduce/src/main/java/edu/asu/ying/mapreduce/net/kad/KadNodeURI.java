@@ -1,6 +1,8 @@
 package edu.asu.ying.mapreduce.net.kad;
 
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,7 +13,7 @@ import il.technion.ewolf.kbr.Key;
 /**
  *
  */
-public final class KadNodeURI implements NodeURI {
+public class KadNodeURI implements NodeURI {
 
   public static KadNodeURI fromKademliaKey(final Key key) {
     return new KadNodeURI(key.toBase64());
@@ -21,8 +23,8 @@ public final class KadNodeURI implements NodeURI {
     return new KadNodeURI(key);
   }
 
-  private final Key key;
-  private final InetAddress address;
+  protected final Key key;
+  protected final InetAddress address;
 
   protected KadNodeURI(final String key) {
     this.key = new Key(key);

@@ -2,6 +2,8 @@ package edu.asu.ying.mapreduce.net;
 
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,4 +23,6 @@ public interface NodeURI extends Serializable {
 
   @Nullable
   InetAddress getAddress();
+
+  URI toURI() throws URISyntaxException;
 }
