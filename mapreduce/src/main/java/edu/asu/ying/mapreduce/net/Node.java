@@ -9,7 +9,7 @@ import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
  */
 public interface Node {
 
-  Scheduler getScheduler();
+  Scheduler getScheduler() throws RemoteException;
 
-  NodeURI getNodeURI();
+  NodeURI getNodeURI() throws RemoteException;
 }

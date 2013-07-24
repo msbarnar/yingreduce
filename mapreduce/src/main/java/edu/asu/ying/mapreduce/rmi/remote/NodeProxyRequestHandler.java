@@ -51,49 +51,5 @@ public final class NodeProxyRequestHandler
     this.onIncomingMessage.attach(FilterClass.is(NodeProxyRequest.class), this);
   }
 
-  /**
-   * Receives a {@link NodeProxyRequest} message from the {@link IncomingMessageEvent}.
-   *
-   * @return true, so that it always remains bound to the {@code IncomingMessageEvent}.
-   */
-  @Override
-  public boolean onEvent(final Object sender, final @Nullable Message request) {
-    if (request == null) {
-      return true;
-    }
-    Message response = this.processRequest((NodeProxyRequest) request);
-    try {
-      this.sendMessageStream.write(response);
-    } catch (final IOException e) {
-      // TODO: logging
-      e.printStackTrace();
-    }
 
-    // Always return true to stay bound to the event
-    return true;
-  }
-
-  /**
-   * Exports a {@link java.rmi.Remote} instance of an {@link Activator} proxy and returns it in an
-   * {@link NodeProxyResponse}.
-   *
-   * @param request the request for an {@link Activator} proxy.
-   * @return a {@link NodeProxyResponse} wrapping an {@link Activator} proxy.
-   */
-  private final NodeProxyResponse processRequest(final NodeProxyRequest request) {
-    final NodeProxyResponse response = NodeProxyResponse.inResponseTo(request);
-
-    final Activator instance;
-    try {
-      // Export the RMI Remote proxy and return it in the message
-      instance = (Activator) UnicastRemoteObject.exportObject(this.serverActivator,
-                                                              8000+(new Random()).nextInt(2000));
-      response.setInstance(instance);
-
-    } catch (final RemoteException e) {
-      response.setException(e);
-    }
-
-    return response;
-  }
 }

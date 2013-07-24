@@ -32,7 +32,8 @@ public class TestRemoteResources
 			this.i = i;
 		}
 		@Override
-		public <T extends Remote> T getReference(final Class<T> type, final Map<String, String> properties)
+		public <T extends Remote> T createReference(final Class<T> type,
+                                                    final Map<String, String> properties)
 				throws RemoteException { return null; }
 		@Override
 		public String echo(final String message) throws RemoteException {

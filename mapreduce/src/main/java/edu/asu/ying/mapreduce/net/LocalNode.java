@@ -3,6 +3,7 @@ package edu.asu.ying.mapreduce.net;
 import java.io.IOException;
 import java.util.List;
 
+import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.remote.NodeProxy;
 
 
@@ -14,4 +15,6 @@ public interface LocalNode extends Node {
   void join(final NodeURL bootstrap) throws IOException;
 
   List<NodeProxy> getNeighbors();
+
+  Activator getActivator();
 }

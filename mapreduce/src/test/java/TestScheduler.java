@@ -86,7 +86,7 @@ public class TestScheduler implements FutureCallback<Activator> {
   private void doScheduling(final Activator activator) throws RemoteException {
     Assert.assertNotNull(activator);
 
-    final Scheduler scheduler = activator.getReference(Scheduler.class, null);
+    final Scheduler scheduler = activator.createReference(Scheduler.class, null);
     System.out.println("Scheduling mapreduce");
     scheduler.addTask(this.toSchedule);
 
