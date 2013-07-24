@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Random;
 
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.io.Messenger;
+import edu.asu.ying.mapreduce.io.MessengerImpl;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.net.LocalNode;
@@ -67,6 +69,9 @@ public final class KademliaModule
     // Kad Message Sending
     bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class)
         .to(KadSendMessageStream.class);
+
+    // The messenger facilitates two way communication via message handler + message output stream
+    bind(Messenger.class).to(MessengerImpl.class);
   }
 
   @Provides

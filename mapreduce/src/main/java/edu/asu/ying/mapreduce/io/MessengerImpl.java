@@ -42,16 +42,14 @@ public class MessengerImpl implements Messenger {
       final V request, final Class<T> responseType) throws IOException {
 
     // Get one response of type responseType matching request
-    final ListenableFuture<T> response = FilteredFutures.<T>getFrom(this.onIncomingMessage)
+    // Don't block on the response
+    return FilteredFutures.<T>getFrom(this.onIncomingMessage)
         .getOne(
             Filter.on.allOf(
                 FilterClass.is(responseType),
                 FilterMessage.id(FilterString.equalTo(request.getId()))
             )
         );
-
-    // Don't block on the response
-    return response;
   }
 
   @Override

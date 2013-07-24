@@ -7,12 +7,11 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import edu.asu.ying.mapreduce.common.event.EventHandler;
 import edu.asu.ying.mapreduce.common.filter.FilterClass;
@@ -97,6 +96,11 @@ public final class KadLocalNode
   }
 
   @Override
+  public Activator getActivator() {
+    return this.activator;
+  }
+
+  @Override
   public NodeURI getNodeURI() {
     return null;
   }
@@ -113,7 +117,7 @@ public final class KadLocalNode
    * @return true, so that it always remains bound to the message event.
    */
   @Override
-  public boolean onEvent(final Object sender, final @Nullable Message request) {
+  public boolean onEvent(final @Nonnull Object sender, final @Nullable Message request) {
     if (request == null) {
       return true;
     }
@@ -129,7 +133,7 @@ public final class KadLocalNode
     return true;
   }
 
-  private final NodeProxyResponse processRequest(final NodeProxyRequest request) {
+  private NodeProxyResponse processRequest(final NodeProxyRequest request) {
     final NodeProxyResponse response = NodeProxyResponse.inResponseTo(request);
 
     // Bind the proxy to the local scheduler

@@ -74,6 +74,7 @@ public class SchedulerImpl implements Scheduler {
    */
   @Override
   public JobSchedulingResult addJob(Job job) throws RemoteException {
+    // TODO: Find the responsible node by finding the node with the first page of the table
     return null;
   }
 
