@@ -8,17 +8,14 @@ import com.google.inject.Provides;
 import java.io.IOException;
 import java.util.Random;
 
+import edu.asu.ying.mapreduce.io.Channel;
 import edu.asu.ying.mapreduce.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.io.Messenger;
-import edu.asu.ying.mapreduce.io.MessengerImpl;
 import edu.asu.ying.mapreduce.io.SendMessageStream;
+import edu.asu.ying.mapreduce.io.kad.KadChannel;
 import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;
-import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
@@ -72,6 +69,8 @@ public final class KademliaModule
 
     // The messenger facilitates two way communication via message handler + message output stream
     bind(Messenger.class).to(MessengerImpl.class);
+    // The channel provides a single point of access to the network IO
+    bind(Channel.class).to(KadChannel.class);
   }
 
   @Provides

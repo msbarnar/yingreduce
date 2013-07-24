@@ -1,35 +1,45 @@
-package edu.asu.ying.mapreduce.io;
+package edu.asu.ying.mapreduce.io.kad;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
-import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterClass;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
+import edu.asu.ying.mapreduce.io.Channel;
+import edu.asu.ying.mapreduce.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.io.SendMessageStream;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 
 /**
- * {@code MessengerImpl} is the base implementation of {@link Messenger} and handles synchronous
- * message and request sending and asynchronous response reception.
+ * {@code KadChannel} encompasses the {@link MessageHandler} and {@link Messenger} tied
+ * to the underlying Kademlia network. The {@code KadChannel} provides a single point of access for
+ * input from and output to the network.
  */
-public class MessengerImpl implements Messenger {
+@Singleton
+public final class KadChannel implements Channel {
 
+  private final MessageHandler incomingMessageHandler;
   private final MessageOutputStream sendStream;
-  private final FilteredValueEvent<Message> onIncomingMessage;
 
   @Inject
-  private MessengerImpl(final @SendMessageStream MessageOutputStream sendStream,
-                        final MessageHandler incomingMessageHandler) {
+  private KadChannel(final MessageHandler incomingMessageHandler,
+                     final @SendMessageStream MessageOutputStream sendStream) {
 
+    this.incomingMessageHandler = incomingMessageHandler;
     this.sendStream = sendStream;
-    this.onIncomingMessage = incomingMessageHandler.getIncomingMessageEvent();
+  }
+
+  @Override
+  public MessageHandler getIncomingMessageHandler() {
+    return this.incomingMessageHandler;
   }
 
   @Override
@@ -43,7 +53,7 @@ public class MessengerImpl implements Messenger {
 
     // Get one response of type responseType matching request
     // Don't block on the response
-    return FilteredFutures.<T>getFrom(this.onIncomingMessage)
+    return FilteredFutures.<T>getFrom(this.incomingMessageHandler.getIncomingMessageEvent())
         .getOne(
             Filter.on.allOf(
                 FilterClass.is(responseType),
@@ -55,7 +65,7 @@ public class MessengerImpl implements Messenger {
   @Override
   public <T extends Message, V extends Message> T sendRequest(final V request,
                                                               final Class<T> responseType)
-    throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
 
     return this.sendRequestAsync(request, responseType).get();
   }

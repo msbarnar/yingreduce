@@ -15,8 +15,7 @@ import javax.annotation.Nonnull;
 
 import edu.asu.ying.mapreduce.common.event.EventHandler;
 import edu.asu.ying.mapreduce.common.filter.FilterClass;
-import edu.asu.ying.mapreduce.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.io.SendMessageStream;
+import edu.asu.ying.mapreduce.io.Channel;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.mapreduce.net.*;
 import edu.asu.ying.mapreduce.net.messaging.Message;
@@ -48,13 +47,12 @@ public final class KadLocalNode
   private final Scheduler scheduler;
 
   private final MessageHandler incomingMessageHandler;
-  private final MessageOutputStream sendMessageStream;
+  private final Messenger messenger;
 
   @Inject
   private KadLocalNode(final Injector injector,
                        final KeybasedRouting kbrNode,
-                       final MessageHandler incomingMessageHandler,
-                       @SendMessageStream final MessageOutputStream sendMessageStream) {
+                       final Channel networkChannel) {
 
     // The local Kademlia node for node discovery
     this.kbrNode = kbrNode;
@@ -64,8 +62,8 @@ public final class KadLocalNode
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
 
-    this.incomingMessageHandler = incomingMessageHandler;
-    this.sendMessageStream = sendMessageStream;
+    this.incomingMessageHandler = networkChannel.getIncomingMessageHandler();
+    this.messenger = networkChannel.getMessenger();
 
     this.bindRequestHandlers();
   }
