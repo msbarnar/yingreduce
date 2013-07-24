@@ -20,9 +20,4 @@ public interface NodeURI extends Serializable {
 
   @Nonnull
   String getKey();
-
-  @Nullable
-  InetAddress getAddress();
-
-  URI toURI() throws URISyntaxException;
 }

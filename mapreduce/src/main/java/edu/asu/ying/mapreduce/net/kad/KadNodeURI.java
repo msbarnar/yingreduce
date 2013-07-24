@@ -1,11 +1,6 @@
 package edu.asu.ying.mapreduce.net.kad;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.net.NodeURI;
 import il.technion.ewolf.kbr.Key;
@@ -24,24 +19,28 @@ public class KadNodeURI implements NodeURI {
   }
 
   protected final Key key;
-  protected final InetAddress address;
 
   protected KadNodeURI(final String key) {
     this.key = new Key(key);
-    this.address = null;
   }
 
-  public Key toKademliaKey() {
+  public final Key toKademliaKey() {
     return this.key;
   }
 
+  @Nonnull
   @Override
-  public final String toString() {
+  public final String getKey() {
+    return this.toString();
+  }
+
+  @Override
+  public String toString() {
     return this.key.toBase64();
   }
 
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == null)
       return false;
     if (o == this)
@@ -51,23 +50,11 @@ public class KadNodeURI implements NodeURI {
       return false;
 
     final KadNodeURI uri = (KadNodeURI) o;
-    return uri.toKademliaKey().equals(this.key) && uri.getAddress().equals(this.address);
+    return uri.toKademliaKey().equals(this.key);
   }
 
   @Override
-  public final int hashCode() {
-    return this.key.hashCode() ^ this.address.hashCode();
-  }
-
-  @Nonnull
-  @Override
-  public String getKey() {
-    return this.toString();
-  }
-
-  @Nullable
-  @Override
-  public InetAddress getAddress() {
-    return this.address;
+  public int hashCode() {
+    return this.key.hashCode();
   }
 }
