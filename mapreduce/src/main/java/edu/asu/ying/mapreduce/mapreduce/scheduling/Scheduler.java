@@ -1,5 +1,6 @@
 package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

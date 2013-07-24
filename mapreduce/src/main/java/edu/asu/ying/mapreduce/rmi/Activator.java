@@ -38,7 +38,7 @@ public interface Activator extends Remote, Serializable {
    * @param properties may be used on the remote implementation when instantiating the object.
    * @return a {@link java.rmi.Remote} reference to the instance.
    */
-  <T extends Remote> T createReference(final Class<T> type, final Map<String, String> properties)
+  <T extends Remote> T export(final Class<T> type, final Map<String, String> properties)
       throws RemoteException;
 
   /**
@@ -48,6 +48,6 @@ public interface Activator extends Remote, Serializable {
    * @param properties may be used on the remote implementation when creating the reference.
    * @return a {@link java.rmi.Remote} reference to the instance.
    */
-  <T extends Remote> T createReference(final T instance, final Map<String, String> properties)
+  <T extends Remote> T export(final T instance, final Map<String, String> properties)
       throws RemoteException;
 }

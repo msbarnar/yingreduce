@@ -27,8 +27,8 @@ public final class ActivatorImpl
   // TODO: implement client-activated, per-call, singleton activation modes
   @Override
   @SuppressWarnings("unchecked")
-  public final <T extends Remote> T createReference(final Class<T> type,
-                                                    final Map<String, String> properties)
+  public final <T extends Remote> T export(final Class<T> type,
+                                           final Map<String, String> properties)
       throws RemoteException {
 
     final Remote instance = this.injector.getInstance(type);
@@ -37,8 +37,8 @@ public final class ActivatorImpl
   }
 
   @Override
-  public final <T extends Remote> T createReference(final T instance,
-                                                    final Map<String, String> properties)
+  public final <T extends Remote> T export(final T instance,
+                                           final Map<String, String> properties)
     throws RemoteException {
 
     // TODO: smart port provision

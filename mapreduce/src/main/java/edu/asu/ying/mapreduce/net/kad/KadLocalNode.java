@@ -133,13 +133,9 @@ public final class KadLocalNode
     final NodeProxyResponse response = NodeProxyResponse.inResponseTo(request);
 
     // Bind the proxy to the local scheduler
-    final NodeProxy proxyInstance = new NodeProxyImpl(this);
-    final NodeProxy proxy = (NodeProxy) UnicastRemoteObject.exportObject(proxyInstance);
     try {
-      // Export the RMI Remote proxy and return it in the message
-      instance = (Activator) UnicastRemoteObject.exportObject(this.serverActivator,
-                                                              8000 + (new Random()).nextInt(2000));
-      response.setInstance(instance);
+      final NodeProxy proxyInstance = NodeProxyImpl.createProxyTo(this);
+      response.setInstance(proxyInstance);
 
     } catch (final RemoteException e) {
       response.setException(e);

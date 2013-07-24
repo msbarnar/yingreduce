@@ -12,6 +12,8 @@ import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
  */
 public final class NodeProxyImpl implements NodeProxy {
 
+  private static final long SerialVersionUID = 1L;
+
   /**
    * Creates a proxy to the specified {@link LocalNode}, exporting its objects as
    * {@link java.rmi.Remote} references for remote consumption.
@@ -20,23 +22,26 @@ public final class NodeProxyImpl implements NodeProxy {
    * to and use by remote nodes.
    */
   public static NodeProxy createProxyTo(final LocalNode localNode) throws RemoteException {
-    return new NodeProxyImpl(localNode.getActivator().createReference(localNode.getScheduler(),
-                                                                      null));
+    final NodeProxy instance = new NodeProxyImpl(localNode.getScheduler(),
+                                                 localNode.getNodeURI());
+    return localNode.getActivator().export(instance, null);
   }
 
   private final Scheduler scheduler;
+  private final NodeURI nodeURI;
 
-  private NodeProxyImpl(final Scheduler scheduler) {
+  private NodeProxyImpl(final Scheduler scheduler, final NodeURI nodeURI) {
     this.scheduler = scheduler;
+    this.nodeURI = nodeURI;
   }
 
   @Override
   public Scheduler getScheduler() throws RemoteException {
-    return null;
+    return this.scheduler;
   }
 
   @Override
   public NodeURI getNodeURI() throws RemoteException {
-    return null;
+    return this.nodeURI;
   }
 }

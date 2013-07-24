@@ -16,7 +16,7 @@ public final class NodeProxyResponse extends MessageBase {
   private static final long SerialVersionUID = 1L;
 
   private static final class Property {
-    private static final String ActivatorInstance = "remote.instance";
+    private static final String Instance = "remote.instance";
   }
 
   public static NodeProxyResponse inResponseTo(final NodeProxyRequest request) {
@@ -27,12 +27,12 @@ public final class NodeProxyResponse extends MessageBase {
     super(destinationNode);
   }
 
-  public final void setInstance(final Activator instance) {
-    this.properties.put(Property.ActivatorInstance, Preconditions.checkNotNull(instance));
+  public final void setInstance(final NodeProxy instance) {
+    this.properties.put(Property.Instance, Preconditions.checkNotNull(instance));
   }
 
   @Nullable
-  public final Activator getInstance() {
-    return this.properties.getDynamicCast(Property.ActivatorInstance, Activator.class);
+  public final NodeProxy getInstance() {
+    return this.properties.getDynamicCast(Property.Instance, Activator.class);
   }
 }
