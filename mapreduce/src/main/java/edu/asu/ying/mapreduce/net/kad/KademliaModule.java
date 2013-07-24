@@ -21,8 +21,7 @@ import il.technion.ewolf.kbr.openkad.KadNetModule;
 
 
 /**
- * The {@code KademliaModule} wires all of the high-level operations (e.g. {@link
- * edu.asu.ying.mapreduce.rmi.ActivatorFinder}) to the underlying Kademlia
+ * The {@code KademliaModule} wires all of the high-level operations to the underlying Kademlia
  * network classes.
  */
 public final class KademliaModule
@@ -67,8 +66,6 @@ public final class KademliaModule
     bind(MessageOutputStream.class).annotatedWith(SendMessageStream.class)
         .to(KadSendMessageStream.class);
 
-    // The messenger facilitates two way communication via message handler + message output stream
-    bind(Messenger.class).to(MessengerImpl.class);
     // The channel provides a single point of access to the network IO
     bind(Channel.class).to(KadChannel.class);
   }

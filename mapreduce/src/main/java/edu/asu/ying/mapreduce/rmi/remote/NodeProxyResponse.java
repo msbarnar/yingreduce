@@ -33,6 +33,6 @@ public final class NodeProxyResponse extends MessageBase {
 
   @Nullable
   public final NodeProxy getInstance() {
-    return this.properties.getDynamicCast(Property.Instance, Activator.class);
+    return this.properties.getDynamicCast(Property.Instance, NodeProxy.class);
   }
 }

@@ -46,8 +46,7 @@ public final class KadLocalNode
   // Schedules mapreduce jobs and tasks
   private final Scheduler scheduler;
 
-  private final MessageHandler incomingMessageHandler;
-  private final Messenger messenger;
+  private final Channel networkChannel;
 
   @Inject
   private KadLocalNode(final Injector injector,
@@ -62,8 +61,7 @@ public final class KadLocalNode
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
 
-    this.incomingMessageHandler = networkChannel.getIncomingMessageHandler();
-    this.messenger = networkChannel.getMessenger();
+    this.networkChannel = networkChannel;
 
     this.bindRequestHandlers();
   }
@@ -105,7 +103,7 @@ public final class KadLocalNode
 
   private void bindRequestHandlers() {
     // Register to receive NodeProxyRequest messages
-    this.incomingMessageHandler.getIncomingMessageEvent().attach(
+    this.networkChannel.getIncomingMessageHandler().getIncomingMessageEvent().attach(
         FilterClass.is(NodeProxyRequest.class), this);
   }
 
@@ -121,7 +119,7 @@ public final class KadLocalNode
     }
     Message response = this.processRequest((NodeProxyRequest) request);
     try {
-      this.sendMessageStream.write(response);
+      this.networkChannel.sendMessage(response);
     } catch (final IOException e) {
       // TODO: logging
       e.printStackTrace();

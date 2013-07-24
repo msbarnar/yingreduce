@@ -13,6 +13,9 @@ import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
  * network.
  */
 public interface Channel {
+
+  MessageHandler getIncomingMessageHandler();
+
   /**
    * Synchronously sends a message with no expectation of a response.
    * @param message the message to be sent.
@@ -20,13 +23,14 @@ public interface Channel {
   void sendMessage(final Message message) throws IOException;
 
   /**
-   * Synchronously sends a message, returning a {@link com.google.common.util.concurrent.ListenableFuture} promise of an asynchronous
-   * response.
+   * Synchronously sends a message, returning a
+   * {@link com.google.common.util.concurrent.ListenableFuture} promise of an asynchronous response.
    * @param request the request message to be sent.
    * @param responseType the class of the response expected.
    * @param <T> the type of the request message.
    * @param <V> the type of the response message.
-   * @return a {@link com.google.common.util.concurrent.ListenableFuture} parameterized on the class of {@code responseType} promising
+   * @return a {@link com.google.common.util.concurrent.ListenableFuture} parameterized on the class
+   * of {@code responseType} promising
    * a future response of that type.
    */
   <T extends Message, V extends Message>
@@ -45,6 +49,4 @@ public interface Channel {
   <T extends Message, V extends Message>
   T sendRequest(final V request, final Class<T> responseType)
       throws IOException, ExecutionException, InterruptedException;
-
-  MessageHandler getIncomingMessageHandler();
 }
