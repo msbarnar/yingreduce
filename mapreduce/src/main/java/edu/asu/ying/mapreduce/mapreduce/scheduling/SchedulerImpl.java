@@ -17,6 +17,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.execution.ForwardingTaskQueueExecutor;
 import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueueExecutor;
+import edu.asu.ying.mapreduce.net.NodeURI;
 
 /**
  * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another
@@ -44,20 +45,20 @@ public class SchedulerImpl implements Scheduler {
   private final BlockingQueue<Task> remoteQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
 
   // The executors watch the mapreduce queues and execute
-  private final TaskQueueExecutor localExecutor = new LocalTaskQueueExecutor(this.localQueue);
+  //private final TaskQueueExecutor localExecutor = new LocalTaskQueueExecutor(this.localQueue);
   private final TaskQueueExecutor forwardingExecutor;
-  private final TaskQueueExecutor remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
+ // private final TaskQueueExecutor remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
 
   public SchedulerImpl(final LocalNode localNode) {
 
-    this.localExecutor.run();
+    //this.localExecutor.run();
 
     this.forwardingExecutor = new ForwardingTaskQueueExecutor(this,
                                                               this.forwardingQueue,
                                                               this.remoteQueue, localNode);
     this.forwardingExecutor.run();
 
-    this.remoteExecutor.run();
+   // this.remoteExecutor.run();
 
     this.jobDelegator.run();
   }
@@ -155,8 +156,8 @@ public class SchedulerImpl implements Scheduler {
     return new TaskHistory.Entry(this.getLocalNodeUri());
   }
 
-  private NodeIdentifier getLocalNodeUri() {
-    // TODO: Get the local node URI
+  private NodeURI getLocalNodeUri() {
+    // FIXME: Get the local node URI
     return null;
   }
 }

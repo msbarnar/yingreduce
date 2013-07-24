@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.asu.ying.mapreduce.net.LocalNode;
-import edu.asu.ying.mapreduce.net.RemoteNode;
+import edu.asu.ying.mapreduce.rmi.remote.NodeProxy;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
@@ -77,7 +77,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
   }
 
   private void forwardTask(final Task task) {
-    final List<RemoteNode> neighbors = this.localNode.getNeighbors();
+    final List<NodeProxy> neighbors = this.localNode.getNeighbors();
 
     // Default to forwarding to the local remote queue
     int minimumBackpressure = this.remoteQueue.size();
@@ -85,7 +85,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
 
     // Unless one of our neighbors has a lower backpressure
     // TODO: adjust backpressure calculation per weina's suggestions
-    for (final RemoteNode node : neighbors) {
+    for (final NodeProxy node : neighbors) {
       final Scheduler remoteScheduler = node.getScheduler();
       final int remoteBackpressure = remoteScheduler.getBackpressure();
       if (remoteBackpressure < minimumBackpressure) {

@@ -25,9 +25,9 @@ public class TestResourceFinder
   @Test
   @SuppressWarnings("unchecked")
   public void ClientGetsOwnActivator() throws Exception {
-    // Open a channel with no peers and get an activator; it should be our own
+    // Open a channel with no peers and get an remote; it should be our own
     final KademliaModule channel = new KademliaModule();
-    // Get an activator
+    // Get an remote
     final Injector injector = Guice.createInjector(channel);
     // Getting an instance of the local node starts it
     // bind is necessary because the message handlers cannot be bound at construction due to
@@ -40,7 +40,7 @@ public class TestResourceFinder
 
     final String host = Base64.encodeBase64String(
         UUID.randomUUID().toString().substring(0, 20).getBytes());
-    final ResourceIdentifier hostUri = new ResourceIdentifier("resource", host, -1, "activator");
+    final ResourceIdentifier hostUri = new ResourceIdentifier("resource", host, -1, "remote");
 
     final List<ListenableFuture<Activator>> futures = finder.getFutureResources(hostUri,
                                                                                 Properties.Empty);

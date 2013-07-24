@@ -32,9 +32,9 @@ public class TestScheduler implements FutureCallback<Activator> {
   @Test
   @SuppressWarnings("unchecked")
   public void ItAcceptsTasks() throws Exception {
-    // Open a channel with no peers and get an activator; it should be our own
+    // Open a channel with no peers and get an remote; it should be our own
     final KademliaModule channel = new KademliaModule();
-    // Get an activator
+    // Get an remote
     final Injector injector = Guice.createInjector(channel);
     // Getting an instance of the local node starts it
     // bind is necessary because the message handlers cannot be bound at construction due to
@@ -50,7 +50,7 @@ public class TestScheduler implements FutureCallback<Activator> {
         UUID.randomUUID().toString().substring(0, 20).getBytes());
     // URI for the activators at the 3 closest remote nodes
     final ResourceIdentifier hostUri = new ResourceIdentifier(
-        String.format("resource\\(3)%s\\activator", host));
+        String.format("resource\\(3)%s\\remote", host));
 
     // Find all of the activators that match the URI
     final List<ListenableFuture<Activator>> futures = finder.getFutureResources(hostUri,

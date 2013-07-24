@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.messaging.activator;
+package edu.asu.ying.mapreduce.rmi.remote;
 
 import com.google.common.base.Preconditions;
 
@@ -11,19 +11,19 @@ import edu.asu.ying.mapreduce.rmi.Activator;
 /**
  *
  */
-public final class ActivatorResponse extends MessageBase {
+public final class NodeProxyResponse extends MessageBase {
 
   private static final long SerialVersionUID = 1L;
 
   private static final class Property {
-    private static final String ActivatorInstance = "activator.instance";
+    private static final String ActivatorInstance = "remote.instance";
   }
 
-  public static ActivatorResponse inResponseTo(final ActivatorRequest request) {
-    return new ActivatorResponse(request.getSourceNode());
+  public static NodeProxyResponse inResponseTo(final NodeProxyRequest request) {
+    return new NodeProxyResponse(request.getSourceNode());
   }
 
-  private ActivatorResponse(final NodeURI destinationNode) {
+  private NodeProxyResponse(final NodeURI destinationNode) {
     super(destinationNode);
   }
 

@@ -12,6 +12,7 @@ import java.util.List;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.mapreduce.net.*;
+import edu.asu.ying.mapreduce.rmi.remote.NodeProxy;
 import edu.asu.ying.mapreduce.rmi.Activator;
 import edu.asu.ying.mapreduce.rmi.ActivatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
@@ -41,7 +42,7 @@ public final class KadLocalNode
     // The local Kademlia node for node discovery
     this.kbrNode = kbrNode;
 
-    // Start the activator to provide Scheduler references
+    // Start the remote to provide Scheduler references
     this.activator = new ActivatorImpl(injector);
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
@@ -60,13 +61,16 @@ public final class KadLocalNode
   }
 
   @Override
-  public List<RemoteNode> getNeighbors() {
+  public List<NodeProxy> getNeighbors() {
     return null;
   }
 
+  /**
+   * The local node returns a concrete reference to the scheduler.
+   */
   @Override
-  public Scheduler getScheduler() throws RemoteException {
-    return this.activator.getReference(this.scheduler, null);
+  public Scheduler getScheduler() {
+    return this.scheduler;
   }
 
   @Override

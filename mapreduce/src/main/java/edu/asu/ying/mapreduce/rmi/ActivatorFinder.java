@@ -28,8 +28,7 @@ import edu.asu.ying.mapreduce.net.NodeURI;
 import edu.asu.ying.mapreduce.net.messaging.FilterMessage;
 import edu.asu.ying.mapreduce.net.messaging.Message;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
-import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorMessageEvent;
-import edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest;
+import edu.asu.ying.mapreduce.rmi.remote.NodeProxyRequest;
 
 
 public final class ActivatorFinder
@@ -151,13 +150,13 @@ public final class ActivatorFinder
   }
 
   /**
-   * Creates a {@link edu.asu.ying.mapreduce.net.messaging.activator.ActivatorRequest} for the
+   * Creates a {@link edu.asu.ying.mapreduce.rmi.remote.NodeProxyRequest} for the
    * resource at the given URI.
    */
   private Message createRequest(final NodeURI uri, final Properties args)
       throws URISyntaxException {
 
-    final ActivatorRequest request = new ActivatorRequest(uri);
+    final NodeProxyRequest request = new NodeProxyRequest(uri);
     request.setArguments(args);
     return request;
   }

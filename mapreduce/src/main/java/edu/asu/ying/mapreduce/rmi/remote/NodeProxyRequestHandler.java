@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.net.messaging.activator;
+package edu.asu.ying.mapreduce.rmi.remote;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -21,14 +21,14 @@ import edu.asu.ying.mapreduce.rmi.Activator;
 
 
 /**
- * {@code ActivatorRequestHandler} receives {@link ActivatorRequest} messages and returns a
+ * {@code NodeProxyRequestHandler} receives {@link NodeProxyRequest} messages and returns a
  * {@link java.rmi.Remote} reference to an {@link Activator} instance.
  */
 @Singleton
-public final class ActivatorRequestHandler
+public final class NodeProxyRequestHandler
     implements EventHandler<Message> {
 
-  // Receives incoming ActivatorRequest messages.
+  // Receives incoming NodeProxyRequest messages.
   private final FilteredValueEvent<Message> onIncomingMessage;
   // Sends our responses
   private final MessageOutputStream sendMessageStream;
@@ -40,7 +40,7 @@ public final class ActivatorRequestHandler
    * with an appropriate filter for receiving {@link Activator} requests.
    */
   @Inject
-  private ActivatorRequestHandler(
+  private NodeProxyRequestHandler(
       final MessageHandler incomingMessageHandler,
       final @SendMessageStream MessageOutputStream sendMessageStream,
       final Activator serverActivator) {
@@ -48,11 +48,11 @@ public final class ActivatorRequestHandler
     this.serverActivator = serverActivator;
     this.sendMessageStream = sendMessageStream;
     this.onIncomingMessage = incomingMessageHandler.getIncomingMessageEvent();
-    this.onIncomingMessage.attach(FilterClass.is(ActivatorRequest.class), this);
+    this.onIncomingMessage.attach(FilterClass.is(NodeProxyRequest.class), this);
   }
 
   /**
-   * Receives a {@link ActivatorRequest} message from the {@link IncomingMessageEvent}.
+   * Receives a {@link NodeProxyRequest} message from the {@link IncomingMessageEvent}.
    *
    * @return true, so that it always remains bound to the {@code IncomingMessageEvent}.
    */
@@ -61,7 +61,7 @@ public final class ActivatorRequestHandler
     if (request == null) {
       return true;
     }
-    Message response = this.processRequest((ActivatorRequest) request);
+    Message response = this.processRequest((NodeProxyRequest) request);
     try {
       this.sendMessageStream.write(response);
     } catch (final IOException e) {
@@ -75,13 +75,13 @@ public final class ActivatorRequestHandler
 
   /**
    * Exports a {@link java.rmi.Remote} instance of an {@link Activator} proxy and returns it in an
-   * {@link ActivatorResponse}.
+   * {@link NodeProxyResponse}.
    *
    * @param request the request for an {@link Activator} proxy.
-   * @return a {@link ActivatorResponse} wrapping an {@link Activator} proxy.
+   * @return a {@link NodeProxyResponse} wrapping an {@link Activator} proxy.
    */
-  private final ActivatorResponse processRequest(final ActivatorRequest request) {
-    final ActivatorResponse response = ActivatorResponse.inResponseTo(request);
+  private final NodeProxyResponse processRequest(final NodeProxyRequest request) {
+    final NodeProxyResponse response = NodeProxyResponse.inResponseTo(request);
 
     final Activator instance;
     try {

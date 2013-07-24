@@ -30,7 +30,7 @@ public final class RemoteResourcesTester {
 
 		List<ListenableFuture<Activator>> activators =
 				remoteActivators.getFutureResources(
-						new ResourceIdentifier("resource\\(50)localhost\\activator"),
+						new ResourceIdentifier("resource\\(50)localhost\\remote"),
 						new Properties()
 				);
 
