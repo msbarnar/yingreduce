@@ -1,8 +1,7 @@
-package edu.asu.ying.mapreduce.io.kad;
+package edu.asu.ying.mapreduce.net.io.kad;
 
 import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,7 +12,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.asu.ying.mapreduce.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.net.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.net.NodeURI;
 import edu.asu.ying.mapreduce.net.kad.KadNodeURI;
 import edu.asu.ying.mapreduce.net.messaging.Message;

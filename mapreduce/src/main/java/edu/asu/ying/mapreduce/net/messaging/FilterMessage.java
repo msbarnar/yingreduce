@@ -10,6 +10,7 @@ import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterBase;
 import edu.asu.ying.mapreduce.common.filter.FilterInteger;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
+import edu.asu.ying.mapreduce.net.NodeURI;
 
 
 /**
@@ -39,11 +40,11 @@ public abstract class FilterMessage
   }
 
   /**
-   * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getDestinationUri()}.
+   * Filters messages based on {@link Message#getDestinationNode()}.
    */
   public static final FilterOnUri destinationUri = FilterOnUri.onDestination;
   /**
-   * Filters messages based on {@link edu.asu.ying.mapreduce.net.messaging.Message#getSourceUrl()}.
+   * Filters messages based on {@link Message#getSourceNode()}.
    */
   public static final FilterOnUri sourceUri = FilterOnUri.onSource;
 
@@ -112,12 +113,7 @@ public abstract class FilterMessage
 
     // And URIs have multiple parts
     private enum Part {
-      Scheme,
-      Address,
-      Host,
-      Port,
-      Path,
-      Name
+      Key
     }
 
     /*
@@ -138,28 +134,8 @@ public abstract class FilterMessage
     /*
      * Part Selectors
      */
-    public final Filter scheme(final FilterString filter) {
-      return new FilterOnUriPart(this.which, Part.Scheme, filter);
-    }
-
-    public final Filter address(final FilterString filter) {
-      return new FilterOnUriPart(this.which, Part.Address, filter);
-    }
-
-    public final Filter host(final FilterString filter) {
-      return new FilterOnUriPart(this.which, Part.Host, filter);
-    }
-
-    public final Filter port(final FilterInteger filter) {
-      return new FilterOnUriPart(this.which, Part.Port, filter);
-    }
-
-    public final Filter path(final FilterString filter) {
-      return new FilterOnUriPart(this.which, Part.Path, filter);
-    }
-
-    public final Filter name(final FilterString filter) {
-      return new FilterOnUriPart(this.which, Part.Name, filter);
+    public final Filter key(final FilterString filter) {
+      return new FilterOnUriPart(this.which, Part.Key, filter);
     }
 
     /**
@@ -181,27 +157,17 @@ public abstract class FilterMessage
 
       @Override
       protected boolean match(final Message message) {
-        final ResourceIdentifier uri;
+        final NodeURI uri;
         if (this.which == WhichUri.Destination) {
-          uri = message.getDestinationUri();
+          uri = message.getDestinationNode();
         } else if (this.which == WhichUri.Source) {
-          uri = message.getSourceUrl();
+          uri = message.getSourceNode();
         } else {
           return false;
         }
         switch (this.part) {
-          case Scheme:
-            return this.filter.match(uri.getScheme());
-          case Address:
-            return this.filter.match(uri.getAddress());
-          case Host:
-            return this.filter.match(uri.getHost());
-          case Port:
-            return this.filter.match(uri.getPort());
-          case Path:
-            return this.filter.match(uri.getPath());
-          case Name:
-            return this.filter.match(uri.getName());
+          case Key:
+            return this.filter.match(uri.getKey());
           default:
             return false;
         }

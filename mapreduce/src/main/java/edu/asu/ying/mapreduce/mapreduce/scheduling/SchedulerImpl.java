@@ -51,16 +51,16 @@ public class SchedulerImpl implements Scheduler {
 
   public SchedulerImpl(final LocalNode localNode) {
 
-    //this.localExecutor.run();
+    //this.localExecutor.start();
 
     this.forwardingExecutor = new ForwardingTaskQueueExecutor(this,
                                                               this.forwardingQueue,
                                                               this.remoteQueue, localNode);
-    this.forwardingExecutor.run();
+    this.forwardingExecutor.start();
 
-   // this.remoteExecutor.run();
+   // this.remoteExecutor.start();
 
-    this.jobDelegator.run();
+    this.jobDelegator.start();
   }
 
   public final int getBackpressure() {

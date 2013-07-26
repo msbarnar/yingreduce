@@ -8,11 +8,11 @@ import com.google.inject.Provides;
 import java.io.IOException;
 import java.util.Random;
 
-import edu.asu.ying.mapreduce.io.Channel;
-import edu.asu.ying.mapreduce.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.io.SendMessageStream;
-import edu.asu.ying.mapreduce.io.kad.KadChannel;
-import edu.asu.ying.mapreduce.io.kad.KadSendMessageStream;
+import edu.asu.ying.mapreduce.net.io.Channel;
+import edu.asu.ying.mapreduce.net.io.MessageOutputStream;
+import edu.asu.ying.mapreduce.net.io.SendMessageStream;
+import edu.asu.ying.mapreduce.net.io.kad.KadChannel;
+import edu.asu.ying.mapreduce.net.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.net.LocalNode;
 import edu.asu.ying.mapreduce.net.messaging.MessageHandler;
 import edu.asu.ying.mapreduce.net.messaging.kad.KadMessageHandler;

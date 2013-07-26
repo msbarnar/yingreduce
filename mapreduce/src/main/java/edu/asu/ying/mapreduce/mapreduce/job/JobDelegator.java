@@ -5,4 +5,6 @@ package edu.asu.ying.mapreduce.mapreduce.job;
  * to the appropriate {@code initial} nodes.
  */
 public interface JobDelegator extends Runnable {
+
+  void start();
 }

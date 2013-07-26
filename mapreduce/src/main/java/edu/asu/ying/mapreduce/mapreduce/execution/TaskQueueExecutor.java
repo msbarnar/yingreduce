@@ -5,4 +5,6 @@ package edu.asu.ying.mapreduce.mapreduce.execution;
  * {@link edu.asu.ying.mapreduce.mapreduce.task.Task} objects as they arrive.
  */
 public interface TaskQueueExecutor extends Runnable {
+
+  void start();
 }

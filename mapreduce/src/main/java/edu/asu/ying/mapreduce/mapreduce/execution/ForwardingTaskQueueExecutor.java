@@ -38,6 +38,12 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
     this.localNode = localNode;
   }
 
+  // Give the threadpool the first execution
+  @Override
+  public void start() {
+    this.threadPool.submit(this);
+  }
+
   @Override
   public void run() {
     // Forward tasks forever
@@ -86,11 +92,17 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
     // Unless one of our neighbors has a lower backpressure
     // TODO: adjust backpressure calculation per weina's suggestions
     for (final NodeProxy node : neighbors) {
-      final Scheduler remoteScheduler = node.getScheduler();
-      final int remoteBackpressure = remoteScheduler.getBackpressure();
-      if (remoteBackpressure < minimumBackpressure) {
-        minimumBackpressure = remoteBackpressure;
-        bestScheduler = remoteScheduler;
+      try {
+        final Scheduler remoteScheduler = node.getScheduler();
+        final int remoteBackpressure = remoteScheduler.getBackpressure();
+        if (remoteBackpressure < minimumBackpressure) {
+          minimumBackpressure = remoteBackpressure;
+          bestScheduler = remoteScheduler;
+        }
+
+      } catch (final RemoteException e) {
+        // TODO: Logging
+        e.printStackTrace();
       }
     }
 

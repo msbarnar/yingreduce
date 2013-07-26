@@ -18,6 +18,11 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
   }
 
   @Override
+  public final void start() {
+    this.threadPool.submit(this);
+  }
+
+  @Override
   public final void run() {
     // Run forever
     this.threadPool.submit(this);

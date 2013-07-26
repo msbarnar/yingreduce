@@ -13,11 +13,9 @@ import java.util.Map;
  * table is divided into one or more pages with each page containing {@code k} maximum elements.
  * When a page is full, or the table is committed, the page is distributed to nodes chosen on
  * hashing the table ID with the page index.
- *
- * @see RemoteResource
  */
 public interface Table
-    extends Map<Serializable, Serializable>, RemoteResource {
+    extends Map<Serializable, Serializable> {
 
   /**
    * Persists dirty pages. On a client node, this means distributing them to the network. On a scheduling
@@ -29,10 +27,8 @@ public interface Table
    * A {@link Page} is the unit of transmission of a {@link Table}. <p> When elements of a {@code
    * Table} are distributed on the network, they are first gathered into {@code Page} objects. All
    * pages in a table must be sequential and continuous for the {@code Table} to remain consistent.
-   *
-   * @see RemoteResource
    */
-  interface Page extends Serializable, RemoteResource {
+  interface Page extends Serializable {
 
     /**
      * Every {@code Page} belongs to a {@link Table}; this is that table's ID.
