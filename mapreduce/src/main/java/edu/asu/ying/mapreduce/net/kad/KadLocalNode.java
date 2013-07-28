@@ -36,12 +36,6 @@ public final class KadLocalNode
   // Schedules mapreduce jobs and tasks
   private final Scheduler scheduler;
 
-  // Facilitates communication between the local node and the Kademlia network
-  private final Channel networkChannel;
-
-  // Exposes this local node to the Kademlia network via NodeProxy
-  private final NodeProxyRequestHandler proxyRequestHandler;
-
   @Inject
   private KadLocalNode(final Injector injector,
                        final KeybasedRouting kbrNode,
@@ -55,11 +49,8 @@ public final class KadLocalNode
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
 
-    this.networkChannel = networkChannel;
-
     // Expose this local node to NodeProxy requests via the request handler
-    this.proxyRequestHandler = NodeProxyRequestHandler.exposeNodeToChannel(this,
-                                                                           this.networkChannel);
+    NodeProxyRequestHandler.exposeNodeToChannel(this, networkChannel);
 
     System.out.println("The local Kademlia node is listening.");
   }
