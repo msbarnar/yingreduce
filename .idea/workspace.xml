@@ -6,69 +6,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ffc779c-2642-4842-aeac-60344a3ce6bc" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadMessageHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/MessageHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/MessageRequestEvent.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/RequestMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/ResponseMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/UnhandledRequestException.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/event/Event.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/AcknowledgementMessage.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/MessageEvent.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/MessageHandler.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/kad/KadMessageHandler.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/node/NodeProxyRequest.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/node/NodeProxyResponse.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/ExceptionMessage.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/ExceptionMessage.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/FilterMessage.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/FilterMessage.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/Message.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/Message.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/MessageBase.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/MessageBase.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/messaging/MessageEventHandler.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/MessageEventHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/Activator.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/rmi/Activator.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/ActivatorImpl.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/rmi/ActivatorImpl.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/node/NodeProxy.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/rmi/RemoteNodeProxy.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/node/NodeProxyFinder.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/rmi/NodeProxyFinder.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/node/NodeProxyFinderImpl.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/rmi/NodeProxyFinderImpl.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/node/NodeProxyImpl.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/rmi/RemoteNodeProxyImpl.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/rmi/node/NodeProxyRequestHandler.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/rmi/NodeProxyRequestHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/Activator.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/Activator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/class-use/Activator.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/class-use/Activator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/Channel.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/Channel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/execution/ForwardingTaskQueueExecutor.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/execution/ForwardingTaskQueueExecutor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/InvalidContentException.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/InvalidContentException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadChannel.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadChannel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/kad/KadLocalNode.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/kad/KadLocalNode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/KadLocateRegistry.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/KadLocateRegistry.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/class-use/KadLocateRegistry.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/class-use/KadLocateRegistry.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadSendMessageStream.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadSendMessageStream.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/kad/KademliaModule.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/kad/KademliaModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/LocalNode.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/LocalNode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/MessageOutputStream.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/MessageOutputStream.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/ResourceIdentifier.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/ResourceIdentifier.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/class-use/ResourceIdentifier.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/class-use/ResourceIdentifier.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/index-files/index-4.html" afterPath="$PROJECT_DIR$/mapreduce/doc/index-files/index-4.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/index-files/index-5.html" afterPath="$PROJECT_DIR$/mapreduce/doc/index-files/index-5.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/index-files/index-6.html" afterPath="$PROJECT_DIR$/mapreduce/doc/index-files/index-6.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/index-files/index-7.html" afterPath="$PROJECT_DIR$/mapreduce/doc/index-files/index-7.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/overview-frame.html" afterPath="$PROJECT_DIR$/mapreduce/doc/overview-frame.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/overview-summary.html" afterPath="$PROJECT_DIR$/mapreduce/doc/overview-summary.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/package-frame.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/package-frame.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/package-frame.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/package-frame.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/package-frame.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/package-frame.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/package-summary.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/package-summary.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/package-summary.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/package-summary.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/package-summary.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/package-summary.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/package-tree.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/package-tree.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/package-tree.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/package-tree.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/package-tree.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/package-tree.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/package-use.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/package-use.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/package-use.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/activator/package-use.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/package-use.html" afterPath="$PROJECT_DIR$/mapreduce/doc/edu/asu/ying/mapreduce/rmi/registry/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/Message.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/Message.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/MessageBase.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/MessageBase.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1375062205450" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1375066146465" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1374540126307" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272043017" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371274691692" ignored="false" />
@@ -153,7 +98,7 @@
     <file path="/a.dummy" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371366483078" ignored="false" />
     <file path="/ResourceIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371613777613" ignored="false" />
     <file path="/TestResourceIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371264136905" ignored="false" />
-    <file path="/KadSendMessageStream.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1375066055375" ignored="false" />
+    <file path="/KadSendMessageStream.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1375066198403" ignored="false" />
     <file path="/Key.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371265534980" ignored="false" />
     <file path="/RemoteTest.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272828804" ignored="false" />
     <file path="/FutureMessages.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371281179826" ignored="false" />
@@ -357,10 +302,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MessageBase.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/MessageBase.java">
+      <file leaf-file-name="KadSendMessageStream.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadSendMessageStream.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="132" column="51" selection-start="3578" selection-end="3578" vertical-scroll-proportion="1.9945055">
+            <state line="62" column="0" selection-start="2027" selection-end="2027" vertical-scroll-proportion="0.30769232">
               <folding />
             </state>
           </provider>
@@ -396,10 +341,10 @@
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/rmi/NodeProxyRequestHandler.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/MessageHandler.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/UnhandledRequestException.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/Message.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/MessageBase.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadChannel.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/MessageOutputStream.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/MessageBase.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/Message.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadSendMessageStream.java" />
       </list>
     </option>
@@ -1541,7 +1486,11 @@
       <created>1375062206314</created>
       <updated>1375062206314</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="Moving toward more requests">
+      <created>1375066146411</created>
+      <updated>1375066146411</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1634,7 +1583,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Extended events to allow responses; eliminated filteredevent" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moving toward more requests" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1648,7 +1597,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Transitioning from Resources to Nodes" />
     <MESSAGE value="Killing off Resources" />
     <MESSAGE value="Activator provisioning independent of Resource cruft" />
     <MESSAGE value="addJob in Scheduler" />
@@ -1673,6 +1621,7 @@
     <MESSAGE value="Reorganizing" />
     <MESSAGE value="Migrating toward using OpenKAD requests instead of custom-rolled request/response" />
     <MESSAGE value="Extended events to allow responses; eliminated filteredevent" />
+    <MESSAGE value="Moving toward more requests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1761,13 +1710,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadSendMessageStream.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="95" column="0" selection-start="3145" selection-end="3145" vertical-scroll-proportion="0.7032967">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/MessageOutputStream.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="31" column="78" selection-start="1027" selection-end="1027" vertical-scroll-proportion="0.41208792">
@@ -1775,9 +1717,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/MessageBase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="202" column="3" selection-start="5581" selection-end="5581" vertical-scroll-proportion="2.4835165">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/Message.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="18" selection-start="634" selection-end="634" vertical-scroll-proportion="0.36263737">
+        <state line="32" column="0" selection-start="732" selection-end="732" vertical-scroll-proportion="0.47802198">
           <folding />
         </state>
       </provider>
@@ -1791,9 +1740,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/MessageBase.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/kad/KadSendMessageStream.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="132" column="51" selection-start="3578" selection-end="3578" vertical-scroll-proportion="1.9945055">
+        <state line="62" column="0" selection-start="2027" selection-end="2027" vertical-scroll-proportion="0.30769232">
           <folding />
         </state>
       </provider>

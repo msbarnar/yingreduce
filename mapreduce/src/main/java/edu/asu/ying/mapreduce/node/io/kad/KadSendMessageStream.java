@@ -61,13 +61,7 @@ public final class KadSendMessageStream
       throw new UnknownHostException();
     }
 
-    // Send the message to the k nearest nodes (defined on the message's replication property)
-    final Iterator<Node> iter = foundNodes.iterator();
-    int messageCount;
-    for (messageCount = 0; iter.hasNext() && (messageCount < message.getReplication());
-         messageCount++) {
-      this.kadNode.sendMessage(iter.next(), message.getTag(), message);
-    }
+    this.kadNode.sendMessage(foundNodes.get(0), message.getTag(), message);
   }
 
   @Override

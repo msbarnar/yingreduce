@@ -32,13 +32,6 @@ public interface Message
   NodeURI getDestinationNode();
 
   /**
-   * Replication allows a message to be delivered to at moest k hosts that are matched on its URI.
-   *
-   * @return the maximum number of hosts to which the message should be replicated.
-   */
-  int getReplication();
-
-  /**
    * Makes this message into a response to {@code request}.
    *
    * @param request the message to which to respond.
