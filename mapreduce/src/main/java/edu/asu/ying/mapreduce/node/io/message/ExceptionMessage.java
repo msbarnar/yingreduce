@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.node.messaging;
+package edu.asu.ying.mapreduce.node.io.message;
 
 
 /**

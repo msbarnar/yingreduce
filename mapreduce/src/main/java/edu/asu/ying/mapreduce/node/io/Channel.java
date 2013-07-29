@@ -5,8 +5,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import edu.asu.ying.mapreduce.node.messaging.Message;
-import edu.asu.ying.mapreduce.node.messaging.MessageHandler;
+import edu.asu.ying.mapreduce.node.io.message.Message;
 
 /**
  * A {@code Channel} provides a single point of access for input from and output to the underlying
@@ -14,7 +13,7 @@ import edu.asu.ying.mapreduce.node.messaging.MessageHandler;
  */
 public interface Channel {
 
-  MessageHandler getIncomingMessageHandler();
+  void registerMessageHandler(final MessageHandler handler, final String tag);
 
   /**
    * Synchronously sends a message with no expectation of a response.

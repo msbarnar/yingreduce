@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.rmi;
+package edu.asu.ying.mapreduce.node.rmi;
 
 import java.io.Serializable;
 import java.rmi.Remote;

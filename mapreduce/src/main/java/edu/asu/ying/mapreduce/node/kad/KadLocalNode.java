@@ -12,11 +12,11 @@ import java.util.List;
 import edu.asu.ying.mapreduce.node.io.Channel;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.mapreduce.node.*;
-import edu.asu.ying.mapreduce.rmi.node.NodeProxy;
-import edu.asu.ying.mapreduce.rmi.Activator;
-import edu.asu.ying.mapreduce.rmi.ActivatorImpl;
+import edu.asu.ying.mapreduce.node.rmi.RemoteNodeProxy;
+import edu.asu.ying.mapreduce.node.rmi.Activator;
+import edu.asu.ying.mapreduce.node.rmi.ActivatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.rmi.node.NodeProxyRequestHandler;
+import edu.asu.ying.mapreduce.node.rmi.NodeProxyRequestHandler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 
 
@@ -49,7 +49,7 @@ public final class KadLocalNode
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
 
-    // Expose this local node to NodeProxy requests via the request handler
+    // Expose this local node to RemoteNodeProxy requests via the request handler
     NodeProxyRequestHandler.exposeNodeToChannel(this, networkChannel);
 
     System.out.println("The local Kademlia node is listening.");
@@ -68,7 +68,7 @@ public final class KadLocalNode
   }
 
   @Override
-  public List<NodeProxy> getNeighbors() {
+  public List<RemoteNodeProxy> getNeighbors() {
     return null;
   }
 

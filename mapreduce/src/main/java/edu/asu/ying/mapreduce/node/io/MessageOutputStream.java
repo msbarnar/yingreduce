@@ -3,11 +3,13 @@ package edu.asu.ying.mapreduce.node.io;
 import com.google.common.util.concurrent.ListenableFutureTask;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.concurrent.Future;
 
-import edu.asu.ying.mapreduce.node.messaging.Message;
+import edu.asu.ying.mapreduce.node.io.message.Message;
 
 /**
- * Writes {@link edu.asu.ying.mapreduce.node.messaging.Message} objects to an underlying {@link
+ * Writes {@link edu.asu.ying.mapreduce.node.io.message.Message} objects to an underlying {@link
  * java.io.OutputStream}.
  */
 public interface MessageOutputStream {
@@ -26,4 +28,6 @@ public interface MessageOutputStream {
    * @return a {@link ListenableFutureTask} providing the value {@code true} when complete.
    */
   ListenableFutureTask<Boolean> writeAsync(final Message message) throws IOException;
+
+  Future<Serializable> writeRequest(final Message request) throws IOException;
 }

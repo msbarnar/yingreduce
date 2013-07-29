@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.node.messaging;
+package edu.asu.ying.mapreduce.node.io.message;
 
 import com.google.common.base.Preconditions;
 
@@ -22,7 +22,7 @@ public abstract class FilterMessage
    * Interface to message filters.
    */
   /**
-   * Filters messages based on {@link edu.asu.ying.mapreduce.node.messaging.Message#getId()}.
+   * Filters messages based on {@link Message#getId()}.
    */
   public static Filter id(final FilterString filter) {
     return new FilterMessage.FilterOnId(filter);

@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.node.messaging;
+package edu.asu.ying.mapreduce.node.io.message;
 
 import java.io.Serializable;
 
@@ -22,6 +22,8 @@ public interface Message
    * @return a universally unique identifier
    */
   String getId();
+
+  String getTag();
 
   NodeURI getSourceNode();
 

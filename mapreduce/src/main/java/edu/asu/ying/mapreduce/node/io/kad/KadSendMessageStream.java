@@ -1,9 +1,11 @@
 package edu.asu.ying.mapreduce.node.io.kad;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.inject.Inject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
@@ -11,11 +13,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import edu.asu.ying.mapreduce.node.io.MessageOutputStream;
 import edu.asu.ying.mapreduce.node.NodeURI;
 import edu.asu.ying.mapreduce.node.kad.KadNodeURI;
-import edu.asu.ying.mapreduce.node.messaging.Message;
+import edu.asu.ying.mapreduce.node.io.message.Message;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
@@ -63,8 +66,7 @@ public final class KadSendMessageStream
     int messageCount;
     for (messageCount = 0; iter.hasNext() && (messageCount < message.getReplication());
          messageCount++) {
-      // TODO: Make use of kademlia tagged messages
-      this.kadNode.sendMessage(iter.next(), "mapreduce", message);
+      this.kadNode.sendMessage(iter.next(), message.getTag(), message);
     }
   }
 
@@ -86,5 +88,20 @@ public final class KadSendMessageStream
     executor.execute(asyncTask);
 
     return asyncTask;
+  }
+
+  @Override
+  public final Future<Serializable> writeRequest(final Message request) throws IOException {
+    request.setSourceNode(this.localUri);
+
+    final Key destKey = ((KadNodeURI) request.getDestinationNode()).toKademliaKey();
+
+    final List<Node> foundNodes = this.kadNode.findNode(destKey);
+    if (foundNodes.size() == 0) {
+      // This should never happen
+      throw new UnknownHostException();
+    }
+
+    return this.kadNode.sendRequest(foundNodes.get(0), request.getTag(), request);
   }
 }

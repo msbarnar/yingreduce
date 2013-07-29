@@ -1,7 +1,8 @@
-package edu.asu.ying.mapreduce.node.messaging;
+package edu.asu.ying.mapreduce.node.io.message;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -32,6 +33,7 @@ public abstract class MessageBase
 
     public static final String MessageId = "message.id";
     public static final String Replication = "message.replication";
+    public static final String MessageTag = "message.tag";
     public static final String DestinationURI = "message.uri.destination";
     public static final String SourceURI = "message.uri.source";
     public static final String Exception = "exception";
@@ -47,26 +49,30 @@ public abstract class MessageBase
   /**
    * Initializes the message with a random ID.
    */
-  public MessageBase() {
+  public MessageBase(final String tag) {
     this.setId();
+    this.setTag(tag);
   }
 
-  public MessageBase(final String id) {
+  public MessageBase(final String id, final String tag) {
     this.setId(id);
+    this.setTag(tag);
   }
 
-  public MessageBase(final NodeURI destinationNode) {
+  public MessageBase(final String tag, final NodeURI destinationNode) {
+    this.setTag(tag);
     this.setDestinationNode(destinationNode);
   }
 
-  public MessageBase(final String id, final NodeURI destinationNode) {
+  public MessageBase(final String id, final String tag, final NodeURI destinationNode) {
     this.setId(id);
+    this.setTag(tag);
     this.setDestinationNode(destinationNode);
   }
 
-	/*
-	 * Accessors
-	 */
+  /*
+   * Accessors
+   */
 
   /**
    * Initializes the message ID with a random {@link UUID}.
@@ -80,9 +86,8 @@ public abstract class MessageBase
    * set.
    */
   public void setId(final String id) {
-    Preconditions.checkNotNull(id);
     // Don't allow empty strings
-    if (id.isEmpty()) {
+    if (Strings.isNullOrEmpty(id)) {
       this.setId();
     } else {
       this.properties.put(Property.MessageId, id);
@@ -113,6 +118,28 @@ public abstract class MessageBase
     } else {
       return szId;
     }
+  }
+
+  @Override
+  public String getTag() {
+    final
+    Optional<Serializable>
+        tag =
+        Optional.fromNullable(this.properties.get(Property.MessageTag));
+    if (!tag.isPresent()) {
+      throw new IllegalArgumentException("Message tag cannot be null.");
+    }
+
+    final String szTag = String.valueOf(tag.get());
+    if (szTag.isEmpty()) {
+      throw new IllegalArgumentException("Message tag cannot be empty.");
+    } else {
+      return szTag;
+    }
+  }
+
+  public void setTag(final String tag) {
+    this.properties.put(Property.MessageTag, Preconditions.checkNotNull(Strings.emptyToNull(tag)));
   }
 
   @Override

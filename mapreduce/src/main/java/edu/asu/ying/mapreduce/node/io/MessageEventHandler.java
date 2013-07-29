@@ -1,4 +1,6 @@
-package edu.asu.ying.mapreduce.node.messaging;
+package edu.asu.ying.mapreduce.node.io;
+
+import edu.asu.ying.mapreduce.node.io.message.Message;
 
 /**
  *

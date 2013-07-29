@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.rmi.node;
+package edu.asu.ying.mapreduce.node.rmi;
 
 import edu.asu.ying.mapreduce.node.NodeURI;
 import edu.asu.ying.mapreduce.node.NodeURL;
@@ -9,12 +9,12 @@ import edu.asu.ying.mapreduce.node.NodeURL;
 public final class NodeProxyFinderImpl implements NodeProxyFinder {
 
   @Override
-  public NodeProxy findNode(NodeURI uri) {
+  public RemoteNodeProxy findNode(NodeURI uri) {
     return null;
   }
 
   @Override
-  public NodeProxy findNode(NodeURL url) {
+  public RemoteNodeProxy findNode(NodeURL url) {
     return null;
   }
 }

@@ -1,6 +1,5 @@
-package edu.asu.ying.mapreduce.rmi;
+package edu.asu.ying.mapreduce.node.rmi;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import java.rmi.Remote;
@@ -8,8 +7,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 import java.util.Random;
-
-import edu.asu.ying.mapreduce.rmi.Activator;
 
 
 /**
