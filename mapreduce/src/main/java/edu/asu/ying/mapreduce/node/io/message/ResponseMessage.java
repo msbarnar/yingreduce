@@ -20,11 +20,11 @@ public class ResponseMessage extends MessageBase {
   }
 
   public static ResponseMessage inResponseTo(final Message request) {
-    return new ResponseMessage(request.getSourceNode());
+    return new ResponseMessage(request.getId(), request.getTag(), request.getSourceNode());
   }
 
-  private ResponseMessage(final NodeURI destinationNode) {
-    super(destinationNode);
+  private ResponseMessage(final String id, final String tag, final NodeURI destinationNode) {
+    super(id, tag, destinationNode);
   }
 
   public final void setContent(final Serializable content) {
