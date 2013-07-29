@@ -47,5 +47,5 @@ public interface Scheduler extends Remote {
    * Forwarding nodes should forward tasks in a way that minimizes the backpressure at each of its
    * child nodes.
    */
-  int getBackpressure();
+  int getBackpressure() throws RemoteException;
 }

@@ -3,11 +3,19 @@ package edu.asu.ying.mapreduce.daemon;
 import com.google.inject.Guice;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.List;
 
+import edu.asu.ying.mapreduce.mapreduce.job.Job;
+import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
+import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.mapreduce.node.LocalNode;
 import edu.asu.ying.mapreduce.node.NodeURL;
 import edu.asu.ying.mapreduce.node.kad.KadLocalNode;
 import edu.asu.ying.mapreduce.node.kad.KadNodeURL;
+import edu.asu.ying.mapreduce.node.rmi.RemoteNodeProxy;
+import edu.asu.ying.mapreduce.yingtable.TableID;
 
 /**
  * The main entry point for the node daemon. {@code Application} starts the table, scheduling, and
@@ -44,23 +52,32 @@ public class Application {
     // TODO: Logging
     System.out.println("Starting the application...");
 
-    try {
-      final LocalNode node = new KadLocalNode(5000);
-      final LocalNode node2 = new KadLocalNode(5001);
-      try {
-        node2.join(new KadNodeURL("//127.0.0.1:5000"));
-
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
-
-    } catch (final InstantiationException e) {
-      e.printStackTrace();
-      return;
-    }
+    final Daemon instance1 = new Daemon(5000);
+    final Daemon instance2 = new Daemon(5001);
+    instance2.join(instance1);
 
     System.out.println("... and we're rolling!");
     System.out.println();
-    System.out.println("Visit http://localhost:8887/ to administer the local node.");
+    System.out.println("Visit http://localhost:8887/ to administer the local node.\n\n");
+
+    Scheduler sched = null;
+    try {
+      sched = instance2.getLocalNode().getNeighbors().get(0).getScheduler();
+    } catch (final RemoteException e) {
+      e.printStackTrace();
+    }
+
+    if (sched != null) {
+      try {
+        final Job job = new MapReduceJob(new TableID("mytable"));
+        final JobSchedulingResult result = sched.addJob(job);
+        System.out.println(String.format("Scheduling job %s... %s on node %s",
+                                         result.getJob().getId(),
+                                         result.getResult().toString(),
+                                         result.getNodeUri().toString()));
+      } catch (final RemoteException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

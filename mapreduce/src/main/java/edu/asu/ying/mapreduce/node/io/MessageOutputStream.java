@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.mapreduce.node.io.message.Message;
+import il.technion.ewolf.kbr.Node;
 
 /**
  * Writes {@link edu.asu.ying.mapreduce.node.io.message.Message} objects to an underlying {@link
@@ -30,4 +31,6 @@ public interface MessageOutputStream {
   ListenableFutureTask<Boolean> writeAsync(final Message message) throws IOException;
 
   Future<Serializable> writeAsyncRequest(final Message request) throws IOException;
+
+  Future<Serializable> writeAsyncRequest(final Node node, final Message request) throws IOException;
 }

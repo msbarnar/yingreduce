@@ -1,14 +1,21 @@
 package edu.asu.ying.mapreduce.node.kad;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import edu.asu.ying.mapreduce.node.io.Channel;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.mapreduce.node.*;
+import edu.asu.ying.mapreduce.node.io.InvalidContentException;
+import edu.asu.ying.mapreduce.node.io.message.Message;
+import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
+import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 import edu.asu.ying.mapreduce.node.rmi.Activator;
 import edu.asu.ying.mapreduce.node.rmi.ActivatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
@@ -77,7 +84,10 @@ public final class KadLocalNode
     final List<RemoteNodeProxy> nodeProxies = new ArrayList<>();
 
     for (final il.technion.ewolf.kbr.Node kadNode : kadNodes) {
-      nodeProxies.add(this.importProxyTo(kadNode));
+      final RemoteNodeProxy proxy = this.importProxyTo(kadNode);
+      if (proxy != null) {
+        nodeProxies.add(proxy);
+      }
     }
 
     return nodeProxies;
@@ -102,5 +112,31 @@ public final class KadLocalNode
   }
 
   private RemoteNodeProxy importProxyTo(final il.technion.ewolf.kbr.Node node) {
+    final RequestMessage request = new RequestMessage("node.remote-proxy");
+    final Future<Serializable> response;
+    try {
+      response =
+        this.networkChannel.getMessageOutputStream().writeAsyncRequest(node, request);
+
+    } catch (final IOException e) {
+      // TODO: Logging
+      e.printStackTrace();
+      return null;
+    }
+
+    try {
+      final Serializable resp = response.get();
+      if (!(resp instanceof ResponseMessage)) {
+        throw new InvalidContentException();
+      }
+      return (RemoteNodeProxy) ((ResponseMessage) resp).getContent();
+
+    } catch (final ExecutionException | InterruptedException
+        | InvalidContentException | ClassCastException e) {
+
+      // TODO: Logging
+      e.printStackTrace();
+      return null;
+    }
   }
 }

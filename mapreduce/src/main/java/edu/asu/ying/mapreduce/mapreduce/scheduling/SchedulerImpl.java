@@ -31,6 +31,8 @@ import edu.asu.ying.mapreduce.node.NodeURI;
  */
 public class SchedulerImpl implements Scheduler {
 
+  private final NodeURI localUri;
+
   // The job queue holds jobs to be delegated as tasks to the initial nodes.
   private final BlockingQueue<Job> jobQueue = new LinkedBlockingQueue<>();
   private final JobDelegator jobDelegator = new JobDelegatorImpl(this.jobQueue);
@@ -49,6 +51,15 @@ public class SchedulerImpl implements Scheduler {
 
   public SchedulerImpl(final LocalNode localNode) {
 
+    NodeURI localUri = null;
+    try {
+      localUri = localNode.getNodeURI();
+    } catch (final RemoteException e) {
+      // TODO: Logging
+      e.printStackTrace();
+    }
+    this.localUri = localUri;
+
     //this.localExecutor.start();
 
     this.forwardingExecutor = new ForwardingTaskQueueExecutor(this,
@@ -61,7 +72,7 @@ public class SchedulerImpl implements Scheduler {
     this.jobDelegator.start();
   }
 
-  public final int getBackpressure() {
+  public final int getBackpressure() throws RemoteException {
     return this.remoteQueue.size() + this.forwardingQueue.size();
   }
 
@@ -73,7 +84,8 @@ public class SchedulerImpl implements Scheduler {
   @Override
   public JobSchedulingResult addJob(Job job) throws RemoteException {
     // TODO: Find the responsible node by finding the node with the first page of the table
-    return null;
+    return new JobSchedulingResult(job, this.localUri)
+        .setResult(JobSchedulingResult.Result.Scheduled);
   }
 
   /**
@@ -152,11 +164,6 @@ public class SchedulerImpl implements Scheduler {
   }
 
   private TaskHistory.Entry createHistoryEntry() {
-    return new TaskHistory.Entry(this.getLocalNodeUri());
-  }
-
-  private NodeURI getLocalNodeUri() {
-    // FIXME: Get the local node URI
-    return null;
+    return new TaskHistory.Entry(this.localUri);
   }
 }

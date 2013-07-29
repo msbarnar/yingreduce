@@ -97,4 +97,12 @@ public final class KadSendMessageStream
 
     return this.kadNode.sendRequest(foundNodes.get(0), request.getTag(), request);
   }
+
+  @Override
+  public Future<Serializable> writeAsyncRequest(Node node, Message request)
+      throws IOException {
+
+    request.setSourceNode(this.localUri);
+    return this.kadNode.sendRequest(node, request.getTag(), request);
+  }
 }

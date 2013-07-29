@@ -10,6 +10,7 @@ import edu.asu.ying.mapreduce.node.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.node.rmi.RemoteNodeProxy;
 
 /**
  * {@code ForwardingTaskQueueExecutor} removes tasks from the local {@code Forwarding} queue and

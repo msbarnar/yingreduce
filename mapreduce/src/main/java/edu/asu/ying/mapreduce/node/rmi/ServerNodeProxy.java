@@ -24,24 +24,25 @@ public final class ServerNodeProxy implements RemoteNodeProxy {
    * @return A {@link java.rmi.Remote} reference to the {@link LocalNode} suitable for transmission
    * to and use by remote nodes.
    */
-  public static ServerNodeProxy createProxyTo(final LocalNode localNode) throws RemoteException {
-    final ServerNodeProxy instance = new ServerNodeProxy(localNode.getScheduler(),
-                                                 localNode.getNodeURI());
+  public static RemoteNodeProxy createProxyTo(final LocalNode localNode) throws RemoteException {
+    final RemoteNodeProxy instance = new ServerNodeProxy(localNode);
 
     return localNode.getActivator().export(instance, null);
   }
 
+  private final LocalNode localNode;
   private final Scheduler scheduler;
   private final NodeURI nodeURI;
 
-  private ServerNodeProxy(final Scheduler scheduler, final NodeURI nodeURI) {
-    this.scheduler = scheduler;
-    this.nodeURI = nodeURI;
+  private ServerNodeProxy(final LocalNode localNode) throws RemoteException {
+    this.localNode = localNode;
+    this.scheduler = localNode.getScheduler();
+    this.nodeURI = localNode.getNodeURI();
   }
 
   @Override
   public Scheduler getScheduler() throws RemoteException {
-    return this.scheduler;
+    return this.localNode.getActivator().export(this.scheduler, null);
   }
 
   @Override
