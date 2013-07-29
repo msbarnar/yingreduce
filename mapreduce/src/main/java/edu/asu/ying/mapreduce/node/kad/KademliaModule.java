@@ -15,7 +15,6 @@ import edu.asu.ying.mapreduce.node.io.kad.KadChannel;
 import edu.asu.ying.mapreduce.node.io.kad.KadSendMessageStream;
 import edu.asu.ying.mapreduce.node.LocalNode;
 import edu.asu.ying.mapreduce.node.io.MessageHandler;
-import edu.asu.ying.mapreduce.node.io.kad.KadMessageHandler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 
