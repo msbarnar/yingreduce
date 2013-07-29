@@ -34,7 +34,6 @@ import il.technion.ewolf.kbr.Node;
  * to the underlying Kademlia network. The {@code KadChannel} provides a single point of access for
  * input from and output to the network.
  */
-@Singleton
 public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageHandler {
 
   private final KeybasedRouting kbrNode;
@@ -42,18 +41,17 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   private final MessageOutputStream sendStream;
   private final Map<String, MessageHandler> messageHandlers = new HashMap<>();
 
-  @Inject
-  private KadChannel(final KeybasedRouting kbrNode,
-                     final @SendMessageStream MessageOutputStream sendStream) {
-
+  public KadChannel(final KeybasedRouting kbrNode) {
     this.kbrNode = kbrNode;
-    this.sendStream = sendStream;
+    this.sendStream = new KadSendMessageStream(kbrNode);
   }
 
   @Override
   public final void registerMessageHandler(final MessageHandler handler, final String tag) {
     this.kbrNode.register(tag, this);
     this.messageHandlers.put(tag, handler);
+    // TODO: Logging
+    System.out.println("Bound request handler for '".concat(tag).concat("'"));
   }
 
   @Override
@@ -62,7 +60,9 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   }
 
   @Override
-  public final void onIncomingMessage(Node from, String tag, Serializable content) {
+  public final void onIncomingMessage(final Node from, final String tag,
+                                      final Serializable content) {
+
     if (!(content instanceof Message)) {
       // TODO: Logging
       return;
@@ -75,7 +75,9 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   }
 
   @Override
-  public final Serializable onIncomingRequest(Node from, String tag, Serializable content) {
+  public final Serializable onIncomingRequest(final Node from, final String tag,
+                                              final Serializable content) {
+
     if (!(content instanceof Message)) {
       // TODO: Logging
       return new ExceptionMessage(new InvalidContentException());

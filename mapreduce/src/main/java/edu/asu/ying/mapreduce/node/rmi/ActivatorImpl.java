@@ -1,12 +1,17 @@
 package edu.asu.ying.mapreduce.node.rmi;
 
+import com.google.inject.Binder;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 import java.util.Random;
+
+import edu.asu.ying.mapreduce.node.LocalNode;
 
 
 /**
@@ -15,25 +20,11 @@ import java.util.Random;
 public final class ActivatorImpl
     implements Activator {
 
-  private final Injector injector;
-
-  public ActivatorImpl(final Injector injector) {
-    this.injector = injector;
+  public ActivatorImpl() {
   }
 
-  // TODO: implement client-activated, per-call, singleton activation modes
   @Override
   @SuppressWarnings("unchecked")
-  public final <T extends Remote> T export(final Class<T> type,
-                                           final Map<String, String> properties)
-      throws RemoteException {
-
-    final Remote instance = this.injector.getInstance(type);
-    // TODO: smart port provision
-    return (T) UnicastRemoteObject.exportObject(instance, 8000 + (new Random()).nextInt(5000));
-  }
-
-  @Override
   public final <T extends Remote> T export(final T instance,
                                            final Map<String, String> properties)
     throws RemoteException {

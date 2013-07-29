@@ -29,17 +29,7 @@ import java.util.Map;
  * using {@link java.rmi.server.UnicastRemoteObject#exportObject(Remote)}, but the actual method is
  * implementation specific.
  */
-public interface Activator extends Remote, Serializable {
-
-  /**
-   * Obtains a {@link java.rmi.Remote} reference to an instance of the class {@code type}.
-   *
-   * @param type       the class of the instance to obtain a reference to.
-   * @param properties may be used on the remote implementation when instantiating the object.
-   * @return a {@link java.rmi.Remote} reference to the instance.
-   */
-  <T extends Remote> T export(final Class<T> type, final Map<String, String> properties)
-      throws RemoteException;
+public interface Activator {
 
   /**
    * Obtains a {@link java.rmi.Remote} reference to the specific instance {@code instance}.

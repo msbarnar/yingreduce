@@ -3,7 +3,6 @@ package edu.asu.ying.mapreduce.daemon;
 import com.google.inject.Guice;
 
 import edu.asu.ying.mapreduce.node.LocalNode;
-import edu.asu.ying.mapreduce.node.kad.KademliaModule;
 
 /**
  * The main entry point for the node daemon. {@code Application} starts the table, scheduling, and

@@ -34,8 +34,7 @@ public final class KadSendMessageStream
   private final KeybasedRouting kadNode;
   private final NodeURI localUri;
 
-  @Inject
-  private KadSendMessageStream(final KeybasedRouting kadNode) throws URISyntaxException {
+  public KadSendMessageStream(final KeybasedRouting kadNode) {
     this.kadNode = kadNode;
     this.localUri = this.createLocalUri();
   }

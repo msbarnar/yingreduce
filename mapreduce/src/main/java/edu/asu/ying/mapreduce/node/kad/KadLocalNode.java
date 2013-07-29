@@ -23,12 +23,14 @@ import il.technion.ewolf.kbr.KeybasedRouting;
 /**
  *
  */
-@Singleton
 public final class KadLocalNode
     implements LocalNode {
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
+
+  // Pipe to the kad network
+  private final Channel networkChannel;
 
   // Provides RMI references to the scheduler
   private final Activator activator;
@@ -36,16 +38,14 @@ public final class KadLocalNode
   // Schedules mapreduce jobs and tasks
   private final Scheduler scheduler;
 
-  @Inject
-  private KadLocalNode(final Injector injector,
-                       final KeybasedRouting kbrNode,
-                       final Channel networkChannel) {
+  public KadLocalNode(final int port) {
 
     // The local Kademlia node for node discovery
-    this.kbrNode = kbrNode;
+    this.kbrNode = KademliaNetwork.createNode(port);
+    this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
     // Start the remote to provide Scheduler references
-    this.activator = new ActivatorImpl(injector);
+    this.activator = new ActivatorImpl();
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
 
