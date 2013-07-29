@@ -15,6 +15,11 @@ public final class ImmutableKey implements Element.Key {
     this.column = column;
   }
 
+  public ImmutableKey(final Element.Key copy) {
+    this.row = copy.getRow();
+    this.column = copy.getColumn();
+  }
+
   @Override public String getRow() { return this.row; }
   @Override public String getColumn() { return this.column; }
 }

@@ -11,6 +11,10 @@ public class ImmutableValue implements Element.Value {
     this.content = content;
   }
 
+  public ImmutableValue(final Element.Value copy) {
+    this.content = copy.getContent().clone();
+  }
+
   @Override
   public long getSize() {
     return this.content.length;

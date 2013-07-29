@@ -12,11 +12,11 @@ public final class ImmutableElement implements Element {
   private final static long SerialVersionUID = 1L;
 
   private final Key key;
-  private final byte[] value;
+  private final Value value;
 
-  public ImmutableElement(final Key key, final byte[] value) {
-    this.key = key;
-    this.value = value;
+  public ImmutableElement(final Key key, final Value value) {
+    this.key = new ImmutableKey(key);
+    this.value = new ImmutableValue(value);
   }
 
   @Override
@@ -25,7 +25,7 @@ public final class ImmutableElement implements Element {
   }
 
   @Override
-  public byte[] getValue() {
+  public Value getValue() {
     return this.value;
   }
 }
