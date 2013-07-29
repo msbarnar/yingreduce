@@ -10,4 +10,10 @@ import java.io.IOException;
 public class InvalidContentException
     extends IOException {
 
+  public InvalidContentException() {
+  }
+
+  public InvalidContentException(final String detail) {
+    super(detail);
+  }
 }

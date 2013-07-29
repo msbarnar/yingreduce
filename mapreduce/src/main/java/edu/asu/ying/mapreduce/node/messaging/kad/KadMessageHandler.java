@@ -6,12 +6,14 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.io.Serializable;
 
+import edu.asu.ying.mapreduce.common.event.Event;
 import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 import edu.asu.ying.mapreduce.common.event.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.messaging.AcknowledgementMessage;
 import edu.asu.ying.mapreduce.node.messaging.ExceptionMessage;
 import edu.asu.ying.mapreduce.node.messaging.Message;
+import edu.asu.ying.mapreduce.node.messaging.MessageEvent;
 import edu.asu.ying.mapreduce.node.messaging.MessageHandler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
@@ -29,17 +31,25 @@ import il.technion.ewolf.kbr.Node;
 public final class KadMessageHandler
     implements MessageHandler, il.technion.ewolf.kbr.MessageHandler {
 
+  // The actual network listener
+  private final KeybasedRouting inputNode;
+
+  private String tag;
+
   // Event used to signal other listeners of incoming messages
-  private final FilteredValueEvent<Message> incomingMessageEvent = new FilteredValueEventBase<>();
+  private final MessageEvent incomingMessageEvent = new MessageEvent();
 
   @Inject
   private KadMessageHandler(final KeybasedRouting inputNode) {
-    // TODO: Make use of tagged messages
-    // Bind to the Kademlia message dispatch
-    inputNode.register("mapreduce", this);
-    // We are now receiving messages from the Kademlia network
+    this.inputNode = inputNode;
   }
 
+  public void bind(final String tag) {
+    this.tag = tag;
+    // Bind to the Kademlia message dispatch
+    inputNode.register(tag, this);
+    // We are now receiving messages from the Kademlia network
+  }
   /**************************************************
    * MessageHandler
    */
@@ -49,7 +59,7 @@ public final class KadMessageHandler
    * event.
    */
   @Override
-  public final FilteredValueEvent<Message> getIncomingMessageEvent() {
+  public final MessageEvent getIncomingMessageEvent() {
     return this.incomingMessageEvent;
   }
 
@@ -94,7 +104,10 @@ public final class KadMessageHandler
     if (!(content instanceof Message)) {
       return new ExceptionMessage(new InvalidContentException());
     }
-    this.incomingMessageEvent.fire(this, (Message) content);
-    return new AcknowledgementMessage();
+    final Object response = this.incomingMessageEvent.getResponse(this, (Message) content);
+    if (!(response instanceof Message)) {
+      return new InvalidContentException("Response was not a valid message");
+    }
+    return (Message) response;
   }
 }

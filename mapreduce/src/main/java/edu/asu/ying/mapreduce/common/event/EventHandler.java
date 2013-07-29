@@ -12,4 +12,5 @@ import javax.annotation.Nullable;
 public interface EventHandler<TEventArgs> {
 
   boolean onEvent(final @Nonnull Object sender, final @Nullable TEventArgs args);
+  Object onRequest(final @Nonnull Object sender, final @Nullable TEventArgs args);
 }

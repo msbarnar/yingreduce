@@ -7,5 +7,5 @@ import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
  */
 public interface MessageHandler {
 
-  FilteredValueEvent<Message> getIncomingMessageEvent();
+  MessageEvent getIncomingMessageEvent();
 }

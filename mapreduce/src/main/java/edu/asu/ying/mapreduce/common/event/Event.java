@@ -45,4 +45,14 @@ public abstract class Event<TEventHandler extends EventHandler<TEventArgs>, TEve
       }
     }
   }
+
+  public Object getResponse(final Object sender, final @Nullable TEventArgs args) {
+    synchronized (this.handlers) {
+      if (this.handlers.size() > 0) {
+        return this.handlers.get(0).onRequest(sender, args);
+      } else {
+        return null;
+      }
+    }
+  }
 }
