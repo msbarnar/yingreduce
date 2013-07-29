@@ -12,8 +12,5 @@ import javax.annotation.Nullable;
  */
 public interface NodeURL extends NodeURI {
 
-  @Nullable
-  InetAddress getAddress();
-
-  URI toURI() throws URISyntaxException;
+  URI toURI();
 }

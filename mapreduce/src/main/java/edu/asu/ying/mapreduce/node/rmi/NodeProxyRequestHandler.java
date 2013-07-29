@@ -39,7 +39,7 @@ public final class NodeProxyRequestHandler implements MessageHandler {
 
     try {
       // Bind the proxy to the local scheduler
-      final RemoteNodeProxy proxyInstance = RemoteNodeProxyImpl.createProxyTo(this.localNode);
+      final ServerNodeProxy proxyInstance = ServerNodeProxy.createProxyTo(this.localNode);
       response.setContent(proxyInstance);
 
     } catch (final RemoteException e) {

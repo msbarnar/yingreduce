@@ -3,38 +3,44 @@ package edu.asu.ying.mapreduce.node.kad;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 
 import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.node.NodeURL;
+import il.technion.ewolf.kbr.Key;
 
 /**
  *
  */
 public final class KadNodeURL extends KadNodeURI implements NodeURL {
 
-  private final InetAddress address;
+  private final URI uri;
 
-  protected KadNodeURL(final InetAddress address) {
-    super(null);
-    this.address = address;
+  public KadNodeURL(final String key, final String uri) {
+    super(key);
+    this.uri = URI.create(uri);
+  }
+
+  public KadNodeURL(final Key key, final URI uri) {
+    super(key);
+    this.uri = uri;
+  }
+
+  public KadNodeURL(final String uri) {
+    this(null, uri);
   }
 
   @Override
-  public URI toURI() throws URISyntaxException {
+  public URI toURI() {
     // TODO: Ports from configuration
-    return new URI(String.format("openkad.udp://%s:5888/", this.address.getHostAddress()));
-  }
-
-  @Nullable
-  @Override
-  public InetAddress getAddress() {
-    return this.address;
+    return URI.create(String.format("openkad.udp://%s:%d/",
+                                    this.uri.getHost(), this.uri.getPort()));
   }
 
   @Override
   public final String toString() {
-    return super.toString().concat(": ").concat(this.address.toString());
+    return super.toString().concat(": ").concat(this.uri.toString());
   }
 
   @Override
@@ -50,11 +56,11 @@ public final class KadNodeURL extends KadNodeURI implements NodeURL {
       return false;
 
     final KadNodeURL url = (KadNodeURL) o;
-    return url.getAddress().equals(this.address);
+    return url.toURI().equals(this.uri);
   }
 
   @Override
   public final int hashCode() {
-    return super.hashCode() ^ this.address.hashCode();
+    return super.hashCode() ^ this.uri.hashCode();
   }
 }

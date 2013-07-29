@@ -1,5 +1,7 @@
 package edu.asu.ying.mapreduce.node.kad;
 
+import com.google.common.base.Strings;
+
 import javax.annotation.Nonnull;
 
 import edu.asu.ying.mapreduce.node.NodeURI;
@@ -10,18 +12,14 @@ import il.technion.ewolf.kbr.Key;
  */
 public class KadNodeURI implements NodeURI {
 
-  public static KadNodeURI fromKademliaKey(final Key key) {
-    return new KadNodeURI(key.toBase64());
-  }
-
-  public static KadNodeURI fromStringKey(final String key) {
-    return new KadNodeURI(key);
-  }
-
   protected final Key key;
 
-  protected KadNodeURI(final String key) {
+  public KadNodeURI(final String key) {
     this.key = new Key(key);
+  }
+
+  public KadNodeURI(final Key key) {
+    this.key = key;
   }
 
   public final Key toKademliaKey() {
@@ -36,7 +34,11 @@ public class KadNodeURI implements NodeURI {
 
   @Override
   public String toString() {
-    return this.key.toBase64();
+    if (this.key == null) {
+      return "";
+    } else {
+      return Strings.nullToEmpty(this.key.toBase64());
+    }
   }
 
   @Override

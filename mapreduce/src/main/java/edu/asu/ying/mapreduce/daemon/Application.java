@@ -2,7 +2,12 @@ package edu.asu.ying.mapreduce.daemon;
 
 import com.google.inject.Guice;
 
+import java.io.IOException;
+
 import edu.asu.ying.mapreduce.node.LocalNode;
+import edu.asu.ying.mapreduce.node.NodeURL;
+import edu.asu.ying.mapreduce.node.kad.KadLocalNode;
+import edu.asu.ying.mapreduce.node.kad.KadNodeURL;
 
 /**
  * The main entry point for the node daemon. {@code Application} starts the table, scheduling, and
@@ -39,7 +44,20 @@ public class Application {
     // TODO: Logging
     System.out.println("Starting the application...");
 
-    Guice.createInjector(new KademliaModule()).getInstance(LocalNode.class);
+    try {
+      final LocalNode node = new KadLocalNode(5000);
+      final LocalNode node2 = new KadLocalNode(5001);
+      try {
+        node2.join(new KadNodeURL("//127.0.0.1:5000"));
+
+      } catch (final IOException e) {
+        e.printStackTrace();
+      }
+
+    } catch (final InstantiationException e) {
+      e.printStackTrace();
+      return;
+    }
 
     System.out.println("... and we're rolling!");
     System.out.println();

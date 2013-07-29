@@ -40,7 +40,7 @@ public final class KadSendMessageStream
   }
 
   private NodeURI createLocalUri() {
-    return KadNodeURI.fromKademliaKey(this.kadNode.getLocalNode().getKey());
+    return new KadNodeURI(this.kadNode.getLocalNode().getKey());
   }
 
   /**
