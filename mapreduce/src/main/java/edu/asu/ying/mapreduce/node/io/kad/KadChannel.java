@@ -1,6 +1,7 @@
 package edu.asu.ying.mapreduce.node.io.kad;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
 import edu.asu.ying.mapreduce.common.filter.Filter;
@@ -49,34 +51,18 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   }
 
   @Override
-  public void registerMessageHandler(final MessageHandler handler, final String tag) {
+  public final void registerMessageHandler(final MessageHandler handler, final String tag) {
     this.kbrNode.register(tag, this);
     this.messageHandlers.put(tag, handler);
   }
 
   @Override
-  public void sendMessage(final Message message) throws IOException {
-    this.sendStream.write(message);
+  public final MessageOutputStream getMessageOutputStream() {
+    return this.sendStream;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public <TRequest extends Message, TResponse extends Message> ListenableFuture<TResponse>
-  sendRequestAsync(final TRequest request, final Class<TResponse> responseType) throws IOException {
-
-    return this.sendStream
-  }
-
-  @Override
-  public <T extends Message, V extends Message> T sendRequest(final V request,
-                                                              final Class<T> responseType)
-      throws IOException, ExecutionException, InterruptedException {
-
-    return this.sendRequestAsync(request, responseType).get();
-  }
-
-  @Override
-  public void onIncomingMessage(Node from, String tag, Serializable content) {
+  public final void onIncomingMessage(Node from, String tag, Serializable content) {
     if (!(content instanceof Message)) {
       // TODO: Logging
       return;
@@ -89,7 +75,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   }
 
   @Override
-  public Serializable onIncomingRequest(Node from, String tag, Serializable content) {
+  public final Serializable onIncomingRequest(Node from, String tag, Serializable content) {
     if (!(content instanceof Message)) {
       // TODO: Logging
       return new ExceptionMessage(new InvalidContentException());

@@ -85,7 +85,7 @@ public final class KadSendMessageStream
   }
 
   @Override
-  public final Future<Serializable> writeRequest(final Message request) throws IOException {
+  public final Future<Serializable> writeAsyncRequest(final Message request) throws IOException {
     request.setSourceNode(this.localUri);
 
     final Key destKey = ((KadNodeURI) request.getDestinationNode()).toKademliaKey();

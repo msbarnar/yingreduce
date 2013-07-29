@@ -29,5 +29,5 @@ public interface MessageOutputStream {
    */
   ListenableFutureTask<Boolean> writeAsync(final Message message) throws IOException;
 
-  Future<Serializable> writeRequest(final Message request) throws IOException;
+  Future<Serializable> writeAsyncRequest(final Message request) throws IOException;
 }
