@@ -6,7 +6,6 @@ import java.rmi.RemoteException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import edu.asu.ying.mapreduce.common.event.EventHandler;
 import edu.asu.ying.mapreduce.common.filter.FilterClass;
 import edu.asu.ying.mapreduce.node.LocalNode;
 import edu.asu.ying.mapreduce.node.io.Channel;

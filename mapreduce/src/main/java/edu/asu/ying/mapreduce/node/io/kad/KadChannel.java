@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
-import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterClass;
 import edu.asu.ying.mapreduce.common.filter.FilterString;

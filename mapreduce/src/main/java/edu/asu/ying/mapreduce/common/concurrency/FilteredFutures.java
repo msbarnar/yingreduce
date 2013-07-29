@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import edu.asu.ying.mapreduce.common.event.EventHandler;
-import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 
 

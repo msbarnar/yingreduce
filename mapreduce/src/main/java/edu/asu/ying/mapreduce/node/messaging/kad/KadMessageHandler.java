@@ -6,9 +6,6 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.io.Serializable;
 
-import edu.asu.ying.mapreduce.common.event.Event;
-import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
-import edu.asu.ying.mapreduce.common.event.FilteredValueEventBase;
 import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.messaging.AcknowledgementMessage;
 import edu.asu.ying.mapreduce.node.messaging.ExceptionMessage;
