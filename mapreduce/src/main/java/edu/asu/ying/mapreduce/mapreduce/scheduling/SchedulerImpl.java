@@ -1,7 +1,5 @@
 package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
-import com.google.inject.Inject;
-
 import java.rmi.RemoteException;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -10,14 +8,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegator;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
-import edu.asu.ying.mapreduce.net.LocalNode;
+import edu.asu.ying.mapreduce.node.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.execution.ForwardingTaskQueueExecutor;
 import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueueExecutor;
-import edu.asu.ying.mapreduce.net.NodeURI;
+import edu.asu.ying.mapreduce.node.NodeURI;
 
 /**
  * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another

@@ -4,8 +4,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.asu.ying.mapreduce.net.LocalNode;
-
 public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
   private final BlockingQueue<Job> queue;
