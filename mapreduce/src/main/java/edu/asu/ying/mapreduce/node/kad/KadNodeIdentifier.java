@@ -4,21 +4,21 @@ import com.google.common.base.Strings;
 
 import javax.annotation.Nonnull;
 
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 import il.technion.ewolf.kbr.Key;
 
 /**
  *
  */
-public class KadNodeURI implements NodeURI {
+public class KadNodeIdentifier implements NodeIdentifier {
 
   protected final Key key;
 
-  public KadNodeURI(final String key) {
+  public KadNodeIdentifier(final String key) {
     this.key = new Key(key);
   }
 
-  public KadNodeURI(final Key key) {
+  public KadNodeIdentifier(final Key key) {
     this.key = key;
   }
 
@@ -48,10 +48,10 @@ public class KadNodeURI implements NodeURI {
     if (o == this)
       return true;
 
-    if (!(o instanceof KadNodeURI))
+    if (!(o instanceof KadNodeIdentifier))
       return false;
 
-    final KadNodeURI uri = (KadNodeURI) o;
+    final KadNodeIdentifier uri = (KadNodeIdentifier) o;
     return uri.toKademliaKey().equals(this.key);
   }
 

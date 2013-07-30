@@ -10,15 +10,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegator;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
-import edu.asu.ying.mapreduce.node.LocalNode;
+import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.execution.ForwardingTaskQueueExecutor;
 import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueueExecutor;
-import edu.asu.ying.mapreduce.node.NodeURI;
-import edu.asu.ying.mapreduce.node.rmi.NodeProxy;
+import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.p2p.rmi.NodeProxy;
 
 /**
  * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another
@@ -35,7 +35,7 @@ import edu.asu.ying.mapreduce.node.rmi.NodeProxy;
 public class SchedulerImpl implements Scheduler {
 
   private final LocalNode localNode;
-  private final NodeURI localUri;
+  private final NodeIdentifier localUri;
 
   // The job queue holds jobs to be delegated as tasks to the initial nodes.
   private final BlockingQueue<Job> jobQueue = new LinkedBlockingQueue<>();
@@ -57,9 +57,9 @@ public class SchedulerImpl implements Scheduler {
 
     this.localNode = localNode;
 
-    NodeURI localUri = null;
+    NodeIdentifier localUri = null;
     try {
-      localUri = localNode.getNodeURI();
+      localUri = localNode.getIdentifier();
     } catch (final RemoteException e) {
       // TODO: Logging
       e.printStackTrace();
@@ -184,7 +184,7 @@ public class SchedulerImpl implements Scheduler {
     return this.remoteQueue;
   }
 
-  public final NodeURI getNodeURI() {
+  public final NodeIdentifier getNodeURI() {
     return this.localUri;
   }
 

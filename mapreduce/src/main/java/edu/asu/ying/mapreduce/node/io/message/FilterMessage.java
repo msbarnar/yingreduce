@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterBase;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 
 /**
@@ -156,7 +156,7 @@ public abstract class FilterMessage
 
       @Override
       protected boolean match(final Message message) {
-        final NodeURI uri;
+        final NodeIdentifier uri;
         if (this.which == WhichUri.Destination) {
           uri = message.getDestinationNode();
         } else if (this.which == WhichUri.Source) {

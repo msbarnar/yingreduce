@@ -1,14 +1,10 @@
 package edu.asu.ying.mapreduce.node.io.kad;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
-import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -16,8 +12,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.mapreduce.node.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.node.NodeURI;
-import edu.asu.ying.mapreduce.node.kad.KadNodeURI;
+import edu.asu.ying.mapreduce.node.kad.KadNodeIdentifier;
+import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.mapreduce.node.io.message.Message;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
@@ -32,15 +28,15 @@ public final class KadSendMessageStream
     implements MessageOutputStream {
 
   private final KeybasedRouting kadNode;
-  private final NodeURI localUri;
+  private final NodeIdentifier localUri;
 
   public KadSendMessageStream(final KeybasedRouting kadNode) {
     this.kadNode = kadNode;
     this.localUri = this.createLocalUri();
   }
 
-  private NodeURI createLocalUri() {
-    return new KadNodeURI(this.kadNode.getLocalNode().getKey());
+  private NodeIdentifier createLocalUri() {
+    return new KadNodeIdentifier(this.kadNode.getLocalNode().getKey());
   }
 
   /**
@@ -52,7 +48,7 @@ public final class KadSendMessageStream
   public final void write(final Message message) throws IOException {
     message.setSourceNode(this.localUri);
 
-    final Key destKey = ((KadNodeURI) message.getDestinationNode()).toKademliaKey();
+    final Key destKey = ((KadNodeIdentifier) message.getDestinationNode()).toKademliaKey();
 
     final List<Node> foundNodes = this.kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {
@@ -87,7 +83,7 @@ public final class KadSendMessageStream
   public final Future<Serializable> writeAsyncRequest(final Message request) throws IOException {
     request.setSourceNode(this.localUri);
 
-    final Key destKey = ((KadNodeURI) request.getDestinationNode()).toKademliaKey();
+    final Key destKey = ((KadNodeIdentifier) request.getDestinationNode()).toKademliaKey();
 
     final List<Node> foundNodes = this.kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {

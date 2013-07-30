@@ -2,7 +2,7 @@ package edu.asu.ying.mapreduce.daemon;
 
 import java.io.IOException;
 
-import edu.asu.ying.mapreduce.node.LocalNode;
+import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.node.kad.KadLocalNode;
 import edu.asu.ying.mapreduce.node.kad.KadNodeURL;
 

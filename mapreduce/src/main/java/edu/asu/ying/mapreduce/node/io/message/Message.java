@@ -3,7 +3,7 @@ package edu.asu.ying.mapreduce.node.io.message;
 import java.io.Serializable;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 
 /**
@@ -25,11 +25,11 @@ public interface Message
 
   String getTag();
 
-  NodeURI getSourceNode();
+  NodeIdentifier getSourceNode();
 
-  void setSourceNode(NodeURI uri);
+  void setSourceNode(NodeIdentifier uri);
 
-  NodeURI getDestinationNode();
+  NodeIdentifier getDestinationNode();
 
   /**
    * Makes this message into a response to {@code request}.

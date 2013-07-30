@@ -1,6 +1,6 @@
 package edu.asu.ying.mapreduce.node.io.message;
 
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
  *
@@ -15,12 +15,12 @@ public class RequestMessage extends MessageBase {
     super(id, tag);
   }
 
-  public RequestMessage(String tag, NodeURI destinationNode) {
+  public RequestMessage(String tag, NodeIdentifier destinationNode) {
     super(tag, destinationNode);
   }
 
   public RequestMessage(String id, String tag,
-                        NodeURI destinationNode) {
+                        NodeIdentifier destinationNode) {
     
     super(id, tag, destinationNode);
   }

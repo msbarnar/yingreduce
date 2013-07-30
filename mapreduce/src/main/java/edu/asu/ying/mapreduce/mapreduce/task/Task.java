@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
  * A {@code Task} is the basic unit of work in the map/reduce system.
@@ -31,7 +31,7 @@ public interface Task extends Serializable {
    */
   InetAddress getResponsibleNodeAddress();
 
-  void touch(final NodeURI uri);
+  void touch(final NodeIdentifier uri);
 
   /**
    * Returns {@code true} if this is the initial node (the node carrying the table) for the specified

@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
  *
@@ -23,7 +23,7 @@ public class ResponseMessage extends MessageBase {
     return new ResponseMessage(request.getId(), request.getTag(), request.getSourceNode());
   }
 
-  private ResponseMessage(final String id, final String tag, final NodeURI destinationNode) {
+  private ResponseMessage(final String id, final String tag, final NodeIdentifier destinationNode) {
     super(id, tag, destinationNode);
   }
 

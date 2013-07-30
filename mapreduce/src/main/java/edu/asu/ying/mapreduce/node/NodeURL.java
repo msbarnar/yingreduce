@@ -1,16 +1,14 @@
 package edu.asu.ying.mapreduce.node;
 
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.URISyntaxException;
 
-import javax.annotation.Nullable;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
  * A {@code NodeURL} identifies the exact location of and means of reaching a specific node, in
- * addition to uniquely identifying the node per its {@link NodeURI}.
+ * addition to uniquely identifying the node per its {@link edu.asu.ying.p2p.NodeIdentifier}.
  */
-public interface NodeURL extends NodeURI {
+public interface NodeURL extends NodeIdentifier {
 
   URI toURI();
 }

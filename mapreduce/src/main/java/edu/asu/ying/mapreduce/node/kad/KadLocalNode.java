@@ -17,11 +17,13 @@ import edu.asu.ying.mapreduce.node.*;
 import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
-import edu.asu.ying.mapreduce.node.rmi.Activator;
-import edu.asu.ying.mapreduce.node.rmi.ActivatorImpl;
+import edu.asu.ying.p2p.rmi.Activator;
+import edu.asu.ying.p2p.rmi.ServerActivatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.node.rmi.NodeProxy;
-import edu.asu.ying.mapreduce.node.rmi.NodeProxyRequestHandler;
+import edu.asu.ying.p2p.rmi.NodeProxy;
+import edu.asu.ying.p2p.rmi.NodeProxyRequestHandler;
+import edu.asu.ying.p2p.LocalNode;
+import edu.asu.ying.p2p.NodeIdentifier;
 import il.technion.ewolf.kbr.*;
 
 
@@ -33,7 +35,7 @@ public final class KadLocalNode
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
-  private final NodeURI localUri;
+  private final NodeIdentifier localUri;
 
   // Pipe to the kad network
   private final Channel networkChannel;
@@ -48,12 +50,12 @@ public final class KadLocalNode
 
     // The local Kademlia node for node discovery
     this.kbrNode = KademliaNetwork.createNode(port);
-    this.localUri = new KadNodeURI(this.kbrNode.getLocalNode().getKey());
+    this.localUri = new KadNodeIdentifier(this.kbrNode.getLocalNode().getKey());
 
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
     // Start the remote to provide Scheduler references
-    this.activator = new ActivatorImpl();
+    this.activator = new ServerActivatorImpl();
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
 
@@ -96,7 +98,7 @@ public final class KadLocalNode
   }
 
   @Override
-  public NodeProxy findNode(final NodeURI uri) throws UnknownHostException {
+  public NodeProxy findNode(final NodeIdentifier uri) throws UnknownHostException {
     final Key key = this.kbrNode.getKeyFactory().create(uri.toString());
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
@@ -119,7 +121,7 @@ public final class KadLocalNode
   }
 
   @Override
-  public NodeURI getNodeURI() {
+  public NodeIdentifier getIdentifier() {
     return this.localUri;
   }
 

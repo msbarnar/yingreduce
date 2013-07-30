@@ -6,12 +6,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.asu.ying.mapreduce.node.LocalNode;
+import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.node.NodeURI;
-import edu.asu.ying.mapreduce.node.rmi.NodeProxy;
+import edu.asu.ying.p2p.rmi.NodeProxy;
 
 /**
  * {@code ForwardingTaskQueueExecutor} removes tasks from the local {@code Forwarding} queue and
@@ -78,7 +77,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
         }
         lastEntry.setSchedulerAction(TaskHistory.SchedulerAction.QueuedRemotely);
         try {
-          System.out.println(String.format("[%s] Task: %s", this.localNode.getNodeURI(),
+          System.out.println(String.format("[%s] Task: %s", this.localNode.getIdentifier(),
                                          lastEntry.getSchedulerAction()));
         } catch (final RemoteException e) {
           e.printStackTrace();

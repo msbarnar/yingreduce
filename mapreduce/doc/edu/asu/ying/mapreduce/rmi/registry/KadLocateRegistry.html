@@ -79,7 +79,7 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">edu.asu.ying.mapreduce.node.rmi.registry</div>
+<div class="subTitle">edu.asu.ying.p2p.rmi.registry</div>
 <h2 title="Class KadLocateRegistry" class="title">Class KadLocateRegistry</h2>
 </div>
 <div class="contentContainer">
@@ -87,7 +87,7 @@
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>edu.asu.ying.mapreduce.node.rmi.registry.KadLocateRegistry</li>
+<li>edu.asu.ying.p2p.rmi.registry.KadLocateRegistry</li>
 </ul>
 </li>
 </ul>
@@ -98,7 +98,7 @@
 <br>
 <pre>public final class <span class="strong">KadLocateRegistry</span>
 extends java.lang.Object</pre>
-<div class="block"><a href="../../../../../../edu/asu/ying/mapreduce/rmi/registry/KadLocateRegistry.html" title="class in edu.asu.ying.mapreduce.node.rmi.registry"><code>KadLocateRegistry</code></a> is used to obtain a reference to a remote <code>Registry</code>
+<div class="block"><a href="../../../../../../edu/asu/ying/mapreduce/rmi/registry/KadLocateRegistry.html" title="class in edu.asu.ying.p2p.rmi.registry"><code>KadLocateRegistry</code></a> is used to obtain a reference to a remote <code>Registry</code>
  on a node in a Kademlia network. The returned reference can be used to get references
  to objects on that node.</div>
 </li>
@@ -145,7 +145,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.rmi.registry.Registry</code></td>
-<td class="colLast"><code><strong><a href="../../../../../../edu/asu/ying/mapreduce/rmi/registry/KadLocateRegistry.html#getRegistry(edu.asu.ying.mapreduce.node.rmi.ResourceIdentifier)">getRegistry</a></strong>(<a href="../../../../../../edu/asu/ying/mapreduce/rmi/ResourceIdentifier.html" title="interface in edu.asu.ying.mapreduce.node.rmi">ResourceIdentifier</a>&nbsp;nodeKey)</code>
+<td class="colLast"><code><strong><a href="../../../../../../edu/asu/ying/mapreduce/rmi/registry/KadLocateRegistry.html#getRegistry(edu.asu.ying.p2p.rmi.ResourceIdentifier)">getRegistry</a></strong>(<a href="../../../../../../edu/asu/ying/mapreduce/rmi/ResourceIdentifier.html" title="interface in edu.asu.ying.p2p.rmi">ResourceIdentifier</a>&nbsp;nodeKey)</code>
 <div class="block">Gets a reference to a <code>Registry</code> object on a remote Kademlia node
  identified by the key given in <code>url</code>.</div>
 </td>
@@ -205,19 +205,19 @@ extends java.lang.Object</pre>
 <dd><code>java.rmi.RemoteException</code></dd></dl>
 </li>
 </ul>
-<a name="getRegistry(edu.asu.ying.mapreduce.node.rmi.ResourceIdentifier)">
+<a name="getRegistry(edu.asu.ying.p2p.rmi.ResourceIdentifier)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getRegistry</h4>
 <pre>@Inject
-public static&nbsp;java.rmi.registry.Registry&nbsp;getRegistry(<a href="../../../../../../edu/asu/ying/mapreduce/rmi/ResourceIdentifier.html" title="interface in edu.asu.ying.mapreduce.node.rmi">ResourceIdentifier</a>&nbsp;nodeKey)
+public static&nbsp;java.rmi.registry.Registry&nbsp;getRegistry(<a href="../../../../../../edu/asu/ying/mapreduce/rmi/ResourceIdentifier.html" title="interface in edu.asu.ying.p2p.rmi">ResourceIdentifier</a>&nbsp;nodeKey)
                                               throws java.rmi.RemoteException</pre>
 <div class="block">Gets a reference to a <code>Registry</code> object on a remote Kademlia node
  identified by the key given in <code>url</code>.
  <p>
- The <a href="../../../../../../edu/asu/ying/mapreduce/rmi/ResourceIdentifier.html" title="interface in edu.asu.ying.mapreduce.node.rmi"><code>ResourceIdentifier</code></a> is the key used to look up the Kademlia node
+ The <a href="../../../../../../edu/asu/ying/mapreduce/rmi/ResourceIdentifier.html" title="interface in edu.asu.ying.p2p.rmi"><code>ResourceIdentifier</code></a> is the key used to look up the Kademlia node
  on which the <code>Registry</code> is instantiated.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>url</code> - the Kademlia key</dd>
 <dt><span class="strong">Returns:</span></dt><dd>a reference to the <code>Registry</code> instance on a remote Kademlia node.</dd>

@@ -1,11 +1,6 @@
 package edu.asu.ying.mapreduce.node.kad;
 
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-
-import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.node.NodeURL;
 import il.technion.ewolf.kbr.Key;
@@ -13,7 +8,7 @@ import il.technion.ewolf.kbr.Key;
 /**
  *
  */
-public final class KadNodeURL extends KadNodeURI implements NodeURL {
+public final class KadNodeURL extends KadNodeIdentifier implements NodeURL {
 
   private final URI uri;
 

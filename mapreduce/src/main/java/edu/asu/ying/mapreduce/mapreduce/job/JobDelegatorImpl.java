@@ -9,11 +9,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.asu.ying.mapreduce.mapreduce.task.LetterFreqTask;
-import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
-import edu.asu.ying.mapreduce.node.LocalNode;
-import edu.asu.ying.mapreduce.node.kad.KadNodeURI;
-import edu.asu.ying.mapreduce.node.rmi.NodeProxy;
+import edu.asu.ying.mapreduce.node.kad.KadNodeIdentifier;
+import edu.asu.ying.p2p.LocalNode;
+import edu.asu.ying.p2p.rmi.NodeProxy;
 
 public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
@@ -63,7 +62,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     for (int i = 0; i < 10; i++) {
       final LetterFreqTask task = new LetterFreqTask(i);
       try {
-        task.getHistory().append(new TaskHistory.Entry(this.localNode.getNodeURI(),
+        task.getHistory().append(new TaskHistory.Entry(this.localNode.getIdentifier(),
                                                      TaskHistory.NodeRole.Responsible,
                                                      TaskHistory.SchedulerAction.None));
       } catch (final RemoteException e) {
@@ -77,8 +76,8 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     while (!tasks.isEmpty()) {
       final LetterFreqTask task = tasks.pop();
       try {
-        final NodeProxy node = this.localNode.findNode(new KadNodeURI(task.getId().toString()));
-        task.setInitialNodeURI(node.getNodeURI());
+        final NodeProxy node = this.localNode.findNode(new KadNodeIdentifier(task.getId().toString()));
+        task.setInitialNodeURI(node.getIdentifier());
         node.getScheduler().acceptTask(task);
       } catch (final RemoteException e) {
         e.printStackTrace();

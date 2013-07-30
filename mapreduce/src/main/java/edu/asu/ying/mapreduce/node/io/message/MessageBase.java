@@ -11,7 +11,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 
 /**
@@ -58,12 +58,12 @@ public abstract class MessageBase
     this.setTag(tag);
   }
 
-  public MessageBase(final String tag, final NodeURI destinationNode) {
+  public MessageBase(final String tag, final NodeIdentifier destinationNode) {
     this.setTag(tag);
     this.setDestinationNode(destinationNode);
   }
 
-  public MessageBase(final String id, final String tag, final NodeURI destinationNode) {
+  public MessageBase(final String id, final String tag, final NodeIdentifier destinationNode) {
     this.setId(id);
     this.setTag(tag);
     this.setDestinationNode(destinationNode);
@@ -146,22 +146,22 @@ public abstract class MessageBase
     return this.properties;
   }
 
-  public void setSourceNode(final NodeURI sourceNode) {
+  public void setSourceNode(final NodeIdentifier sourceNode) {
     this.properties.put(Property.SourceURI, Preconditions.checkNotNull(sourceNode));
   }
 
   @Override
-  public NodeURI getSourceNode() {
-    return this.properties.getDynamicCast(Property.SourceURI, NodeURI.class);
+  public NodeIdentifier getSourceNode() {
+    return this.properties.getDynamicCast(Property.SourceURI, NodeIdentifier.class);
   }
 
-  public void setDestinationNode(final NodeURI destinationNode) {
+  public void setDestinationNode(final NodeIdentifier destinationNode) {
     this.properties.put(Property.DestinationURI, Preconditions.checkNotNull(destinationNode));
   }
 
   @Nullable
-  public NodeURI getDestinationNode() {
-    return this.properties.getDynamicCast(Property.DestinationURI, NodeURI.class);
+  public NodeIdentifier getDestinationNode() {
+    return this.properties.getDynamicCast(Property.DestinationURI, NodeIdentifier.class);
   }
 
   public final void setException(final Throwable exception) {

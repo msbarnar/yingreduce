@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
  * {@code TaskHistory} keeps a journal of all of the schedulers that observe a particular mapreduce.
@@ -48,7 +48,7 @@ public final class TaskHistory implements Serializable {
     private static final long SerialVersionUID = 1L;
 
     // Any node visiting the history should be able to contact this node by the URI.
-    private NodeURI nodeUri;
+    private NodeIdentifier nodeIdentifier;
     // The role of the visiting node in carrying the mapreduce.
     private NodeRole nodeRole;
     // What the visiting scheduler ultimately did with the mapreduce.
@@ -56,22 +56,22 @@ public final class TaskHistory implements Serializable {
 
     public Entry() {
     }
-    public Entry(final NodeURI nodeUri) {
-      this.nodeUri = nodeUri;
+    public Entry(final NodeIdentifier nodeIdentifier) {
+      this.nodeIdentifier = nodeIdentifier;
     }
-    public Entry(final NodeURI nodeUri, final NodeRole nodeRole,
+    public Entry(final NodeIdentifier nodeIdentifier, final NodeRole nodeRole,
                  final SchedulerAction schedulerAction) {
 
-      this.nodeUri = nodeUri;
+      this.nodeIdentifier = nodeIdentifier;
       this.nodeRole = nodeRole;
       this.schedulerAction = schedulerAction;
     }
 
-    public final void setNodeUri(final NodeURI uri) {
-      this.nodeUri = uri;
+    public final void setNodeIdentifier(final NodeIdentifier uri) {
+      this.nodeIdentifier = uri;
     }
-    public final NodeURI getNodeUri() {
-      return this.nodeUri;
+    public final NodeIdentifier getNodeIdentifier() {
+      return this.nodeIdentifier;
     }
 
 

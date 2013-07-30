@@ -71,7 +71,7 @@ public class Application2 {
         System.out.println(String.format("Scheduling job %s... %s on node %s",
                                          result.getJob().getId(),
                                          result.getResult().toString(),
-                                         result.getNodeUri().toString()));
+                                         result.getNodeIdentifier().toString()));
       } catch (final RemoteException e) {
         e.printStackTrace();
       }

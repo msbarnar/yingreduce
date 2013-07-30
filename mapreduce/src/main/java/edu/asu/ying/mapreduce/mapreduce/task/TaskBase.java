@@ -1,13 +1,11 @@
 package edu.asu.ying.mapreduce.mapreduce.task;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 import java.net.InetAddress;
-import java.util.UUID;
 
 import edu.asu.ying.mapreduce.common.Properties;
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
  * {@code TaskBase} is the base class of all distributable mapreduce.
@@ -106,18 +104,18 @@ public abstract class TaskBase implements Task {
     return this.properties.getDynamicCast(Property.ResponsibleNodeAddress, InetAddress.class);
   }
 
-  public void setInitialNodeURI(final NodeURI uri) {
+  public void setInitialNodeURI(final NodeIdentifier uri) {
     this.properties.put(Property.InitialNodeURI, uri);
   }
-  public NodeURI getInitialNodeURI() {
-    return this.properties.getDynamicCast(Property.InitialNodeURI, NodeURI.class);
+  public NodeIdentifier getInitialNodeURI() {
+    return this.properties.getDynamicCast(Property.InitialNodeURI, NodeIdentifier.class);
   }
 
-  public void touch(final NodeURI uri) {
+  public void touch(final NodeIdentifier uri) {
     this.getHistory().append(new TaskHistory.Entry(uri));
   }
 
   public boolean isCurrentlyAtInitialNode() {
-    return this.getHistory().last().getNodeUri().equals(this.getInitialNodeURI());
+    return this.getHistory().last().getNodeIdentifier().equals(this.getInitialNodeURI());
   }
 }
