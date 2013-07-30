@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.util.UUID;
 
 import edu.asu.ying.mapreduce.common.Properties;
+import edu.asu.ying.mapreduce.node.NodeURI;
 
 /**
  * {@code TaskBase} is the base class of all distributable mapreduce.
@@ -25,6 +26,7 @@ public abstract class TaskBase implements Task {
     static final String TaskStartParameters = "mapreduce.parameters.start";
     static final String TaskHistory = "mapreduce.history";
     static final String ResponsibleNodeAddress = "mapreduce.nodes.responsible.address";
+    static final String InitialNodeURI = "mapreduce.nodes.initial.uri";
   }
 
   protected final Properties properties = new Properties();
@@ -34,7 +36,12 @@ public abstract class TaskBase implements Task {
   }
 
   public TaskID getId() {
-    return this.properties.getDynamicCast(Property.TaskId, TaskID.class);
+    final TaskID id = this.properties.getDynamicCast(Property.TaskId, TaskID.class);
+    if (id == null) {
+      this.setId();
+      return this.getId();
+    }
+    return id;
   }
   /**
    * Sets a random universally unique identifier.
@@ -99,15 +106,18 @@ public abstract class TaskBase implements Task {
     return this.properties.getDynamicCast(Property.ResponsibleNodeAddress, InetAddress.class);
   }
 
+  public void setInitialNodeURI(final NodeURI uri) {
+    this.properties.put(Property.InitialNodeURI, uri);
+  }
+  public NodeURI getInitialNodeURI() {
+    return this.properties.getDynamicCast(Property.InitialNodeURI, NodeURI.class);
+  }
+
+  public void touch(final NodeURI uri) {
+    this.getHistory().append(new TaskHistory.Entry(uri));
+  }
+
   public boolean isCurrentlyAtInitialNode() {
-    final TaskHistory.Entry lastEntry = this.getHistory().last();
-    if (lastEntry == null) {
-      // The responsible node didn't append itself to the history before distributing this mapreduce from
-      // the original job.
-      throw new IllegalStateException("Scheduler received mapreduce with no responsible node set; don't"
-                                      + " know whether this is the initial node, and won't know the"
-                                      + " origin of the mapreduce if we continue forwarding.");
-    }
-    return lastEntry.getNodeRole() == TaskHistory.NodeRole.Responsible;
+    return this.getHistory().last().getNodeUri().equals(this.getInitialNodeURI());
   }
 }

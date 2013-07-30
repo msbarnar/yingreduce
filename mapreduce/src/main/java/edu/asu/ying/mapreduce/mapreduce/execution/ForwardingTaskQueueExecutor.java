@@ -10,7 +10,8 @@ import edu.asu.ying.mapreduce.node.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.node.rmi.RemoteNodeProxy;
+import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.mapreduce.node.rmi.NodeProxy;
 
 /**
  * {@code ForwardingTaskQueueExecutor} removes tasks from the local {@code Forwarding} queue and
@@ -76,6 +77,12 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
                                           + " after this will not know how to route this task.");
         }
         lastEntry.setSchedulerAction(TaskHistory.SchedulerAction.QueuedRemotely);
+        try {
+          System.out.println(String.format("[%s] Task: %s", this.localNode.getNodeURI(),
+                                         lastEntry.getSchedulerAction()));
+        } catch (final RemoteException e) {
+          e.printStackTrace();
+        }
       } else {
         this.forwardTask(task);
       }
@@ -83,7 +90,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
   }
 
   private void forwardTask(final Task task) {
-    final List<RemoteNodeProxy> neighbors = this.localNode.getNeighbors();
+    final List<NodeProxy> neighbors = this.localNode.getNeighbors();
 
     // Default to forwarding to the local remote queue
     int minimumBackpressure = this.remoteQueue.size();
@@ -91,7 +98,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
 
     // Unless one of our neighbors has a lower backpressure
     // TODO: adjust backpressure calculation per weina's suggestions
-    for (final RemoteNodeProxy node : neighbors) {
+    for (final NodeProxy node : neighbors) {
       try {
         final Scheduler remoteScheduler = node.getScheduler();
         final int remoteBackpressure = remoteScheduler.getBackpressure();
@@ -111,7 +118,10 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
     }
 
     try {
-      bestScheduler.addTask(task);
+      System.out.println(String.format("Forwarding task %s to node %s",
+                                       task.getId(), bestScheduler.getNodeURI()));
+
+      bestScheduler.acceptTask(task);
     } catch (final RemoteException e) {
       // TODO: Logging
       e.printStackTrace();

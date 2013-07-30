@@ -37,7 +37,7 @@ public class KadNodeURI implements NodeURI {
     if (this.key == null) {
       return "";
     } else {
-      return Strings.nullToEmpty(this.key.toBase64());
+      return Strings.nullToEmpty(this.key.toString());
     }
   }
 

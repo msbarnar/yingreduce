@@ -8,6 +8,6 @@ import edu.asu.ying.mapreduce.node.Node;
 /**
  *
  */
-public interface RemoteNodeProxy extends Node, Remote, Serializable {
+public interface NodeProxy extends Node, Remote, Serializable {
 
 }

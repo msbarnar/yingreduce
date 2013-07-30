@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 
 import edu.asu.ying.mapreduce.common.Properties;
+import edu.asu.ying.mapreduce.node.NodeURI;
 
 /**
  * A {@code Task} is the basic unit of work in the map/reduce system.
@@ -14,13 +15,10 @@ public interface Task extends Serializable {
 
   Properties getProperties();
 
+  Serializable run();
+
   TaskID getId();
   TaskStartParameters getTaskStartParameters();
-
-  /**
-   * Checks that a mapreduce has all of the necessary information before attempting to addTask it.
-   */
-  void validate() throws InvalidTaskException;
 
   /**
    * Returns a history of all of the schedulers that have observed this mapreduce.
@@ -32,6 +30,8 @@ public interface Task extends Serializable {
    * mapreduce segment).
    */
   InetAddress getResponsibleNodeAddress();
+
+  void touch(final NodeURI uri);
 
   /**
    * Returns {@code true} if this is the initial node (the node carrying the table) for the specified

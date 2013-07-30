@@ -13,7 +13,8 @@ public final class JobSchedulingResult implements Serializable {
   private static final long SerialVersionUID = 1L;
 
   public enum Result {
-    Scheduled
+    Scheduled,
+    DestinationNotFound
   }
 
   private final Job job;

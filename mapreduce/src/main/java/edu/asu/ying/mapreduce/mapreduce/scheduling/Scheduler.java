@@ -8,6 +8,7 @@ import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
+import edu.asu.ying.mapreduce.node.NodeURI;
 
 /**
  * {@code Scheduler} is responsible for the allocation of {@code map} and {@code reduce} mapreduce.
@@ -30,13 +31,14 @@ public interface Scheduler extends Remote {
    * If the local node is the {@code responsible} node, it accepts a job and queues it to be
    * delegated as tasks to {@code initial} nodes.
    */
-  JobSchedulingResult addJob(final Job job) throws RemoteException;
+  JobSchedulingResult createJob(final Job job) throws RemoteException;
+  JobSchedulingResult acceptJob(final Job job) throws RemoteException;
 
   /**
    * Accepts a mapreduce as the {@code initial node} or as a {@code remote node}, queuing it for
    * execution or forwarding.
    */
-  TaskSchedulingResult addTask(final Task task) throws RemoteException;
+  TaskSchedulingResult acceptTask(final Task task) throws RemoteException;
 
   /**
    * Returns a value equal to or greater than {@code 0} that specifies this scheduler's resistance
@@ -48,4 +50,6 @@ public interface Scheduler extends Remote {
    * child nodes.
    */
   int getBackpressure() throws RemoteException;
+
+  NodeURI getNodeURI() throws RemoteException;
 }

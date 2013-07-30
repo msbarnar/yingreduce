@@ -1,7 +1,9 @@
 package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -16,6 +18,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.execution.ForwardingTaskQueueExecutor;
 import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueueExecutor;
 import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.mapreduce.node.rmi.NodeProxy;
 
 /**
  * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another
@@ -31,13 +34,14 @@ import edu.asu.ying.mapreduce.node.NodeURI;
  */
 public class SchedulerImpl implements Scheduler {
 
+  private final LocalNode localNode;
   private final NodeURI localUri;
 
   // The job queue holds jobs to be delegated as tasks to the initial nodes.
   private final BlockingQueue<Job> jobQueue = new LinkedBlockingQueue<>();
-  private final JobDelegator jobDelegator = new JobDelegatorImpl(this.jobQueue);
+  private final JobDelegator jobDelegator;
 
-  private static final int MAX_QUEUE_SIZE = 1;
+  private static final int MAX_QUEUE_SIZE = 3;
 
   // Ql and Qr are bounded, but Qf is just a pipe
   private final BlockingQueue<Task> localQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
@@ -50,6 +54,8 @@ public class SchedulerImpl implements Scheduler {
  // private final TaskQueueExecutor remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
 
   public SchedulerImpl(final LocalNode localNode) {
+
+    this.localNode = localNode;
 
     NodeURI localUri = null;
     try {
@@ -69,6 +75,7 @@ public class SchedulerImpl implements Scheduler {
 
    // this.remoteExecutor.start();
 
+    this.jobDelegator = new JobDelegatorImpl(this.localNode, this.jobQueue);
     this.jobDelegator.start();
   }
 
@@ -82,12 +89,22 @@ public class SchedulerImpl implements Scheduler {
    * delegated as tasks to {@code initial} nodes.
    */
   @Override
-  public JobSchedulingResult addJob(Job job) throws RemoteException {
+  public JobSchedulingResult createJob(Job job) throws RemoteException {
     // TODO: Find the responsible node by finding the node with the first page of the table
+    // FIXME: pick a random node
+    final List<NodeProxy> neighbors = this.localNode.getNeighbors();
+    final int rnd = (new Random()).nextInt(neighbors.size());
+
+    final NodeProxy node = neighbors.get(rnd);
+    return node.getScheduler().acceptJob(job);
+  }
+
+  @Override
+  public JobSchedulingResult acceptJob(final Job job) throws RemoteException {
+    this.jobQueue.add(job);
     return new JobSchedulingResult(job, this.localUri)
         .setResult(JobSchedulingResult.Result.Scheduled);
   }
-
   /**
    * Accepts a {@link Task} and appends it to the appropriate queue:
    * <ol>
@@ -99,11 +116,12 @@ public class SchedulerImpl implements Scheduler {
    * </ol>
    */
   @Override
-  public TaskSchedulingResult addTask(final Task task) throws RemoteException {
+  public TaskSchedulingResult acceptTask(final Task task) throws RemoteException {
 
     final TaskSchedulingResult result = new TaskSchedulingResult();
 
-    final TaskHistory.Entry historyEntry = this.createHistoryEntry();
+    task.touch(this.localUri);
+    final TaskHistory.Entry historyEntry = task.getHistory().last();
 
     // If this is the initial node, try to execute the mapreduce locally.
     if (task.isCurrentlyAtInitialNode()) {
@@ -118,6 +136,9 @@ public class SchedulerImpl implements Scheduler {
       // If this is not the initial node, put the mapreduce straight in the forwarding queue
       result.setTaskScheduled(this.queueForward(task, historyEntry));
     }
+
+    System.out.println(String.format("[%s] Task: %s", this.getNodeURI(),
+                                     historyEntry.getSchedulerAction()));
 
     return result;
   }
@@ -161,6 +182,10 @@ public class SchedulerImpl implements Scheduler {
 
   public final Queue<Task> getRemoteQueue() {
     return this.remoteQueue;
+  }
+
+  public final NodeURI getNodeURI() {
+    return this.localUri;
   }
 
   private TaskHistory.Entry createHistoryEntry() {

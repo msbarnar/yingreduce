@@ -18,11 +18,18 @@ public final class NodeProxyRequestHandler implements MessageHandler {
   }
 
   private final LocalNode localNode;
+  private final NodeProxy proxyInstance;
 
   private final String tag = "node.remote-proxy";
 
   private NodeProxyRequestHandler(final LocalNode localNode, final Channel networkChannel) {
     this.localNode = localNode;
+    try {
+      this.proxyInstance = ServerNodeProxy.createProxyTo(this.localNode);
+    } catch (final RemoteException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
 
     networkChannel.registerMessageHandler(this, this.tag);
   }
@@ -37,14 +44,8 @@ public final class NodeProxyRequestHandler implements MessageHandler {
   public Message onIncomingRequest(final Message request) {
     final ResponseMessage response = ResponseMessage.inResponseTo(request);
 
-    try {
-      // Bind the proxy to the local scheduler
-      final RemoteNodeProxy proxyInstance = ServerNodeProxy.createProxyTo(this.localNode);
-      response.setContent(proxyInstance);
-
-    } catch (final RemoteException e) {
-      response.setException(e);
-    }
+    // Bind the proxy to the local scheduler
+    response.setContent(proxyInstance);
 
     return response;
   }

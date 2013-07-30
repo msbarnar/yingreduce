@@ -3,6 +3,8 @@ package edu.asu.ying.mapreduce.node.kad;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
+import java.rmi.UnknownHostException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,16 +15,14 @@ import edu.asu.ying.mapreduce.node.io.Channel;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.mapreduce.node.*;
 import edu.asu.ying.mapreduce.node.io.InvalidContentException;
-import edu.asu.ying.mapreduce.node.io.message.Message;
 import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 import edu.asu.ying.mapreduce.node.rmi.Activator;
 import edu.asu.ying.mapreduce.node.rmi.ActivatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.node.rmi.NodeProxy;
 import edu.asu.ying.mapreduce.node.rmi.NodeProxyRequestHandler;
-import edu.asu.ying.mapreduce.node.rmi.RemoteNodeProxy;
 import il.technion.ewolf.kbr.*;
-import il.technion.ewolf.kbr.Node;
 
 
 /**
@@ -60,7 +60,9 @@ public final class KadLocalNode
     // Expose this local node to ServerNodeProxy requests via the request handler
     NodeProxyRequestHandler.exposeNodeToChannel(this, networkChannel);
 
-    System.out.println("The local Kademlia node is listening.");
+    System.out.println(String.format("Local node %s is listening on port %d",
+                                     this.localUri.toString(),
+                                     port));
   }
 
   @Override
@@ -79,18 +81,28 @@ public final class KadLocalNode
   }
 
   @Override
-  public List<RemoteNodeProxy> getNeighbors() {
+  public List<NodeProxy> getNeighbors() {
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.getNeighbours();
-    final List<RemoteNodeProxy> nodeProxies = new ArrayList<>();
+    final List<NodeProxy> nodeProxies = new ArrayList<>();
 
     for (final il.technion.ewolf.kbr.Node kadNode : kadNodes) {
-      final RemoteNodeProxy proxy = this.importProxyTo(kadNode);
+      final NodeProxy proxy = this.importProxyTo(kadNode);
       if (proxy != null) {
         nodeProxies.add(proxy);
       }
     }
 
     return nodeProxies;
+  }
+
+  @Override
+  public NodeProxy findNode(final NodeURI uri) throws UnknownHostException {
+    final Key key = this.kbrNode.getKeyFactory().create(uri.toString());
+    final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
+    if (kadNodes.isEmpty()) {
+      throw new UnknownHostException(uri.getKey());
+    }
+    return this.importProxyTo(kadNodes.get(0));
   }
 
   /**
@@ -111,7 +123,7 @@ public final class KadLocalNode
     return this.localUri;
   }
 
-  private RemoteNodeProxy importProxyTo(final il.technion.ewolf.kbr.Node node) {
+  private NodeProxy importProxyTo(final il.technion.ewolf.kbr.Node node) {
     final RequestMessage request = new RequestMessage("node.remote-proxy");
     final Future<Serializable> response;
     try {
@@ -129,10 +141,14 @@ public final class KadLocalNode
       if (!(resp instanceof ResponseMessage)) {
         throw new InvalidContentException();
       }
-      return (RemoteNodeProxy) ((ResponseMessage) resp).getContent();
+      final ResponseMessage rm = ((ResponseMessage) resp);
+      if (rm.getException() != null) {
+        throw rm.getException();
+      }
+      return (NodeProxy) ((ResponseMessage) resp).getContent();
 
     } catch (final ExecutionException | InterruptedException
-        | InvalidContentException | ClassCastException e) {
+        | InvalidContentException | ClassCastException | RemoteException e) {
 
       // TODO: Logging
       e.printStackTrace();

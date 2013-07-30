@@ -2,6 +2,8 @@ package edu.asu.ying.mapreduce.mapreduce.map;
 
 import com.google.common.base.Preconditions;
 
+import java.io.Serializable;
+
 import edu.asu.ying.mapreduce.mapreduce.task.InvalidTaskException;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskBase;
@@ -21,7 +23,7 @@ import edu.asu.ying.mapreduce.node.NodeURL;
  * Further, implementing {@link Task}, the {@code MapTask} carries with it a history of operations
  * performed by the nodes that handle it.
  */
-public final class MapTask extends TaskBase {
+public abstract class MapTask extends TaskBase {
 
   private static final class Property {
     static final String Reducer = "reducer";
@@ -33,6 +35,8 @@ public final class MapTask extends TaskBase {
   public MapTask(final TaskID id) {
     this.setId(id);
   }
+
+  public abstract Serializable run();
 
   public void validate() throws InvalidTaskException {
     if (this.getReducer() == null) {
