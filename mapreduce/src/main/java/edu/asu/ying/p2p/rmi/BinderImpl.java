@@ -5,17 +5,14 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * Binds the type {@code T} to a child or instance of that type.
- * </p>
- * When requests to the {@link RemoteActivator} for that type are made, references will be provided
- * according to the binding.
+ * @inheritDoc
  */
 public final class BinderImpl<TBound extends Remote>
     implements ServerActivator.Binder<TBound> {
 
-
   /**
-   * {@code ClassBinding} binds a class to another class with an instantiation mode.
+   * {@code ClassBinding} binds a class to another class with an activation mode controlling the
+   * instantiation of the bound class.
    */
   private final class ClassBinding<TBound extends Remote, TBindee extends TBound>
       implements ServerActivator.Binding<TBound> {
@@ -31,21 +28,30 @@ public final class BinderImpl<TBound extends Remote>
       }
       abstract TBindee get();
     }
+
+    /**
+     * Provides a new instance of {@code TBindee} per call.
+     */
     private final class SingleCallFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
       private SingleCallFactory(final Class<TBindee> type) {
         super(type);
       }
       final TBindee get() {
         try {
-          return this.type.newInstance();
+          return (TBindee) UnicastRemoteObject.exportObject(this.type.newInstance(),
+                                                            15999);
 
-        } catch (final InstantiationException | IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException | RemoteException e) {
           // TODO: Logging
           e.printStackTrace();
           return null;
         }
       }
     }
+
+    /**
+     * Provides a singleton instance of {@code TBindee}.
+     */
     private final class SingletonFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
       private TBindee instance;
       private final Object instanceLock = new Object();
@@ -74,23 +80,27 @@ public final class BinderImpl<TBound extends Remote>
       }
     }
 
-    private final Class<TBound> bindee;
-    private final Class<TBindee> boundType;
+    // The type BOUND
+    private final Class<TBound> boundType;
+    // The type TO WHICH IT IS BOUND
+    private final Class<TBindee> bindee;
+    // Provides fully exported proxies according to activation mode
     private final InstanceFactory<TBindee> factory;
-    private TBindee instance;
-    private final Object instanceLock = new Object();
 
-    public ClassBinding(final Class<TBound> bindee, final Class<TBindee> type,
+    /**
+     * Binds {@code boundType} to {@code bindee} given the activation {@code mode}.
+     */
+    public ClassBinding(final Class<TBound> boundType, final Class<TBindee> bindee,
                         final ServerActivator.ActivationMode mode) {
+      this.boundType = boundType;
       this.bindee = bindee;
-      this.boundType = type;
 
       switch (mode) {
         case SingleCall:
-          this.factory = new SingleCallFactory<>(type);
+          this.factory = new SingleCallFactory<>(bindee);
           break;
         case Singleton:
-          this.factory = new SingletonFactory<>(type);
+          this.factory = new SingletonFactory<>(bindee);
         default:
           throw new IllegalArgumentException();
       }
@@ -103,7 +113,7 @@ public final class BinderImpl<TBound extends Remote>
   }
 
   /**
-   * {@code InstanceBinding} binds a class to a specific instance.
+   * {@code InstanceBinding} binds a class to a specific instance of that class.
    */
   private final class InstanceBinding<TBound extends Remote>
       implements ServerActivator.Binding<TBound> {

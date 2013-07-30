@@ -18,7 +18,6 @@ import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
-import edu.asu.ying.p2p.rmi.RemoteActivator;
 import edu.asu.ying.p2p.rmi.ActivatorRequestHandler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.p2p.rmi.NodeProxy;
@@ -61,7 +60,7 @@ public final class KadLocalNode
     this.scheduler = new SchedulerImpl(this);
 
     // Expose this local node to ServerNodeProxy requests via the request handler
-    ActivatorRequestHandler.exposeNodeToChannel(this, networkChannel);
+    ActivatorRequestHandler.exportNodeToChannel(this, networkChannel);
 
     System.out.println(String.format("Local node %s is listening on port %d",
                                      this.localUri.toString(),

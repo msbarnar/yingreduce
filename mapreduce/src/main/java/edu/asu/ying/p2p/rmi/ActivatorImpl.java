@@ -1,5 +1,7 @@
 package edu.asu.ying.p2p.rmi;
 
+import com.javafx.tools.doclets.internal.toolkit.taglets.InheritDocTaglet;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -15,16 +17,19 @@ import javax.annotation.Nullable;
  */
 public final class ActivatorImpl implements RemoteActivator, ServerActivator {
 
+  // (singleton) Proxy instance accessible via RMI
   private RemoteActivator exportedInstance = null;
   private final Object exportedInstanceLock = new Object();
 
-  private final Map<Class<?>, Binder<?>> bindings = new HashMap<>();
+  // Activation of other classes is controlled via bindings
+  // i.e. Class/Interface -> Subclass or Instance
+  private final Map<Class<? extends Remote>, Binder<? extends Remote>> bindings = new HashMap<>();
 
   public ActivatorImpl() {
   }
 
-  /*
-   * ServerActivator
+  /**
+   * @inheritDoc
    */
   @Override
   public final <TBound extends Remote> Binder bind(final Class<TBound> type) {
@@ -33,6 +38,9 @@ public final class ActivatorImpl implements RemoteActivator, ServerActivator {
     return binder;
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public final RemoteActivator export() {
     if (this.exportedInstance == null) {
@@ -50,6 +58,9 @@ public final class ActivatorImpl implements RemoteActivator, ServerActivator {
     return this.exportedInstance;
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public final <TBound extends Remote> TBound getReference(final Class<TBound> type,
                                            final @Nullable Map<String, String> properties)
