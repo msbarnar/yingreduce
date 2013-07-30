@@ -1,10 +1,10 @@
-package edu.asu.ying.mapreduce.node.rmi;
+package edu.asu.ying.p2p.rmi;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.mapreduce.node.LocalNode;
+import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.node.io.Channel;
 import edu.asu.ying.mapreduce.node.io.MessageHandler;
 import edu.asu.ying.mapreduce.node.io.message.Message;

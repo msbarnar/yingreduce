@@ -1,9 +1,9 @@
-package edu.asu.ying.mapreduce.node.rmi;
+package edu.asu.ying.p2p.rmi;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.mapreduce.node.LocalNode;
-import edu.asu.ying.mapreduce.node.NodeURI;
+import edu.asu.ying.p2p.LocalNode;
+import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 
 /**
@@ -29,12 +29,12 @@ public final class ServerNodeProxy implements NodeProxy {
 
   private final LocalNode localNode;
   private final Scheduler schedulerProxy;
-  private final NodeURI nodeURI;
+  private final NodeIdentifier nodeIdentifier;
 
   private ServerNodeProxy(final LocalNode localNode) throws RemoteException {
     this.localNode = localNode;
     this.schedulerProxy = localNode.getActivator().export(localNode.getScheduler(), null);
-    this.nodeURI = localNode.getNodeURI();
+    this.nodeIdentifier = localNode.getIdentifier();
   }
 
   @Override
@@ -43,7 +43,7 @@ public final class ServerNodeProxy implements NodeProxy {
   }
 
   @Override
-  public NodeURI getNodeURI() throws RemoteException {
-    return this.nodeURI;
+  public NodeIdentifier getIdentifier() throws RemoteException {
+    return this.nodeIdentifier;
   }
 }
