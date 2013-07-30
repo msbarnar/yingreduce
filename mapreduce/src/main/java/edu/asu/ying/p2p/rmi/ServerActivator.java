@@ -12,12 +12,20 @@ public interface ServerActivator {
     SingleCall
   }
 
-  public interface ActivatorBinding<TBindee extends Remote> {
-
-    <TBound extends TBindee> ActivatorBinding to(Class<TBound> type,
-                                                 ServerActivator.ActivationMode mode);
-    ActivatorBinding toInstance(TBindee instance);
+  public interface Binding<TBound extends Remote> {
+    TBound getReference();
   }
 
-  <TBindee extends Remote> ActivatorBinding bind(Class<TBindee> type);
+  public interface Binder<TBound extends Remote> {
+
+    <TBindee extends TBound> void to(Class<TBindee> type,
+                                        ServerActivator.ActivationMode mode);
+    void toInstance(TBound instance);
+
+    Binding getBinding();
+  }
+
+  <TBound extends Remote> Binder bind(Class<TBound> type);
+
+  RemoteActivator export();
 }

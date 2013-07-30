@@ -17,13 +17,14 @@ import edu.asu.ying.mapreduce.node.*;
 import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
-import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.p2p.rmi.ServerActivatorImpl;
+import edu.asu.ying.p2p.rmi.ActivatorImpl;
+import edu.asu.ying.p2p.rmi.RemoteActivator;
+import edu.asu.ying.p2p.rmi.ActivatorRequestHandler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.p2p.rmi.NodeProxy;
-import edu.asu.ying.p2p.rmi.NodeProxyRequestHandler;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.p2p.rmi.ServerActivator;
 import il.technion.ewolf.kbr.*;
 
 
@@ -41,7 +42,7 @@ public final class KadLocalNode
   private final Channel networkChannel;
 
   // Provides RMI references to the scheduler
-  private final Activator activator;
+  private final ServerActivator activator;
 
   // Schedules mapreduce jobs and tasks
   private final Scheduler scheduler;
@@ -55,12 +56,12 @@ public final class KadLocalNode
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
     // Start the remote to provide Scheduler references
-    this.activator = new ServerActivatorImpl();
+    this.activator = new ActivatorImpl();
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
 
     // Expose this local node to ServerNodeProxy requests via the request handler
-    NodeProxyRequestHandler.exposeNodeToChannel(this, networkChannel);
+    ActivatorRequestHandler.exposeNodeToChannel(this, networkChannel);
 
     System.out.println(String.format("Local node %s is listening on port %d",
                                      this.localUri.toString(),
@@ -116,7 +117,7 @@ public final class KadLocalNode
   }
 
   @Override
-  public Activator getActivator() {
+  public ServerActivator getActivator() {
     return this.activator;
   }
 

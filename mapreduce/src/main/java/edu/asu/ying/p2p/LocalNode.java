@@ -5,8 +5,8 @@ import java.rmi.UnknownHostException;
 import java.util.List;
 
 import edu.asu.ying.mapreduce.node.NodeURL;
-import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.NodeProxy;
+import edu.asu.ying.p2p.rmi.ServerActivator;
 
 
 /**
@@ -18,7 +18,7 @@ public interface LocalNode {
 
   List<NodeProxy> getNeighbors();
 
-  Activator getActivator();
+  ServerActivator getActivator();
 
   NodeProxy findNode(final NodeIdentifier uri) throws UnknownHostException;
 }

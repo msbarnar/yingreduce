@@ -2,35 +2,25 @@ package edu.asu.ying.p2p.rmi;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.rmi.RemoteException;
-
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.node.io.Channel;
 import edu.asu.ying.mapreduce.node.io.MessageHandler;
 import edu.asu.ying.mapreduce.node.io.message.Message;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 
-public final class NodeProxyRequestHandler implements MessageHandler {
+public final class ActivatorRequestHandler implements MessageHandler {
 
-  public static NodeProxyRequestHandler exposeNodeToChannel(final LocalNode node,
+  public static ActivatorRequestHandler exposeNodeToChannel(final LocalNode node,
                                                             final Channel networkChannel) {
-    return new NodeProxyRequestHandler(node, networkChannel);
+    return new ActivatorRequestHandler(node, networkChannel);
   }
 
-  private final LocalNode localNode;
-  private final NodeProxy proxyInstance;
+  private final RemoteActivator instance;
 
   private final String tag = "node.remote-proxy";
 
-  private NodeProxyRequestHandler(final LocalNode localNode, final Channel networkChannel) {
-    this.localNode = localNode;
-    try {
-      this.proxyInstance = ServerNodeProxy.createProxyTo(this.localNode);
-    } catch (final RemoteException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
-
+  private ActivatorRequestHandler(final LocalNode localNode, final Channel networkChannel) {
+    instance = localNode.getActivator().export();
     networkChannel.registerMessageHandler(this, this.tag);
   }
 
@@ -45,7 +35,7 @@ public final class NodeProxyRequestHandler implements MessageHandler {
     final ResponseMessage response = ResponseMessage.inResponseTo(request);
 
     // Bind the proxy to the local scheduler
-    response.setContent(proxyInstance);
+    response.setContent(this.instance);
 
     return response;
   }
