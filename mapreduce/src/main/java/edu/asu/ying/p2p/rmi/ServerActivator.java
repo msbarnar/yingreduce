@@ -1,6 +1,12 @@
 package edu.asu.ying.p2p.rmi;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+import edu.asu.ying.p2p.RemoteNode;
 
 /**
  *
@@ -69,11 +75,9 @@ public interface ServerActivator {
    */
   <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
 
-  /**
-   * Returns an instance of a {@link Remote} proxy to the {@code Activator} that is accessible by
-   * peers.
-   */
-  RemoteActivator export();
+  <TBound extends Remote> TBound getReference(final Class<TBound> type,
+                                              final @Nullable Map<String, String> properties)
+      throws RemoteException;
 
   int getPort();
 }

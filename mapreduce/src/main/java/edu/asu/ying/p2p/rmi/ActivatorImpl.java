@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.RemoteNode;
 
 
@@ -20,15 +21,11 @@ import edu.asu.ying.p2p.RemoteNode;
  * Controls creation and lifetime management for server-side object instances available for
  * accession by remote nodes.
  */
-public final class ActivatorImpl implements RemoteActivator, ServerActivator {
+public final class ActivatorImpl implements ServerActivator {
 
   // The port used to export all RMI instances.
   private int rmiPort = 0;
   private final Object portLock = new Object();
-
-  // (singleton) Proxy instance accessible via RMI
-  private RemoteActivator exportedInstance = null;
-  private final Object exportedInstanceLock = new Object();
 
   // Activation of other classes is controlled via bindings
   // i.e. Class/Interface -> Subclass or Instance
@@ -42,21 +39,10 @@ public final class ActivatorImpl implements RemoteActivator, ServerActivator {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public final <TBound extends Remote> Binder bind(final Class<TBound> type) {
+  public final <TBound extends Remote> Binder<TBound> bind(final Class<TBound> type) {
     final Binder binder = new BinderImpl<>(type, this);
     this.bindings.put(type, binder);
     return binder;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  @Override
-  public final RemoteNode export() {
-    final Binder binder = new BinderImpl<>(RemoteActivator.class, this);
-    binder.to(ActivatorImpl.class,
-              ActivationMode.Singleton);
-    return (RemoteActivator) binder.getBinding().getReference();
   }
 
   /**

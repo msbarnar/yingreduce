@@ -7,22 +7,22 @@ import edu.asu.ying.mapreduce.node.io.message.Message;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 
 /**
- * {@code NodeProxyRequestHandler} listens for requests from the network and returns a
+ * {@code RMIRequestHandler} listens for requests from the network and returns a
  * {@link ResponseMessage} wrapping a {@link java.rmi.Remote} proxy to the server-side
  * node.
  */
-public final class NodeProxyRequestHandler implements MessageHandler {
+public final class RMIRequestHandler implements MessageHandler {
 
   /**
-   * Creates an {@link NodeProxyRequestHandler} which provides {@link RemoteActivator} referencing
+   * Creates an {@link RMIRequestHandler} which provides {@link RemoteActivator} referencing
    * the given {@link LocalNode}'s {@link ServerActivator}.
    * @param node the node to be made accessible to peers on the network.
    * @param networkChannel the channel through which the node will be accessible.
    * @return the new request handler.
    */
-  public static NodeProxyRequestHandler exportNodeToChannel(final LocalNode node,
+  public static RMIRequestHandler exportNodeToChannel(final LocalNode node,
                                                             final Channel networkChannel) {
-    return new NodeProxyRequestHandler(node, networkChannel);
+    return new RMIRequestHandler(node, networkChannel);
   }
 
   // The proxy instance to include in responses
@@ -35,7 +35,7 @@ public final class NodeProxyRequestHandler implements MessageHandler {
    * Gets an instance of the {@link RemoteActivator} proxy and registers the message handler on the
    * channel.
    */
-  private NodeProxyRequestHandler(final LocalNode localNode, final Channel networkChannel) {
+  private RMIRequestHandler(final LocalNode localNode, final Channel networkChannel) {
     this.instance = localNode.getActivator().export();
     networkChannel.registerMessageHandler(this, this.tag);
   }
@@ -50,7 +50,7 @@ public final class NodeProxyRequestHandler implements MessageHandler {
   /**
    * Responds to {@code request} with a {@link ResponseMessage} wrapping the {@link RemoteActivator}
    * instance obtained from the {@link LocalNode} passed in
-   * {@link NodeProxyRequestHandler#NodeProxyRequestHandler(edu.asu.ying.p2p.LocalNode,
+   * {@link RMIRequestHandler#RMIRequestHandler(edu.asu.ying.p2p.LocalNode,
    edu.asu.ying.mapreduce.node.io.Channel)}.
    */
   @Override

@@ -19,7 +19,7 @@ import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 import edu.asu.ying.p2p.RemoteNode;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
-import edu.asu.ying.p2p.rmi.NodeProxyRequestHandler;
+import edu.asu.ying.p2p.rmi.RMIRequestHandler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.NodeIdentifier;
@@ -40,8 +40,11 @@ public final class KadLocalNode
   // Pipe to the kad network
   private final Channel networkChannel;
 
-  // Provides RMI references to the scheduler
+  // Manages RMI export of objects for access by remote peers.
   private final ServerActivator activator;
+
+  // Implements the primary interface for remote peers. Must be exported by activator
+  private final KadLocalNodeProxy nodeProxy;
 
   // Schedules mapreduce jobs and tasks
   private final Scheduler scheduler;
@@ -56,13 +59,16 @@ public final class KadLocalNode
 
     // Start the remote reference provider
     this.activator = new ActivatorImpl();
-    // Start the scheduler with a reference to the local node for finding neighbors
+    // Start the interface for remote peers to access the local node
+    this.nodeProxy = KadLocalNodeProxy.createProxyTo(this);
+    // Start the scheduler
     this.scheduler = new SchedulerImpl(this);
-    // Allow the activator to export the scheduler to peers
+    // Allow peers to access the node and scheduler remotely.
+    this.activator.bind(RemoteNode.class).toInstance(this.nodeProxy);
     this.activator.bind(Scheduler.class).toInstance(this.scheduler);
 
-    // Expose this local node to ServerNodeProxy requests via the request handler
-    NodeProxyRequestHandler.exportNodeToChannel(this, networkChannel);
+    // Allow peers to discover this node's RMI interfaces.
+    RMIRequestHandler.exportNodeToChannel(this, networkChannel);
 
     System.out.println(String.format("Local node %s is listening on port %d",
                                      this.localUri.toString(),
