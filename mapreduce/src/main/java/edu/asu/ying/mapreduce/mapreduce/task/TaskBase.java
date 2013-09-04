@@ -6,6 +6,7 @@ import java.net.InetAddress;
 
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.p2p.RemoteNode;
 
 /**
  * {@code TaskBase} is the base class of all distributable mapreduce.
@@ -20,11 +21,11 @@ public abstract class TaskBase implements Task {
   private static final long SerialVersionUID = 1L;
 
   protected static final class Property {
-    static final String TaskId = "mapreduce.id";
-    static final String TaskStartParameters = "mapreduce.parameters.start";
-    static final String TaskHistory = "mapreduce.history";
-    static final String ResponsibleNodeAddress = "mapreduce.nodes.responsible.address";
-    static final String InitialNodeURI = "mapreduce.nodes.initial.uri";
+    static final String TaskId = "task.id";
+    static final String TaskStartParameters = "task.parameters.start";
+    static final String TaskHistory = "task.history";
+    static final String Job = "job";
+    static final String InitialNode = "task.initial-node";
   }
 
   protected final Properties properties = new Properties();
@@ -97,25 +98,10 @@ public abstract class TaskBase implements Task {
     return history;
   }
 
-  public void setResponsibleNodeAddress(final InetAddress address) {
-    this.properties.put(Property.ResponsibleNodeAddress, address);
+  public void setInitialNode(final RemoteNode node) {
+    this.properties.put(Property.InitialNode, node);
   }
-  public InetAddress getResponsibleNodeAddress() {
-    return this.properties.getDynamicCast(Property.ResponsibleNodeAddress, InetAddress.class);
-  }
-
-  public void setInitialNodeURI(final NodeIdentifier uri) {
-    this.properties.put(Property.InitialNodeURI, uri);
-  }
-  public NodeIdentifier getInitialNodeURI() {
-    return this.properties.getDynamicCast(Property.InitialNodeURI, NodeIdentifier.class);
-  }
-
-  public void touch(final NodeIdentifier uri) {
-    this.getHistory().append(new TaskHistory.Entry(uri));
-  }
-
-  public boolean isCurrentlyAtInitialNode() {
-    return this.getHistory().last().getNodeIdentifier().equals(this.getInitialNodeURI());
+  public RemoteNode getInitialNode() {
+    return this.properties.getDynamicCast(Property.InitialNode, RemoteNode.class);
   }
 }

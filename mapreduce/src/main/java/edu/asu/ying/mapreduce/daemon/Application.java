@@ -1,13 +1,5 @@
 package edu.asu.ying.mapreduce.daemon;
 
-import java.rmi.RemoteException;
-
-import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
-import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
-import edu.asu.ying.mapreduce.yingtable.TableID;
-
 /**
  * The main entry point for the node daemon. {@code Application} starts the table, scheduling, and
  * interface services before attaching the local node to an existing Kademlia network.

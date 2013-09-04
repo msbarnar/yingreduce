@@ -3,6 +3,7 @@ package edu.asu.ying.mapreduce.mapreduce.task;
 import java.io.Serializable;
 import java.net.InetAddress;
 
+import edu.asu.ying.mapreduce.common.HasProperties;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.p2p.NodeIdentifier;
@@ -13,9 +14,7 @@ import edu.asu.ying.p2p.RemoteNode;
  * </p>
  * Tasks are how nodes communicate pending or completed work.
  */
-public interface Task extends Serializable {
-
-  Properties getProperties();
+public interface Task extends Serializable, HasProperties {
 
   Job getParentJob();
 
@@ -38,10 +37,4 @@ public interface Task extends Serializable {
   TaskHistory getHistory();
 
   Serializable run();
-
-  /**
-   * Returns {@code true} if this is the initial node (the node carrying the table) for the
-   * specified mapreduce.
-   */
-  boolean isCurrentlyAtInitialNode();
 }

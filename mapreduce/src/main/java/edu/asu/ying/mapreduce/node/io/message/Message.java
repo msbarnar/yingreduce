@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.node.io.message;
 
 import java.io.Serializable;
 
+import edu.asu.ying.mapreduce.common.HasProperties;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.p2p.NodeIdentifier;
 
@@ -11,9 +12,7 @@ import edu.asu.ying.p2p.NodeIdentifier;
  * establishment around the network.
  */
 public interface Message
-    extends Serializable {
-
-  Properties getProperties();
+    extends Serializable, HasProperties {
 
   /**
    * The message's ID is a universally unique identifier used to link received responses to their
