@@ -132,16 +132,17 @@ public class SchedulerImpl implements LocalScheduler {
    *   <li>{@code Local} - if the current node is the {@code initial} node, and the queue is not
    *   full.</li>
    *   <li>{@code Forwarding} - if the current node is <b>not</b> the initial node, the mapreduce is
-   *   placed in this queue. The mapreduce will then either be placed in the {@code Remote} queue or, if
-   *   it is full, in a child node's {@code Forwarding} queue.</li>
+   *   placed in this queue. The mapreduce will then either be placed in the {@code Remote} queue
+   *   or, if it is full, in a child node's {@code Forwarding} queue.</li>
    * </ol>
    */
   @Override
   public TaskSchedulingResult acceptTask(final Task task) throws RemoteException {
 
+    task.touch(this.localNode.getProxy());
+
     final TaskSchedulingResult result = new TaskSchedulingResult();
 
-    task.touch(this.localUri);
     final TaskHistory.Entry historyEntry = task.getHistory().last();
 
     // If this is the initial node, try to execute the mapreduce locally.

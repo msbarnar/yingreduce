@@ -38,6 +38,7 @@ public interface Task extends Serializable {
    */
   TaskStartParameters getTaskStartParameters();
 
+  void touch(final RemoteNode node);
   /**
    * Returns a history of all of the schedulers that have handled this task.
    */

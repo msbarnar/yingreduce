@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
@@ -44,7 +45,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
    * {@inheritDoc}
    */
   @Override
-  public final void start() {
+  public final synchronized void start() {
     this.threadPool.submit(this);
   }
 
@@ -59,8 +60,15 @@ public final class ForwardingTaskQueue implements TaskQueue {
   /**
    * {@inheritDoc}
    */
+  public final int size() {
+    return this.forwardingQueue.size();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public final void run() {
+  public final synchronized void run() {
     // Forward tasks forever
     this.threadPool.submit(this);
 
@@ -77,7 +85,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
       return;
     }
 
-    if (task.isCurrentlyAtInitialNode()) {
+    if (task.isAtInitialNode()) {
       // Don't put tasks on the initial node's remote queue; that doesn't make any sense.
       this.forwardTask(task);
     } else {
@@ -99,18 +107,18 @@ public final class ForwardingTaskQueue implements TaskQueue {
     }
   }
 
-  private void forwardTask(final Task task) {
+  private synchronized void forwardTask(final Task task) {
     final List<RemoteNode> neighbors = this.localNode.getNeighbors();
 
     // Default to forwarding to the local remote queue
     int minimumBackpressure = this.remoteQueue.size();
-    LocalScheduler bestScheduler = this.scheduler;
+    RemoteScheduler bestScheduler = this.scheduler.getProxy();
 
     // Unless one of our neighbors has a lower backpressure
     // TODO: adjust backpressure calculation per weina's suggestions
     for (final RemoteNode node : neighbors) {
       try {
-        final LocalScheduler remoteScheduler = node.getScheduler();
+        final RemoteScheduler remoteScheduler = node.getScheduler();
         final int remoteBackpressure = remoteScheduler.getBackpressure();
         if (remoteBackpressure < minimumBackpressure) {
           minimumBackpressure = remoteBackpressure;

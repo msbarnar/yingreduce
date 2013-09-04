@@ -18,4 +18,9 @@ public interface TaskQueue extends Runnable {
    * or rejected the task.
    */
   boolean offer(final Task task);
+
+  /**
+   * Returns the number of elements in the underlying queue.
+   */
+  int size();
 }
