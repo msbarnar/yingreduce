@@ -9,7 +9,9 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
+import edu.asu.ying.mapreduce.common.HasProperties;
 import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.p2p.RemoteNode;
 
 /**
  * {@code TaskHistory} keeps a journal of all of the schedulers that observe a particular mapreduce.
@@ -47,17 +49,17 @@ public final class TaskHistory implements Serializable {
 
     private static final long SerialVersionUID = 1L;
 
-    // Any node visiting the history should be able to contact this node by the URI.
-    private NodeIdentifier nodeIdentifier;
-    // The role of the visiting node in carrying the mapreduce.
+    // Any node visiting the history should be able to contact this node.
+    private RemoteNode node;
+    // The role of the visiting node plays in the task.
     private NodeRole nodeRole;
     // What the visiting scheduler ultimately did with the mapreduce.
     private SchedulerAction schedulerAction;
 
     public Entry() {
     }
-    public Entry(final NodeIdentifier nodeIdentifier) {
-      this.nodeIdentifier = nodeIdentifier;
+    public Entry(final RemoteNode node) {
+      this.node = node;
     }
     public Entry(final NodeIdentifier nodeIdentifier, final NodeRole nodeRole,
                  final SchedulerAction schedulerAction) {

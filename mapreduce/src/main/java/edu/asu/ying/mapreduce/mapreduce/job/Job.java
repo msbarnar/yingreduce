@@ -12,10 +12,10 @@ import edu.asu.ying.p2p.RemoteNode;
 /**
  * {@code Job} is the base interface for a full map/reduce job.
  */
-public interface Job extends Serializable, HasProperties {
+public interface Job extends Serializable {
 
   TaskID getID();
-  TableID getSourceTableID();
+  TableID getTableID();
 
   RemoteNode getResponsibleNode();
 }

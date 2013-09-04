@@ -14,7 +14,7 @@ import edu.asu.ying.p2p.RemoteNode;
  * </p>
  * Tasks are how nodes communicate pending or completed work.
  */
-public interface Task extends Serializable, HasProperties {
+public interface Task extends Serializable {
 
   Job getParentJob();
 

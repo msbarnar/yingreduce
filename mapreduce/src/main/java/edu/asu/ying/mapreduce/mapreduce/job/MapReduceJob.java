@@ -13,42 +13,31 @@ public class MapReduceJob implements Job {
 
   private static final long SerialVersionUID = 1L;
 
-  protected static final class Property {
-    static final String JobID = "job.id";
-    static final String TableID = "job.table-id";
-    static final String ResponsibleNode = "job.responsible-node";
-  }
-
-  protected final Properties properties = new Properties();
-
-  public Properties getProperties() {
-    return this.properties;
-  }
+  private final TaskID jobID;
+  private final TableID tableID;
+  private RemoteNode responsibleNode;
 
   public MapReduceJob(final TableID tableID) {
-    this.setTableID(tableID);
-  }
-
-  private void setTableID(final TableID tableID) {
-    this.properties.put(Property.TableID, tableID);
+    this.jobID = new TaskID();
+    this.tableID = tableID;
   }
 
   @Override
   public TaskID getID() {
-    return this.properties.getDynamicCast(Property.JobID, TaskID.class);
+    return this.jobID;
   }
 
   @Override
-  public TableID getSourceTableID() {
-    return this.properties.getDynamicCast(Property.TableID, TableID.class);
+  public TableID getTableID() {
+    return this.tableID;
   }
 
   public void setResponsibleNode(final RemoteNode node) {
-    this.properties.put(Property.ResponsibleNode, node);
+    this.responsibleNode = node;
   }
 
   @Override
   public RemoteNode getResponsibleNode() {
-    return this.properties.getDynamicCast(Property.ResponsibleNode, RemoteNode.class);
+    return this.responsibleNode;
   }
 }
