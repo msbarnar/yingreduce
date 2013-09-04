@@ -23,32 +23,12 @@ import edu.asu.ying.p2p.NodeIdentifier;
  *   queue is full, the mapreduce is placed in this queue to be forwarded to another node.</li>
  * </ol>
  */
-public interface LocalScheduler extends Remote {
+public interface LocalScheduler {
 
   /**
    * Finds the {@code Responsible Node} for the specified job and queues the job on it.
    * If the local node is the {@code responsible} node, it accepts a job and queues it to be
    * delegated as tasks to {@code initial} nodes.
    */
-  JobSchedulingResult createJob(final Job job) throws RemoteException;
-  JobSchedulingResult acceptJob(final Job job) throws RemoteException;
-
-  /**
-   * Accepts a mapreduce as the {@code initial node} or as a {@code remote node}, queuing it for
-   * execution or forwarding.
-   */
-  TaskSchedulingResult acceptTask(final Task task) throws RemoteException;
-
-  /**
-   * Returns a value equal to or greater than {@code 0} that specifies this scheduler's resistance
-   * to having tasks forwarded to it. A high return value indicates that this node is already
-   * burdoned by many forwarded tasks. A value of {@code 0} indicates that this node is handling
-   * no forwarded tasks.
-   * </p>
-   * Forwarding nodes should forward tasks in a way that minimizes the backpressure at each of its
-   * child nodes.
-   */
-  int getBackpressure() throws RemoteException;
-
-  NodeIdentifier getNodeURI() throws RemoteException;
+  JobSchedulingResult createJob(final Job job);
 }

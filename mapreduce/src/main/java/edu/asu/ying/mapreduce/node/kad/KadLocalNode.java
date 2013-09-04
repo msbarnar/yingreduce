@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.mapreduce.node.io.Channel;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalSchedulerImpl;
 import edu.asu.ying.mapreduce.node.*;
 import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
@@ -62,7 +62,7 @@ public final class KadLocalNode
     // Start the interface for remote peers to access the local node
     this.nodeProxy = KadLocalNodeProxy.createProxyTo(this);
     // Start the scheduler
-    this.scheduler = new LocalSchedulerImpl(this);
+    this.scheduler = new SchedulerImpl(this);
     // Allow peers to access the node and scheduler remotely.
     this.activator.bind(RemoteNode.class).toInstance(this.nodeProxy);
     this.activator.bind(LocalScheduler.class).toInstance(this.scheduler);

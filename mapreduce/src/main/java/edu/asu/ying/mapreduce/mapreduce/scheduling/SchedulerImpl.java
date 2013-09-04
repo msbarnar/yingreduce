@@ -21,7 +21,7 @@ import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.p2p.RemoteNode;
 
 /**
- * The {@code LocalSchedulerImpl} is responsible for accepting a {@link Task} from another
+ * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another
  * node (or from the local node, if the mapreduce was started locally) and queuing it for execution in
  * one of the following queues, deferring to {@code forwarding} if {@code local} is full.
  * <ol>
@@ -32,7 +32,7 @@ import edu.asu.ying.p2p.RemoteNode;
  * Once the scheduler has placed the mapreduce in a queue, the mapreduce is taken over by that queue's
  * {@link TaskQueueExecutor}.
  */
-public class LocalSchedulerImpl implements LocalScheduler {
+public class SchedulerImpl implements LocalScheduler {
 
   private final LocalNode localNode;
   private final NodeIdentifier localUri;
@@ -53,7 +53,7 @@ public class LocalSchedulerImpl implements LocalScheduler {
   private final TaskQueueExecutor forwardingExecutor;
  // private final TaskQueueExecutor remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
 
-  public LocalSchedulerImpl(final LocalNode localNode) {
+  public SchedulerImpl(final LocalNode localNode) {
 
     this.localNode = localNode;
 
@@ -82,14 +82,18 @@ public class LocalSchedulerImpl implements LocalScheduler {
    * delegated as tasks to {@code initial} nodes.
    */
   @Override
-  public JobSchedulingResult createJob(Job job) throws RemoteException {
+  public final JobSchedulingResult createJob(final Job job) {
     // TODO: Find the responsible node by finding the node with the first page of the table
     // FIXME: pick a random node
     final List<RemoteNode> neighbors = this.localNode.getNeighbors();
     final int rnd = (new Random()).nextInt(neighbors.size());
 
     final RemoteNode node = neighbors.get(rnd);
-    return node.getScheduler().acceptJob(job);
+    try {
+      return node.getScheduler().delegateJob(job);
+    } catch (final RemoteException e) {
+      return new JobSchedulingResult(job, this.localNode.getRemoteReference(), e);
+    }
   }
 
   @Override

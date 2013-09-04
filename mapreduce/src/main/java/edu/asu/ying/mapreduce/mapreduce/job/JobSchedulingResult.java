@@ -3,6 +3,7 @@ package edu.asu.ying.mapreduce.mapreduce.job;
 import java.io.Serializable;
 
 import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.p2p.RemoteNode;
 
 /**
  * Wraps the result of attempting to schedule a {@link Job} on a
@@ -14,21 +15,26 @@ public final class JobSchedulingResult implements Serializable {
 
   public enum Result {
     Scheduled,
-    DestinationNotFound
+    DestinationNotFound,
+    Exception
   }
 
   private final Job job;
-  private Result result;
-  private final NodeIdentifier nodeIdentifier;
+  private final Result result;
+  private final RemoteNode node;
+  private Throwable cause = null;
 
-  public JobSchedulingResult(final Job job, final NodeIdentifier nodeIdentifier) {
+  public JobSchedulingResult(final Job job, final RemoteNode node, final Result result) {
     this.job = job;
-    this.nodeIdentifier = nodeIdentifier;
+    this.node = node;
+    this.result = result;
   }
 
-  public final JobSchedulingResult setResult(final Result result) {
-    this.result = result;
-    return this;
+  public JobSchedulingResult(final Job job, final RemoteNode node, final Throwable cause) {
+    this.job = job;
+    this.node = node;
+    this.result = Result.Exception;
+    this.cause = cause;
   }
 
   public final Job getJob() {
@@ -39,7 +45,11 @@ public final class JobSchedulingResult implements Serializable {
     return this.result;
   }
 
-  public final NodeIdentifier getNodeIdentifier() {
-    return this.nodeIdentifier;
+  public final Throwable getCause() {
+    return this.cause;
+  }
+
+  public final RemoteNode getNode() {
+    return this.node;
   }
 }
