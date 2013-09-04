@@ -26,8 +26,9 @@ public final class BinderImpl<TBound extends Remote>
     private abstract class InstanceFactory<TBindee> {
       protected final ServerActivator activator;
       protected final Class<TBindee> type;
-      protected InstanceFactory(final Class<TBindee> type) {
+      protected InstanceFactory(final Class<TBindee> type, final ServerActivator activator) {
         this.type = type;
+        this.activator = activator;
       }
       abstract TBindee get();
     }
@@ -35,14 +36,15 @@ public final class BinderImpl<TBound extends Remote>
     /**
      * Provides a new instance of {@code TBindee} per call.
      */
+    @SuppressWarnings("unchecked")
     private final class SingleCallFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
-      private SingleCallFactory(final Class<TBindee> type) {
-        super(type);
+      private SingleCallFactory(final Class<TBindee> type, final ServerActivator activator) {
+        super(type, activator);
       }
       final TBindee get() {
         try {
           return (TBindee) UnicastRemoteObject.exportObject(this.type.newInstance(),
-                                                            15999);
+                                                            this.activator.getPort());
 
         } catch (final InstantiationException | IllegalAccessException | RemoteException e) {
           // TODO: Logging
@@ -55,6 +57,7 @@ public final class BinderImpl<TBound extends Remote>
     /**
      * Provides a singleton instance of {@code TBindee}.
      */
+    @SuppressWarnings("unchecked")
     private final class SingletonFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
       private TBindee instance;
       private final Object instanceLock = new Object();
@@ -105,6 +108,7 @@ public final class BinderImpl<TBound extends Remote>
           break;
         case Singleton:
           this.factory = new SingletonFactory<>(bindee, activator);
+          break;
         default:
           throw new IllegalArgumentException();
       }
@@ -119,6 +123,7 @@ public final class BinderImpl<TBound extends Remote>
   /**
    * {@code InstanceBinding} binds a class to a specific instance of that class.
    */
+  @SuppressWarnings("unchecked")
   private final class InstanceBinding<TBound extends Remote>
       implements ServerActivator.Binding<TBound> {
 
@@ -152,6 +157,7 @@ public final class BinderImpl<TBound extends Remote>
 
   public BinderImpl(final Class<TBound> boundClass, final ServerActivator activator) {
     this.boundClass = boundClass;
+    this.activator = activator;
   }
 
   @Override

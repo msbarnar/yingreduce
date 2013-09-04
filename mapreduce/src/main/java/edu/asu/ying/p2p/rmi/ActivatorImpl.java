@@ -22,6 +22,7 @@ public final class ActivatorImpl implements RemoteActivator, ServerActivator {
 
   // The port used to export all RMI instances.
   private int rmiPort = 0;
+  private final Object portLock = new Object();
 
   // (singleton) Proxy instance accessible via RMI
   private RemoteActivator exportedInstance = null;
@@ -38,6 +39,7 @@ public final class ActivatorImpl implements RemoteActivator, ServerActivator {
    * @inheritDoc
    */
   @Override
+  @SuppressWarnings("unchecked")
   public final <TBound extends Remote> Binder bind(final Class<TBound> type) {
     final Binder binder = new BinderImpl<>(type, this);
     this.bindings.put(type, binder);
@@ -59,6 +61,7 @@ public final class ActivatorImpl implements RemoteActivator, ServerActivator {
    * @inheritDoc
    */
   @Override
+  @SuppressWarnings("unchecked")
   public final <TBound extends Remote> TBound getReference(final Class<TBound> type,
                                            final @Nullable Map<String, String> properties)
     throws RemoteException {
@@ -74,19 +77,32 @@ public final class ActivatorImpl implements RemoteActivator, ServerActivator {
     return (TBound) binding.getReference();
   }
 
+  @Override
+  public final int getPort() {
+    if (this.rmiPort == 0) {
+      synchronized(this.portLock) {
+        if (this.rmiPort == 0) {
+          this.rmiPort = this.allocatePort();
+        }
+      }
+    }
+    return this.rmiPort;
+  }
+
   /**
    * Selects a random port and specifies it as the sole port for RMI.
    */
   private int allocatePort() {
     ServerSocket sock = null;
+    int port;
     try {
       sock = new ServerSocket(0);
-      this.rmiPort = sock.getLocalPort();
+      port = sock.getLocalPort();
       sock.close();
     } catch (final IOException e) {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
-    return this.rmiPort;
+    return port;
   }
 }

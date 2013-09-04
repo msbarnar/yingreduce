@@ -74,4 +74,6 @@ public interface ServerActivator {
    * peers.
    */
   RemoteActivator export();
+
+  int getPort();
 }
