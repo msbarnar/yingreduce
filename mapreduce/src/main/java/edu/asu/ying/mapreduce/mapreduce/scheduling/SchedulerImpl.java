@@ -57,14 +57,7 @@ public class SchedulerImpl implements Scheduler {
 
     this.localNode = localNode;
 
-    NodeIdentifier localUri = null;
-    try {
-      localUri = localNode.getIdentifier();
-    } catch (final RemoteException e) {
-      // TODO: Logging
-      e.printStackTrace();
-    }
-    this.localUri = localUri;
+    this.localUri = localNode.getIdentifier();
 
     //this.localExecutor.start();
 

@@ -3,6 +3,7 @@ package edu.asu.ying.p2p;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.p2p.rmi.RemoteActivator;
 
 /**
@@ -15,8 +16,5 @@ public interface RemoteNode extends Remote {
    */
   NodeIdentifier getIdentifier() throws RemoteException;
 
-  /**
-   * Gets an {@link edu.asu.ying.p2p.rmi.RemoteActivator} capable of providing instances of desired classes.
-   */
-  RemoteActivator getActivator() throws RemoteException;
+  Scheduler getScheduler() throws RemoteException;
 }

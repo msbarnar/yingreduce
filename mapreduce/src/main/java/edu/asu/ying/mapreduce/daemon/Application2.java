@@ -58,11 +58,7 @@ public class Application2 {
     System.out.println("Visit http://localhost:8887/ to administer the local node.\n\n");
 
     Scheduler sched = null;
-    try {
-      sched = instance2.getLocalNode().getScheduler();
-    } catch (final RemoteException e) {
-      e.printStackTrace();
-    }
+    sched = instance2.getLocalNode().getScheduler();
 
     if (sched != null) {
       try {

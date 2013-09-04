@@ -1,9 +1,11 @@
 package edu.asu.ying.p2p;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.rmi.UnknownHostException;
 import java.util.List;
 
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.mapreduce.node.NodeURL;
 import edu.asu.ying.p2p.rmi.NodeProxy;
 import edu.asu.ying.p2p.rmi.ServerActivator;
@@ -20,5 +22,9 @@ public interface LocalNode {
 
   ServerActivator getActivator();
 
+  Scheduler getScheduler();
+
   NodeProxy findNode(final NodeIdentifier uri) throws UnknownHostException;
+
+  NodeIdentifier getIdentifier();
 }
