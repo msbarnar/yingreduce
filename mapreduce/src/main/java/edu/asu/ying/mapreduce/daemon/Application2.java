@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.node.kad.KadNodeURL;
 import edu.asu.ying.mapreduce.yingtable.TableID;
 
@@ -57,7 +57,7 @@ public class Application2 {
     System.out.println();
     System.out.println("Visit http://localhost:8887/ to administer the local node.\n\n");
 
-    Scheduler sched = null;
+    LocalScheduler sched = null;
     sched = instance2.getLocalNode().getScheduler();
 
     if (sched != null) {

@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.mapreduce.node.io.Channel;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalSchedulerImpl;
 import edu.asu.ying.mapreduce.node.*;
 import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
@@ -21,7 +21,7 @@ import edu.asu.ying.p2p.RemoteNode;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.NodeIdentifier;
 import il.technion.ewolf.kbr.*;
@@ -47,7 +47,7 @@ public final class KadLocalNode
   private final KadLocalNodeProxy nodeProxy;
 
   // Schedules mapreduce jobs and tasks
-  private final Scheduler scheduler;
+  private final LocalScheduler scheduler;
 
   public KadLocalNode(final int port) throws InstantiationException {
 
@@ -62,10 +62,10 @@ public final class KadLocalNode
     // Start the interface for remote peers to access the local node
     this.nodeProxy = KadLocalNodeProxy.createProxyTo(this);
     // Start the scheduler
-    this.scheduler = new SchedulerImpl(this);
+    this.scheduler = new LocalSchedulerImpl(this);
     // Allow peers to access the node and scheduler remotely.
     this.activator.bind(RemoteNode.class).toInstance(this.nodeProxy);
-    this.activator.bind(Scheduler.class).toInstance(this.scheduler);
+    this.activator.bind(LocalScheduler.class).toInstance(this.scheduler);
 
     // Allow peers to discover this node's RMI interfaces.
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);
@@ -119,7 +119,7 @@ public final class KadLocalNode
    * The local node returns a concrete reference to the scheduler.
    */
   @Override
-  public Scheduler getScheduler() {
+  public LocalScheduler getScheduler() {
     return this.scheduler;
   }
 

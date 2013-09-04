@@ -8,7 +8,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.mapreduce.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.node.kad.KadNodeIdentifier;

@@ -10,7 +10,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
- * {@code Scheduler} is responsible for the allocation of {@code map} and {@code reduce} mapreduce.
+ * {@code LocalScheduler} is responsible for the allocation of {@code map} and {@code reduce} mapreduce.
  * </p>
  * The scheduler receives mapreduce from other nodes and forwards them to one of the following queues
  * based on the given criteria:
@@ -23,7 +23,7 @@ import edu.asu.ying.p2p.NodeIdentifier;
  *   queue is full, the mapreduce is placed in this queue to be forwarded to another node.</li>
  * </ol>
  */
-public interface Scheduler extends Remote {
+public interface LocalScheduler extends Remote {
 
   /**
    * Finds the {@code Responsible Node} for the specified job and queues the job on it.

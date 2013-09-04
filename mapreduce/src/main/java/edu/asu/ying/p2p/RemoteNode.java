@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 
 /**
  * {@code RemoteNode} is a proxy to a {@link LocalNode} in another application domain.
@@ -16,5 +16,5 @@ public interface RemoteNode extends Remote, Serializable {
    */
   NodeIdentifier getIdentifier() throws RemoteException;
 
-  Scheduler getScheduler() throws RemoteException;
+  LocalScheduler getScheduler() throws RemoteException;
 }

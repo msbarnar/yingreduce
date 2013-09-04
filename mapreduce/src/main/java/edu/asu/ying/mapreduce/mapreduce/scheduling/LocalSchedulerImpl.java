@@ -21,7 +21,7 @@ import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.p2p.RemoteNode;
 
 /**
- * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another
+ * The {@code LocalSchedulerImpl} is responsible for accepting a {@link Task} from another
  * node (or from the local node, if the mapreduce was started locally) and queuing it for execution in
  * one of the following queues, deferring to {@code forwarding} if {@code local} is full.
  * <ol>
@@ -32,7 +32,7 @@ import edu.asu.ying.p2p.RemoteNode;
  * Once the scheduler has placed the mapreduce in a queue, the mapreduce is taken over by that queue's
  * {@link TaskQueueExecutor}.
  */
-public class SchedulerImpl implements Scheduler {
+public class LocalSchedulerImpl implements LocalScheduler {
 
   private final LocalNode localNode;
   private final NodeIdentifier localUri;
@@ -53,7 +53,7 @@ public class SchedulerImpl implements Scheduler {
   private final TaskQueueExecutor forwardingExecutor;
  // private final TaskQueueExecutor remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
 
-  public SchedulerImpl(final LocalNode localNode) {
+  public LocalSchedulerImpl(final LocalNode localNode) {
 
     this.localNode = localNode;
 
