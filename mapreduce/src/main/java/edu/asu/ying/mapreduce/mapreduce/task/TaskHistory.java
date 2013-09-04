@@ -61,21 +61,17 @@ public final class TaskHistory implements Serializable {
     public Entry(final RemoteNode node) {
       this.node = node;
     }
-    public Entry(final NodeIdentifier nodeIdentifier, final NodeRole nodeRole,
+    public Entry(final RemoteNode node, final NodeRole nodeRole,
                  final SchedulerAction schedulerAction) {
 
-      this.nodeIdentifier = nodeIdentifier;
+      this.node = node;
       this.nodeRole = nodeRole;
       this.schedulerAction = schedulerAction;
     }
 
-    public final void setNodeIdentifier(final NodeIdentifier uri) {
-      this.nodeIdentifier = uri;
+    public final RemoteNode getNode() {
+      return this.node;
     }
-    public final NodeIdentifier getNodeIdentifier() {
-      return this.nodeIdentifier;
-    }
-
 
     public final void setSchedulerAction(final SchedulerAction action) {
       this.schedulerAction = action;

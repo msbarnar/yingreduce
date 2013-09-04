@@ -40,16 +40,16 @@ public abstract class TaskBase implements Task {
 
   /**
    * The {@code TaskStartParameters} define the timing of the mapreduce's starting.
-   * @return the mapreduce's start parameters, or {@link TaskStartParameters#Default} if they are not
-   * set.
+   * @return the mapreduce's start parameters, or {@link TaskStartParameters#Default} if they are
+   * not set.
    */
   public final TaskStartParameters getTaskStartParameters() {
     return this.startParameters;
   }
 
   /**
-   * The mapreduce's history is a log of the schedulers that have visited the mapreduce and the actions they
-   * have performed.
+   * The mapreduce's history is a log of the schedulers that have visited the mapreduce and the
+   * actions they have performed.
    */
   public final TaskHistory getHistory() {
     return this.history;

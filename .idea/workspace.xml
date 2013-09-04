@@ -6,16 +6,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ffc779c-2642-4842-aeac-60344a3ce6bc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/job/Job.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/job/Job.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/job/MapReduceJob.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/job/MapReduceJob.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/Task.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/Task.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskBase.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskBase.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskHistory.java" afterPath="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskHistory.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1378319271239" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1378319778972" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1375157690622" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272043017" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371274691692" ignored="false" />
@@ -166,7 +163,7 @@
     <file path="/IncompleteTaskException.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1372021941235" ignored="false" />
     <file path="/Reducer.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1372022179167" ignored="false" />
     <file path="/TaskQueue.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1372200767891" ignored="false" />
-    <file path="/TaskHistory.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1378319374769" ignored="false" />
+    <file path="/TaskHistory.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1378319892013" ignored="false" />
     <file path="/NodeIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1372201936754" ignored="false" />
     <file path="/HostIdentifier.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1372202069631" ignored="false" />
     <file path="/SchedulingResult.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1372204062768" ignored="false" />
@@ -328,26 +325,7 @@
     <favorites_list name="mapreduce" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="TaskHistory.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskHistory.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="62" column="5" selection-start="1944" selection-end="1944" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TaskBase.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskBase.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="54" column="24" selection-start="1545" selection-end="1545" vertical-scroll-proportion="0.77472526">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -377,11 +355,11 @@
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/job/MapReduceJobBase.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/common/HasProperties.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/node/io/message/Message.java" />
-        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskHistory.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/job/MapReduceJob.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/job/Job.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/Task.java" />
         <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskBase.java" />
+        <option value="$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskHistory.java" />
       </list>
     </option>
   </component>
@@ -1491,7 +1469,11 @@
       <created>1378319271556</created>
       <updated>1378319271556</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="Cleaned up task and job removing silly properties stuff">
+      <created>1378319779491</created>
+      <updated>1378319779491</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1516,7 +1498,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="4" y="22" width="1916" height="1058" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32446808" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1532,7 +1514,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16791444" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19358289" sideWeight="0.673774" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19358289" sideWeight="0.673774" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32622603" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="left" auto_hide="true" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.19786096" sideWeight="0.20106383" order="3" side_tool="true" content_ui="tabs" x="135" y="146" width="1716" height="858" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1584,7 +1566,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Job and Task sufficiently defined; clean up history" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaned up task and job removing silly properties stuff" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1598,7 +1580,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Added copy constructors and made members immutable" />
     <MESSAGE value="Brought back basic events to keep Filtered events working for now" />
     <MESSAGE value="Nixed request message (doesn't do anything), made sure response message copies the ID and tag of its request" />
     <MESSAGE value="Wiring the new handler model with injection" />
@@ -1623,6 +1604,7 @@
     <MESSAGE value="Need to clarify task history stuff; defining ownership and node roles etc" />
     <MESSAGE value="Cleaning up job/task definitions" />
     <MESSAGE value="Job and Task sufficiently defined; clean up history" />
+    <MESSAGE value="Cleaned up task and job removing silly properties stuff" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1734,16 +1716,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskHistory.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="62" column="5" selection-start="1944" selection-end="1944" vertical-scroll-proportion="0.0">
+        <state line="28" column="35" selection-start="815" selection-end="815" vertical-scroll-proportion="0.34615386">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskBase.java">
+    <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/mapreduce/task/TaskHistory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="24" selection-start="1545" selection-end="1545" vertical-scroll-proportion="0.77472526">
+        <state line="112" column="5" selection-start="3146" selection-end="3146" vertical-scroll-proportion="1.4340659">
           <folding />
         </state>
       </provider>
