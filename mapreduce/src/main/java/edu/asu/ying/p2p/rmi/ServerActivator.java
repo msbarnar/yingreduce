@@ -67,7 +67,7 @@ public interface ServerActivator {
    * @param <TBound> the type of the bound class.
    * @return a {@link Binder} which is used to further specify the type of the binding.
    */
-  <TBound extends Remote> Binder bind(Class<TBound> type);
+  <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
 
   /**
    * Returns an instance of a {@link Remote} proxy to the {@code Activator} that is accessible by

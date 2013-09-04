@@ -18,7 +18,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.execution.ForwardingTaskQueueExecutor;
 import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueueExecutor;
 import edu.asu.ying.p2p.NodeIdentifier;
-import edu.asu.ying.p2p.rmi.NodeProxy;
+import edu.asu.ying.p2p.RemoteNode;
 
 /**
  * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another
@@ -85,11 +85,11 @@ public class SchedulerImpl implements Scheduler {
   public JobSchedulingResult createJob(Job job) throws RemoteException {
     // TODO: Find the responsible node by finding the node with the first page of the table
     // FIXME: pick a random node
-    final List<NodeProxy> neighbors = this.localNode.getNeighbors();
+    final List<RemoteNode> neighbors = this.localNode.getNeighbors();
     final int rnd = (new Random()).nextInt(neighbors.size());
 
-    final NodeProxy node = neighbors.get(rnd);
-    return node.getScheduler().acceptJob(job);
+    final RemoteNode node = neighbors.get(rnd);
+    return node.getActivator().getReference(Scheduler.class, null).acceptJob(job);
   }
 
   @Override

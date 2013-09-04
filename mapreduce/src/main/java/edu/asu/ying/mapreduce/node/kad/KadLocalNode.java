@@ -17,10 +17,10 @@ import edu.asu.ying.mapreduce.node.*;
 import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
+import edu.asu.ying.p2p.RemoteNode;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
 import edu.asu.ying.p2p.rmi.ActivatorRequestHandler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
-import edu.asu.ying.p2p.rmi.NodeProxy;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.p2p.rmi.ServerActivator;
@@ -54,10 +54,12 @@ public final class KadLocalNode
 
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
-    // Start the remote to provide Scheduler references
+    // Start the remote reference provider
     this.activator = new ActivatorImpl();
     // Start the scheduler with a reference to the local node for finding neighbors
     this.scheduler = new SchedulerImpl(this);
+    // Allow the activator to export the scheduler to peers
+    this.activator.bind(Scheduler.class).toInstance(this.scheduler);
 
     // Expose this local node to ServerNodeProxy requests via the request handler
     ActivatorRequestHandler.exportNodeToChannel(this, networkChannel);
@@ -83,12 +85,12 @@ public final class KadLocalNode
   }
 
   @Override
-  public List<NodeProxy> getNeighbors() {
+  public List<RemoteNode> getNeighbors() {
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.getNeighbours();
-    final List<NodeProxy> nodeProxies = new ArrayList<>();
+    final List<RemoteNode> nodeProxies = new ArrayList<>();
 
     for (final il.technion.ewolf.kbr.Node kadNode : kadNodes) {
-      final NodeProxy proxy = this.importProxyTo(kadNode);
+      final RemoteNode proxy = this.importProxyTo(kadNode);
       if (proxy != null) {
         nodeProxies.add(proxy);
       }
@@ -98,7 +100,7 @@ public final class KadLocalNode
   }
 
   @Override
-  public NodeProxy findNode(final NodeIdentifier uri) throws UnknownHostException {
+  public RemoteNode findNode(final NodeIdentifier uri) throws UnknownHostException {
     final Key key = this.kbrNode.getKeyFactory().create(uri.toString());
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
@@ -125,7 +127,7 @@ public final class KadLocalNode
     return this.localUri;
   }
 
-  private NodeProxy importProxyTo(final il.technion.ewolf.kbr.Node node) {
+  private RemoteNode importProxyTo(final il.technion.ewolf.kbr.Node node) {
     final RequestMessage request = new RequestMessage("node.remote-proxy");
     final Future<Serializable> response;
     try {
@@ -147,7 +149,7 @@ public final class KadLocalNode
       if (rm.getException() != null) {
         throw rm.getException();
       }
-      return (NodeProxy) ((ResponseMessage) resp).getContent();
+      return (RemoteNode) ((ResponseMessage) resp).getContent();
 
     } catch (final ExecutionException | InterruptedException
         | InvalidContentException | ClassCastException | RemoteException e) {

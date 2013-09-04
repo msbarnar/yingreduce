@@ -10,7 +10,7 @@ import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
-import edu.asu.ying.p2p.rmi.NodeProxy;
+import edu.asu.ying.p2p.RemoteNode;
 
 /**
  * {@code ForwardingTaskQueueExecutor} removes tasks from the local {@code Forwarding} queue and
@@ -76,12 +76,8 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
                                           + " after this will not know how to route this task.");
         }
         lastEntry.setSchedulerAction(TaskHistory.SchedulerAction.QueuedRemotely);
-        try {
-          System.out.println(String.format("[%s] Task: %s", this.localNode.getIdentifier(),
+        System.out.println(String.format("[%s] Task: %s", this.localNode.getIdentifier(),
                                          lastEntry.getSchedulerAction()));
-        } catch (final RemoteException e) {
-          e.printStackTrace();
-        }
       } else {
         this.forwardTask(task);
       }
@@ -89,7 +85,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
   }
 
   private void forwardTask(final Task task) {
-    final List<NodeProxy> neighbors = this.localNode.getNeighbors();
+    final List<RemoteNode> neighbors = this.localNode.getNeighbors();
 
     // Default to forwarding to the local remote queue
     int minimumBackpressure = this.remoteQueue.size();
@@ -97,9 +93,9 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
 
     // Unless one of our neighbors has a lower backpressure
     // TODO: adjust backpressure calculation per weina's suggestions
-    for (final NodeProxy node : neighbors) {
+    for (final RemoteNode node : neighbors) {
       try {
-        final Scheduler remoteScheduler = node.getScheduler();
+        final Scheduler remoteScheduler = node.getActivator().getReference(Scheduler.class, null);
         final int remoteBackpressure = remoteScheduler.getBackpressure();
         if (remoteBackpressure < minimumBackpressure) {
           minimumBackpressure = remoteBackpressure;
