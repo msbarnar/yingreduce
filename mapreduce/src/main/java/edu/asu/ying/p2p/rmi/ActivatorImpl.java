@@ -13,6 +13,8 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import edu.asu.ying.p2p.RemoteNode;
+
 
 /**
  * Controls creation and lifetime management for server-side object instances available for
@@ -50,10 +52,10 @@ public final class ActivatorImpl implements RemoteActivator, ServerActivator {
    * @inheritDoc
    */
   @Override
-  public final RemoteActivator export() {
+  public final RemoteNode export() {
     final Binder binder = new BinderImpl<>(RemoteActivator.class, this);
     binder.to(ActivatorImpl.class,
-               ActivationMode.Singleton);
+              ActivationMode.Singleton);
     return (RemoteActivator) binder.getBinding().getReference();
   }
 

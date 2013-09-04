@@ -19,7 +19,7 @@ import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 import edu.asu.ying.p2p.RemoteNode;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
-import edu.asu.ying.p2p.rmi.ActivatorRequestHandler;
+import edu.asu.ying.p2p.rmi.NodeProxyRequestHandler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.NodeIdentifier;
@@ -62,7 +62,7 @@ public final class KadLocalNode
     this.activator.bind(Scheduler.class).toInstance(this.scheduler);
 
     // Expose this local node to ServerNodeProxy requests via the request handler
-    ActivatorRequestHandler.exportNodeToChannel(this, networkChannel);
+    NodeProxyRequestHandler.exportNodeToChannel(this, networkChannel);
 
     System.out.println(String.format("Local node %s is listening on port %d",
                                      this.localUri.toString(),
