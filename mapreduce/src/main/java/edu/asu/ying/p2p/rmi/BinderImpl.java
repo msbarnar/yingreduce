@@ -4,6 +4,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import edu.asu.ying.p2p.LocalNode;
+
 /**
  * @inheritDoc
  */
@@ -22,6 +24,7 @@ public final class BinderImpl<TBound extends Remote>
      * {@link edu.asu.ying.p2p.rmi.ServerActivator.ActivationMode}.
      */
     private abstract class InstanceFactory<TBindee> {
+      protected final ServerActivator activator;
       protected final Class<TBindee> type;
       protected InstanceFactory(final Class<TBindee> type) {
         this.type = type;
@@ -56,8 +59,8 @@ public final class BinderImpl<TBound extends Remote>
       private TBindee instance;
       private final Object instanceLock = new Object();
 
-      private SingletonFactory(final Class<TBindee> type) {
-        super(type);
+      private SingletonFactory(final Class<TBindee> type, final ServerActivator activator) {
+        super(type, activator);
       }
       final TBindee get() {
         try {
@@ -66,7 +69,7 @@ public final class BinderImpl<TBound extends Remote>
               if (this.instance == null) {
                 // TODO: Port in configuration
                 this.instance = (TBindee) UnicastRemoteObject.exportObject(this.type.newInstance(),
-                                                                           15999);
+                                                                           this.activator.getPort());
               }
             }
           }
@@ -91,16 +94,17 @@ public final class BinderImpl<TBound extends Remote>
      * Binds {@code boundType} to {@code bindee} given the activation {@code mode}.
      */
     public ClassBinding(final Class<TBound> boundType, final Class<TBindee> bindee,
-                        final ServerActivator.ActivationMode mode) {
+                        final ServerActivator.ActivationMode mode,
+                        final ServerActivator activator) {
       this.boundType = boundType;
       this.bindee = bindee;
 
       switch (mode) {
         case SingleCall:
-          this.factory = new SingleCallFactory<>(bindee);
+          this.factory = new SingleCallFactory<>(bindee, activator);
           break;
         case Singleton:
-          this.factory = new SingletonFactory<>(bindee);
+          this.factory = new SingletonFactory<>(bindee, activator);
         default:
           throw new IllegalArgumentException();
       }
@@ -121,12 +125,14 @@ public final class BinderImpl<TBound extends Remote>
     private final Class<TBound> bindee;
     private final TBound instance;
 
-    private InstanceBinding(final Class<TBound> bindee, final TBound instance) {
+    private InstanceBinding(final Class<TBound> bindee, final TBound instance,
+                            final ServerActivator activator) {
       this.bindee = bindee;
       TBound proxyInstance = null;
       try {
         // TODO: Port in configuration
-        proxyInstance = (TBound) UnicastRemoteObject.exportObject(instance, 15999);
+        proxyInstance = (TBound) UnicastRemoteObject.exportObject(instance,
+                                                                  activator.getPort());
       } catch (final RemoteException e) {
         // TODO: Logging
         e.printStackTrace();
@@ -140,22 +146,23 @@ public final class BinderImpl<TBound extends Remote>
     }
   }
 
+  private final ServerActivator activator;
   private final Class<TBound> boundClass;
   private ServerActivator.Binding<TBound> binding;
 
-  public BinderImpl(final Class<TBound> boundClass) {
+  public BinderImpl(final Class<TBound> boundClass, final ServerActivator activator) {
     this.boundClass = boundClass;
   }
 
   @Override
   public <TBindee extends TBound> void
   to(Class<TBindee> type, ServerActivator.ActivationMode mode) {
-    this.binding = new ClassBinding<>(this.boundClass, type, mode);
+    this.binding = new ClassBinding<>(this.boundClass, type, mode, this.activator);
   }
 
   @Override
   public void toInstance(TBound instance) {
-    this.binding = new InstanceBinding<>(this.boundClass, instance);
+    this.binding = new InstanceBinding<>(this.boundClass, instance, this.activator);
   }
 
   @Override
