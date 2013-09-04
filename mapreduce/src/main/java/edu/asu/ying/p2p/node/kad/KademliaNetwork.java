@@ -1,12 +1,12 @@
-package edu.asu.ying.mapreduce.node.kad;
+package edu.asu.ying.p2p.node.kad;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import java.io.IOException;
 
-import edu.asu.ying.mapreduce.node.io.Channel;
-import edu.asu.ying.mapreduce.node.io.kad.KadChannel;
+import edu.asu.ying.p2p.io.Channel;
+import edu.asu.ying.p2p.io.kad.KadChannel;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 

@@ -25,6 +25,13 @@ public interface Task extends Serializable {
    * applies.
    */
   RemoteNode getInitialNode();
+  void setInitialNode(final RemoteNode initialNode);
+
+  /**
+   * Returns true if the scheduler currently handling the task is on the task's
+   * {@code initial node}.
+   */
+  boolean isAtInitialNode();
 
   /**
    * Returns the parameters used to manage the starting of this task on its final executing node.

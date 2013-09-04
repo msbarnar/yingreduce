@@ -38,6 +38,10 @@ public abstract class TaskBase implements Task {
     return this.taskID;
   }
 
+  public final Job getParentJob() {
+    return this.parentJob;
+  }
+
   /**
    * The {@code TaskStartParameters} define the timing of the mapreduce's starting.
    * @return the mapreduce's start parameters, or {@link TaskStartParameters#Default} if they are
@@ -57,5 +61,8 @@ public abstract class TaskBase implements Task {
 
   public final RemoteNode getInitialNode() {
     return this.initialNode;
+  }
+  public final void setInitialNode(final RemoteNode initialNode) {
+    this.initialNode = initialNode;
   }
 }

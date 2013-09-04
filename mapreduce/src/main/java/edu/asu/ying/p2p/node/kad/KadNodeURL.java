@@ -1,8 +1,8 @@
-package edu.asu.ying.mapreduce.node.kad;
+package edu.asu.ying.p2p.node.kad;
 
 import java.net.URI;
 
-import edu.asu.ying.mapreduce.node.NodeURL;
+import edu.asu.ying.p2p.node.NodeURL;
 import il.technion.ewolf.kbr.Key;
 
 /**

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.p2p.LocalNode;
@@ -13,39 +14,53 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.p2p.RemoteNode;
 
 /**
- * {@code ForwardingTaskQueueExecutor} removes tasks from the local {@code Forwarding} queue and
+ * {@code ForwardingTaskQueue} removes tasks from the local {@code Forwarding} queue and
  * places them either in the local {@code Remote} queue (if the local node is <b>not</b> the initial
  * node), or in the {@code Forwarding} queue of one of the immediately connected child nodes.
  */
-public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
+public final class ForwardingTaskQueue implements TaskQueue {
 
   private final LocalScheduler scheduler;
-  private final BlockingQueue<Task> forwardingQueue;
-  private final BlockingQueue<Task> remoteQueue;
   private final LocalNode localNode;
 
+  // Accepts tasks that are forwarded to the local node as remote tasks (data elsewhere).
+  private final TaskQueue remoteQueue;
+
+  // Holds an unlimited number of tasks that need to be forwarded to neighbors
+  private final BlockingQueue<Task> forwardingQueue = new LinkedBlockingQueue<>();
   // One task at a time
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
-  public ForwardingTaskQueueExecutor(final LocalScheduler scheduler,
-                                     final BlockingQueue<Task> forwardingQueue,
-                                     final BlockingQueue<Task> remoteQueue,
-                                     final LocalNode localNode) {
+
+  public ForwardingTaskQueue(final LocalScheduler scheduler,
+                             final LocalNode localNode) {
 
     this.scheduler = scheduler;
-    this.forwardingQueue = forwardingQueue;
-    this.remoteQueue = remoteQueue;
+    this.remoteQueue = scheduler.getRemoteQueue();
     this.localNode = localNode;
   }
 
-  // Give the threadpool the first execution
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void start() {
+  public final void start() {
     this.threadPool.submit(this);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void run() {
+  public final boolean offer(final Task task) {
+    return this.forwardingQueue.offer(task);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void run() {
     // Forward tasks forever
     this.threadPool.submit(this);
 

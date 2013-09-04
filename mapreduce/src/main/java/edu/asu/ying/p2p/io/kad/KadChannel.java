@@ -1,31 +1,16 @@
-package edu.asu.ying.mapreduce.node.io.kad;
+package edu.asu.ying.p2p.io.kad;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
-import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
-import edu.asu.ying.mapreduce.common.filter.Filter;
-import edu.asu.ying.mapreduce.common.filter.FilterClass;
-import edu.asu.ying.mapreduce.common.filter.FilterString;
-import edu.asu.ying.mapreduce.node.io.Channel;
-import edu.asu.ying.mapreduce.node.io.InvalidContentException;
-import edu.asu.ying.mapreduce.node.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.node.io.SendMessageStream;
-import edu.asu.ying.mapreduce.node.io.UnhandledRequestException;
-import edu.asu.ying.mapreduce.node.io.message.ExceptionMessage;
-import edu.asu.ying.mapreduce.node.io.message.FilterMessage;
-import edu.asu.ying.mapreduce.node.io.message.Message;
-import edu.asu.ying.mapreduce.node.io.MessageHandler;
-import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
+import edu.asu.ying.p2p.io.Channel;
+import edu.asu.ying.p2p.io.InvalidContentException;
+import edu.asu.ying.p2p.io.MessageOutputStream;
+import edu.asu.ying.p2p.io.UnhandledRequestException;
+import edu.asu.ying.p2p.io.message.ExceptionMessage;
+import edu.asu.ying.p2p.io.message.Message;
+import edu.asu.ying.p2p.io.MessageHandler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
 

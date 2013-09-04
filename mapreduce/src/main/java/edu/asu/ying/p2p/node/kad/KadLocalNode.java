@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.node.kad;
+package edu.asu.ying.p2p.node.kad;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -11,12 +11,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
-import edu.asu.ying.mapreduce.node.io.Channel;
-import edu.asu.ying.mapreduce.node.*;
-import edu.asu.ying.mapreduce.node.io.InvalidContentException;
-import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
-import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
+import edu.asu.ying.p2p.io.Channel;
+import edu.asu.ying.p2p.node.*;
+import edu.asu.ying.p2p.io.InvalidContentException;
+import edu.asu.ying.p2p.io.message.RequestMessage;
+import edu.asu.ying.p2p.io.message.ResponseMessage;
 import edu.asu.ying.p2p.RemoteNode;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
@@ -33,6 +34,31 @@ import il.technion.ewolf.kbr.*;
 public final class KadLocalNode
     implements LocalNode {
 
+  /**
+   * Provides the implementation of {@code RemoteNode} which will be accessible by remote peers
+   * when exported. The proxy implementation glues the remote node interface to the concrete local
+   * node implementation while implementing the appropriate patterns to be RMI-compatible.
+   */
+  private final class KadRemoteNodeImpl implements RemoteNode {
+
+    private final LocalNode localNode;
+
+    private KadRemoteNodeImpl(final LocalNode localNode) {
+      this.localNode = localNode;
+    }
+
+    @Override
+    public NodeIdentifier getIdentifier() throws RemoteException {
+      return this.localNode.getIdentifier();
+    }
+
+    @Override
+    public RemoteScheduler getScheduler() throws RemoteException {
+      return this.localNode.getActivator().getReference(RemoteScheduler.class);
+    }
+  }
+  /***********************************************************************************************/
+
   // Local kademlia node
   private final KeybasedRouting kbrNode;
   private final NodeIdentifier localUri;
@@ -43,16 +69,17 @@ public final class KadLocalNode
   // Manages RMI export of objects for access by remote peers.
   private final RMIActivator activator;
 
-  // Implements the primary interface for remote peers. Must be exported by activator
-  private final KadLocalNodeProxy nodeProxy;
+  // Glue between the remote node interface and the local node implementation.
+  private final KadRemoteNodeImpl nodeProxy;
 
   // Schedules mapreduce jobs and tasks
   private final LocalScheduler scheduler;
 
+
   public KadLocalNode(final int port) throws InstantiationException {
 
     // The local Kademlia node for node discovery
-    this.kbrNode = KademliaNetwork.createNode(port);
+    this.kbrNode = KademliaNetwork.createNode(port);  // throws InstantiationException
     this.localUri = new KadNodeIdentifier(this.kbrNode.getLocalNode().getKey());
 
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
@@ -60,12 +87,12 @@ public final class KadLocalNode
     // Start the remote reference provider
     this.activator = new RMIActivatorImpl();
     // Start the interface for remote peers to access the local node
-    this.nodeProxy = KadLocalNodeProxy.createProxyTo(this);
+    this.nodeProxy = new KadRemoteNodeImpl(this);
     // Start the scheduler
     this.scheduler = new SchedulerImpl(this);
     // Allow peers to access the node and scheduler remotely.
     this.activator.bind(RemoteNode.class).toInstance(this.nodeProxy);
-    this.activator.bind(LocalScheduler.class).toInstance(this.scheduler);
+    this.activator.bind(RemoteScheduler.class).toInstance(this.scheduler.getProxy());
 
     // Allow peers to discover this node's RMI interfaces.
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);
@@ -115,9 +142,6 @@ public final class KadLocalNode
     return this.importProxyTo(kadNodes.get(0));
   }
 
-  /**
-   * The local node returns a concrete reference to the scheduler.
-   */
   @Override
   public LocalScheduler getScheduler() {
     return this.scheduler;
@@ -131,6 +155,11 @@ public final class KadLocalNode
   @Override
   public NodeIdentifier getIdentifier() {
     return this.localUri;
+  }
+
+  @Override
+  public RemoteNode getProxy() {
+    return this.nodeProxy;
   }
 
   private RemoteNode importProxyTo(final il.technion.ewolf.kbr.Node node) {

@@ -42,8 +42,7 @@ public final class RMIActivatorImpl implements RMIActivator {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public final <TBound extends Remote> TBound getReference(final Class<TBound> type,
-                                           final @Nullable Map<String, String> properties) {
+  public final <TBound extends Remote> TBound getReference(final Class<TBound> type) {
 
     final Binder<?> binder = this.bindings.get(type);
     if (binder == null)

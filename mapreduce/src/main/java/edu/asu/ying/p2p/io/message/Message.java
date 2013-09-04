@@ -1,9 +1,8 @@
-package edu.asu.ying.mapreduce.node.io.message;
+package edu.asu.ying.p2p.io.message;
 
 import java.io.Serializable;
 
 import edu.asu.ying.mapreduce.common.HasProperties;
-import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.p2p.NodeIdentifier;
 
 

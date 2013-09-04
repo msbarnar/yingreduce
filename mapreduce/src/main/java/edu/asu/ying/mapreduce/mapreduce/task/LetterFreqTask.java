@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.map.MapTask;
+import edu.asu.ying.p2p.RemoteNode;
 
 /**
  *
@@ -18,8 +20,8 @@ public class LetterFreqTask extends MapTask {
   private final int index;
   private final File file;
 
-  public LetterFreqTask(final int index) {
-    this.setId();
+  public LetterFreqTask(final Job parentJob, final RemoteNode reductionNode, final int index) {
+    super(parentJob, reductionNode);
     this.index = index;
     this.file = new File("lipsum.txt");
   }

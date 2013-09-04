@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.node.io.kad;
+package edu.asu.ying.p2p.io.kad;
 
 import com.google.common.util.concurrent.ListenableFutureTask;
 
@@ -11,10 +11,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.mapreduce.node.io.MessageOutputStream;
-import edu.asu.ying.mapreduce.node.kad.KadNodeIdentifier;
+import edu.asu.ying.p2p.io.MessageOutputStream;
+import edu.asu.ying.p2p.node.kad.KadNodeIdentifier;
 import edu.asu.ying.p2p.NodeIdentifier;
-import edu.asu.ying.mapreduce.node.io.message.Message;
+import edu.asu.ying.p2p.io.message.Message;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;

@@ -4,11 +4,13 @@ import com.google.common.base.Preconditions;
 
 import java.io.Serializable;
 
+import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.task.InvalidTaskException;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskBase;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
-import edu.asu.ying.mapreduce.node.NodeURL;
+import edu.asu.ying.p2p.RemoteNode;
+import edu.asu.ying.p2p.node.NodeURL;
 
 /**
  * A {@code MapTask} describes an instance of a mapreduce of mapping a function to a dataset.
@@ -25,31 +27,16 @@ import edu.asu.ying.mapreduce.node.NodeURL;
  */
 public abstract class MapTask extends TaskBase {
 
-  private static final class Property {
-    static final String Reducer = "reducer";
-  }
+  private final RemoteNode reductionNode;
 
-  public MapTask() {
-    this.setId();
-  }
-  public MapTask(final TaskID id) {
-    this.setId(id);
+  public MapTask(final Job parentJob, final RemoteNode reductionNode) {
+    super(parentJob);
+    this.reductionNode = reductionNode;
   }
 
   public abstract Serializable run();
 
-  public void validate() throws InvalidTaskException {
-    if (this.getReducer() == null) {
-      throw new InvalidTaskException(this, "No reducing node set");
-    }
-  }
-
-  public final NodeURL getReducer() {
-    return this.properties.getDynamicCast(Property.Reducer, NodeURL.class);
-  }
-  public final void setReducer(final NodeURL reducer) {
-    Preconditions.checkNotNull(reducer);
-
-    this.properties.put(Property.Reducer, reducer);
+  public final RemoteNode getReductionNode() {
+    return this.reductionNode;
   }
 }

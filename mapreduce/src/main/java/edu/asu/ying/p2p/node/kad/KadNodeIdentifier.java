@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.node.kad;
+package edu.asu.ying.p2p.node.kad;
 
 import com.google.common.base.Strings;
 

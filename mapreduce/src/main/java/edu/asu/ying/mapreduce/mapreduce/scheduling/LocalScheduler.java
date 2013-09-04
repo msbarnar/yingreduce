@@ -3,6 +3,7 @@ package edu.asu.ying.mapreduce.mapreduce.scheduling;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueue;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
@@ -31,4 +32,12 @@ public interface LocalScheduler {
    * delegated as tasks to {@code initial} nodes.
    */
   JobSchedulingResult createJob(final Job job);
+
+  /**
+   * Provides a {@link Remote} proxy to this scheduler. The proxy is <b>not exported</b> by default
+   * and is therefore unavailable to RMI clients; the caller is responsible for exporting the proxy.
+   */
+  RemoteScheduler getProxy();
+
+  TaskQueue getRemoteQueue();
 }

@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import edu.asu.ying.mapreduce.mapreduce.execution.ForwardingTaskQueue;
+import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueue;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegator;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
@@ -15,8 +17,6 @@ import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
-import edu.asu.ying.mapreduce.mapreduce.execution.ForwardingTaskQueueExecutor;
-import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueueExecutor;
 import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.p2p.RemoteNode;
 
@@ -30,45 +30,69 @@ import edu.asu.ying.p2p.RemoteNode;
  *   to the forwarding queue of a random immediately-connected node.</li>
  * </ol>
  * Once the scheduler has placed the mapreduce in a queue, the mapreduce is taken over by that queue's
- * {@link TaskQueueExecutor}.
+ * {@link edu.asu.ying.mapreduce.mapreduce.execution.TaskQueue}.
  */
 public class SchedulerImpl implements LocalScheduler {
 
-  private final LocalNode localNode;
-  private final NodeIdentifier localUri;
+  /**
+   * Provides the implementation of {@code RemoteScheduler} which will be accessible to remote peers
+   * when exported. The proxy implementation glues the remote scheduler proxy to the concrete local
+   * scheduler implementation while implementing the appropriate patterns to be RMI-compatible.
+   */
+  private final class SchedulerProxyImpl implements RemoteScheduler {
 
-  // The job queue holds jobs to be delegated as tasks to the initial nodes.
-  private final BlockingQueue<Job> jobQueue = new LinkedBlockingQueue<>();
+    private final LocalScheduler localScheduler;
+
+    private SchedulerProxyImpl(final LocalScheduler localScheduler) {
+      this.localScheduler = localScheduler;
+    }
+
+    @Override
+    public JobSchedulingResult startJob(Job job) throws RemoteException {
+      return null;
+    }
+
+    @Override
+    public TaskSchedulingResult delegateTask(Task task) throws RemoteException {
+      return null;
+    }
+  }
+  /***********************************************************************************************/
+
+  // Glue between the RMI interface and the local implementation
+  private final RemoteScheduler schedulerProxy;
+
+  // The node on which this scheduler is running
+  private final LocalNode localNode;
+
+  // The job delegator accepts unstarted jobs, splits them into tasks, and delegates each task to
+  // its initial node.
   private final JobDelegator jobDelegator;
 
   private static final int MAX_QUEUE_SIZE = 3;
 
   // Ql and Qr are bounded, but Qf is just a pipe
   private final BlockingQueue<Task> localQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
-  private final BlockingQueue<Task> forwardingQueue = new LinkedBlockingQueue<>();
+  private final TaskQueue forwardingQueue;
   private final BlockingQueue<Task> remoteQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
 
   // The executors watch the mapreduce queues and execute
-  //private final TaskQueueExecutor localExecutor = new LocalTaskQueueExecutor(this.localQueue);
-  private final TaskQueueExecutor forwardingExecutor;
- // private final TaskQueueExecutor remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
+  //private final TaskQueue localExecutor = new LocalTaskQueueExecutor(this.localQueue);
+ // private final TaskQueue remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
 
   public SchedulerImpl(final LocalNode localNode) {
 
     this.localNode = localNode;
 
-    this.localUri = localNode.getIdentifier();
-
     //this.localExecutor.start();
 
-    this.forwardingExecutor = new ForwardingTaskQueueExecutor(this,
-                                                              this.forwardingQueue,
-                                                              this.remoteQueue, localNode);
-    this.forwardingExecutor.start();
+    this.forwardingQueue = new ForwardingTaskQueue(this, localNode);
+    this.forwardingQueue.start();
 
    // this.remoteExecutor.start();
 
-    this.jobDelegator = new JobDelegatorImpl(this.localNode, this.jobQueue);
+    // Start the worker that splits jobs into tasks and sends each to its initial node
+    this.jobDelegator = new JobDelegatorImpl(this.localNode);
     this.jobDelegator.start();
   }
 
@@ -134,7 +158,7 @@ public class SchedulerImpl implements LocalScheduler {
       result.setTaskScheduled(this.queueForward(task, historyEntry));
     }
 
-    System.out.println(String.format("[%s] Task: %s", this.getNodeURI(),
+    System.out.println(String.format("[%s] Task: %s", this.localNode.getIdentifier(),
                                      historyEntry.getSchedulerAction()));
 
     return result;
@@ -166,26 +190,18 @@ public class SchedulerImpl implements LocalScheduler {
   private boolean queueForward(final Task task, final TaskHistory.Entry historyEntry) {
     historyEntry.setSchedulerAction(TaskHistory.SchedulerAction.Forwarded);
     task.getHistory().append(historyEntry);
-    return this.forwardingQueue.add(task);
+    return this.for.add(task);
   }
 
-  public final Queue<Task> getLocalQueue() {
-    return this.localQueue;
-  }
-
-  public final Queue<Task> getForwardingQueue() {
-    return this.forwardingQueue;
-  }
-
-  public final Queue<Task> getRemoteQueue() {
+  public final TaskQueue getRemoteQueue() {
     return this.remoteQueue;
   }
 
-  public final NodeIdentifier getNodeURI() {
-    return this.localUri;
+  public final RemoteScheduler getProxy() {
+    return this.schedulerProxy;
   }
 
   private TaskHistory.Entry createHistoryEntry() {
-    return new TaskHistory.Entry(this.localUri);
+    return new TaskHistory.Entry(this.localNode.getProxy());
   }
 }

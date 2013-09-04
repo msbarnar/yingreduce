@@ -1,10 +1,10 @@
 package edu.asu.ying.p2p.rmi;
 
 import edu.asu.ying.p2p.LocalNode;
-import edu.asu.ying.mapreduce.node.io.Channel;
-import edu.asu.ying.mapreduce.node.io.MessageHandler;
-import edu.asu.ying.mapreduce.node.io.message.Message;
-import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
+import edu.asu.ying.p2p.io.Channel;
+import edu.asu.ying.p2p.io.MessageHandler;
+import edu.asu.ying.p2p.io.message.Message;
+import edu.asu.ying.p2p.io.message.ResponseMessage;
 import edu.asu.ying.p2p.RemoteNode;
 
 /**

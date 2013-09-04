@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.node;
+package edu.asu.ying.p2p.node;
 
 import java.net.URI;
 

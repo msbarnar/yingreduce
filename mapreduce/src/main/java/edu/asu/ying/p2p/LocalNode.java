@@ -5,7 +5,7 @@ import java.rmi.UnknownHostException;
 import java.util.List;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.node.NodeURL;
+import edu.asu.ying.p2p.node.NodeURL;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 
 
@@ -25,4 +25,6 @@ public interface LocalNode {
   RemoteNode findNode(final NodeIdentifier uri) throws UnknownHostException;
 
   NodeIdentifier getIdentifier();
+
+  RemoteNode getProxy();
 }

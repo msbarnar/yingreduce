@@ -72,8 +72,7 @@ public interface RMIActivator {
    */
   <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
 
-  <TBound extends Remote> TBound getReference(final Class<TBound> type,
-                                              final @Nullable Map<String, String> properties);
+  <TBound extends Remote> TBound getReference(final Class<TBound> type);
 
   int getPort();
 }

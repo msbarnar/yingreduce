@@ -7,7 +7,7 @@ import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.node.kad.KadNodeURL;
+import edu.asu.ying.p2p.node.kad.KadNodeURL;
 import edu.asu.ying.mapreduce.yingtable.TableID;
 
 /**
