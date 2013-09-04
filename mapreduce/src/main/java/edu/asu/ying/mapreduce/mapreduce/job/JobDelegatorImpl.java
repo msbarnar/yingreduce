@@ -76,7 +76,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
         final RemoteNode node = this.localNode.findNode(
             new KadNodeIdentifier(task.getId().toString()));
         task.setInitialNodeURI(node.getIdentifier());
-        node.getActivator().getReference(Scheduler.class, null).acceptTask(task);
+        node.getScheduler().acceptTask(task);
       } catch (final RemoteException e) {
         e.printStackTrace();
       }

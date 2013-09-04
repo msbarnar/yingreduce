@@ -95,7 +95,7 @@ public final class ForwardingTaskQueueExecutor implements TaskQueueExecutor {
     // TODO: adjust backpressure calculation per weina's suggestions
     for (final RemoteNode node : neighbors) {
       try {
-        final Scheduler remoteScheduler = node.getActivator().getReference(Scheduler.class, null);
+        final Scheduler remoteScheduler = node.getScheduler();
         final int remoteBackpressure = remoteScheduler.getBackpressure();
         if (remoteBackpressure < minimumBackpressure) {
           minimumBackpressure = remoteBackpressure;

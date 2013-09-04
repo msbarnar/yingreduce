@@ -89,7 +89,7 @@ public class SchedulerImpl implements Scheduler {
     final int rnd = (new Random()).nextInt(neighbors.size());
 
     final RemoteNode node = neighbors.get(rnd);
-    return node.getActivator().getReference(Scheduler.class, null).acceptJob(job);
+    return node.getScheduler().acceptJob(job);
   }
 
   @Override
