@@ -56,6 +56,11 @@ public class SchedulerImpl implements LocalScheduler {
     public TaskSchedulingResult delegateTask(Task task) throws RemoteException {
       return null;
     }
+
+    @Override
+    public final int getBackpressure() throws RemoteException {
+      return this.localScheduler.getRemoteQueue().size();
+    }
   }
   /***********************************************************************************************/
 
@@ -94,10 +99,6 @@ public class SchedulerImpl implements LocalScheduler {
     // Start the worker that splits jobs into tasks and sends each to its initial node
     this.jobDelegator = new JobDelegatorImpl(this.localNode);
     this.jobDelegator.start();
-  }
-
-  public final int getBackpressure() throws RemoteException {
-    return this.remoteQueue.size() + this.forwardingQueue.size();
   }
 
   /**
