@@ -2,6 +2,7 @@ package edu.asu.ying.mapreduce.node.kad;
 
 import java.rmi.RemoteException;
 
+import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.p2p.RemoteNode;
@@ -24,5 +25,10 @@ public class KadLocalNodeProxy implements RemoteNode {
   @Override
   public NodeIdentifier getIdentifier() throws RemoteException {
     return this.localNode.getIdentifier();
+  }
+
+  @Override
+  public Scheduler getScheduler() throws RemoteException {
+    return this.localNode.getScheduler();
   }
 }

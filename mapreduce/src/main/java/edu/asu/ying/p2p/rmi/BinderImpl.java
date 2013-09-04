@@ -4,29 +4,27 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import edu.asu.ying.p2p.LocalNode;
-
 /**
  * @inheritDoc
  */
 public final class BinderImpl<TBound extends Remote>
-    implements ServerActivator.Binder<TBound> {
+    implements RMIActivator.Binder<TBound> {
 
   /**
    * {@code ClassBinding} binds a class to another class with an activation mode controlling the
    * instantiation of the bound class.
    */
   private final class ClassBinding<TBound extends Remote, TBindee extends TBound>
-      implements ServerActivator.Binding<TBound> {
+      implements RMIActivator.Binding<TBound> {
 
     /**
      * Provides instances of {@code TBound} according to the
-     * {@link edu.asu.ying.p2p.rmi.ServerActivator.ActivationMode}.
+     * {@link RMIActivator.ActivationMode}.
      */
     private abstract class InstanceFactory<TBindee> {
-      protected final ServerActivator activator;
+      protected final RMIActivator activator;
       protected final Class<TBindee> type;
-      protected InstanceFactory(final Class<TBindee> type, final ServerActivator activator) {
+      protected InstanceFactory(final Class<TBindee> type, final RMIActivator activator) {
         this.type = type;
         this.activator = activator;
       }
@@ -38,7 +36,7 @@ public final class BinderImpl<TBound extends Remote>
      */
     @SuppressWarnings("unchecked")
     private final class SingleCallFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
-      private SingleCallFactory(final Class<TBindee> type, final ServerActivator activator) {
+      private SingleCallFactory(final Class<TBindee> type, final RMIActivator activator) {
         super(type, activator);
       }
       final TBindee get() {
@@ -62,7 +60,7 @@ public final class BinderImpl<TBound extends Remote>
       private TBindee instance;
       private final Object instanceLock = new Object();
 
-      private SingletonFactory(final Class<TBindee> type, final ServerActivator activator) {
+      private SingletonFactory(final Class<TBindee> type, final RMIActivator activator) {
         super(type, activator);
       }
       final TBindee get() {
@@ -97,8 +95,8 @@ public final class BinderImpl<TBound extends Remote>
      * Binds {@code boundType} to {@code bindee} given the activation {@code mode}.
      */
     public ClassBinding(final Class<TBound> boundType, final Class<TBindee> bindee,
-                        final ServerActivator.ActivationMode mode,
-                        final ServerActivator activator) {
+                        final RMIActivator.ActivationMode mode,
+                        final RMIActivator activator) {
       this.boundType = boundType;
       this.bindee = bindee;
 
@@ -125,13 +123,13 @@ public final class BinderImpl<TBound extends Remote>
    */
   @SuppressWarnings("unchecked")
   private final class InstanceBinding<TBound extends Remote>
-      implements ServerActivator.Binding<TBound> {
+      implements RMIActivator.Binding<TBound> {
 
     private final Class<TBound> bindee;
     private final TBound instance;
 
     private InstanceBinding(final Class<TBound> bindee, final TBound instance,
-                            final ServerActivator activator) {
+                            final RMIActivator activator) {
       this.bindee = bindee;
       TBound proxyInstance = null;
       try {
@@ -151,18 +149,18 @@ public final class BinderImpl<TBound extends Remote>
     }
   }
 
-  private final ServerActivator activator;
+  private final RMIActivator activator;
   private final Class<TBound> boundClass;
-  private ServerActivator.Binding<TBound> binding;
+  private RMIActivator.Binding<TBound> binding;
 
-  public BinderImpl(final Class<TBound> boundClass, final ServerActivator activator) {
+  public BinderImpl(final Class<TBound> boundClass, final RMIActivator activator) {
     this.boundClass = boundClass;
     this.activator = activator;
   }
 
   @Override
   public <TBindee extends TBound> void
-  to(Class<TBindee> type, ServerActivator.ActivationMode mode) {
+  to(Class<TBindee> type, RMIActivator.ActivationMode mode) {
     this.binding = new ClassBinding<>(this.boundClass, type, mode, this.activator);
   }
 
@@ -172,7 +170,7 @@ public final class BinderImpl<TBound extends Remote>
   }
 
   @Override
-  public ServerActivator.Binding getBinding() {
+  public RMIActivator.Binding getBinding() {
     return this.binding;
   }
 }

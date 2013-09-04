@@ -1,17 +1,14 @@
 package edu.asu.ying.p2p.rmi;
 
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.p2p.RemoteNode;
-
 /**
  *
  */
-public interface ServerActivator {
+public interface RMIActivator {
 
   /**
    * The {@code ActivationMode} specifies the manner in which objects are instantiated to fulfill
@@ -48,7 +45,7 @@ public interface ServerActivator {
      * @param <TBindee> the type of the class bound.
      */
     <TBindee extends TBound> void to(Class<TBindee> type,
-                                     ServerActivator.ActivationMode mode);
+                                     RMIActivator.ActivationMode mode);
 
     /**
      * Binds {@code TBound} to a specific instance of {@code TBound}.
@@ -68,7 +65,7 @@ public interface ServerActivator {
    * If a subclass is bound, it will be instantiated according to the {@link ActivationMode} given.
    * </p>
    * When a class is activated, the instance provided will be determined by bindings made with
-   * {@link ServerActivator#bind}.
+   * {@link RMIActivator#bind}.
    * @param type the class to bind.
    * @param <TBound> the type of the bound class.
    * @return a {@link Binder} which is used to further specify the type of the binding.
@@ -76,8 +73,7 @@ public interface ServerActivator {
   <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
 
   <TBound extends Remote> TBound getReference(final Class<TBound> type,
-                                              final @Nullable Map<String, String> properties)
-      throws RemoteException;
+                                              final @Nullable Map<String, String> properties);
 
   int getPort();
 }

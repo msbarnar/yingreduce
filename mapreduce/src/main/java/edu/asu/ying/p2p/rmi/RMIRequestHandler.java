@@ -5,6 +5,7 @@ import edu.asu.ying.mapreduce.node.io.Channel;
 import edu.asu.ying.mapreduce.node.io.MessageHandler;
 import edu.asu.ying.mapreduce.node.io.message.Message;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
+import edu.asu.ying.p2p.RemoteNode;
 
 /**
  * {@code RMIRequestHandler} listens for requests from the network and returns a
@@ -14,8 +15,8 @@ import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 public final class RMIRequestHandler implements MessageHandler {
 
   /**
-   * Creates an {@link RMIRequestHandler} which provides {@link RemoteActivator} referencing
-   * the given {@link LocalNode}'s {@link ServerActivator}.
+   * Creates an {@link RMIRequestHandler} which provides instances of the
+   * {@link edu.asu.ying.p2p.RemoteNode} proxy to the {@link LocalNode} for access by remote peers.
    * @param node the node to be made accessible to peers on the network.
    * @param networkChannel the channel through which the node will be accessible.
    * @return the new request handler.
@@ -26,17 +27,24 @@ public final class RMIRequestHandler implements MessageHandler {
   }
 
   // The proxy instance to include in responses
-  private final RemoteActivator instance;
+  private final RemoteNode instance;
 
   // TODO: change how we handle tags?
   private final String tag = "node.remote-proxy";
 
   /**
-   * Gets an instance of the {@link RemoteActivator} proxy and registers the message handler on the
+   * Gets an instance of the {@link RemoteNode} proxy and registers the message handler on the
    * channel.
+   * </p>
+   * The {@link RemoteNode} should have already been bound on the local node's {@link RMIActivator}
+   * via {@link RMIActivator#bind}.
    */
   private RMIRequestHandler(final LocalNode localNode, final Channel networkChannel) {
-    this.instance = localNode.getActivator().export();
+    this.instance = localNode.getActivator().getReference(RemoteNode.class, null);
+    if (this.instance == null) {
+      throw new IllegalStateException("Local node proxy is not available; remote peers will be"
+                                      + " unable to access the local node.");
+    }
     networkChannel.registerMessageHandler(this, this.tag);
   }
 
@@ -48,10 +56,8 @@ public final class RMIRequestHandler implements MessageHandler {
   }
 
   /**
-   * Responds to {@code request} with a {@link ResponseMessage} wrapping the {@link RemoteActivator}
-   * instance obtained from the {@link LocalNode} passed in
-   * {@link RMIRequestHandler#RMIRequestHandler(edu.asu.ying.p2p.LocalNode,
-   edu.asu.ying.mapreduce.node.io.Channel)}.
+   * Responds to {@code request} with a {@link ResponseMessage} wrapping the {@link RemoteNode}
+   * proxy for the local node.
    */
   @Override
   public Message onIncomingRequest(final Message request) {

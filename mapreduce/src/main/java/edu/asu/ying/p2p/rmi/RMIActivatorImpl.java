@@ -1,27 +1,19 @@
 package edu.asu.ying.p2p.rmi;
 
-import com.javafx.tools.doclets.internal.toolkit.taglets.InheritDocTaglet;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.server.ExportException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-
-import edu.asu.ying.p2p.LocalNode;
-import edu.asu.ying.p2p.RemoteNode;
 
 
 /**
  * Controls creation and lifetime management for server-side object instances available for
  * accession by remote nodes.
  */
-public final class ActivatorImpl implements ServerActivator {
+public final class RMIActivatorImpl implements RMIActivator {
 
   // The port used to export all RMI instances.
   private int rmiPort = 0;
@@ -31,7 +23,7 @@ public final class ActivatorImpl implements ServerActivator {
   // i.e. Class/Interface -> Subclass or Instance
   private final Map<Class<? extends Remote>, Binder<? extends Remote>> bindings = new HashMap<>();
 
-  public ActivatorImpl() {
+  public RMIActivatorImpl() {
   }
 
   /**
@@ -51,8 +43,7 @@ public final class ActivatorImpl implements ServerActivator {
   @Override
   @SuppressWarnings("unchecked")
   public final <TBound extends Remote> TBound getReference(final Class<TBound> type,
-                                           final @Nullable Map<String, String> properties)
-    throws RemoteException {
+                                           final @Nullable Map<String, String> properties) {
 
     final Binder<?> binder = this.bindings.get(type);
     if (binder == null)

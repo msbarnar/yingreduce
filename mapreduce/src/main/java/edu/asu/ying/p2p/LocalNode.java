@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.mapreduce.node.NodeURL;
-import edu.asu.ying.p2p.rmi.ServerActivator;
+import edu.asu.ying.p2p.rmi.RMIActivator;
 
 
 /**
@@ -18,7 +18,7 @@ public interface LocalNode {
 
   List<RemoteNode> getNeighbors();
 
-  ServerActivator getActivator();
+  RMIActivator getActivator();
 
   Scheduler getScheduler();
 

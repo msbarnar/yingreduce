@@ -18,12 +18,12 @@ import edu.asu.ying.mapreduce.node.io.InvalidContentException;
 import edu.asu.ying.mapreduce.node.io.message.RequestMessage;
 import edu.asu.ying.mapreduce.node.io.message.ResponseMessage;
 import edu.asu.ying.p2p.RemoteNode;
-import edu.asu.ying.p2p.rmi.ActivatorImpl;
+import edu.asu.ying.p2p.rmi.RMIActivator;
+import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.Scheduler;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.NodeIdentifier;
-import edu.asu.ying.p2p.rmi.ServerActivator;
 import il.technion.ewolf.kbr.*;
 
 
@@ -41,7 +41,7 @@ public final class KadLocalNode
   private final Channel networkChannel;
 
   // Manages RMI export of objects for access by remote peers.
-  private final ServerActivator activator;
+  private final RMIActivator activator;
 
   // Implements the primary interface for remote peers. Must be exported by activator
   private final KadLocalNodeProxy nodeProxy;
@@ -58,7 +58,7 @@ public final class KadLocalNode
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
     // Start the remote reference provider
-    this.activator = new ActivatorImpl();
+    this.activator = new RMIActivatorImpl();
     // Start the interface for remote peers to access the local node
     this.nodeProxy = KadLocalNodeProxy.createProxyTo(this);
     // Start the scheduler
@@ -124,7 +124,7 @@ public final class KadLocalNode
   }
 
   @Override
-  public ServerActivator getActivator() {
+  public RMIActivator getActivator() {
     return this.activator;
   }
 
