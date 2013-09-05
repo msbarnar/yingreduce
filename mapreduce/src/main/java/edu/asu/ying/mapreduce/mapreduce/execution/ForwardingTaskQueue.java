@@ -91,16 +91,8 @@ public final class ForwardingTaskQueue implements TaskQueue {
     } else {
       // Attempt to put the mapreduce in the local remote queue, unless it is full
       if (this.remoteQueue.offer(task)) {
-        // Override the Forwarded action set by the scheduler, indicating that the mapreduce was
-        // accepted as a remote mapreduce
-        final TaskHistory.Entry lastEntry = task.getHistory().last();
-        if (lastEntry == null) {
-          throw new IllegalStateException("Trying to forward task that has no history; every node"
-                                          + " after this will not know how to route this task.");
-        }
-        lastEntry.setSchedulerAction(TaskHistory.SchedulerAction.QueuedRemotely);
-        System.out.println(String.format("[%s] Task: %s", this.localNode.getIdentifier(),
-                                         lastEntry.getSchedulerAction()));
+        System.out.println(String.format("[%s] Task: accepted into remote queue",
+                                         this.localNode.getIdentifier()));
       } else {
         this.forwardTask(task);
       }
