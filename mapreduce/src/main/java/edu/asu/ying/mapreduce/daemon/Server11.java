@@ -1,20 +1,19 @@
 package edu.asu.ying.mapreduce.daemon;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.p2p.node.kad.KadNodeURL;
 import edu.asu.ying.mapreduce.yingtable.TableID;
+import edu.asu.ying.p2p.node.kad.KadNodeURL;
 
 /**
- * The main entry point for the node daemon. {@code Application} starts the table, scheduling, and
+ * The main entry point for the node daemon. {@code Server9} starts the table, scheduling, and
  * interface services before attaching the local node to an existing Kademlia network.
  */
-public class Application2 {
+public class Server11 {
 
   /**
    * Daemon entry point.
@@ -26,15 +25,16 @@ public class Application2 {
     System.out.println("For help contact Matthew Barnard: msbarnar@gmail.com");
     System.out.println();
 
-    final Application2 app = new Application2(args);
+    final Server11 app = new Server11(args);
     app.start();
   }
 
   /**
    * Initializes the appropriate services, but does not start them.
    */
-  private Application2(final String[] args) {
+  private Server11(final String[] args) {
     // TODO: Logging
+    System.out.println("SERVER 11");
     System.out.println("Getting things ready...");
   }
 
@@ -45,9 +45,9 @@ public class Application2 {
     // TODO: Logging
     System.out.println("Starting the application...");
 
-    final Daemon instance2 = new Daemon(5001);
+    final Daemon instance2 = new Daemon(5002);
     try {
-      instance2.getLocalNode().join(new KadNodeURL("//127.0.0.1:5000"));
+      instance2.getLocalNode().join(new KadNodeURL("//149.169.30.10:5000"));
     } catch (final IOException e) {
       e.printStackTrace();
       return;
@@ -61,15 +61,10 @@ public class Application2 {
     sched = instance2.getLocalNode().getScheduler();
 
     if (sched != null) {
-      try {
+      for (int i = 0; i < 3; i++) {
         final Job job = new MapReduceJob(new TableID("mytable"));
+        job.setStartTime();
         final JobSchedulingResult result = sched.createJob(job);
-        System.out.println(String.format("Scheduling job %s... %s on node %s",
-                                         result.getJob().getID(),
-                                         result.getResult().toString(),
-                                         result.getNode().getIdentifier().toString()));
-      } catch (final RemoteException e) {
-        e.printStackTrace();
       }
     }
   }

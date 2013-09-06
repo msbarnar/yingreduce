@@ -33,7 +33,7 @@ public final class RemoteTaskQueue extends TaskQueueBase {
         task.getId().toString()));
 
     try {
-      Thread.sleep(100+(new Random()).nextInt(300));
+      Thread.sleep(100+(new Random()).nextInt(100));
     } catch (final InterruptedException e) {}
 
     System.out.println("[Remote] Starting task ".concat(task.getId().toString()));

@@ -92,6 +92,8 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
       tasks.push(task);
     }
 
+    job.setNumTasks(tasks.size());
+
     final List<RemoteNode> neighbors = this.localNode.getNeighbors();
 
     // Attempt to distribute the tasks to their initial nodes

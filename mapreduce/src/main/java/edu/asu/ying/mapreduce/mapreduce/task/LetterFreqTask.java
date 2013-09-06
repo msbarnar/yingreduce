@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.p2p.RemoteNode;
@@ -26,7 +27,7 @@ public final class LetterFreqTask extends TaskBase {
     super(parentJob, new TaskID(parentJob.getTableID().toString().concat(String.valueOf(index))));
     this.reductionNode = reductionNode;
     this.index = index;
-    this.file = new File("/Users/matthew/lipsum.txt");
+    this.file = new File("/home/msbarnar/lipsum.txt");
   }
 
   public final RemoteNode getReductionNode() {
@@ -50,6 +51,9 @@ public final class LetterFreqTask extends TaskBase {
     // Skip to the Ith line of text in the file ("page in the table")
     for (int i = 0; i < this.index; i++) {
       try {
+        try {
+          Thread.sleep((new Random()).nextInt(10));
+        } catch (final InterruptedException e) {}
         reader.readLine();
       } catch (final IOException e) {
         e.printStackTrace();
@@ -77,7 +81,7 @@ public final class LetterFreqTask extends TaskBase {
     }
 
     // Convert the frequency array to a hashmap for nicer reducing etc.
-    final Map<Character, Integer> result = new HashMap<>();
+    final Map<Character, Integer> result = new HashMap<Character, Integer>();
     for (int i = 0; i < freqs.length; i++) {
       result.put((char) ('A' + i), freqs[i]);
     }

@@ -22,4 +22,10 @@ public interface Job extends Serializable {
 
   void setReducerNode(final RemoteNode node);
   RemoteNode getReducerNode();
+
+  void setNumTasks(final int n);
+  int getNumTasks();
+
+  void setStartTime();
+  long getTimeElapsed();
 }

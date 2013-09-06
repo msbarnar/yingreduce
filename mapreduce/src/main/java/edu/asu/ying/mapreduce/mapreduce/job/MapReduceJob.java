@@ -9,7 +9,7 @@ import edu.asu.ying.p2p.RemoteNode;
 /**
  *
  */
-public class MapReduceJob implements Job {
+public final class MapReduceJob implements Job {
 
   private static final long SerialVersionUID = 1L;
 
@@ -17,19 +17,21 @@ public class MapReduceJob implements Job {
   private final TableID tableID;
   private RemoteNode responsibleNode;
   private RemoteNode reducerNode;
+  private int numTasks;
+  private long startTime;
 
   public MapReduceJob(final TableID tableID) {
-    this.jobID = new TaskID(tableID.toString().concat("0"));
+    this.jobID = new TaskID();
     this.tableID = tableID;
   }
 
   @Override
-  public TaskID getID() {
+  public final TaskID getID() {
     return this.jobID;
   }
 
   @Override
-  public TableID getTableID() {
+  public final TableID getTableID() {
     return this.tableID;
   }
 
@@ -39,7 +41,7 @@ public class MapReduceJob implements Job {
   }
 
   @Override
-  public RemoteNode getResponsibleNode() {
+  public final RemoteNode getResponsibleNode() {
     return this.responsibleNode;
   }
 
@@ -49,7 +51,25 @@ public class MapReduceJob implements Job {
   }
 
   @Override
-  public RemoteNode getReducerNode() {
+  public final RemoteNode getReducerNode() {
     return this.reducerNode;
+  }
+
+  @Override
+  public final void setNumTasks(final int n) {
+    this.numTasks = n;
+  }
+  @Override
+  public final int getNumTasks() {
+    return this.numTasks;
+  }
+
+  @Override
+  public final void setStartTime() {
+    this.startTime = System.currentTimeMillis();
+  }
+  @Override
+  public final long getTimeElapsed() {
+    return System.currentTimeMillis() - this.startTime;
   }
 }

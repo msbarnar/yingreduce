@@ -1,8 +1,15 @@
 package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 import edu.asu.ying.mapreduce.mapreduce.queuing.ForwardingTaskQueue;
 import edu.asu.ying.mapreduce.mapreduce.queuing.LocalTaskQueue;
@@ -11,6 +18,7 @@ import edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegator;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
+import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
@@ -86,16 +94,16 @@ public class SchedulerImpl implements LocalScheduler {
   // its initial node.
   private final JobDelegator jobDelegator;
 
-  private static final int MAX_QUEUE_SIZE = 3;
+  private static final int MAX_QUEUE_SIZE = 1;
 
   // Ql and Qr are bounded, but Qf is just a pipe to neighboring peers
   private final TaskQueue forwardingQueue;
   private final TaskQueue localQueue = new LocalTaskQueue(MAX_QUEUE_SIZE, this);
   private final TaskQueue remoteQueue = new RemoteTaskQueue(MAX_QUEUE_SIZE, this);
 
-  // The executors watch the mapreduce queues and execute
-  //private final TaskQueue localExecutor = new LocalTaskQueueExecutor(this.localQueue);
- // private final TaskQueue remoteExecutor = new RemoteTaskQueueExecutor(this.remoteQueue);
+  // TODO: Write a reducer class
+  private final Map<TaskID, List<Serializable>> reductions = new HashMap<>();
+
 
   public SchedulerImpl(final LocalNode localNode) {
 
@@ -196,9 +204,35 @@ public class SchedulerImpl implements LocalScheduler {
     }
   }
 
+  // FIXME: Kill this method
   @Override
   public final void reduceTaskCompletion(final TaskCompletion completion) {
-    System.out.println("Task complete: ".concat(completion.getResult().toString()));
+    // Collect results
+    List<Serializable> results = this.reductions.get(completion.getTask().getParentJob().getID());
+    if (results == null) {
+      results = new ArrayList<>();
+      this.reductions.put(completion.getTask().getParentJob().getID(), results);
+    }
+
+    results.add(completion.getResult());
+
+    if (results.size() >= completion.getTask().getParentJob().getNumTasks()) {
+      final Map<Character, Integer> fin = new TreeMap<>();
+
+      for (final Serializable result : results) {
+        final Map<Character, Integer> res = (Map<Character, Integer>) result;
+        for (final Character c : res.keySet()) {
+          Integer exist = fin.get(c);
+          if (exist == null) {
+            exist = 0;
+          }
+          fin.put(c, exist + res.get(c));
+        }
+      }
+
+      System.out.println(String.format("%d ms: %s", completion.getTask().getParentJob().getTimeElapsed(),
+                                       fin.toString()));
+    }
   }
 
   private boolean queueLocally(final Task task) {

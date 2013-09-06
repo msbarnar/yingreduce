@@ -1,10 +1,10 @@
 package edu.asu.ying.mapreduce.daemon;
 
 /**
- * The main entry point for the node daemon. {@code Application} starts the table, scheduling, and
+ * The main entry point for the node daemon. {@code Server9} starts the table, scheduling, and
  * interface services before attaching the local node to an existing Kademlia network.
  */
-public class Application {
+public class Server9 {
 
   /**
    * Daemon entry point.
@@ -16,15 +16,16 @@ public class Application {
     System.out.println("For help contact Matthew Barnard: msbarnar@gmail.com");
     System.out.println();
 
-    final Application app = new Application(args);
+    final Server9 app = new Server9(args);
     app.start();
   }
 
   /**
    * Initializes the appropriate services, but does not start them.
    */
-  private Application(final String[] args) {
+  private Server9(final String[] args) {
     // TODO: Logging
+    System.out.println("SERVER 9");
     System.out.println("Getting things ready...");
   }
 
