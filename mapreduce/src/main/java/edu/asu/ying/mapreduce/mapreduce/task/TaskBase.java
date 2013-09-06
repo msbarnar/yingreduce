@@ -28,10 +28,10 @@ public abstract class TaskBase implements Task {
   protected TaskStartParameters startParameters;
   protected RemoteNode initialNode;
 
-  protected TaskBase(final Job parentJob) {
-    this.taskID = new TaskID();
+  protected TaskBase(final Job parentJob, final TaskID taskID) {
     this.history = new TaskHistory();
     this.parentJob = parentJob;
+    this.taskID = taskID;
   }
 
   public final TaskID getId() {

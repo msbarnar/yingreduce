@@ -61,15 +61,16 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
     final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
     for (int i = 0; i < 10; i++) {
+      // Pass the responsible node as a remote proxy so other peers can access it
       final LetterFreqTask task = new LetterFreqTask(job, this.localNode.getProxy(), i);
-      task.getHistory().append(new TaskHistory.Entry(this.localNode.getProxy(),
-                                                     TaskHistory.NodeRole.Responsible,
-                                                     TaskHistory.SchedulerAction.None));
+      // TODO: Add to history
+
       tasks.push(task);
     }
 
     final List<RemoteNode> neighbors = this.localNode.getNeighbors();
 
+    // Attempt to distribute the tasks to their initial nodes
     while (!tasks.isEmpty()) {
       final LetterFreqTask task = tasks.pop();
       try {

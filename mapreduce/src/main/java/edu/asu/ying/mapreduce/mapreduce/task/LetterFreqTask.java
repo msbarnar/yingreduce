@@ -9,19 +9,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.mapreduce.mapreduce.map.MapTask;
 import edu.asu.ying.p2p.RemoteNode;
 
 /**
  *
  */
-public class LetterFreqTask extends MapTask {
+public class LetterFreqTask extends TaskBase {
+
+  private final RemoteNode reductionNode;
 
   private final int index;
   private final File file;
 
   public LetterFreqTask(final Job parentJob, final RemoteNode reductionNode, final int index) {
-    super(parentJob, reductionNode);
+    // Task ID = table name + page index
+    super(parentJob, new TaskID(parentJob.getTableID().toString().concat(String.valueOf(index))));
+    this.reductionNode = reductionNode;
     this.index = index;
     this.file = new File("lipsum.txt");
   }
@@ -36,9 +39,11 @@ public class LetterFreqTask extends MapTask {
       return null;
     }
 
+    // Count the frequency of each letter
     final int[] freqs = new int[26];
 
     String line = null;
+    // Skip to the Ith line of text in the file ("page in the table")
     for (int i = 0; i < this.index; i++) {
       try {
         reader.readLine();
@@ -47,25 +52,27 @@ public class LetterFreqTask extends MapTask {
       }
     }
 
-    do {
-      try {
-        line = reader.readLine();
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
+    // Read the Ith line (page)
+    try {
+      line = reader.readLine();
+    } catch (final IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
 
-      if (line != null) {
-        line = line.toUpperCase();
-        for (final char c : line.toCharArray()) {
-          final int index = c - 'A';
-          if (index > 0 && index < 26) {
-            freqs[index]++;
-          }
+    if (line != null) {
+      // Alpha only, case insensitive
+      line = line.toUpperCase().replaceAll("[^A-Z]", "");
+      for (final char c : line.toCharArray()) {
+        // Index in the frequency array using the alphabetic index of the character
+        final int index = c - 'A';
+        if (index >= 0 && index < 26) {
+          freqs[index]++;
         }
       }
+    }
 
-    } while (line != null);
-
+    // Convert the frequency array to a hashmap for nicer reducing etc.
     final Map<Character, Integer> result = new HashMap<>();
     for (int i = 0; i < freqs.length; i++) {
       result.put((char) ('A' + i), freqs[i]);
