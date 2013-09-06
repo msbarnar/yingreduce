@@ -7,4 +7,6 @@ package edu.asu.ying.mapreduce.mapreduce.job;
 public interface JobDelegator extends Runnable {
 
   void start();
+
+  boolean offer(final Job job);
 }

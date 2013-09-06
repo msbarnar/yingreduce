@@ -36,6 +36,11 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
   }
 
   @Override
+  public final boolean offer(final Job job) {
+    return this.jobQueue.offer(job);
+  }
+
+  @Override
   public final void run() {
     // Run forever
     this.threadPool.submit(this);

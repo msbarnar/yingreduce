@@ -48,18 +48,23 @@ public class SchedulerImpl implements LocalScheduler {
     }
 
     @Override
-    public JobSchedulingResult startJob(Job job) throws RemoteException {
-      return null;
+    public JobSchedulingResult acceptJobAsResponsibleNode(final Job job) throws RemoteException {
+      return this.localScheduler.acceptJobAsResponsibleNode(job);
     }
 
     @Override
-    public TaskSchedulingResult delegateTask(Task task) throws RemoteException {
+    public TaskSchedulingResult delegateTask(final Task task) throws RemoteException {
       return null;
     }
 
     @Override
     public final int getBackpressure() throws RemoteException {
       return this.localScheduler.getRemoteQueue().size();
+    }
+
+    @Override
+    public final RemoteNode getNode() throws RemoteException {
+      return this.localScheduler.getLocalNode().getProxy();
     }
   }
   /***********************************************************************************************/
@@ -102,28 +107,29 @@ public class SchedulerImpl implements LocalScheduler {
   }
 
   /**
-   * Finds the {@code Responsible Node} for the specified job and queues the job on it.
+   * The entry point for new jobs into the system. Finds the {@code Responsible Node} for the
+   * specified job and queues the job on it.
    * If the local node is the {@code responsible} node, it accepts a job and queues it to be
    * delegated as tasks to {@code initial} nodes.
    */
   @Override
   public final JobSchedulingResult createJob(final Job job) {
     // TODO: Find the responsible node by finding the node with the first page of the table
-    // FIXME: pick a random node
+    // FIXME: picking a random node
     final List<RemoteNode> neighbors = this.localNode.getNeighbors();
     final int rnd = (new Random()).nextInt(neighbors.size());
 
     final RemoteNode node = neighbors.get(rnd);
     try {
-      return node.getScheduler().delegateJob(job);
+      return node.getScheduler().acceptJobAsResponsibleNode(job);
     } catch (final RemoteException e) {
-      return new JobSchedulingResult(job, this.localNode.getRemoteReference(), e);
+      return new JobSchedulingResult(job, this.localNode.getProxy(), e);
     }
   }
 
   @Override
-  public JobSchedulingResult acceptJob(final Job job) throws RemoteException {
-    this.jobQueue.add(job);
+  public JobSchedulingResult acceptJobAsResponsibleNode(final Job job) throws RemoteException {
+    this.jobDelegator.offer(job);
     return new JobSchedulingResult(job, this.localUri)
         .setResult(JobSchedulingResult.Result.Scheduled);
   }
@@ -201,6 +207,11 @@ public class SchedulerImpl implements LocalScheduler {
 
   public final RemoteScheduler getProxy() {
     return this.schedulerProxy;
+  }
+
+  @Override
+  public LocalNode getLocalNode() {
+    return this.localNode;
   }
 
   private TaskHistory.Entry createHistoryEntry() {

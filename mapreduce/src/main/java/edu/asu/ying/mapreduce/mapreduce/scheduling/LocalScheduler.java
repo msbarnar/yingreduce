@@ -8,6 +8,7 @@ import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
+import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
@@ -38,6 +39,8 @@ public interface LocalScheduler {
    * and is therefore unavailable to RMI clients; the caller is responsible for exporting the proxy.
    */
   RemoteScheduler getProxy();
+
+  LocalNode getLocalNode();
 
   TaskQueue getRemoteQueue();
 }

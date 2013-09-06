@@ -25,7 +25,7 @@ public interface RemoteScheduler extends Remote, Serializable {
    * As an instruction to a {@link Job}'s {@code responsible node}, {@code startJob} begins the
    * process at that node of delegating the job into tasks.
    */
-  JobSchedulingResult startJob(final Job job) throws RemoteException;
+  JobSchedulingResult acceptJobAsResponsibleNode(final Job job) throws RemoteException;
 
   /**
    * At a task's {@code initial node} (the node which contains the data pages referenced by the
