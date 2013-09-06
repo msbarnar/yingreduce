@@ -159,14 +159,16 @@ public final class BinderImpl<TBound extends Remote>
   }
 
   @Override
-  public <TBindee extends TBound> void
+  public <TBindee extends TBound> TBound
   to(Class<TBindee> type, RMIActivator.ActivationMode mode) {
     this.binding = new ClassBinding<>(this.boundClass, type, mode, this.activator);
+    return this.binding.getReference();
   }
 
   @Override
-  public void toInstance(TBound instance) {
+  public TBound toInstance(TBound instance) {
     this.binding = new InstanceBinding<>(this.boundClass, instance, this.activator);
+    return this.binding.getReference();
   }
 
   @Override

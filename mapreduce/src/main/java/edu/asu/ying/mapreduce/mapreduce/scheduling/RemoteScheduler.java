@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
+import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.RemoteNode;
 
@@ -35,6 +36,8 @@ public interface RemoteScheduler extends Remote, Serializable {
    * the task as a {@code remote} task or forwards it to an available peer.
    */
   TaskSchedulingResult acceptTaskAsInitialNode(final Task task) throws RemoteException;
+
+  void reduceTaskCompletion(final TaskCompletion completion) throws RemoteException;
 
   /**
    * Returns an integer indicating the absolute quantity of load on this node. A higher value means

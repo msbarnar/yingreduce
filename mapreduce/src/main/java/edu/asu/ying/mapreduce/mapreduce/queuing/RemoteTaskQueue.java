@@ -12,7 +12,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
  */
 public final class RemoteTaskQueue extends TaskQueueBase {
 
-  protected RemoteTaskQueue(final int capacity, final LocalScheduler scheduler) {
+  public RemoteTaskQueue(final int capacity, final LocalScheduler scheduler) {
     super(capacity, scheduler);
   }
 

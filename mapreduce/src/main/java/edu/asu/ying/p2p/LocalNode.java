@@ -1,7 +1,7 @@
 package edu.asu.ying.p2p;
 
 import java.io.IOException;
-import java.rmi.UnknownHostException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;

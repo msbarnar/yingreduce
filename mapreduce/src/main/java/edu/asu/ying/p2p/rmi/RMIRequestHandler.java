@@ -40,7 +40,7 @@ public final class RMIRequestHandler implements MessageHandler {
    * via {@link RMIActivator#bind}.
    */
   private RMIRequestHandler(final LocalNode localNode, final Channel networkChannel) {
-    this.instance = localNode.getActivator().getReference(RemoteNode.class, null);
+    this.instance = localNode.getProxy();
     if (this.instance == null) {
       throw new IllegalStateException("Local node proxy is not available; remote peers will be"
                                       + " unable to access the local node.");

@@ -16,9 +16,10 @@ public class MapReduceJob implements Job {
   private final TaskID jobID;
   private final TableID tableID;
   private RemoteNode responsibleNode;
+  private RemoteNode reducerNode;
 
   public MapReduceJob(final TableID tableID) {
-    this.jobID = new TaskID();
+    this.jobID = new TaskID(tableID.toString().concat("0"));
     this.tableID = tableID;
   }
 
@@ -32,6 +33,7 @@ public class MapReduceJob implements Job {
     return this.tableID;
   }
 
+  @Override
   public void setResponsibleNode(final RemoteNode node) {
     this.responsibleNode = node;
   }
@@ -39,5 +41,15 @@ public class MapReduceJob implements Job {
   @Override
   public RemoteNode getResponsibleNode() {
     return this.responsibleNode;
+  }
+
+  @Override
+  public void setReducerNode(final RemoteNode node) {
+    this.reducerNode = node;
+  }
+
+  @Override
+  public RemoteNode getReducerNode() {
+    return this.reducerNode;
   }
 }

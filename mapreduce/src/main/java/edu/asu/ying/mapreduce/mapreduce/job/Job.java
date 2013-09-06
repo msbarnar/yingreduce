@@ -17,5 +17,9 @@ public interface Job extends Serializable {
   TaskID getID();
   TableID getTableID();
 
+  void setResponsibleNode(final RemoteNode node);
   RemoteNode getResponsibleNode();
+
+  void setReducerNode(final RemoteNode node);
+  RemoteNode getReducerNode();
 }

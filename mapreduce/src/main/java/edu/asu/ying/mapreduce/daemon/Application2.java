@@ -65,9 +65,9 @@ public class Application2 {
         final Job job = new MapReduceJob(new TableID("mytable"));
         final JobSchedulingResult result = sched.createJob(job);
         System.out.println(String.format("Scheduling job %s... %s on node %s",
-                                         result.getJob().getId(),
+                                         result.getJob().getID(),
                                          result.getResult().toString(),
-                                         result.getNodeIdentifier().toString()));
+                                         result.getNode().getIdentifier().toString()));
       } catch (final RemoteException e) {
         e.printStackTrace();
       }

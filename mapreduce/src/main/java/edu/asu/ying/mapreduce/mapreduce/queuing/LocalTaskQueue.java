@@ -39,7 +39,7 @@ public final class LocalTaskQueue extends TaskQueueBase {
       result = e;
     }
 
-    System.out.println("[Local] Task complete; sending to reducer: ".concat(
+    System.out.println("[Local] Sending to reducer: ".concat(
         task.getId().toString()));
 
     this.scheduler.completeTask(new TaskCompletion(task, result));

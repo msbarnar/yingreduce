@@ -3,7 +3,7 @@ package edu.asu.ying.p2p.node.kad;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
-import java.rmi.UnknownHostException;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public final class KadLocalNode
 
     @Override
     public RemoteScheduler getScheduler() throws RemoteException {
-      return this.localNode.getActivator().getReference(RemoteScheduler.class);
+      return this.localNode.getScheduler().getProxy();
     }
   }
   /***********************************************************************************************/
@@ -70,7 +70,9 @@ public final class KadLocalNode
   private final RMIActivator activator;
 
   // Glue between the remote node interface and the local node implementation.
-  private final KadRemoteNodeImpl nodeProxy;
+  private final RemoteNode nodeProxy;
+  // Necessary to keep alive the glue implementation
+  private final RemoteNode nodeProxyTarget;
 
   // Schedules mapreduce jobs and tasks
   private final LocalScheduler scheduler;
@@ -87,12 +89,14 @@ public final class KadLocalNode
     // Start the remote reference provider
     this.activator = new RMIActivatorImpl();
     // Start the interface for remote peers to access the local node
-    this.nodeProxy = new KadRemoteNodeImpl(this);
     // Start the scheduler
     this.scheduler = new SchedulerImpl(this);
+    this.scheduler.export(this.activator);
+    this.scheduler.start();
+
     // Allow peers to access the node and scheduler remotely.
-    this.activator.bind(RemoteNode.class).toInstance(this.nodeProxy);
-    this.activator.bind(RemoteScheduler.class).toInstance(this.scheduler.getProxy());
+    this.nodeProxyTarget = new KadRemoteNodeImpl(this);
+    this.nodeProxy = this.activator.bind(RemoteNode.class).toInstance(this.nodeProxyTarget);
 
     // Allow peers to discover this node's RMI interfaces.
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);

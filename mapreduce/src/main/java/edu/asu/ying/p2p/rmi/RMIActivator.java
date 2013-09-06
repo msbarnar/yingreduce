@@ -44,7 +44,7 @@ public interface RMIActivator {
      * @param mode the manner of instantiation (e.g. singleton).
      * @param <TBindee> the type of the class bound.
      */
-    <TBindee extends TBound> void to(Class<TBindee> type,
+    <TBindee extends TBound> TBound to(Class<TBindee> type,
                                      RMIActivator.ActivationMode mode);
 
     /**
@@ -52,7 +52,7 @@ public interface RMIActivator {
      * </p>
      * This binding will only ever provide {@code instance} to fulfill {@code TBound}.
      */
-    void toInstance(TBound instance);
+    TBound toInstance(TBound instance);
 
     /**
      * Returns the binding created by one of {@link Binder#to} or {@link Binder#toInstance}.

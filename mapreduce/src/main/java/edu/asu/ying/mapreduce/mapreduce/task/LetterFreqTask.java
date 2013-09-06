@@ -26,7 +26,7 @@ public final class LetterFreqTask extends TaskBase {
     super(parentJob, new TaskID(parentJob.getTableID().toString().concat(String.valueOf(index))));
     this.reductionNode = reductionNode;
     this.index = index;
-    this.file = new File("lipsum.txt");
+    this.file = new File("/Users/matthew/lipsum.txt");
   }
 
   public final RemoteNode getReductionNode() {

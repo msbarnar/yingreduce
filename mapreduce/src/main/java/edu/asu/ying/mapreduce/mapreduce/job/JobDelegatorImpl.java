@@ -1,9 +1,11 @@
 package edu.asu.ying.mapreduce.mapreduce.job;
 
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,7 +39,12 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
   @Override
   public final boolean offer(final Job job) {
-    return this.jobQueue.offer(job);
+    if (this.jobQueue.offer(job)) {
+      System.out.println("[Job] New job for table: ".concat(job.getTableID().toString()));
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override
@@ -65,6 +72,17 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     // TODO: Logging
     System.out.println("Delegating job ".concat(job.getID().toString()));
 
+    // Find the reducer node first
+    // FIXME: random reducer at the moment
+    try {
+      final RemoteNode reducer = this.localNode.findNode(
+        new KadNodeIdentifier(UUID.randomUUID().toString()));
+      job.setReducerNode(reducer);
+
+    } catch (final UnknownHostException e) {
+      throw new RuntimeException(e);
+    }
+
     final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
     for (int i = 0; i < 10; i++) {
       // Pass the responsible node as a remote proxy so other peers can access it
@@ -85,7 +103,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
             new KadNodeIdentifier(task.getId().toString()));
         task.setInitialNode(node);
         node.getScheduler().acceptTaskAsInitialNode(task);
-      } catch (final RemoteException e) {
+      } catch (final RemoteException | UnknownHostException e) {
         e.printStackTrace();
       }
     }

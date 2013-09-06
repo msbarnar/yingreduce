@@ -95,7 +95,7 @@ public final class KadSendMessageStream
   }
 
   @Override
-  public Future<Serializable> writeAsyncRequest(Node node, Message request)
+  public Future<Serializable> writeAsyncRequest(final Node node, final Message request)
       throws IOException {
 
     request.setSourceNode(this.localUri);

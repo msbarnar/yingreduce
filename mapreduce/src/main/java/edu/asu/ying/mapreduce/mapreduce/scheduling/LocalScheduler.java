@@ -9,6 +9,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalNode;
+import edu.asu.ying.p2p.rmi.RMIActivator;
 
 /**
  * {@code LocalScheduler} is responsible for the allocation of {@code map} and {@code reduce} mapreduce.
@@ -25,6 +26,8 @@ import edu.asu.ying.p2p.LocalNode;
  * </ol>
  */
 public interface LocalScheduler {
+
+  void export(final RMIActivator activator);
 
   /**
    * Starts all scheduling workers.
@@ -52,6 +55,8 @@ public interface LocalScheduler {
   TaskSchedulingResult acceptTaskAsInitialNode(final Task task);
 
   void completeTask(final TaskCompletion completion);
+
+  void reduceTaskCompletion(final TaskCompletion completion);
 
   /**
    * Provides a {@link Remote} proxy to this scheduler. The proxy is <b>not exported</b> by default
