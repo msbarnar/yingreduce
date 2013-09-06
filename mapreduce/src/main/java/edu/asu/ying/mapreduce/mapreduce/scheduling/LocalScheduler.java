@@ -26,6 +26,11 @@ import edu.asu.ying.p2p.LocalNode;
 public interface LocalScheduler {
 
   /**
+   * Starts all scheduling workers.
+   */
+  void start();
+
+  /**
    * The entry point for new jobs into the system. Finds the {@code Responsible Node} for the
    * specified job and queues the job on it.
    * If the local node is the {@code responsible} node, it accepts a job and queues it to be

@@ -95,15 +95,24 @@ public class SchedulerImpl implements LocalScheduler {
     // Create the proxy which will glue the remote interface to the local implementation.
     this.schedulerProxy = new SchedulerProxyImpl(this);
 
-    // Start queues
-    this.forwardingQueue = new ForwardingTaskQueue(this, localNode);
-    this.forwardingQueue.start();
+    // Set up forwarding queue with node reference so it can find neighbors
+    this.forwardingQueue = new ForwardingTaskQueue(this, this.localNode);
 
-    // Start the worker that splits jobs into tasks and sends each to its initial node
+    // Set up the delegator that splits jobs into tasks and sends them to initial nodes
     this.jobDelegator = new JobDelegatorImpl(this.localNode);
-    this.jobDelegator.start();
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void start() {
+    // Start everything explicitly so we don't start any threads in constructors
+    this.localQueue.start();
+    this.remoteQueue.start();
+    this.forwardingQueue.start();
+    this.jobDelegator.start();
+  }
   /**
    * {@inheritDoc}
    */
