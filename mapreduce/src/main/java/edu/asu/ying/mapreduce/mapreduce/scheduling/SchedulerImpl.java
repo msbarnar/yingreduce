@@ -51,8 +51,8 @@ public class SchedulerImpl implements LocalScheduler {
     }
 
     @Override
-    public TaskSchedulingResult delegateTask(final Task task) throws RemoteException {
-      return this.localScheduler.acceptTask(task);
+    public TaskSchedulingResult acceptTaskAsInitialNode(final Task task) throws RemoteException {
+      return this.localScheduler.acceptTaskAsInitialNode(task);
     }
 
     @Override
@@ -150,59 +150,34 @@ public class SchedulerImpl implements LocalScheduler {
   @Override
   public final TaskSchedulingResult acceptTaskAsInitialNode(final Task task) {
 
-    task.touch(this.localNode.getProxy());
-
     final TaskSchedulingResult result = new TaskSchedulingResult();
 
-    final TaskHistory.Entry historyEntry = task.getHistory().last();
-
     // If this is the initial node, try to execute the mapreduce locally.
-    if (task.isCurrentlyAtInitialNode()) {
-      historyEntry.setNodeRole(TaskHistory.NodeRole.Initial);
+    if (this.isInitialNodeForTask(task)) {
       // Add the mapreduce if the local queue is not full
-      result.setTaskScheduled(this.queueLocally(task, historyEntry));
+      result.setTaskScheduled(this.queueLocally(task));
+      System.out.println(String.format("[%s] Task: queued locally",
+                                       this.localNode.getIdentifier()));
       // If the local queue was full, forward the mapreduce
       if (!result.isTaskScheduled()) {
-        result.setTaskScheduled(this.queueForward(task, historyEntry));
+        result.setTaskScheduled(this.queueForward(task));
+        System.out.println(String.format("[%s] Task: forwarded", this.localNode.getIdentifier()));
       }
     } else {
       // If this is not the initial node, put the mapreduce straight in the forwarding queue
-      result.setTaskScheduled(this.queueForward(task, historyEntry));
+      result.setTaskScheduled(this.queueForward(task));
+      System.out.println(String.format("[%s] Task: forwarded", this.localNode.getIdentifier()));
     }
-
-    System.out.println(String.format("[%s] Task: %s", this.localNode.getIdentifier(),
-                                     historyEntry.getSchedulerAction()));
 
     return result;
   }
 
-  /**
-   * Attempts to queue the {@link Task} in the local queue for execution on the
-   * {@code initial node}.
-   * @param task the mapreduce to be queued.
-   * @param historyEntry details regarding the queuing of the mapreduce will be indicated in this entry.
-   * @return {@code true} if the mapreduce was placed on the queue; {@code false} if the queue was full.
-   */
-  private boolean queueLocally(final Task task, final TaskHistory.Entry historyEntry) {
-    final boolean isQueued = this.localQueue.offer(task);
-    if (isQueued) {
-      // Mark the mapreduce as being performed on the initial node
-      historyEntry.setSchedulerAction(TaskHistory.SchedulerAction.QueuedLocally);
-      task.getHistory().append(historyEntry);
-    }
-    return isQueued;
+  private boolean queueLocally(final Task task) {
+    return this.localQueue.offer(task);
   }
 
-  /**
-   * Places the {@link Task} in the forwarding queue to be executed remotely.
-   * @param task the mapreduce to be queued.
-   * @param historyEntry details regarding the queuing of the mapreduce will be indicated in this entry.
-   * @return {@code true}.
-   */
-  private boolean queueForward(final Task task, final TaskHistory.Entry historyEntry) {
-    historyEntry.setSchedulerAction(TaskHistory.SchedulerAction.Forwarded);
-    task.getHistory().append(historyEntry);
-    return this.for.add(task);
+  private boolean queueForward(final Task task) {
+    return this.forwardingQueue.offer(task);
   }
 
   public final TaskQueue getRemoteQueue() {
@@ -218,7 +193,10 @@ public class SchedulerImpl implements LocalScheduler {
     return this.localNode;
   }
 
-  private TaskHistory.Entry createHistoryEntry() {
-    return new TaskHistory.Entry(this.localNode.getProxy());
+  /**
+   * Returns true if the task's {@code initial node} is the same as this node.
+   */
+  private boolean isInitialNodeForTask(final Task task) {
+    return task.getInitialNode().equals(this.localNode.getProxy());
   }
 }

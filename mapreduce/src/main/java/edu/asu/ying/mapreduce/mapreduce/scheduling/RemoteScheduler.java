@@ -34,7 +34,7 @@ public interface RemoteScheduler extends Remote, Serializable {
    * At a node that is <i>not</i> the task's {@code initial node}, {@code delegateTask} schedules
    * the task as a {@code remote} task or forwards it to an available peer.
    */
-  TaskSchedulingResult delegateTask(final Task task) throws RemoteException;
+  TaskSchedulingResult acceptTaskAsInitialNode(final Task task) throws RemoteException;
 
   /**
    * Returns an integer indicating the absolute quantity of load on this node. A higher value means
