@@ -19,7 +19,7 @@ public final class ClientTable implements Table {
   // Uniquely identifies the table in the data store
   private final TableID id;
 
-  private final Deque<Page> pages = new ArrayDeque<>();
+  private final Deque<Page> pages = new ArrayDeque<Page>();
 
 
   public ClientTable(final TableID id) {
@@ -27,19 +27,19 @@ public final class ClientTable implements Table {
     this.addPage();
   }
 
-  @Override
+
   public final TableID getId() throws RemoteException {
     return this.id;
   }
 
-  @Override
+
   public final void commit() throws IOException {
     for (final Page page : this.pages) {
       this.commit(page);
     }
   }
 
-  @Override
+
   public final void addElement(final Element element) throws RemoteException {
     final Page curPage = this.getCurrentPage();
 

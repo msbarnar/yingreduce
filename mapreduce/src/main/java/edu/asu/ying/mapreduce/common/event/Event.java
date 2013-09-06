@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
  */
 public abstract class Event<TEventHandler extends EventHandler<TEventArgs>, TEventArgs> {
 
-  protected final List<TEventHandler> handlers = new ArrayList<>();
+  protected final List<TEventHandler> handlers = new ArrayList<TEventHandler>();
 
   protected Event() {
   }

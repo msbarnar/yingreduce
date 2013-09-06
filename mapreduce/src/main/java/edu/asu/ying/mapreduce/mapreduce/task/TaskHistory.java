@@ -89,7 +89,7 @@ public final class TaskHistory implements Serializable {
     }
   }
 
-  private final Deque<Entry> history = new ArrayDeque<>();
+  private final Deque<Entry> history = new ArrayDeque<Entry>();
 
   public TaskHistory() {
   }

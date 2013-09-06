@@ -55,27 +55,22 @@ public class SchedulerImpl implements LocalScheduler {
       this.localScheduler = localScheduler;
     }
 
-    @Override
     public JobSchedulingResult acceptJobAsResponsibleNode(final Job job) throws RemoteException {
       return this.localScheduler.acceptJobAsResponsibleNode(job);
     }
 
-    @Override
     public TaskSchedulingResult acceptTaskAsInitialNode(final Task task) throws RemoteException {
       return this.localScheduler.acceptTaskAsInitialNode(task);
     }
 
-    @Override
     public final void reduceTaskCompletion(final TaskCompletion completion) throws RemoteException {
       this.localScheduler.reduceTaskCompletion(completion);
     }
 
-    @Override
     public final int getBackpressure() throws RemoteException {
       return this.localScheduler.getRemoteQueue().size();
     }
 
-    @Override
     public final RemoteNode getNode() throws RemoteException {
       return this.localScheduler.getLocalNode().getProxy();
     }
@@ -102,7 +97,7 @@ public class SchedulerImpl implements LocalScheduler {
   private final TaskQueue remoteQueue = new RemoteTaskQueue(MAX_QUEUE_SIZE, this);
 
   // TODO: Write a reducer class
-  private final Map<TaskID, List<Serializable>> reductions = new HashMap<>();
+  private final Map<TaskID, List<Serializable>> reductions = new HashMap<TaskID, List<Serializable>>();
 
 
   public SchedulerImpl(final LocalNode localNode) {
@@ -119,7 +114,6 @@ public class SchedulerImpl implements LocalScheduler {
     this.jobDelegator = new JobDelegatorImpl(this.localNode);
   }
 
-  @Override
   public final void export(final RMIActivator activator) {
     // Create the proxy which will glue the remote interface to the local implementation.
     this.schedulerProxy = activator.bind(RemoteScheduler.class)
@@ -129,7 +123,6 @@ public class SchedulerImpl implements LocalScheduler {
   /**
    * {@inheritDoc}
    */
-  @Override
   public final void start() {
     // Start everything explicitly so we don't start any threads in constructors
     this.localQueue.start();
@@ -140,7 +133,6 @@ public class SchedulerImpl implements LocalScheduler {
   /**
    * {@inheritDoc}
    */
-  @Override
   public final JobSchedulingResult createJob(final Job job) {
     // TODO: Find the responsible node by finding the node with the first page of the table
     // FIXME: picking a random node
@@ -160,7 +152,6 @@ public class SchedulerImpl implements LocalScheduler {
   /**
    * {@inheritDoc}
    */
-  @Override
   public final JobSchedulingResult acceptJobAsResponsibleNode(final Job job) {
     if (this.jobDelegator.offer(job)) {
       return new JobSchedulingResult(job, this.localNode.getProxy(),
@@ -173,7 +164,6 @@ public class SchedulerImpl implements LocalScheduler {
   /**
    * {@inheritDoc}
    */
-  @Override
   public final TaskSchedulingResult acceptTaskAsInitialNode(final Task task) {
 
     final TaskSchedulingResult result = new TaskSchedulingResult();
@@ -194,7 +184,6 @@ public class SchedulerImpl implements LocalScheduler {
     return result;
   }
 
-  @Override
   public final void completeTask(final TaskCompletion completion) {
     final RemoteNode reducer = completion.getTask().getParentJob().getReducerNode();
     try {
@@ -205,19 +194,18 @@ public class SchedulerImpl implements LocalScheduler {
   }
 
   // FIXME: Kill this method
-  @Override
   public final void reduceTaskCompletion(final TaskCompletion completion) {
     // Collect results
     List<Serializable> results = this.reductions.get(completion.getTask().getParentJob().getID());
     if (results == null) {
-      results = new ArrayList<>();
+      results = new ArrayList<Serializable>();
       this.reductions.put(completion.getTask().getParentJob().getID(), results);
     }
 
     results.add(completion.getResult());
 
     if (results.size() >= completion.getTask().getParentJob().getNumTasks()) {
-      final Map<Character, Integer> fin = new TreeMap<>();
+      final Map<Character, Integer> fin = new TreeMap<Character, Integer>();
 
       for (final Serializable result : results) {
         final Map<Character, Integer> res = (Map<Character, Integer>) result;
@@ -251,7 +239,6 @@ public class SchedulerImpl implements LocalScheduler {
     return this.schedulerProxy;
   }
 
-  @Override
   public LocalNode getLocalNode() {
     return this.localNode;
   }

@@ -24,14 +24,14 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   private final KeybasedRouting kbrNode;
 
   private final MessageOutputStream sendStream;
-  private final Map<String, MessageHandler> messageHandlers = new HashMap<>();
+  private final Map<String, MessageHandler> messageHandlers = new HashMap<String, MessageHandler>();
 
   public KadChannel(final KeybasedRouting kbrNode) {
     this.kbrNode = kbrNode;
     this.sendStream = new KadSendMessageStream(kbrNode);
   }
 
-  @Override
+
   public final void registerMessageHandler(final MessageHandler handler, final String tag) {
     this.kbrNode.register(tag, this);
     this.messageHandlers.put(tag, handler);
@@ -39,12 +39,11 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
     System.out.println("Bound request handler for '".concat(tag).concat("'"));
   }
 
-  @Override
   public final MessageOutputStream getMessageOutputStream() {
     return this.sendStream;
   }
 
-  @Override
+
   public final void onIncomingMessage(final Node from, final String tag,
                                       final Serializable content) {
 
@@ -59,7 +58,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
     }
   }
 
-  @Override
+
   public final Serializable onIncomingRequest(final Node from, final String tag,
                                               final Serializable content) {
 

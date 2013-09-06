@@ -34,7 +34,6 @@ public final class LetterFreqTask extends TaskBase {
     return this.reductionNode;
   }
 
-  @Override
   public Serializable run() {
     BufferedReader reader;
 

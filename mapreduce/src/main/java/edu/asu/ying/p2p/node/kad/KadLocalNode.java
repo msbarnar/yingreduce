@@ -47,12 +47,12 @@ public final class KadLocalNode
       this.localNode = localNode;
     }
 
-    @Override
+
     public NodeIdentifier getIdentifier() throws RemoteException {
       return this.localNode.getIdentifier();
     }
 
-    @Override
+
     public RemoteScheduler getScheduler() throws RemoteException {
       return this.localNode.getScheduler().getProxy();
     }
@@ -106,7 +106,7 @@ public final class KadLocalNode
                                      port));
   }
 
-  @Override
+
   public final void join(final NodeURL bootstrap) throws IOException {
     try {
       final List<URI> bootstrapUris = Arrays.asList(bootstrap.toURI());
@@ -121,10 +121,10 @@ public final class KadLocalNode
                                      bootstrap.toString()));
   }
 
-  @Override
+
   public List<RemoteNode> getNeighbors() {
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.getNeighbours();
-    final List<RemoteNode> nodeProxies = new ArrayList<>();
+    final List<RemoteNode> nodeProxies = new ArrayList<RemoteNode>();
 
     for (final il.technion.ewolf.kbr.Node kadNode : kadNodes) {
       final RemoteNode proxy = this.importProxyTo(kadNode);
@@ -136,7 +136,7 @@ public final class KadLocalNode
     return nodeProxies;
   }
 
-  @Override
+
   public RemoteNode findNode(final NodeIdentifier uri) throws UnknownHostException {
     final Key key = this.kbrNode.getKeyFactory().create(uri.toString());
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
@@ -146,22 +146,21 @@ public final class KadLocalNode
     return this.importProxyTo(kadNodes.get(0));
   }
 
-  @Override
+
   public LocalScheduler getScheduler() {
     return this.scheduler;
   }
 
-  @Override
+
   public RMIActivator getActivator() {
     return this.activator;
   }
 
-  @Override
+
   public NodeIdentifier getIdentifier() {
     return this.localUri;
   }
 
-  @Override
   public RemoteNode getProxy() {
     return this.nodeProxy;
   }
@@ -190,8 +189,7 @@ public final class KadLocalNode
       }
       return (RemoteNode) ((ResponseMessage) resp).getContent();
 
-    } catch (final ExecutionException | InterruptedException
-        | InvalidContentException | ClassCastException | RemoteException e) {
+    } catch (final Exception e) {
 
       // TODO: Logging
       e.printStackTrace();

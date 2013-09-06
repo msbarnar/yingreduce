@@ -27,7 +27,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
   private final TaskQueue remoteQueue;
 
   // Holds an unlimited number of tasks that need to be forwarded to neighbors
-  private final BlockingQueue<Task> forwardingQueue = new LinkedBlockingQueue<>();
+  private final BlockingQueue<Task> forwardingQueue = new LinkedBlockingQueue<Task>();
   // One task at a time
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
@@ -43,7 +43,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
   /**
    * {@inheritDoc}
    */
-  @Override
+
   public final void start() {
     this.threadPool.submit(this);
   }
@@ -51,7 +51,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
   /**
    * {@inheritDoc}
    */
-  @Override
+
   public final boolean offer(final Task task) {
     return this.forwardingQueue.offer(task);
   }
@@ -66,7 +66,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
   /**
    * {@inheritDoc}
    */
-  @Override
+
   public final void run() {
     // Forward tasks forever
     this.threadPool.submit(this);

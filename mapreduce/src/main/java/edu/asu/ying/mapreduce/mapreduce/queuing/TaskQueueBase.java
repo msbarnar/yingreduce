@@ -21,26 +21,26 @@ public abstract class TaskQueueBase implements TaskQueue {
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
   protected TaskQueueBase(final int capacity, final LocalScheduler scheduler) {
-    this.queue = new LinkedBlockingQueue<>(capacity);
+    this.queue = new LinkedBlockingQueue<Task>(capacity);
     this.scheduler = scheduler;
   }
 
-  @Override
+
   public final void start() {
     this.threadPool.submit(this);
   }
 
-  @Override
+
   public boolean offer(final Task task) {
     return this.queue.offer(task);
   }
 
-  @Override
+
   public final int size() {
     return this.queue.size();
   }
 
-  @Override
+
   public final void run() {
     // Run forever
     this.threadPool.submit(this);

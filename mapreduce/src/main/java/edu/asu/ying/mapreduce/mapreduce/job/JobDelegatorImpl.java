@@ -23,7 +23,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
   private final LocalNode localNode;
 
   // Holds unstarted jobs to be split into tasks, each sent to its inital node
-  private final BlockingQueue<Job> jobQueue = new LinkedBlockingQueue<>();
+  private final BlockingQueue<Job> jobQueue = new LinkedBlockingQueue<Job>();
 
   // One job at a time
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
@@ -32,12 +32,12 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     this.localNode = localNode;
   }
 
-  @Override
+
   public final void start() {
     this.threadPool.submit(this);
   }
 
-  @Override
+
   public final boolean offer(final Job job) {
     if (this.jobQueue.offer(job)) {
       System.out.println("[Job] New job for table: ".concat(job.getTableID().toString()));
@@ -47,7 +47,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     }
   }
 
-  @Override
+
   public final void run() {
     // Run forever
     this.threadPool.submit(this);
@@ -83,7 +83,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
       throw new RuntimeException(e);
     }
 
-    final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
+    final Deque<LetterFreqTask> tasks = new ArrayDeque<LetterFreqTask>();
     for (int i = 0; i < 10; i++) {
       // Pass the responsible node as a remote proxy so other peers can access it
       final LetterFreqTask task = new LetterFreqTask(job, this.localNode.getProxy(), i);
@@ -105,7 +105,9 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
             new KadNodeIdentifier(task.getId().toString()));
         task.setInitialNode(node);
         node.getScheduler().acceptTaskAsInitialNode(task);
-      } catch (final RemoteException | UnknownHostException e) {
+      } catch (final RemoteException e) {
+        e.printStackTrace();
+      } catch (final UnknownHostException e) {
         e.printStackTrace();
       }
     }

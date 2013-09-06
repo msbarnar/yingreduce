@@ -21,7 +21,7 @@ public final class RMIActivatorImpl implements RMIActivator {
 
   // Activation of other classes is controlled via bindings
   // i.e. Class/Interface -> Subclass or Instance
-  private final Map<Class<? extends Remote>, Binder<? extends Remote>> bindings = new HashMap<>();
+  private final Map<Class<? extends Remote>, Binder<? extends Remote>> bindings = new HashMap<Class<? extends Remote>, Binder<? extends Remote>>();
 
   public RMIActivatorImpl() {
   }
@@ -29,10 +29,9 @@ public final class RMIActivatorImpl implements RMIActivator {
   /**
    * @inheritDoc
    */
-  @Override
   @SuppressWarnings("unchecked")
   public final <TBound extends Remote> Binder<TBound> bind(final Class<TBound> type) {
-    final Binder binder = new BinderImpl<>(type, this);
+    final Binder binder = new BinderImpl<TBound>(type, this);
     this.bindings.put(type, binder);
     return binder;
   }
@@ -40,7 +39,6 @@ public final class RMIActivatorImpl implements RMIActivator {
   /**
    * @inheritDoc
    */
-  @Override
   @SuppressWarnings("unchecked")
   public final <TBound extends Remote> TBound getReference(final Class<TBound> type) {
 
@@ -55,7 +53,7 @@ public final class RMIActivatorImpl implements RMIActivator {
     return (TBound) binding.getReference();
   }
 
-  @Override
+
   public final int getPort() {
     if (this.rmiPort == 0) {
       synchronized(this.portLock) {

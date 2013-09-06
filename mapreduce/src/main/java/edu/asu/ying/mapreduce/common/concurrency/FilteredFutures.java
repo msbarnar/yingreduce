@@ -29,7 +29,7 @@ public class FilteredFutures<V>
    * @return a {@code FilteredFutures} instance attached to the given event.
    */
   public static <V> FilteredFutures<V> getFrom(final FilteredValueEvent<V> event) {
-    return new FilteredFutures<>(event);
+    return new FilteredFutures<V>(event);
   }
 
   /**
@@ -63,7 +63,7 @@ public class FilteredFutures<V>
    * @param count the number of future values to receive.
    */
   public final FilteredFutures<V> get(final int count) {
-    this.unfulfilledFutures = new ArrayDeque<>(count);
+    this.unfulfilledFutures = new ArrayDeque<SettableFuture<V>>(count);
     for (int i = 0; i < count; i++) {
       this.unfulfilledFutures.push(SettableFuture.<V>create());
     }
@@ -108,7 +108,7 @@ public class FilteredFutures<V>
    * @param sender the object that fired the event.
    * @param value  the value to set on the future.
    */
-  @Override
+
   public boolean onEvent(final Object sender, final V value) {
     // Clear all cancelled futures
     while ((this.unfulfilledFutures.peek() != null) && this.unfulfilledFutures.peek()

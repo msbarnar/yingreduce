@@ -44,7 +44,7 @@ public final class BinderImpl<TBound extends Remote>
           return (TBindee) UnicastRemoteObject.exportObject(this.type.newInstance(),
                                                             this.activator.getPort());
 
-        } catch (final InstantiationException | IllegalAccessException | RemoteException e) {
+        } catch (final Exception e) {
           // TODO: Logging
           e.printStackTrace();
           return null;
@@ -76,7 +76,7 @@ public final class BinderImpl<TBound extends Remote>
           }
           return this.instance;
 
-        } catch (final InstantiationException | IllegalAccessException | RemoteException e) {
+        } catch (final Exception e) {
           // TODO: Logging
           e.printStackTrace();
           return null;
@@ -102,17 +102,17 @@ public final class BinderImpl<TBound extends Remote>
 
       switch (mode) {
         case SingleCall:
-          this.factory = new SingleCallFactory<>(bindee, activator);
+          this.factory = new SingleCallFactory<TBindee>(bindee, activator);
           break;
         case Singleton:
-          this.factory = new SingletonFactory<>(bindee, activator);
+          this.factory = new SingletonFactory<TBindee>(bindee, activator);
           break;
         default:
           throw new IllegalArgumentException();
       }
     }
 
-    @Override
+
     public final TBound getReference() {
       return this.factory.get();
     }
@@ -143,7 +143,7 @@ public final class BinderImpl<TBound extends Remote>
       this.instance = proxyInstance;
     }
 
-    @Override
+
     public final TBound getReference() {
       return this.instance;
     }
@@ -158,20 +158,20 @@ public final class BinderImpl<TBound extends Remote>
     this.activator = activator;
   }
 
-  @Override
+
   public <TBindee extends TBound> TBound
   to(Class<TBindee> type, RMIActivator.ActivationMode mode) {
-    this.binding = new ClassBinding<>(this.boundClass, type, mode, this.activator);
+    this.binding = new ClassBinding<TBound, TBindee>(this.boundClass, type, mode, this.activator);
     return this.binding.getReference();
   }
 
-  @Override
+
   public TBound toInstance(TBound instance) {
-    this.binding = new InstanceBinding<>(this.boundClass, instance, this.activator);
+    this.binding = new InstanceBinding<TBound>(this.boundClass, instance, this.activator);
     return this.binding.getReference();
   }
 
-  @Override
+
   public RMIActivator.Binding getBinding() {
     return this.binding;
   }

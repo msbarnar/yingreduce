@@ -20,7 +20,7 @@ public interface Filter {
   public static final class on {
 
     public static <T> FilterOnEquals<T> equalTo(final T value) {
-      return new on.FilterOnEquals<>(value);
+      return new FilterOnEquals<T>(value);
     }
 
     public static Filter allOf(final Filter... filters) {
@@ -52,7 +52,7 @@ public interface Filter {
         this.value = value;
       }
 
-      @Override
+      
       public final <V> boolean match(final V value) {
         if (this.value == null) {
           return value == null;
@@ -73,7 +73,7 @@ public interface Filter {
       /**
        * Returns false if any one of the children failed to match the value, else true.
        */
-      @Override
+      
       public final <V> boolean match(final V value) {
         for (final Filter child : this.children) {
           if (!child.match(value)) {
@@ -96,7 +96,7 @@ public interface Filter {
       /**
        * Returns true if any one of the children matched the value, else false.
        */
-      @Override
+      
       public final <V> boolean match(final V value) {
         for (final Filter child : this.children) {
           if (child.match(value)) {
@@ -119,7 +119,7 @@ public interface Filter {
       /**
        * Returns true if any one of the children matched the value, else false.
        */
-      @Override
+      
       public final <V> boolean match(final V value) {
         for (final Filter child : this.children) {
           if (child.match(value)) {
