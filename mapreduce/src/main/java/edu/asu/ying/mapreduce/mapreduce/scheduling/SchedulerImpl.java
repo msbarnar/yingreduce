@@ -2,13 +2,12 @@ package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import edu.asu.ying.mapreduce.mapreduce.execution.ForwardingTaskQueue;
-import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueue;
+import edu.asu.ying.mapreduce.mapreduce.queuing.ForwardingTaskQueue;
+import edu.asu.ying.mapreduce.mapreduce.queuing.LocalTaskQueue;
+import edu.asu.ying.mapreduce.mapreduce.queuing.RemoteTaskQueue;
+import edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegator;
 import edu.asu.ying.mapreduce.mapreduce.job.JobDelegatorImpl;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
@@ -17,7 +16,6 @@ import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
-import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.p2p.RemoteNode;
 
 /**
@@ -30,7 +28,7 @@ import edu.asu.ying.p2p.RemoteNode;
  *   to the forwarding queue of a random immediately-connected node.</li>
  * </ol>
  * Once the scheduler has placed the mapreduce in a queue, the mapreduce is taken over by that queue's
- * {@link edu.asu.ying.mapreduce.mapreduce.execution.TaskQueue}.
+ * {@link edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue}.
  */
 public class SchedulerImpl implements LocalScheduler {
 
@@ -54,7 +52,7 @@ public class SchedulerImpl implements LocalScheduler {
 
     @Override
     public TaskSchedulingResult delegateTask(final Task task) throws RemoteException {
-      return null;
+      return this.localScheduler.acceptTask(task);
     }
 
     @Override
@@ -82,9 +80,9 @@ public class SchedulerImpl implements LocalScheduler {
   private static final int MAX_QUEUE_SIZE = 3;
 
   // Ql and Qr are bounded, but Qf is just a pipe
-  private final BlockingQueue<Task> localQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
   private final TaskQueue forwardingQueue;
-  private final BlockingQueue<Task> remoteQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
+  private final TaskQueue localQueue = new LocalTaskQueue(MAX_QUEUE_SIZE);
+  private final TaskQueue remoteQueue = new RemoteTaskQueue(MAX_QUEUE_SIZE);
 
   // The executors watch the mapreduce queues and execute
   //private final TaskQueue localExecutor = new LocalTaskQueueExecutor(this.localQueue);
@@ -128,7 +126,7 @@ public class SchedulerImpl implements LocalScheduler {
    * {@inheritDoc}
    */
   @Override
-  public JobSchedulingResult acceptJobAsResponsibleNode(final Job job) {
+  public final JobSchedulingResult acceptJobAsResponsibleNode(final Job job) {
     if (this.jobDelegator.offer(job)) {
       return new JobSchedulingResult(job, this.localNode.getProxy(),
                                    JobSchedulingResult.Result.Scheduled);
@@ -138,17 +136,10 @@ public class SchedulerImpl implements LocalScheduler {
     }
   }
   /**
-   * Accepts a {@link Task} and appends it to the appropriate queue:
-   * <ol>
-   *   <li>{@code Local} - if the current node is the {@code initial} node, and the queue is not
-   *   full.</li>
-   *   <li>{@code Forwarding} - if the current node is <b>not</b> the initial node, the mapreduce is
-   *   placed in this queue. The mapreduce will then either be placed in the {@code Remote} queue
-   *   or, if it is full, in a child node's {@code Forwarding} queue.</li>
-   * </ol>
+   * {@inheritDoc}
    */
   @Override
-  public TaskSchedulingResult acceptTask(final Task task) throws RemoteException {
+  public final TaskSchedulingResult acceptTaskAsInitialNode(final Task task) {
 
     task.touch(this.localNode.getProxy());
 

@@ -1,15 +1,13 @@
 package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 
-import edu.asu.ying.mapreduce.mapreduce.execution.TaskQueue;
+import edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalNode;
-import edu.asu.ying.p2p.NodeIdentifier;
 
 /**
  * {@code LocalScheduler} is responsible for the allocation of {@code map} and {@code reduce} mapreduce.
@@ -40,6 +38,12 @@ public interface LocalScheduler {
    * delegation queue to be delegated to initial nodes as tasks.
    */
   JobSchedulingResult acceptJobAsResponsibleNode(final Job job);
+
+  /**
+   * Accepts a task assuming that we are the initial node for that taks. The task will be queued
+   * for execution or forwarding if the local execution queue is full.
+   */
+  TaskSchedulingResult acceptTaskAsInitialNode(final Task task);
 
   /**
    * Provides a {@link Remote} proxy to this scheduler. The proxy is <b>not exported</b> by default

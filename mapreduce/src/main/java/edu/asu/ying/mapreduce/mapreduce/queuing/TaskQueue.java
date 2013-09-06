@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.mapreduce.execution;
+package edu.asu.ying.mapreduce.mapreduce.queuing;
 
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 
