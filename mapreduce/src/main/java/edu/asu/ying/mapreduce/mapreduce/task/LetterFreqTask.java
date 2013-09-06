@@ -14,7 +14,7 @@ import edu.asu.ying.p2p.RemoteNode;
 /**
  *
  */
-public class LetterFreqTask extends TaskBase {
+public final class LetterFreqTask extends TaskBase {
 
   private final RemoteNode reductionNode;
 
@@ -27,6 +27,10 @@ public class LetterFreqTask extends TaskBase {
     this.reductionNode = reductionNode;
     this.index = index;
     this.file = new File("lipsum.txt");
+  }
+
+  public final RemoteNode getReductionNode() {
+    return this.reductionNode;
   }
 
   @Override

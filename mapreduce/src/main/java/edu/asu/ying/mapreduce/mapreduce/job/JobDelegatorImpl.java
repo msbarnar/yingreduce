@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.mapreduce.mapreduce.task.LetterFreqTask;
+import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.p2p.node.kad.KadNodeIdentifier;
 import edu.asu.ying.p2p.LocalNode;
@@ -72,8 +73,9 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
     // Attempt to distribute the tasks to their initial nodes
     while (!tasks.isEmpty()) {
-      final LetterFreqTask task = tasks.pop();
+      final Task task = tasks.pop();
       try {
+        // Find the initial node by the Task's ID (table ID + page index)
         final RemoteNode node = this.localNode.findNode(
             new KadNodeIdentifier(task.getId().toString()));
         task.setInitialNode(node);
