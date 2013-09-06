@@ -44,7 +44,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
    * {@inheritDoc}
    */
   @Override
-  public final synchronized void start() {
+  public final void start() {
     this.threadPool.submit(this);
   }
 
@@ -67,7 +67,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
    * {@inheritDoc}
    */
   @Override
-  public final synchronized void run() {
+  public final void run() {
     // Forward tasks forever
     this.threadPool.submit(this);
 
@@ -89,10 +89,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
       this.forwardTask(task);
     } else {
       // Attempt to put the mapreduce in the local remote queue, unless it is full
-      if (this.remoteQueue.offer(task)) {
-        System.out.println(String.format("[%s] Task: accepted into remote queue",
-                                         this.localNode.getIdentifier()));
-      } else {
+      if (!this.remoteQueue.offer(task)) {
         this.forwardTask(task);
       }
     }
@@ -123,12 +120,13 @@ public final class ForwardingTaskQueue implements TaskQueue {
     }
 
     if (bestScheduler == null) {
-      throw new IllegalStateException("Couldn't forward task: no connected nodes");
+      throw new IllegalStateException("[Forward] Failed; no connected nodes");
     }
 
     try {
-      System.out.println(String.format("Forwarding task %s to node %s",
-                                       task.getId(), bestScheduler.getNode().getIdentifier()));
+      System.out.println(String.format("[Forward] (task %s): %s -> %s",
+                                       task.getId(), this.localNode.getIdentifier(),
+                                       bestScheduler.getNode().getIdentifier()));
 
       bestScheduler.acceptTaskAsInitialNode(task);
     } catch (final RemoteException e) {

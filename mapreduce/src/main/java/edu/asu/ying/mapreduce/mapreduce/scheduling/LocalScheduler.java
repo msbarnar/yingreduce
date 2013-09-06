@@ -6,6 +6,7 @@ import edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
+import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalNode;
 
@@ -49,6 +50,8 @@ public interface LocalScheduler {
    * for execution or forwarding if the local execution queue is full.
    */
   TaskSchedulingResult acceptTaskAsInitialNode(final Task task);
+
+  void completeTask(final TaskCompletion completion);
 
   /**
    * Provides a {@link Remote} proxy to this scheduler. The proxy is <b>not exported</b> by default

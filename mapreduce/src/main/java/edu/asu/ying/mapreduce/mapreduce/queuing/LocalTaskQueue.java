@@ -1,36 +1,47 @@
 package edu.asu.ying.mapreduce.mapreduce.queuing;
 
+import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
+import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 
 /**
  *
  */
-public class LocalTaskQueue implements TaskQueue {
+public final class LocalTaskQueue extends TaskQueueBase {
 
-  private final BlockingQueue<Task> queue;
-
-  public LocalTaskQueue(final int capacity) {
-    this.queue = new LinkedBlockingQueue<>(capacity);
+  public LocalTaskQueue(final int capacity, final LocalScheduler scheduler) {
+    super(capacity, scheduler);
   }
 
   @Override
-  public void start() {
+  public boolean offer(final Task task) {
+    if (super.offer(task)) {
+      System.out.println("[Local] Task added");
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override
-  public boolean offer(Task task) {
-    return false;
-  }
+  protected void runTask(final Task task) {
+    System.out.println("[Local] Starting task ".concat(task.getId().toString()));
 
-  @Override
-  public int size() {
-    return 0;
-  }
+    Serializable result = null;
+    try {
+      result = task.run();
+    } catch (final Exception e) {
+      e.printStackTrace();
+      result = e;
+    }
 
-  @Override
-  public void run() {
+    System.out.println("[Local] Task complete; sending to reducer: ".concat(
+        task.getId().toString()));
+
+    this.scheduler.completeTask(new TaskCompletion(task, result));
   }
 }
