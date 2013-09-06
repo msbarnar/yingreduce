@@ -28,11 +28,18 @@ import edu.asu.ying.p2p.NodeIdentifier;
 public interface LocalScheduler {
 
   /**
-   * Finds the {@code Responsible Node} for the specified job and queues the job on it.
+   * The entry point for new jobs into the system. Finds the {@code Responsible Node} for the
+   * specified job and queues the job on it.
    * If the local node is the {@code responsible} node, it accepts a job and queues it to be
    * delegated as tasks to {@code initial} nodes.
    */
   JobSchedulingResult createJob(final Job job);
+
+  /**
+   * Accepts a job assuming that we are the responsible node for that job; inserts the job into the
+   * delegation queue to be delegated to initial nodes as tasks.
+   */
+  JobSchedulingResult acceptJobAsResponsibleNode(final Job job);
 
   /**
    * Provides a {@link Remote} proxy to this scheduler. The proxy is <b>not exported</b> by default

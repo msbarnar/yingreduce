@@ -16,7 +16,8 @@ public final class JobSchedulingResult implements Serializable {
   public enum Result {
     Scheduled,
     DestinationNotFound,
-    Exception
+    Exception,
+    Rejected
   }
 
   private final Job job;

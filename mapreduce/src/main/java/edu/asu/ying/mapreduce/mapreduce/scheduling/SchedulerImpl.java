@@ -107,10 +107,7 @@ public class SchedulerImpl implements LocalScheduler {
   }
 
   /**
-   * The entry point for new jobs into the system. Finds the {@code Responsible Node} for the
-   * specified job and queues the job on it.
-   * If the local node is the {@code responsible} node, it accepts a job and queues it to be
-   * delegated as tasks to {@code initial} nodes.
+   * {@inheritDoc}
    */
   @Override
   public final JobSchedulingResult createJob(final Job job) {
@@ -127,11 +124,18 @@ public class SchedulerImpl implements LocalScheduler {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public JobSchedulingResult acceptJobAsResponsibleNode(final Job job) throws RemoteException {
-    this.jobDelegator.offer(job);
-    return new JobSchedulingResult(job, this.localUri)
-        .setResult(JobSchedulingResult.Result.Scheduled);
+  public JobSchedulingResult acceptJobAsResponsibleNode(final Job job) {
+    if (this.jobDelegator.offer(job)) {
+      return new JobSchedulingResult(job, this.localNode.getProxy(),
+                                   JobSchedulingResult.Result.Scheduled);
+    } else {
+      return new JobSchedulingResult(job, this.localNode.getProxy(),
+                                     JobSchedulingResult.Result.Rejected);
+    }
   }
   /**
    * Accepts a {@link Task} and appends it to the appropriate queue:
