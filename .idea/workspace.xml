@@ -10,7 +10,7 @@
     </list>
     <ignored path="mapreduce.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1378654049701" ignored="false" />
+    <file path="/Dummy.txt" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1378654170808" ignored="false" />
     <file path="/Activator.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1375157690622" ignored="false" />
     <file path="/RemoteResource.java" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371272043017" ignored="false" />
     <file path="/a.html" changelist="9ffc779c-2642-4842-aeac-60344a3ce6bc" time="1371274691692" ignored="false" />
@@ -345,7 +345,7 @@
       <file leaf-file-name="Server11.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/daemon/Server11.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="5" selection-start="1015" selection-end="1015" vertical-scroll-proportion="0.59504133">
+            <state line="41" column="40" selection-start="1292" selection-end="1292" vertical-scroll-proportion="0.8429752">
               <folding />
             </state>
           </provider>
@@ -1736,7 +1736,11 @@
       <created>1378654050024</created>
       <updated>1378654050024</updated>
     </task>
-    <option name="localTasksCounter" value="134" />
+    <task id="LOCAL-00134" summary="git flow checkpoint">
+      <created>1378654170495</created>
+      <updated>1378654170504</updated>
+    </task>
+    <option name="localTasksCounter" value="135" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1761,9 +1765,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="4" y="22" width="1916" height="1058" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3251599" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3251599" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1829,7 +1833,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.2 feature branch" />
+    <option name="LAST_COMMIT_MESSAGE" value="git flow checkpoint" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1843,7 +1847,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Changing ActivatorRequestHandler to NodeProxyRequestHandler so clients can get a reference to a node instead of to its activator. Clients don't care about activation!" />
     <MESSAGE value="Local node exports self via activator and RMIRequestHandler" />
     <MESSAGE value="RMIRequestHandler provides RemoteNode instead of Activators. Eliminated concept of remote activation" />
     <MESSAGE value="Need to clarify task history stuff; defining ownership and node roles etc" />
@@ -1868,6 +1871,7 @@
     <MESSAGE value="task queues should run" />
     <MESSAGE value="Implementing reducer" />
     <MESSAGE value="0.2 feature branch" />
+    <MESSAGE value="git flow checkpoint" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1984,7 +1988,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mapreduce/src/main/java/edu/asu/ying/mapreduce/daemon/Server11.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="5" selection-start="1015" selection-end="1015" vertical-scroll-proportion="0.59504133">
+        <state line="41" column="40" selection-start="1292" selection-end="1292" vertical-scroll-proportion="0.8429752">
           <folding />
         </state>
       </provider>
