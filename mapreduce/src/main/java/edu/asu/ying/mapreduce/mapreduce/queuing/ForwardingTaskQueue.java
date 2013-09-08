@@ -1,6 +1,7 @@
 package edu.asu.ying.mapreduce.mapreduce.queuing;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -93,7 +94,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
    * If the chosen queue is QFn, no action is taken and the task remains on the forwarding queue.
    */
   private synchronized void forwardTask(final Task task) {
-    final List<RemoteNode> neighbors = this.localNode.getNeighbors();
+    final Collection<RemoteNode> neighbors = this.localNode.getNeighbors();
 
     // Default to forwarding to the local remote queue
     // QFn -> QRn

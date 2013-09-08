@@ -5,10 +5,12 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
@@ -68,6 +70,9 @@ public final class KadLocalNode
   // Pipe to the kad network
   private final Channel networkChannel;
 
+  // Getting RMI references to neighbors is expensive, so cache the reference every time we get one
+  private Map<Node, RemoteNode> neighborsCache = new HashMap<>();
+
   // Manages RMI export of objects for access by remote peers.
   private final RMIActivator activator;
 
@@ -124,18 +129,30 @@ public final class KadLocalNode
   }
 
 
-  public List<RemoteNode> getNeighbors() {
-    final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.getNeighbours();
-    final List<RemoteNode> nodeProxies = new ArrayList<>();
+  // Don't let one thread munge up the cache while another reads it
+  // TODO: 50/50 chance I'll need to be able to dirty this cache if the proxy fails
+  public synchronized Collection<RemoteNode> getNeighbors() {
+    final List<Node> kadNodes = this.kbrNode.getNeighbours();
 
-    for (final il.technion.ewolf.kbr.Node kadNode : kadNodes) {
-      final RemoteNode proxy = this.importProxyTo(kadNode);
-      if (proxy != null) {
-        nodeProxies.add(proxy);
+    // To prune old nodes in one pass, update the whole cache every time keeping old values.
+    final Map<Node, RemoteNode> newCache = new HashMap<>();
+    for (final Node kadNode : kadNodes) {
+      RemoteNode rmiRef = this.neighborsCache.get(kadNode);
+      // Update missing refs
+      if (rmiRef == null) {
+        rmiRef = this.importProxyTo(kadNode);
+        if (rmiRef == null) {
+          throw new NullPointerException("Couldn't get RMI reference to remote node.");
+        }
       }
+      // Retain only nodes that are still connected
+      newCache.put(kadNode, rmiRef);
     }
 
-    return nodeProxies;
+    // Keep the cache up to date
+    this.neighborsCache = newCache;
+
+    return Collections.unmodifiableCollection(this.neighborsCache.values());
   }
 
 

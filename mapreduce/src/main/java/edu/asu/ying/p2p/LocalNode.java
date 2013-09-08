@@ -2,6 +2,7 @@ package edu.asu.ying.p2p;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Collection;
 import java.util.List;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
@@ -16,7 +17,7 @@ public interface LocalNode {
 
   void join(final NodeURL bootstrap) throws IOException;
 
-  List<RemoteNode> getNeighbors();
+  Collection<RemoteNode> getNeighbors();
 
   RMIActivator getActivator();
 
