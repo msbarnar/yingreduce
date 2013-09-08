@@ -17,12 +17,21 @@ public class Key implements Serializable, Comparable<Key> {
 	private static final long serialVersionUID = 4137662182397711129L;
 	private int color;
 	private final byte[] bytes;
+    private final BigInteger bigInt;
+    private final String strRep;
+    private final String base64str;
 
 	public Key(final byte[] bytes) {
 		this.bytes = bytes;
+        this.bigInt = new BigInteger(1, this.bytes);
+        this.strRep = Base64.encodeBase64URLSafeString(this.bytes);
+        this.base64str = Base64.encodeBase64String(this.bytes);
 	}
 	public Key(final String base64) {
 		this.bytes = Base64.decodeBase64(base64);
+        this.bigInt = new BigInteger(1, this.bytes);
+        this.strRep = Base64.encodeBase64URLSafeString(this.bytes);
+        this.base64str = Base64.encodeBase64String(this.bytes);
 	}
 	/**
 	 * Check if a key is 0 key
@@ -62,7 +71,7 @@ public class Key implements Serializable, Comparable<Key> {
 	 * @return length of key in bytes
 	 */
 	public int getByteLength() {
-		return getBytes().length;
+		return this.bytes.length;
 	}
 
 	/**
@@ -72,40 +81,33 @@ public class Key implements Serializable, Comparable<Key> {
 	 * @return a new Key which is the result of this key XOR the given key
 	 */
 	public Key xor(final Key k) {
-		if (k.getByteLength() != getByteLength())
+		if (k.getByteLength() != this.bytes.length)
 			throw new IllegalArgumentException("incompatable key for xor: keys are not the same length");
-		final byte[] b = new byte[getByteLength()];
+		final byte[] b = new byte[this.bytes.length];
 		for (int i = 0; i < b.length; ++i)
-			b[i] = (byte) (getBytes()[i] ^ k.getBytes()[i]);
+			b[i] = (byte) (this.bytes[i] ^ k.getBytes()[i]);
 		return new Key(b);
 	}
 	/**
 	 * @return the index of the MSB turned on, or -1 if all bits are off
 	 */
 	public int getFirstSetBitIndex() {
-		for (int i = 0; i < getByteLength(); ++i) {
-			if (getBytes()[i] == 0)
+		for (int i = 0; i < this.bytes.length; ++i) {
+			if (this.bytes[i] == 0)
 				continue;
 
 			int j;
-			for (j = 7; (getBytes()[i] & (1 << j)) == 0; --j);
-			return (getByteLength() - i - 1) * 8 + j;
+			for (j = 7; (this.bytes[i] & (1 << j)) == 0; --j);
+			return (this.bytes.length - i - 1) * 8 + j;
 		}
 		return -1;
-	}
-
-	/**
-	 * @return length of key in bits
-	 */
-	public int getBitLength() {
-		return getByteLength() * 8;
 	}
 
 	/**
 	 * @return the key BigInteger representation
 	 */
 	public BigInteger getInt() {
-		return new BigInteger(1, getBytes()); // TODO: yoav is getBytes()
+		return this.bigInt; // TODO: yoav is getBytes()
 												// two-complement?
 	}
 
@@ -113,12 +115,12 @@ public class Key implements Serializable, Comparable<Key> {
 	public boolean equals(final Object o) {
 		if (o == null || !getClass().equals(o.getClass()))
 			return false;
-		return Arrays.equals(getBytes(), ((Key) o).getBytes());
+		return Arrays.equals(this.bytes, ((Key) o).getBytes());
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(getBytes());
+		return Arrays.hashCode(this.bytes);
 	}
 
 	/**
@@ -126,12 +128,12 @@ public class Key implements Serializable, Comparable<Key> {
 	 * @return the key encode in Base64
 	 */
 	public String toBase64() {
-		return Base64.encodeBase64String(this.bytes);
+		return this.base64str;
 	}
 
 	@Override
 	public String toString() {
-		return Base64.encodeBase64URLSafeString(this.bytes);
+		return this.strRep;
 	}
 
 	/**
@@ -141,7 +143,7 @@ public class Key implements Serializable, Comparable<Key> {
 	public String toBinaryString() {
 		String $ = "";
 		for (int i = 0; i < getByteLength(); ++i) {
-			byte b = getBytes()[i];
+			byte b = this.bytes[i];
 			// fix negative numbers
 			$ += b < 0 ? "1" : "0";
 			b &= 0x7F;
@@ -175,6 +177,6 @@ public class Key implements Serializable, Comparable<Key> {
 
 	@Override
 	public int compareTo(final Key arg0) {
-		return toString().compareTo(arg0.toString());
+		return this.strRep.compareTo(arg0.toString());
 	}
 }
