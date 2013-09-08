@@ -18,18 +18,9 @@ public final class LocalTaskQueue extends TaskQueueBase {
   }
 
   @Override
-  public boolean offer(final Task task) {
-    if (super.offer(task)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @Override
   protected void runTask(final Task task) {
     // TODO: Logging
-    System.out.println("[Local] Start ".concat(task.getId().toString()));
+    //System.out.println("[Local] Start ".concat(task.getId().toString()));
 
     Serializable result = null;
     try {

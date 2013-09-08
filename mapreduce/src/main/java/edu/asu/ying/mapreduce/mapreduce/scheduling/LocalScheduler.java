@@ -52,6 +52,11 @@ public interface LocalScheduler {
    * Accepts a task assuming that we are the initial node for that taks. The task will be queued
    * for execution or forwarding if the local execution queue is full.
    */
+  TaskSchedulingResult acceptInitialTask(final Task task);
+
+  /**
+   * Accepts a task that was forwarded from another node.
+   */
   TaskSchedulingResult acceptTask(final Task task);
 
   void completeTask(final TaskCompletion completion);

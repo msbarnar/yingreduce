@@ -118,9 +118,9 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
         final RemoteNode node = this.localNode.findNode(
             new KadNodeIdentifier(task.getId().toString()));
         // TODO: Logging
-        System.out.println("[Delegate] ".concat(task.getId().toString()).concat(" - ").concat(node.getIdentifier().toString()));
+        //System.out.println("[Delegate] ".concat(task.getId().toString()).concat(" - ").concat(node.getIdentifier().toString()));
         task.setInitialNode(node);
-        node.getScheduler().acceptTask(task);
+        node.getScheduler().acceptInitialTask(task);
       } catch (final RemoteException | UnknownHostException e) {
         e.printStackTrace();
       }

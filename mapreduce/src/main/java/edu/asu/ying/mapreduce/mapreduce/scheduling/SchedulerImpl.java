@@ -54,11 +54,15 @@ public class SchedulerImpl implements LocalScheduler {
       this.localScheduler = localScheduler;
     }
 
-    public JobSchedulingResult acceptJobAsResponsibleNode(final Job job) throws RemoteException {
+    public final JobSchedulingResult acceptJobAsResponsibleNode(final Job job) throws RemoteException {
       return this.localScheduler.acceptJobAsResponsibleNode(job);
     }
 
-    public TaskSchedulingResult acceptTask(final Task task) throws RemoteException {
+    public final TaskSchedulingResult acceptInitialTask(final Task task) throws RemoteException {
+      return this.localScheduler.acceptInitialTask(task);
+    }
+
+    public final TaskSchedulingResult acceptTask(final Task task) throws RemoteException {
       return this.localScheduler.acceptTask(task);
     }
 
@@ -169,33 +173,30 @@ public class SchedulerImpl implements LocalScheduler {
                                      JobSchedulingResult.Result.Rejected);
     }
   }
+
+  public final TaskSchedulingResult acceptInitialTask(final Task task) {
+
+    if (this.isInitialNodeForTask(task)) {
+      if (this.localQueue.size() <= this.forwardingQueue.size()) {
+        return new TaskSchedulingResult(this.localQueue.offer(task));
+      }
+    }
+
+    return new TaskSchedulingResult(this.forwardingQueue.offer(task));
+  }
+
   /**
    * {@inheritDoc}
    */
   public final TaskSchedulingResult acceptTask(final Task task) {
-
-    final TaskSchedulingResult result = new TaskSchedulingResult();
-
     // If this is the initial node, try to execute the task locally.
-    if (this.isInitialNodeForTask(task)) {
-      if (this.localQueue.size() <= this.forwardingQueue.size()) {
-        // Add the task to the local queue
-        result.setTaskScheduled(this.localQueue.offer(task));
-      } else {
-        // The local queue is more busy than the forwarding queue, so just forward the task
-        result.setTaskScheduled(this.forwardingQueue.offer(task));
-      }
+    // If this is not the initial node, put the task in the shortest of the remote and forwarding
+    // queues.
+    if (this.remoteQueue.size() <= this.forwardingQueue.size()) {
+      return new TaskSchedulingResult(this.remoteQueue.offer(task));
     } else {
-      // If this is not the initial node, put the task in the shortest of the remote and forwarding
-      // queues.
-      if (this.remoteQueue.size() <= this.forwardingQueue.size()) {
-        result.setTaskScheduled(this.remoteQueue.offer(task));
-      } else {
-        result.setTaskScheduled(this.forwardingQueue.offer(task));
-      }
+      return new TaskSchedulingResult(this.forwardingQueue.offer(task));
     }
-
-    return result;
   }
 
   /**

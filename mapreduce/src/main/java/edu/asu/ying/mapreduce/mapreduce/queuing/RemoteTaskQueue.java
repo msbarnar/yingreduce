@@ -17,16 +17,6 @@ public final class RemoteTaskQueue extends TaskQueueBase {
   }
 
   @Override
-  public boolean offer(final Task task) {
-    if (super.offer(task)) {
-      System.out.println("[Remote] Task added");
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @Override
   protected void runTask(final Task task) {
     // TODO: logging
     /*System.out.println("[Remote] Fetching remote content for task ".concat(
@@ -36,7 +26,7 @@ public final class RemoteTaskQueue extends TaskQueueBase {
       Thread.sleep(100+(new Random()).nextInt(100));
     } catch (final InterruptedException e) {}
 
-    System.out.println("[Remote] Start ".concat(task.getId().toString()));
+    //System.out.println("[Remote] Start ".concat(task.getId().toString()));
 
     Serializable result = null;
     try {

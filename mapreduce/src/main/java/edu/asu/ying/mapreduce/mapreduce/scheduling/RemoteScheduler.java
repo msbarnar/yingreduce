@@ -37,6 +37,8 @@ public interface RemoteScheduler extends Remote, Serializable {
    */
   TaskSchedulingResult acceptTask(final Task task) throws RemoteException;
 
+  TaskSchedulingResult acceptInitialTask(final Task task) throws RemoteException;
+
   void reduceTaskCompletion(final TaskCompletion completion) throws RemoteException;
 
   /**

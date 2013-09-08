@@ -45,18 +45,12 @@ public class Client {
     // TODO: Logging
     System.out.println("Starting the application...");
 
-    final Daemon[] instances = new Daemon[4];
+    final Daemon[] instances = new Daemon[10];
 
     for (int i = 0; i < instances.length; i++) {
       instances[i] = new Daemon(5000+i);
       if (i > 0) {
         instances[i].join(instances[i-1]);
-      }
-      if (i > 1) {
-        instances[i].join(instances[i-2]);
-      }
-      if (i > 2) {
-        instances[i].join(instances[i-3]);
       }
     }
 
@@ -75,7 +69,7 @@ public class Client {
     sched = instances[0].getLocalNode().getScheduler();
 
     if (sched != null) {
-      for (int i = 0; i < 1; i++) {
+      for (int i = 0; i < 100; i++) {
         final Job job = new MapReduceJob(new TableID("hoblahsh"));
         final JobSchedulingResult result = sched.createJob(job);
       }
