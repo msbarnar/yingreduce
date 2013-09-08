@@ -45,6 +45,7 @@ public class KadCacheFindValueOperation extends FindValueOperation implements Co
 	private final List<Node> lastSentTo;
 	private Node returnedCachedResults = null;
 	private KeyComparator keyComparator;
+  private KeyComparator.NodeKeyComparator nKC;
 	private final AtomicInteger nrMsgsSent;
 
 	// dependencies
@@ -145,7 +146,8 @@ public class KadCacheFindValueOperation extends FindValueOperation implements Co
 	}
 
 	private void sortKnownClosestNodes() {
-		this.knownClosestNodes = sort(this.knownClosestNodes, on(Node.class).getKey(), this.keyComparator);
+		//this.knownClosestNodes = sort(this.knownClosestNodes, on(Node.class).getKey(), this.keyComparator);
+      Collections.sort(this.knownClosestNodes, nKC);
 		if (this.knownClosestNodes.size() >= this.kBucketSize)
 			this.knownClosestNodes.subList(this.kBucketSize, this.knownClosestNodes.size()).clear();
 	}
@@ -160,6 +162,7 @@ public class KadCacheFindValueOperation extends FindValueOperation implements Co
 		}
 
 		this.keyComparator = new KeyComparator(this.key);
+      this.nKC = new KeyComparator.NodeKeyComparator(this.key);
 		this.knownClosestNodes = this.kBuckets.getClosestNodesByKey(this.key, this.kBucketSize);
 		this.knownClosestNodes.add(this.localNode);
 		sortKnownClosestNodes();
