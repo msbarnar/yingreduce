@@ -3,6 +3,7 @@ package il.technion.ewolf.kbr.openkad.op;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.sort;
 import il.technion.ewolf.kbr.Key;
+import il.technion.ewolf.kbr.KeyColorComparator;
 import il.technion.ewolf.kbr.KeyComparator;
 import il.technion.ewolf.kbr.Node;
 import il.technion.ewolf.kbr.concurrent.CompletionHandler;
@@ -118,7 +119,8 @@ public class KadFindNodeOperation implements CompletionHandler<KadMessage, Node>
 		knownClosestNodes.add(localNode);
 		alreadyQueried.add(localNode);
 		KeyComparator keyComparator = new KeyComparator(key);
-		
+      KeyComparator.NodeKeyComparator nKC = new KeyComparator.NodeKeyComparator(key);
+
 		do {
 			Node n = takeUnqueried();
 			
@@ -137,7 +139,8 @@ public class KadFindNodeOperation implements CompletionHandler<KadMessage, Node>
 			}
 			
 			synchronized(this) {
-				knownClosestNodes = sort(knownClosestNodes, on(Node.class).getKey(), keyComparator);
+				//knownClosestNodes = sort(knownClosestNodes, on(Node.class).getKey(), keyComparator);
+                Collections.sort(knownClosestNodes, nKC);
 				if (knownClosestNodes.size() >= kBucketSize)
 					knownClosestNodes.subList(kBucketSize, knownClosestNodes.size()).clear();
 				

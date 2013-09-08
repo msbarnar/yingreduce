@@ -124,7 +124,6 @@ public final class ForwardingTaskQueue implements TaskQueue {
     // If this forwarding queue is the shortest, put the task back on the queue.
     // QFn -> QFn
     if (maximumBackpressure < 0) {
-      System.out.println("loop");
       this.offer(task);
       return;
     }
