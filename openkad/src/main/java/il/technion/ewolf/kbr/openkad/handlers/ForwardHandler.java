@@ -350,7 +350,16 @@ public class ForwardHandler extends AbstractHandler {
 
 		// search the bootstraps for a node with the correct color
 		final int keyColor = key.getColor(nrColors);
-		final List<Node> correctColorNodes = filter(having(on(Node.class).getKey().getColor(nrColors), is(keyColor)), bootstraps);
+		// final List<Node> correctColorNodes = filter(having(on(Node.class).getKey().getColor(nrColors), is(keyColor)), bootstraps);
+        /*------------------------------------------------------*/
+        // FIX: remove lambdaj filter - Matthew Barnard 9/8/2013
+        final List<Node> correctColorNodes = new ArrayList<>();
+        for (final Node node : bootstraps) {
+          if (node.getKey().getColor(nrColors) == keyColor) {
+            correctColorNodes.add(node);
+          }
+        }
+        /*-------------------------------------------------------*/
 
 		if (!correctColorNodes.isEmpty())
 			// we found some nodes with the correct color !

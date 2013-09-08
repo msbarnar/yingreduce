@@ -143,14 +143,31 @@ public class KadServer implements Communicator {
 		final List<MessageDispatcher<?>> $ = new ArrayList<MessageDispatcher<?>>();
 		synchronized (this.expecters) {
 			if (!this.expecters.isEmpty()) {
-				shouldHandle = filter(having(on(MessageDispatcher.class).shouldHandleMessage(msg), is(true)), this.expecters);
+              // shouldHandle = filter(having(on(MessageDispatcher.class).shouldHandleMessage(msg), is(true)), this.expecters);
+              /*-------------------------------------------------------*/
+              // FIX: remove lambdaj filter - Matthew Barnard 9/8/2013
+              for (final MessageDispatcher<?> expecter : this.expecters) {
+                if (expecter.shouldHandleMessage(msg)) {
+                  shouldHandle.add(expecter);
+                }
+              }
+              /*-------------------------------------------------------*/
             }
 		}
 
 		synchronized (this.nonConsumableExpecters) {
-			if (!this.nonConsumableExpecters.isEmpty())
-				nonConsumableShouldHandle = filter(having(on(MessageDispatcher.class).shouldHandleMessage(msg), is(true)),
-						this.nonConsumableExpecters);
+			if (!this.nonConsumableExpecters.isEmpty()) {
+				// nonConsumableShouldHandle = filter(having(on(MessageDispatcher.class).shouldHandleMessage(msg), is(true)),
+				//		this.nonConsumableExpecters);
+                /*-------------------------------------------------------*/
+                // FIX: remove lambdaj filter - Matthew Barnard 9/8/2013
+                for (final MessageDispatcher<?> expecter : this.nonConsumableExpecters) {
+                  if (expecter.shouldHandleMessage(msg)) {
+                    nonConsumableShouldHandle.add(expecter);
+                  }
+                }
+                /*-------------------------------------------------------*/
+            }
 		}
 
 		$.addAll(nonConsumableShouldHandle);
