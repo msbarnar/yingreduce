@@ -138,8 +138,8 @@ public class KadServer implements Communicator {
 		}
 	}
 	private List<MessageDispatcher<?>> extractShouldHandle(final KadMessage msg) {
-		List<MessageDispatcher<?>> shouldHandle = Collections.emptyList();
-		List<MessageDispatcher<?>> nonConsumableShouldHandle = Collections.emptyList();
+		List<MessageDispatcher<?>> shouldHandle = new ArrayList<>();
+		List<MessageDispatcher<?>> nonConsumableShouldHandle = new ArrayList<>();
 		final List<MessageDispatcher<?>> $ = new ArrayList<MessageDispatcher<?>>();
 		synchronized (this.expecters) {
 			if (!this.expecters.isEmpty()) {
