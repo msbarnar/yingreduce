@@ -37,12 +37,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
 
   public final boolean offer(final Job job) {
-    if (this.jobQueue.offer(job)) {
-      System.out.println("[Job] New job for table: ".concat(job.getTableID().toString()));
-      return true;
-    } else {
-      return false;
-    }
+    return this.jobQueue.offer(job);
   }
 
 
@@ -68,7 +63,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
   private void delegateJob(final Job job) {
     // TODO: Logging
-    System.out.println("Delegating job ".concat(job.getID().toString()));
+    //System.out.println("Delegating job ".concat(job.getID().toString()));
 
     // Find the reducer node first given the job ID
     try {
@@ -107,7 +102,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     // Now that the number of tasks is known for the job, start with the loopback task
     if (loopbackTask != null) {
       loopbackTask.setInitialNode(this.localNode.getProxy());
-      this.localNode.getScheduler().acceptTask(loopbackTask);
+      this.localNode.getScheduler().acceptInitialTask(loopbackTask);
     }
 
     // Attempt to distribute the tasks to their initial nodes

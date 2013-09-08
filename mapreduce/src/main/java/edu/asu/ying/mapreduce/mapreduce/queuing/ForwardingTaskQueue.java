@@ -124,15 +124,16 @@ public final class ForwardingTaskQueue implements TaskQueue {
     // If this forwarding queue is the shortest, put the task back on the queue.
     // QFn -> QFn
     if (maximumBackpressure < 0) {
+      System.out.println("loop");
       this.offer(task);
       return;
     }
 
     try {
       // TODO: Logging
-      /*System.out.println(String.format("[Forward] %s: %s -> %s",
+      System.out.println(String.format("[Forward] %s: %s -> %s",
                                        task.getId(), this.localNode.getIdentifier(),
-                                       bestScheduler.getNode().getIdentifier()));*/
+                                       bestScheduler.getNode().getIdentifier()));
 
       // Forward the task to the remote node
       bestScheduler.acceptTask(task);
