@@ -131,9 +131,9 @@ public final class ForwardingTaskQueue implements TaskQueue {
 
     try {
       // TODO: Logging
-      System.out.println(String.format("[Forward] %s: %s -> %s",
+      /*System.out.println(String.format("[Forward] %s: %s -> %s",
                                        task.getId(), this.localNode.getIdentifier(),
-                                       bestScheduler.getNode().getIdentifier()));
+                                       bestScheduler.getNode().getIdentifier()));*/
 
       // Forward the task to the remote node
       bestScheduler.acceptTask(task);

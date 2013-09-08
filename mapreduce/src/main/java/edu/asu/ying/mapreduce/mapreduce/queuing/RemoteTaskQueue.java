@@ -26,7 +26,7 @@ public final class RemoteTaskQueue extends TaskQueueBase {
       Thread.sleep(100+(new Random()).nextInt(100));
     } catch (final InterruptedException e) {}
 
-    System.out.println("[Remote] ".concat(task.getId().toString()));
+    //System.out.println("[Remote] ".concat(task.getId().toString()));
 
     Serializable result = null;
     try {

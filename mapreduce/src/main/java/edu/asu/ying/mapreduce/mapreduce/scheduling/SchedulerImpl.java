@@ -181,8 +181,6 @@ public class SchedulerImpl implements LocalScheduler {
         return new TaskSchedulingResult(this.localQueue.offer(task));
       }
     }
-
-    System.out.println(" --> forward");
     return new TaskSchedulingResult(this.forwardingQueue.offer(task));
   }
 

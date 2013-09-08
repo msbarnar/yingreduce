@@ -142,8 +142,9 @@ public class KadServer implements Communicator {
 		List<MessageDispatcher<?>> nonConsumableShouldHandle = Collections.emptyList();
 		final List<MessageDispatcher<?>> $ = new ArrayList<MessageDispatcher<?>>();
 		synchronized (this.expecters) {
-			if (!this.expecters.isEmpty())
+			if (!this.expecters.isEmpty()) {
 				shouldHandle = filter(having(on(MessageDispatcher.class).shouldHandleMessage(msg), is(true)), this.expecters);
+            }
 		}
 
 		synchronized (this.nonConsumableExpecters) {

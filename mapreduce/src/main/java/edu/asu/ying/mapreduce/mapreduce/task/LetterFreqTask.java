@@ -51,9 +51,9 @@ public final class LetterFreqTask extends TaskBase {
     // Skip to the Ith line of text in the file ("page in the table")
     for (int i = 0; i < this.index; i++) {
       try {
-        /*try {
-          Thread.sleep((new Random()).nextInt(10));
-        } catch (final InterruptedException e) {}*/
+        try {
+          Thread.sleep(5);
+        } catch (final InterruptedException e) {}
         reader.readLine();
       } catch (final IOException e) {
         e.printStackTrace();
