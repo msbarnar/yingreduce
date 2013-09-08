@@ -6,7 +6,6 @@ import com.google.common.base.Preconditions;
 /**
  * A {@code Filter} is a node in the tree of filters.
  */
-// TODO: Abstract this to an interface
 public interface Filter {
 
   /**

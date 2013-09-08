@@ -35,7 +35,7 @@ public interface RemoteScheduler extends Remote, Serializable {
    * At a node that is <i>not</i> the task's {@code initial node}, {@code delegateTask} schedules
    * the task as a {@code remote} task or forwards it to an available peer.
    */
-  TaskSchedulingResult acceptTaskAsInitialNode(final Task task) throws RemoteException;
+  TaskSchedulingResult acceptTask(final Task task) throws RemoteException;
 
   void reduceTaskCompletion(final TaskCompletion completion) throws RemoteException;
 

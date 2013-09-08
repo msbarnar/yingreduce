@@ -5,7 +5,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,7 +12,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.mapreduce.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
-import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.p2p.node.kad.KadNodeIdentifier;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.RemoteNode;
@@ -73,10 +71,9 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     System.out.println("Delegating job ".concat(job.getID().toString()));
 
     // Find the reducer node first
-    // FIXME: random reducer at the moment
     try {
       final RemoteNode reducer = this.localNode.findNode(
-        new KadNodeIdentifier(UUID.randomUUID().toString()));
+        new KadNodeIdentifier(job.getID().toString()));
       job.setReducerNode(reducer);
 
     } catch (final UnknownHostException e) {
@@ -104,7 +101,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
         final RemoteNode node = this.localNode.findNode(
             new KadNodeIdentifier(task.getId().toString()));
         task.setInitialNode(node);
-        node.getScheduler().acceptTaskAsInitialNode(task);
+        node.getScheduler().acceptTask(task);
       } catch (final RemoteException e) {
         e.printStackTrace();
       } catch (final UnknownHostException e) {

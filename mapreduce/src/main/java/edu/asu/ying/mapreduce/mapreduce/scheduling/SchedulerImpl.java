@@ -59,7 +59,7 @@ public class SchedulerImpl implements LocalScheduler {
       return this.localScheduler.acceptJobAsResponsibleNode(job);
     }
 
-    public TaskSchedulingResult acceptTaskAsInitialNode(final Task task) throws RemoteException {
+    public TaskSchedulingResult acceptTask(final Task task) throws RemoteException {
       return this.localScheduler.acceptTaskAsInitialNode(task);
     }
 

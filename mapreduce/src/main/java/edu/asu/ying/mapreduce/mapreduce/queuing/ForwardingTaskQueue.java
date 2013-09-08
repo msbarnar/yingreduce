@@ -95,6 +95,11 @@ public final class ForwardingTaskQueue implements TaskQueue {
     }
   }
 
+  /**
+   * The queue to which the task is forwarded is chosen as the shortest of
+   * QFn, QRn, and QFk where k is all of the child nodes (directly connected peers).
+   * If the chosen queue is QFn, no action is taken and the task remains on the forwarding queue.
+   */
   private synchronized void forwardTask(final Task task) {
     final List<RemoteNode> neighbors = this.localNode.getNeighbors();
 
@@ -103,7 +108,6 @@ public final class ForwardingTaskQueue implements TaskQueue {
     RemoteScheduler bestScheduler = this.scheduler.getProxy();
 
     // Unless one of our neighbors has a lower backpressure
-    // TODO: adjust backpressure calculation per weina's suggestions
     for (final RemoteNode node : neighbors) {
       try {
         final RemoteScheduler remoteScheduler = node.getScheduler();
@@ -123,12 +127,18 @@ public final class ForwardingTaskQueue implements TaskQueue {
       throw new IllegalStateException("[Forward] Failed; no connected nodes");
     }
 
+    // If this forwarding queue is the shortest, do nothing; get it next time.
+    if (minimumBackpressure >= this.size()) {
+      return;
+    }
+
     try {
       System.out.println(String.format("[Forward] (task %s): %s -> %s",
                                        task.getId(), this.localNode.getIdentifier(),
                                        bestScheduler.getNode().getIdentifier()));
 
-      bestScheduler.acceptTaskAsInitialNode(task);
+      // Forward the task to the remote node
+      bestScheduler.acceptTask(task);
     } catch (final RemoteException e) {
       // TODO: Logging
       e.printStackTrace();
