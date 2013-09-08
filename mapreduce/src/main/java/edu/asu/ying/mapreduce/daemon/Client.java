@@ -45,7 +45,7 @@ public class Client {
     // TODO: Logging
     System.out.println("Starting the application...");
 
-    final Daemon[] instances = new Daemon[10];
+    final Daemon[] instances = new Daemon[100];
 
     for (int i = 0; i < instances.length; i++) {
       instances[i] = new Daemon(5000+i);
