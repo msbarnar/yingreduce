@@ -17,21 +17,15 @@ public class Key implements Serializable, Comparable<Key> {
 	private static final long serialVersionUID = 4137662182397711129L;
 	private int color;
 	private final byte[] bytes;
-    private final BigInteger bigInt;
-    private final String strRep;
-    private final String base64str;
+    private BigInteger bigInt = null;
+    private String strRep = null;
+    private String base64str = null;
 
 	public Key(final byte[] bytes) {
 		this.bytes = bytes;
-        this.bigInt = new BigInteger(1, this.bytes);
-        this.strRep = Base64.encodeBase64URLSafeString(this.bytes);
-        this.base64str = Base64.encodeBase64String(this.bytes);
 	}
 	public Key(final String base64) {
 		this.bytes = Base64.decodeBase64(base64);
-        this.bigInt = new BigInteger(1, this.bytes);
-        this.strRep = Base64.encodeBase64URLSafeString(this.bytes);
-        this.base64str = Base64.encodeBase64String(this.bytes);
 	}
 	/**
 	 * Check if a key is 0 key
@@ -107,6 +101,9 @@ public class Key implements Serializable, Comparable<Key> {
 	 * @return the key BigInteger representation
 	 */
 	public BigInteger getInt() {
+      if (this.bigInt == null) {
+        this.bigInt = new BigInteger(1, this.bytes);
+      }
 		return this.bigInt; // TODO: yoav is getBytes()
 												// two-complement?
 	}
@@ -128,11 +125,17 @@ public class Key implements Serializable, Comparable<Key> {
 	 * @return the key encode in Base64
 	 */
 	public String toBase64() {
+      if (this.base64str == null) {
+        this.base64str = Base64.encodeBase64String(this.bytes);
+      }
 		return this.base64str;
 	}
 
 	@Override
 	public String toString() {
+      if (this.strRep == null) {
+        this.strRep = Base64.encodeBase64URLSafeString(this.bytes);
+      }
 		return this.strRep;
 	}
 
