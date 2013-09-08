@@ -27,7 +27,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.7">
-      <module name="mapreduce" target="1.5" />
+      <module name="mapreduce" target="1.7" />
       <module name="openkad" target="1.7" />
       <module name="RMIClient" target="1.7" />
       <module name="RMIServer" target="1.7" />
