@@ -175,7 +175,12 @@ public class ColorFindValueOperation extends FindValueOperation implements Compl
 		knownClosestNodes.add(localNode);
 		alreadyQueried.add(localNode);
 		KeyComparator keyComparator = new KeyComparator(key);
+        // Compares nodes by keys
+        KeyComparator.NodeKeyComparator nKC = new KeyComparator.NodeKeyComparator(key);
+
 		colorComparator = new KeyColorComparator(key, nrColors);
+        // Compares nodes by key colors
+        KeyColorComparator nKCC = new KeyColorComparator(key, nrColors);
 		
 		List<Node> colorClosest = kBuckets.getClosestNodesByKey(key, nrCandidates);
 		querying.addAll(colorClosest);
@@ -195,7 +200,8 @@ public class ColorFindValueOperation extends FindValueOperation implements Compl
 		int i=0;
 		do {
 			synchronized(this) {
-				knownClosestNodes = sort(knownClosestNodes, on(Node.class).getKey(), keyComparator);
+				// knownClosestNodes = sort(knownClosestNodes, on(Node.class).getKey(), keyComparator);
+                knownClosestNodes = Collections.sort(knownClosestNodes, nKC);
 				if (knownClosestNodes.size() >= kBucketSize)
 					knownClosestNodes.subList(kBucketSize, knownClosestNodes.size()).clear();
 				

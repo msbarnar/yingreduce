@@ -6,7 +6,7 @@ package il.technion.ewolf.kbr;
  */
 public class KeyColorComparator extends KeyComparator {
 
-  public class NodeKeyColorComparator extends KeyColorComparator {
+  public static class NodeKeyColorComparator extends KeyColorComparator {
 
     public NodeKeyColorComparator(final Node node, final int nrColors) {
       super(node.getKey(), nrColors);
