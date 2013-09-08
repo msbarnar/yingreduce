@@ -27,7 +27,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
   private final TaskQueue remoteQueue;
 
   // Holds an unlimited number of tasks that need to be forwarded to neighbors
-  private final BlockingQueue<Task> forwardingQueue = new LinkedBlockingQueue<Task>();
+  private final BlockingQueue<Task> forwardingQueue = new LinkedBlockingQueue<>();
   // One task at a time
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
@@ -84,15 +84,7 @@ public final class ForwardingTaskQueue implements TaskQueue {
       return;
     }
 
-    if (task.isAtInitialNode()) {
-      // Don't put tasks on the initial node's remote queue; that doesn't make any sense.
-      this.forwardTask(task);
-    } else {
-      // Attempt to put the mapreduce in the local remote queue, unless it is full
-      if (!this.remoteQueue.offer(task)) {
-        this.forwardTask(task);
-      }
-    }
+    this.forwardTask(task);
   }
 
   /**
@@ -104,16 +96,17 @@ public final class ForwardingTaskQueue implements TaskQueue {
     final List<RemoteNode> neighbors = this.localNode.getNeighbors();
 
     // Default to forwarding to the local remote queue
-    int minimumBackpressure = this.remoteQueue.size();
+    // QFn -> QRn
+    int maximumBackpressure = this.size() - this.remoteQueue.size();
     RemoteScheduler bestScheduler = this.scheduler.getProxy();
 
     // Unless one of our neighbors has a lower backpressure
     for (final RemoteNode node : neighbors) {
       try {
         final RemoteScheduler remoteScheduler = node.getScheduler();
-        final int remoteBackpressure = remoteScheduler.getBackpressure();
-        if (remoteBackpressure < minimumBackpressure) {
-          minimumBackpressure = remoteBackpressure;
+        final int remoteBackpressure = this.size() - remoteScheduler.getBackpressure();
+        if (remoteBackpressure > maximumBackpressure) {
+          maximumBackpressure = remoteBackpressure;
           bestScheduler = remoteScheduler;
         }
 
@@ -127,13 +120,16 @@ public final class ForwardingTaskQueue implements TaskQueue {
       throw new IllegalStateException("[Forward] Failed; no connected nodes");
     }
 
-    // If this forwarding queue is the shortest, do nothing; get it next time.
-    if (minimumBackpressure >= this.size()) {
+    // If this forwarding queue is the shortest, put the task back on the queue.
+    // QFn -> QFn
+    if (maximumBackpressure < 0) {
+      this.offer(task);
       return;
     }
 
     try {
-      System.out.println(String.format("[Forward] (task %s): %s -> %s",
+      // TODO: Logging
+      System.out.println(String.format("[Forward] %s: %s -> %s",
                                        task.getId(), this.localNode.getIdentifier(),
                                        bestScheduler.getNode().getIdentifier()));
 

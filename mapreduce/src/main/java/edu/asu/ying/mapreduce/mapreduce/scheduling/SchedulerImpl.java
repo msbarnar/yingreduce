@@ -1,10 +1,9 @@
 package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
 import java.io.Serializable;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +23,8 @@ import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
-import edu.asu.ying.mapreduce.mapreduce.task.TaskHistory;
 import edu.asu.ying.p2p.RemoteNode;
+import edu.asu.ying.p2p.node.kad.KadNodeIdentifier;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 
 /**
@@ -60,7 +59,7 @@ public class SchedulerImpl implements LocalScheduler {
     }
 
     public TaskSchedulingResult acceptTask(final Task task) throws RemoteException {
-      return this.localScheduler.acceptTaskAsInitialNode(task);
+      return this.localScheduler.acceptTask(task);
     }
 
     public final void reduceTaskCompletion(final TaskCompletion completion) throws RemoteException {
@@ -68,11 +67,15 @@ public class SchedulerImpl implements LocalScheduler {
     }
 
     public final int getBackpressure() throws RemoteException {
-      return this.localScheduler.getRemoteQueue().size();
+      return this.localScheduler.getForwardQueue().size();
     }
 
     public final RemoteNode getNode() throws RemoteException {
       return this.localScheduler.getLocalNode().getProxy();
+    }
+
+    public final long getTimeMs() throws RemoteException {
+      return System.currentTimeMillis();
     }
   }
   /***********************************************************************************************/
@@ -93,8 +96,8 @@ public class SchedulerImpl implements LocalScheduler {
 
   // Ql and Qr are bounded, but Qf is just a pipe to neighboring peers
   private final TaskQueue forwardingQueue;
-  private final TaskQueue localQueue = new LocalTaskQueue(MAX_QUEUE_SIZE, this);
-  private final TaskQueue remoteQueue = new RemoteTaskQueue(MAX_QUEUE_SIZE, this);
+  private final TaskQueue localQueue = new LocalTaskQueue(this);
+  private final TaskQueue remoteQueue = new RemoteTaskQueue(this);
 
   // TODO: Write a reducer class
   private final Map<TaskID, List<Serializable>> reductions = new HashMap<TaskID, List<Serializable>>();
@@ -134,16 +137,21 @@ public class SchedulerImpl implements LocalScheduler {
    * {@inheritDoc}
    */
   public final JobSchedulingResult createJob(final Job job) {
-    // TODO: Find the responsible node by finding the node with the first page of the table
-    // FIXME: picking a random node
-    final List<RemoteNode> neighbors = this.localNode.getNeighbors();
-    final int rnd = (new Random()).nextInt(neighbors.size());
+    // Get the responsible node by finding the node with the first page of the table
+    RemoteNode node = null;
+    try {
+      node = this.localNode.findNode(
+        new KadNodeIdentifier(job.getTableID().toString().concat("0")));
+      job.setResponsibleNode(node);
 
-    final RemoteNode node = neighbors.get(rnd);
-    job.setResponsibleNode(node);
+    } catch (final UnknownHostException e) {
+      e.printStackTrace();
+      return new JobSchedulingResult(job, this.localNode.getProxy(), e);
+    }
 
     try {
       return node.getScheduler().acceptJobAsResponsibleNode(job);
+
     } catch (final RemoteException e) {
       return new JobSchedulingResult(job, this.localNode.getProxy(), e);
     }
@@ -164,26 +172,35 @@ public class SchedulerImpl implements LocalScheduler {
   /**
    * {@inheritDoc}
    */
-  public final TaskSchedulingResult acceptTaskAsInitialNode(final Task task) {
+  public final TaskSchedulingResult acceptTask(final Task task) {
 
     final TaskSchedulingResult result = new TaskSchedulingResult();
 
-    // If this is the initial node, try to execute the mapreduce locally.
+    // If this is the initial node, try to execute the task locally.
     if (this.isInitialNodeForTask(task)) {
-      // Add the mapreduce if the local queue is not full
-      result.setTaskScheduled(this.queueLocally(task));
-      // If the local queue was full, forward the mapreduce
-      if (!result.isTaskScheduled()) {
-        result.setTaskScheduled(this.queueForward(task));
+      if (this.localQueue.size() <= this.forwardingQueue.size()) {
+        // Add the task to the local queue
+        result.setTaskScheduled(this.localQueue.offer(task));
+      } else {
+        // The local queue is more busy than the forwarding queue, so just forward the task
+        result.setTaskScheduled(this.forwardingQueue.offer(task));
       }
     } else {
-      // If this is not the initial node, put the mapreduce straight in the forwarding queue
-      result.setTaskScheduled(this.queueForward(task));
+      // If this is not the initial node, put the task in the shortest of the remote and forwarding
+      // queues.
+      if (this.remoteQueue.size() <= this.forwardingQueue.size()) {
+        result.setTaskScheduled(this.remoteQueue.offer(task));
+      } else {
+        result.setTaskScheduled(this.forwardingQueue.offer(task));
+      }
     }
 
     return result;
   }
 
+  /**
+   * Pass a completed task to that task's reducer.
+   */
   public final void completeTask(final TaskCompletion completion) {
     final RemoteNode reducer = completion.getTask().getParentJob().getReducerNode();
     try {
@@ -198,14 +215,15 @@ public class SchedulerImpl implements LocalScheduler {
     // Collect results
     List<Serializable> results = this.reductions.get(completion.getTask().getParentJob().getID());
     if (results == null) {
-      results = new ArrayList<Serializable>();
+      results = new ArrayList<>();
       this.reductions.put(completion.getTask().getParentJob().getID(), results);
     }
 
     results.add(completion.getResult());
 
+    //System.out.println(String.format("[Reduce] %d / %d", results.size(), completion.getTask().getParentJob().getNumTasks()));
     if (results.size() >= completion.getTask().getParentJob().getNumTasks()) {
-      final Map<Character, Integer> fin = new TreeMap<Character, Integer>();
+      final Map<Character, Integer> fin = new TreeMap<>();
 
       for (final Serializable result : results) {
         final Map<Character, Integer> res = (Map<Character, Integer>) result;
@@ -218,21 +236,18 @@ public class SchedulerImpl implements LocalScheduler {
         }
       }
 
-      System.out.println(String.format("%d ms: %s", completion.getTask().getParentJob().getTimeElapsed(),
+      System.out.println(String.format("%d ms: %s",
+                                       completion.getTask().getParentJob().getTimeElapsed(),
                                        fin.toString()));
     }
   }
 
-  private boolean queueLocally(final Task task) {
-    return this.localQueue.offer(task);
-  }
-
-  private boolean queueForward(final Task task) {
-    return this.forwardingQueue.offer(task);
-  }
-
   public final TaskQueue getRemoteQueue() {
     return this.remoteQueue;
+  }
+
+  public final TaskQueue getForwardQueue() {
+    return this.forwardingQueue;
   }
 
   public final RemoteScheduler getProxy() {

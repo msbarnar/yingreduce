@@ -70,28 +70,45 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     // TODO: Logging
     System.out.println("Delegating job ".concat(job.getID().toString()));
 
-    // Find the reducer node first
+    // Find the reducer node first given the job ID
     try {
       final RemoteNode reducer = this.localNode.findNode(
         new KadNodeIdentifier(job.getID().toString()));
       job.setReducerNode(reducer);
+      // Get a reference start time from the reducer so it can accurately time the job
+      job.setStartTime(reducer);
 
     } catch (final UnknownHostException e) {
       throw new RuntimeException(e);
     }
 
-    final Deque<LetterFreqTask> tasks = new ArrayDeque<LetterFreqTask>();
-    for (int i = 0; i < 10; i++) {
+    // Since we're at the responsible node, this is also the initial node for task 0.
+    // We'll forward this separately, skipping RMI
+    Task loopbackTask = null;
+
+    // TODO: split job based on number of pages in table
+    final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
+    for (int i = 0; i < 40; i++) {
       // Pass the responsible node as a remote proxy so other peers can access it
       final LetterFreqTask task = new LetterFreqTask(job, this.localNode.getProxy(), i);
-      // TODO: Add to history
-
-      tasks.push(task);
+      // Jobs are delegated at the responsible node, defined as the node bearing the first page of
+      // data. We know we are already at T0's initial node, then.
+      // Save a little overhead by routing the first task locally instead of through RMI
+      // We still need to know the total number of jobs before delegating this one, so hang on to it
+      if (i == 0) {
+        loopbackTask = task;
+      } else {
+        tasks.push(task);
+      }
     }
 
-    job.setNumTasks(tasks.size());
+    job.setNumTasks(tasks.size()+1);
 
-    final List<RemoteNode> neighbors = this.localNode.getNeighbors();
+    // Now that the number of tasks is known for the job, start with the loopback task
+    if (loopbackTask != null) {
+      loopbackTask.setInitialNode(this.localNode.getProxy());
+      this.localNode.getScheduler().acceptTask(loopbackTask);
+    }
 
     // Attempt to distribute the tasks to their initial nodes
     while (!tasks.isEmpty()) {
@@ -100,11 +117,11 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
         // Find the initial node by the Task's ID (table ID + page index)
         final RemoteNode node = this.localNode.findNode(
             new KadNodeIdentifier(task.getId().toString()));
+        // TODO: Logging
+        System.out.println("[Delegate] ".concat(task.getId().toString()).concat(" - ").concat(node.getIdentifier().toString()));
         task.setInitialNode(node);
         node.getScheduler().acceptTask(task);
-      } catch (final RemoteException e) {
-        e.printStackTrace();
-      } catch (final UnknownHostException e) {
+      } catch (final RemoteException | UnknownHostException e) {
         e.printStackTrace();
       }
     }

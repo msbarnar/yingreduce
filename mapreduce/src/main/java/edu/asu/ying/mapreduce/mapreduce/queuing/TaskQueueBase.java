@@ -15,13 +15,12 @@ public abstract class TaskQueueBase implements TaskQueue {
 
   protected final LocalScheduler scheduler;
 
-  private final BlockingQueue<Task> queue;
+  private final BlockingQueue<Task> queue = new LinkedBlockingQueue<>();
 
   // One task at a time
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
-  protected TaskQueueBase(final int capacity, final LocalScheduler scheduler) {
-    this.queue = new LinkedBlockingQueue<Task>(capacity);
+  protected TaskQueueBase(final LocalScheduler scheduler) {
     this.scheduler = scheduler;
   }
 

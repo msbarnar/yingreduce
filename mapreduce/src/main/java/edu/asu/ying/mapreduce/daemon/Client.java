@@ -10,10 +10,10 @@ import edu.asu.ying.mapreduce.yingtable.TableID;
 import edu.asu.ying.p2p.node.kad.KadNodeURL;
 
 /**
- * The main entry point for the node daemon. {@code Server9} starts the table, scheduling, and
+ * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
  * interface services before attaching the local node to an existing Kademlia network.
  */
-public class Server11 {
+public class Client {
 
   /**
    * Daemon entry point.
@@ -25,14 +25,14 @@ public class Server11 {
     System.out.println("For help contact Matthew Barnard: msbarnar@gmail.com");
     System.out.println();
 
-    final Server11 app = new Server11(args);
+    final Client app = new Client(args);
     app.start();
   }
 
   /**
    * Initializes the appropriate services, but does not start them.
    */
-  private Server11(final String[] args) {
+  private Client(final String[] args) {
     // TODO: Logging
     System.out.println("SERVER 11");
     System.out.println("Getting things ready...");
@@ -45,25 +45,38 @@ public class Server11 {
     // TODO: Logging
     System.out.println("Starting the application...");
 
-    final Daemon instance2 = new Daemon(5002);
-    try {
-      instance2.getLocalNode().join(new KadNodeURL("//149.169.30.10:5000"));
+    final Daemon[] instances = new Daemon[4];
+
+    for (int i = 0; i < instances.length; i++) {
+      instances[i] = new Daemon(5000+i);
+      if (i > 0) {
+        instances[i].join(instances[i-1]);
+      }
+      if (i > 1) {
+        instances[i].join(instances[i-2]);
+      }
+      if (i > 2) {
+        instances[i].join(instances[i-3]);
+      }
+    }
+
+    /*try {
+      instances[0].getLocalNode().join(new KadNodeURL("//127.0.0.1:5000"));
     } catch (final IOException e) {
       e.printStackTrace();
       return;
-    }
+    }*/
 
     System.out.println("... and we're rolling!");
     System.out.println();
     System.out.println("Visit http://localhost:8887/ to administer the local node.\n\n");
 
     LocalScheduler sched = null;
-    sched = instance2.getLocalNode().getScheduler();
+    sched = instances[0].getLocalNode().getScheduler();
 
     if (sched != null) {
-      for (int i = 0; i < 3; i++) {
-        final Job job = new MapReduceJob(new TableID("mytable"));
-        job.setStartTime();
+      for (int i = 0; i < 1; i++) {
+        final Job job = new MapReduceJob(new TableID("hoblahsh"));
         final JobSchedulingResult result = sched.createJob(job);
       }
     }

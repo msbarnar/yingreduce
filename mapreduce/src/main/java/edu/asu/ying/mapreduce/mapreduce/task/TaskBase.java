@@ -65,20 +65,4 @@ public abstract class TaskBase implements Task {
   public final void setInitialNode(final RemoteNode initialNode) {
     this.initialNode = initialNode;
   }
-
-  public final void touch(final RemoteNode node) {
-    this.history.append(new TaskHistory.Entry(node));
-  }
-  /**
-   * {@inheritDoc}
-   */
-  public final boolean isAtInitialNode() {
-    final TaskHistory.Entry lastEntry = this.history.last();
-    if (lastEntry != null) {
-     if (lastEntry.getNode() != null && lastEntry.getNode().equals(this.initialNode)) {
-       return true;
-     }
-    }
-    return false;
-  }
 }

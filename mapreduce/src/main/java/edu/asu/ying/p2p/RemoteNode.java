@@ -18,4 +18,6 @@ public interface RemoteNode extends Remote, Serializable {
   NodeIdentifier getIdentifier() throws RemoteException;
 
   RemoteScheduler getScheduler() throws RemoteException;
+
+  long getTimeMs() throws RemoteException;
 }

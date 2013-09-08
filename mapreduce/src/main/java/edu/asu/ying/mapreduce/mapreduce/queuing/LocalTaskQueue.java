@@ -13,14 +13,13 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
  */
 public final class LocalTaskQueue extends TaskQueueBase {
 
-  public LocalTaskQueue(final int capacity, final LocalScheduler scheduler) {
-    super(capacity, scheduler);
+  public LocalTaskQueue(final LocalScheduler scheduler) {
+    super(scheduler);
   }
 
   @Override
   public boolean offer(final Task task) {
     if (super.offer(task)) {
-      System.out.println("[Local] Task added");
       return true;
     } else {
       return false;
@@ -29,7 +28,8 @@ public final class LocalTaskQueue extends TaskQueueBase {
 
   @Override
   protected void runTask(final Task task) {
-    System.out.println("[Local] Starting task ".concat(task.getId().toString()));
+    // TODO: Logging
+    System.out.println("[Local] Start ".concat(task.getId().toString()));
 
     Serializable result = null;
     try {
@@ -39,8 +39,7 @@ public final class LocalTaskQueue extends TaskQueueBase {
       result = e;
     }
 
-    System.out.println("[Local] Sending to reducer: ".concat(
-        task.getId().toString()));
+    //System.out.println("[Local] Complete ".concat(task.getId().toString()));
 
     this.scheduler.completeTask(new TaskCompletion(task, result));
   }

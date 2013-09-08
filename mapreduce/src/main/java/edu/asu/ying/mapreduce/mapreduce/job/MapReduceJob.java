@@ -1,5 +1,7 @@
 package edu.asu.ying.mapreduce.mapreduce.job;
 
+import java.rmi.RemoteException;
+
 import edu.asu.ying.mapreduce.common.HasProperties;
 import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
@@ -65,8 +67,15 @@ public final class MapReduceJob implements Job {
   }
 
   @Override
-  public final void setStartTime() {
-    this.startTime = System.currentTimeMillis();
+  public final void setStartTime(final RemoteNode referenceNode) {
+    try {
+      this.startTime = referenceNode.getTimeMs();
+    } catch (final RemoteException e) {
+      // TODO: Logging
+      e.printStackTrace();
+      // Make every time calculation negative so we know it's untrustworthy
+      this.startTime = Long.MAX_VALUE;
+    }
   }
   @Override
   public final long getTimeElapsed() {

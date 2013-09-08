@@ -26,6 +26,6 @@ public interface Job extends Serializable {
   void setNumTasks(final int n);
   int getNumTasks();
 
-  void setStartTime();
+  void setStartTime(final RemoteNode referenceNode);
   long getTimeElapsed();
 }

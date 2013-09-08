@@ -47,14 +47,16 @@ public final class KadLocalNode
       this.localNode = localNode;
     }
 
-
-    public NodeIdentifier getIdentifier() throws RemoteException {
+    public final NodeIdentifier getIdentifier() throws RemoteException {
       return this.localNode.getIdentifier();
     }
 
-
-    public RemoteScheduler getScheduler() throws RemoteException {
+    public final RemoteScheduler getScheduler() throws RemoteException {
       return this.localNode.getScheduler().getProxy();
+    }
+
+    public final long getTimeMs() throws RemoteException {
+      return System.currentTimeMillis();
     }
   }
   /***********************************************************************************************/
@@ -124,7 +126,7 @@ public final class KadLocalNode
 
   public List<RemoteNode> getNeighbors() {
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.getNeighbours();
-    final List<RemoteNode> nodeProxies = new ArrayList<RemoteNode>();
+    final List<RemoteNode> nodeProxies = new ArrayList<>();
 
     for (final il.technion.ewolf.kbr.Node kadNode : kadNodes) {
       final RemoteNode proxy = this.importProxyTo(kadNode);

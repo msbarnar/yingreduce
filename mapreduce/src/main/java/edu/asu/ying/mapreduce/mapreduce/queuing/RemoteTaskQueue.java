@@ -12,8 +12,8 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
  */
 public final class RemoteTaskQueue extends TaskQueueBase {
 
-  public RemoteTaskQueue(final int capacity, final LocalScheduler scheduler) {
-    super(capacity, scheduler);
+  public RemoteTaskQueue(final LocalScheduler scheduler) {
+    super(scheduler);
   }
 
   @Override
@@ -29,14 +29,14 @@ public final class RemoteTaskQueue extends TaskQueueBase {
   @Override
   protected void runTask(final Task task) {
     // TODO: logging
-    System.out.println("[Remote] Fetching remote content for task ".concat(
-        task.getId().toString()));
+    /*System.out.println("[Remote] Fetching remote content for task ".concat(
+        task.getId().toString()));*/
 
     try {
       Thread.sleep(100+(new Random()).nextInt(100));
     } catch (final InterruptedException e) {}
 
-    System.out.println("[Remote] Starting task ".concat(task.getId().toString()));
+    System.out.println("[Remote] Start ".concat(task.getId().toString()));
 
     Serializable result = null;
     try {
@@ -46,8 +46,7 @@ public final class RemoteTaskQueue extends TaskQueueBase {
       result = e;
     }
 
-    System.out.println("[Remote] Task complete; sending to reducer: ".concat(
-        task.getId().toString()));
+    //System.out.println("[Remote] Complete ".concat(task.getId().toString()));
 
     this.scheduler.completeTask(new TaskCompletion(task, result));
   }
