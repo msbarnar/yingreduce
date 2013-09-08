@@ -49,6 +49,8 @@ public class EagerColorFindValueOperation extends FindValueOperation implements 
 	private Node returnedCachedResults = null;
 	private final List<Node> lastSentTo;
 	private Comparator<Key> colorComparator;
+  private KeyColorComparator.NodeKeyColorComparator nKCC;
+  private KeyComparator.NodeKeyComparator nKC;
 	private KeyComparator keyComparator;
 	private final List<Node> firstSentTo;
 	private final AtomicInteger nrMsgsSent;
@@ -128,8 +130,10 @@ public class EagerColorFindValueOperation extends FindValueOperation implements 
 
 		Node $ = null;
 
-		if (allUnqueried.size() > 1)
-			allUnqueried = sort(allUnqueried, on(Node.class).getKey(), this.colorComparator);
+		if (allUnqueried.size() > 1) {
+			//allUnqueried = sort(allUnqueried, on(Node.class).getKey(), this.colorComparator);
+          Collections.sort(allUnqueried, this.nKCC);
+        }
 		$ = allUnqueried.get(0);
 
 		// if the best we could find is not in the right color, then continue
@@ -162,7 +166,8 @@ public class EagerColorFindValueOperation extends FindValueOperation implements 
 	}
 
 	private void sortKnownClosestNodes() {
-		this.knownClosestNodes = sort(this.knownClosestNodes, on(Node.class).getKey(), this.keyComparator);
+		//this.knownClosestNodes = sort(this.knownClosestNodes, on(Node.class).getKey(), this.keyComparator);
+      Collections.sort(this.knownClosestNodes, this.nKC);
 		if (this.knownClosestNodes.size() >= this.kBucketSize)
 			this.knownClosestNodes.subList(this.kBucketSize, this.knownClosestNodes.size()).clear();
 	}
@@ -177,6 +182,7 @@ public class EagerColorFindValueOperation extends FindValueOperation implements 
 		}
 
 		this.keyComparator = new KeyComparator(this.key);
+      this.nKC = new KeyComparator.NodeKeyComparator(this.key);
 		this.knownClosestNodes = this.kBuckets.getClosestNodesByKey(this.key, this.kBucketSize);
 		this.knownClosestNodes.add(this.localNode);
 		final Collection<Node> bootstrap = getBootstrap();
@@ -187,6 +193,7 @@ public class EagerColorFindValueOperation extends FindValueOperation implements 
 
 		final KeyComparator keyComparator = new KeyComparator(this.key);
 		this.colorComparator = new KeyColorComparator(this.key, this.nrColors);
+      this.nKCC = new KeyColorComparator.NodeKeyColorComparator(this.key, this.nrColors);
 
 		do {
 			final Node node = takeColorUnqueried();
