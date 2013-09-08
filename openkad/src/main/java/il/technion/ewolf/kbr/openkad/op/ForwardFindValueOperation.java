@@ -15,6 +15,9 @@ import il.technion.ewolf.kbr.openkad.net.MessageDispatcher;
 import il.technion.ewolf.kbr.openkad.net.filter.IdMessageFilter;
 import il.technion.ewolf.kbr.openkad.net.filter.TypeMessageFilter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -211,7 +214,9 @@ public class ForwardFindValueOperation extends FindValueOperation {
 
 		this.bootstrap = this.kBuckets.getClosestNodesByKey(this.key, this.kBucketSize);
 		this.bootstrap.add(this.localNode);
-		final List<Node> candidates = sort(this.bootstrap, on(Node.class).getKey(), new KeyColorComparator(this.key, this.nrColors));
+		//final List<Node> candidates = sort(this.bootstrap, on(Node.class).getKey(), new KeyColorComparator(this.key, this.nrColors));
+      final List<Node> candidates = new ArrayList<>(this.bootstrap);
+      Collections.sort(candidates, new KeyColorComparator.NodeKeyColorComparator(this.key, this.nrColors));
 
 		if (this.myColor == this.key.getColor(this.nrColors)) {
 			this.hopsToResultHistogram.add(0);
@@ -239,7 +244,8 @@ public class ForwardFindValueOperation extends FindValueOperation {
 			}
 
 			// sort and cut the bootstrap
-			this.bootstrap = sort(this.bootstrap, on(Node.class).getKey(), new KeyComparator(this.key));
+			//this.bootstrap = sort(this.bootstrap, on(Node.class).getKey(), new KeyComparator(this.key));
+            Collections.sort(this.bootstrap, new KeyComparator.NodeKeyComparator(this.key));
 			if (this.bootstrap.size() > this.kBucketSize)
 				this.bootstrap.subList(this.kBucketSize, this.bootstrap.size()).clear();
 
