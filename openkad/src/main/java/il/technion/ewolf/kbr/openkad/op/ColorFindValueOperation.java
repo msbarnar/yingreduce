@@ -46,8 +46,9 @@ public class ColorFindValueOperation extends FindValueOperation implements Compl
 	private int nrQueried;
 	private Node returnedCachedResults = null;
 	private Comparator<Key> colorComparator;
-	
-	// dependencies
+    private KeyColorComparator.NodeKeyColorComparator nKCC;
+
+  // dependencies
 	private final Provider<FindNodeRequest> findNodeRequestProvider;
 	private final Provider<MessageDispatcher<Node>> msgDispatcherProvider;
 	private final Provider<StoreMessage> storeMessageProvider;
@@ -131,7 +132,8 @@ public class ColorFindValueOperation extends FindValueOperation implements Compl
 		Node $ = null;
 		
 		if (allUnqueried.size() > 1) {
-			allUnqueried = sort(allUnqueried, on(Node.class).getKey(), colorComparator);
+			// allUnqueried = sort(allUnqueried, on(Node.class).getKey(), colorComparator);
+            Collections.sort(allUnqueried, nKCC);
 		}
 		$ = allUnqueried.get(0);
 		
@@ -180,7 +182,7 @@ public class ColorFindValueOperation extends FindValueOperation implements Compl
 
 		colorComparator = new KeyColorComparator(key, nrColors);
         // Compares nodes by key colors
-        KeyColorComparator nKCC = new KeyColorComparator(key, nrColors);
+        this.nKCC = new KeyColorComparator.NodeKeyColorComparator(key, nrColors);
 		
 		List<Node> colorClosest = kBuckets.getClosestNodesByKey(key, nrCandidates);
 		querying.addAll(colorClosest);
@@ -201,7 +203,9 @@ public class ColorFindValueOperation extends FindValueOperation implements Compl
 		do {
 			synchronized(this) {
 				// knownClosestNodes = sort(knownClosestNodes, on(Node.class).getKey(), keyComparator);
-                knownClosestNodes = Collections.sort(knownClosestNodes, nKC);
+                // Let's not use lambdaj howabout
+                Collections.sort(knownClosestNodes, nKC);
+
 				if (knownClosestNodes.size() >= kBucketSize)
 					knownClosestNodes.subList(kBucketSize, knownClosestNodes.size()).clear();
 				

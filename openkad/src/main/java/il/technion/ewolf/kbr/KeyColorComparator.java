@@ -1,20 +1,33 @@
 package il.technion.ewolf.kbr;
 
+import java.util.Comparator;
+
 /**
  * Compare Key's colors distance from a given color
  * @author eyal.kibbar@gmail.com
  */
 public class KeyColorComparator extends KeyComparator {
 
-  public static class NodeKeyColorComparator extends KeyColorComparator {
+  public static class NodeKeyColorComparator extends NodeKeyComparator {
 
-    public NodeKeyColorComparator(final Node node, final int nrColors) {
-      super(node.getKey(), nrColors);
+    private final int color;
+    private final int nrColors;
+
+    public NodeKeyColorComparator(final Key key, final int nrColors) {
+        super(key);
+      this.color = key.getColor(nrColors);
+      this.nrColors = nrColors;
     }
 
     public int compare(Node n1, Node n2) {
-      return super.compare(n1.getKey(), n2.getKey());
+      int c1 = Math.abs(n1.getKey().getColor(nrColors) - color);
+      int c2 = Math.abs(n2.getKey().getColor(nrColors) - color);
 
+      if (c1 == c2)
+        return super.compare(n1, n2);
+
+
+      return c1 - c2;
     }
   }
 
