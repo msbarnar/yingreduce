@@ -81,7 +81,7 @@ public final class LetterFreqTask extends TaskBase {
     }
 
     // Convert the frequency array to a hashmap for nicer reducing etc.
-    final Map<Character, Integer> result = new HashMap<Character, Integer>();
+    final Map<Character, Integer> result = new HashMap<>();
     for (int i = 0; i < freqs.length; i++) {
       result.put((char) ('A' + i), freqs[i]);
     }
