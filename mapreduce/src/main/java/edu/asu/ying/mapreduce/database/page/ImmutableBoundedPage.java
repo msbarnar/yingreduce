@@ -1,9 +1,12 @@
-package edu.asu.ying.mapreduce.yingtable;
+package edu.asu.ying.mapreduce.database.page;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import edu.asu.ying.mapreduce.database.element.Element;
+import edu.asu.ying.mapreduce.database.table.TableID;
 
 /**
  *

@@ -1,4 +1,8 @@
-package edu.asu.ying.mapreduce.yingtable;
+package edu.asu.ying.mapreduce.database.element;
+
+import edu.asu.ying.mapreduce.database.ImmutableKey;
+import edu.asu.ying.mapreduce.database.ImmutableValue;
+import edu.asu.ying.mapreduce.database.element.Element;
 
 /**
  * {@code ImmutableElement} implements the table element as an unsorted map of the

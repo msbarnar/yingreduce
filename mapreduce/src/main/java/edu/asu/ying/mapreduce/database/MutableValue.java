@@ -1,4 +1,6 @@
-package edu.asu.ying.mapreduce.yingtable;
+package edu.asu.ying.mapreduce.database;
+
+import edu.asu.ying.mapreduce.database.element.Element;
 
 /**
  *

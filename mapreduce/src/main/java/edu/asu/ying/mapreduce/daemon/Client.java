@@ -1,13 +1,10 @@
 package edu.asu.ying.mapreduce.daemon;
 
-import java.io.IOException;
-
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.yingtable.TableID;
-import edu.asu.ying.p2p.node.kad.KadNodeURL;
+import edu.asu.ying.mapreduce.database.table.TableID;
 
 /**
  * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
@@ -45,7 +42,7 @@ public class Client {
     // TODO: Logging
     System.out.println("Starting the application...");
 
-    final Daemon[] instances = new Daemon[10];
+    final Daemon[] instances = new Daemon[100];
 
     for (int i = 0; i < instances.length; i++) {
       instances[i] = new Daemon(5000+i);

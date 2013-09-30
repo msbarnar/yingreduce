@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.yingtable;
+package edu.asu.ying.mapreduce.database.element;
 
 import java.io.Serializable;
 

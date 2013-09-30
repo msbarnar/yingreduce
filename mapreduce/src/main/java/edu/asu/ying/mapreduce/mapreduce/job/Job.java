@@ -1,12 +1,9 @@
 package edu.asu.ying.mapreduce.mapreduce.job;
 
 import java.io.Serializable;
-import java.net.InetAddress;
 
-import edu.asu.ying.mapreduce.common.HasProperties;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
-import edu.asu.ying.mapreduce.yingtable.TableID;
-import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.mapreduce.database.table.TableID;
 import edu.asu.ying.p2p.RemoteNode;
 
 /**

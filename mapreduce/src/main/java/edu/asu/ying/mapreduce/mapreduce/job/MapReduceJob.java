@@ -2,10 +2,8 @@ package edu.asu.ying.mapreduce.mapreduce.job;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.mapreduce.common.HasProperties;
-import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
-import edu.asu.ying.mapreduce.yingtable.TableID;
+import edu.asu.ying.mapreduce.database.table.TableID;
 import edu.asu.ying.p2p.RemoteNode;
 
 /**

@@ -1,22 +1,20 @@
-package edu.asu.ying.mapreduce.yingtable;
+package edu.asu.ying.mapreduce.database.page;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.io.Serializable;
 
+import edu.asu.ying.mapreduce.database.element.Element;
+import edu.asu.ying.mapreduce.database.table.TableID;
+
 /**
- * A {@code Page} is the unit of organization of {@link Element}s in a {@link Table}.
+ * A {@code Page} is a collection of {@link Element}s in a table.
  */
-interface Page extends Serializable {
+public interface Page extends Serializable {
 
+  boolean offer(final Element element);
   /**
-   * Adds the element to the page. If the number of elements in the page after adding exceeds the
-   * page's maximum size, it will request that the parent table commit the page.
-   */
-  void addElement(final Element element) throws PageCapacityExceededException;
-
-  /**
-   * Every {@code Page} belongs to a {@link Table}; this is that table's ID.
+   * Gets the ID of the table to which this page belongs.
    */
   TableID getTableId();
 
@@ -47,10 +45,6 @@ interface Page extends Serializable {
   /**
    * The page stores a slice of the main table; the elements stored in the page are only some of
    * those from the table.
-   * </p>
-   * Note that modifying the contents of the page after adding is not yet supported, as this could
-   * create inconsistencies between the local representation of the page and that held by the node
-   * storing the page.
    */
   ImmutableMap<Element.Key, Element.Value> getElements();
 }

@@ -30,17 +30,17 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     this.localNode = localNode;
   }
 
-
+  @Override
   public final void start() {
     this.threadPool.submit(this);
   }
 
-
+  @Override
   public final boolean offer(final Job job) {
     return this.jobQueue.offer(job);
   }
 
-
+  @Override
   public final void run() {
     // Run forever
     this.threadPool.submit(this);
@@ -66,6 +66,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     //System.out.println("Delegating job ".concat(job.getID().toString()));
 
     // Find the reducer node first given the job ID
+    // FIXME: Find n reducers and divide keyspace among them
     try {
       final RemoteNode reducer = this.localNode.findNode(
         new KadNodeIdentifier(job.getID().toString()));
