@@ -9,15 +9,17 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.asu.ying.mapreduce.common.Sink;
 import edu.asu.ying.mapreduce.database.element.Element;
 import edu.asu.ying.mapreduce.database.element.ElementSizeComparator;
 import edu.asu.ying.mapreduce.database.element.ValueTooLargeException;
 import edu.asu.ying.mapreduce.database.page.ImmutableBoundedPage;
 import edu.asu.ying.mapreduce.database.page.Page;
-import edu.asu.ying.mapreduce.database.page.PageSinkQueueWorker;
 
 /**
- *
+ * {@code LocalWriteTable} accepts elements locally, places them on pages, and sends full pages to
+ * an associated {@link Sink}. </p> The sink could be, for example, a distribution queue which sends
+ * pages to remote peers.
  */
 public final class LocalWriteTableImpl implements LocalWriteTable {
 
@@ -31,7 +33,7 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
   private final TableID id;
 
   // Sinks full pages
-  private final PageSink pageSink;
+  private final Sink<Page> pageSink;
 
   // Stores table elements not yet committed to the network.
   private Page currentPage = null;
@@ -39,7 +41,7 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
   private final Object currentPageLock = new Object();
 
 
-  public LocalWriteTableImpl(final TableID id, final PageSinkQueueWorker pageSink) {
+  public LocalWriteTableImpl(final TableID id, final Sink<Page> pageSink) {
     this.id = id;
     this.pageSink = pageSink;
     this.newPage();
@@ -105,13 +107,17 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
   }
 
   /**
-   * Places the current page on the {@link edu.asu.ying.mapreduce.database.page.PageSinkQueueWorker} (if necessary) and starts a new
-   * page.
+   * Sends the current page to the sink and starts a new one.
    */
   private void newPage() {
     synchronized (this.currentPageLock) {
       if (this.currentPage != null) {
-        this.pageSink.accept(this.currentPage);
+        try {
+          this.pageSink.accept(this.currentPage);
+        } catch (final IOException e) {
+          // TODO: Logging
+          e.printStackTrace();
+        }
         this.currentPageIndex++;
       }
       // TODO: Set page capacity with configuration
