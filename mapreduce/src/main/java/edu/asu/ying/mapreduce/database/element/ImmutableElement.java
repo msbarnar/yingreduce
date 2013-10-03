@@ -1,15 +1,10 @@
 package edu.asu.ying.mapreduce.database.element;
 
-import edu.asu.ying.mapreduce.database.ImmutableKey;
-import edu.asu.ying.mapreduce.database.ImmutableValue;
-import edu.asu.ying.mapreduce.database.element.Element;
-
 /**
- * {@code ImmutableElement} implements the table element as an unsorted map of the
- * {@code (row, column)} pair to a sorted map of {@code timestamp->byte[]}.
- * </p>
- * While a table therefore appears to function as a three-dimensionally-indexed map, it is more
- * accurately defined as a 2D map of {@code (row, column)} to a tree of byte arrays.
+ * {@code ImmutableElement} implements the table element as an unsorted map of the {@code (row,
+ *column)} pair to a sorted map of {@code timestamp->byte[]}. </p> While a table therefore appears
+ * to function as a three-dimensionally-indexed map, it is more accurately defined as a 2D map of
+ * {@code (row, column)} to a tree of byte arrays.
  */
 public final class ImmutableElement implements Element {
 

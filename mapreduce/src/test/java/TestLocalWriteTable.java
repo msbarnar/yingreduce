@@ -7,10 +7,10 @@ import java.util.Deque;
 import java.util.Random;
 
 import edu.asu.ying.mapreduce.common.Sink;
-import edu.asu.ying.mapreduce.database.ImmutableKey;
-import edu.asu.ying.mapreduce.database.ImmutableValue;
 import edu.asu.ying.mapreduce.database.element.Element;
 import edu.asu.ying.mapreduce.database.element.ImmutableElement;
+import edu.asu.ying.mapreduce.database.element.ImmutableKey;
+import edu.asu.ying.mapreduce.database.element.ImmutableValue;
 import edu.asu.ying.mapreduce.database.page.Page;
 import edu.asu.ying.mapreduce.database.table.LocalWriteTable;
 import edu.asu.ying.mapreduce.database.table.LocalWriteTableImpl;

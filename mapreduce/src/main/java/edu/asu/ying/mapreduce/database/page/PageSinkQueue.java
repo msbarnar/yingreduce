@@ -7,13 +7,12 @@ import edu.asu.ying.mapreduce.common.Sink;
 import edu.asu.ying.mapreduce.common.concurrency.sink.AbstractSinkFIFO;
 
 /**
- * {@code PageSinkQueueWorker} manages the flow of pages into a {@link Sink}.
- * </p>
- * This is used for page distribution to throttle concurrent {@code pageout}s to the network.
+ * {@code PageSinkQueue} manages the flow of pages into a {@link Sink}. </p> This is used for page
+ * distribution to throttle concurrent {@code pageout}s to the network.
  */
-public final class PageSinkQueueWorker extends AbstractSinkFIFO<Page> {
+public final class PageSinkQueue extends AbstractSinkFIFO<Page> {
 
-  public PageSinkQueueWorker(final Sink<Page> pageSink) {
+  public PageSinkQueue(final Sink<Page> pageSink) {
     super(pageSink);
   }
 

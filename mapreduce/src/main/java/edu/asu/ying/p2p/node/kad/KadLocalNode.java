@@ -13,21 +13,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import edu.asu.ying.mapreduce.database.page.RemotePageSink;
+import edu.asu.ying.mapreduce.database.page.RemotePageSinkImpl;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
+import edu.asu.ying.p2p.LocalNode;
+import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.p2p.RemoteNode;
 import edu.asu.ying.p2p.io.Channel;
-import edu.asu.ying.p2p.node.*;
 import edu.asu.ying.p2p.io.InvalidContentException;
 import edu.asu.ying.p2p.io.message.RequestMessage;
 import edu.asu.ying.p2p.io.message.ResponseMessage;
-import edu.asu.ying.p2p.RemoteNode;
+import edu.asu.ying.p2p.node.NodeNotFoundException;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.p2p.LocalNode;
-import edu.asu.ying.p2p.NodeIdentifier;
-import il.technion.ewolf.kbr.*;
+import il.technion.ewolf.kbr.Key;
+import il.technion.ewolf.kbr.KeybasedRouting;
+import il.technion.ewolf.kbr.Node;
 
 
 /**
@@ -37,9 +41,9 @@ public final class KadLocalNode
     implements LocalNode {
 
   /**
-   * Provides the implementation of {@code RemoteNode} which will be accessible by remote peers
-   * when exported. The proxy implementation glues the remote node interface to the concrete local
-   * node implementation while implementing the appropriate patterns to be RMI-compatible.
+   * Provides the implementation of {@code RemoteNode} which will be accessible by remote peers when
+   * exported. The proxy implementation glues the remote node interface to the concrete local node
+   * implementation while implementing the appropriate patterns to be RMI-compatible.
    */
   private final class KadRemoteNodeImpl implements RemoteNode {
 
@@ -61,7 +65,10 @@ public final class KadLocalNode
       return System.currentTimeMillis();
     }
   }
-  /***********************************************************************************************/
+
+  /**
+   * *******************************************************************************************
+   */
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
@@ -84,6 +91,10 @@ public final class KadLocalNode
   // Schedules mapreduce jobs and tasks
   private final LocalScheduler scheduler;
 
+  // Accepts pages from the network
+  private final RemotePageSink pageSink;
+  private final RemotePageSink pageSinkProxy;
+
 
   public KadLocalNode(final int port) throws InstantiationException {
 
@@ -95,11 +106,13 @@ public final class KadLocalNode
 
     // Start the remote reference provider
     this.activator = new RMIActivatorImpl();
-    // Start the interface for remote peers to access the local node
     // Start the scheduler
     this.scheduler = new SchedulerImpl(this);
     this.scheduler.export(this.activator);
     this.scheduler.start();
+    // Start the interface for sinking remote pages
+    this.pageSink = new RemotePageSinkImpl();
+    this.pageSinkProxy = this.activator.bind(RemotePageSink.class).toInstance(this.pageSink);
 
     // Allow peers to access the node and scheduler remotely.
     this.nodeProxyTarget = new KadRemoteNodeImpl(this);
@@ -114,9 +127,9 @@ public final class KadLocalNode
   }
 
 
-  public final void join(final NodeURL bootstrap) throws IOException {
+  public final void join(final NodeIdentifier bootstrap) throws IOException {
     try {
-      final List<URI> bootstrapUris = Arrays.asList(bootstrap.toURI());
+      final List<URI> bootstrapUris = Arrays.asList(URI.create(bootstrap.toString()));
       this.kbrNode.join(bootstrapUris);
 
     } catch (final IllegalStateException e) {
@@ -189,7 +202,7 @@ public final class KadLocalNode
     final Future<Serializable> response;
     try {
       response =
-        this.networkChannel.getMessageOutputStream().writeAsyncRequest(node, request);
+          this.networkChannel.getMessageOutputStream().writeAsyncRequest(node, request);
 
     } catch (final IOException e) {
       // TODO: Logging

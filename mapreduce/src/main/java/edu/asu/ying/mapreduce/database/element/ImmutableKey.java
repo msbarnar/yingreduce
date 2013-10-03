@@ -1,6 +1,4 @@
-package edu.asu.ying.mapreduce.database;
-
-import edu.asu.ying.mapreduce.database.element.Element;
+package edu.asu.ying.mapreduce.database.element;
 
 /**
  *
@@ -22,6 +20,13 @@ public final class ImmutableKey implements Element.Key {
     this.column = copy.getColumn();
   }
 
-  @Override public String getRow() { return this.row; }
-  @Override public String getColumn() { return this.column; }
+  @Override
+  public String getRow() {
+    return this.row;
+  }
+
+  @Override
+  public String getColumn() {
+    return this.column;
+  }
 }

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.node.kad.KadLocalNode;
-import edu.asu.ying.p2p.node.kad.KadNodeURL;
+import edu.asu.ying.p2p.node.kad.KadNodeIdentifier;
 
 /**
  *
@@ -26,7 +26,7 @@ public final class Daemon {
   public final void join(final Daemon instance) {
     try {
       this.localNode.join(
-          new KadNodeURL("//127.0.0.1:".concat(String.valueOf(instance.getPort()))));
+          new KadNodeIdentifier("//127.0.0.1:".concat(String.valueOf(instance.getPort()))));
     } catch (final IOException e) {
       e.printStackTrace();
     }
