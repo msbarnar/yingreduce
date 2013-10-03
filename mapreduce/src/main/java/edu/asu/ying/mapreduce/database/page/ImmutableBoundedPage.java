@@ -2,7 +2,7 @@ package edu.asu.ying.mapreduce.database.page;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.database.element.Element;
@@ -19,7 +19,7 @@ public final class ImmutableBoundedPage implements Page {
   // The index of this page on the table
   private final int index;
 
-  private final Map<Element.Key, Element.Value> elements = new HashMap<Element.Key, Element.Value>();
+  private final Map<Element.Key, Element.Value> elements = new LinkedHashMap<>();
   // Don't accept any elements that would cause the page to exceed this size
   private final int capacity;
   // Keep track of the total size of the contents of all elements
@@ -39,57 +39,57 @@ public final class ImmutableBoundedPage implements Page {
   }
 
 
-  public final void addElement(final Element element) throws PageCapacityExceededException {
+  public final boolean offer(final Element element) {
     synchronized (this.elements) {
-      if ((this.curSize + element.getValue().getSize()) > this.capacity) {
-        throw new PageCapacityExceededException(element);
+      final Element.Value value = element.getValue();
+
+      if ((this.curSize + value.getSize()) > this.capacity) {
+        return false;
       }
 
-      this.elements.put(element.getKey(), element.getValue());
-      this.curSize += element.getValue().getSize();
+      this.elements.put(element.getKey(), value);
+      this.curSize += value.getSize();
 
       this.isDirty = true;
     }
+
+    return true;
   }
 
-  
+
   public final TableID getTableId() {
     return this.tableId;
   }
 
-  
+
   public final int getIndex() {
     return this.index;
   }
 
-  
+
   public final int getSize() {
-    synchronized (this.elements) {
-      return this.curSize;
-    }
+    return this.curSize;
   }
 
-  
+
   public final int getCapacity() {
     return this.capacity;
   }
 
-  
+
   public final boolean isDirty() {
-    synchronized (this.elements) {
-      return this.isDirty;
-    }
+    return this.isDirty;
   }
 
-  
+
   public final void clean() {
-    synchronized (this.elements) {
-      this.isDirty = false;
-    }
+    this.isDirty = false;
   }
 
-  
+
   public final ImmutableMap<Element.Key, Element.Value> getElements() {
-    return ImmutableMap.copyOf(this.elements);
+    synchronized (this.elements) {
+      return ImmutableMap.copyOf(this.elements);
+    }
   }
 }

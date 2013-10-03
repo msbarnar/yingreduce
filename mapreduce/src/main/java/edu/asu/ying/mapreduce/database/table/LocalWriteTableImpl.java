@@ -1,12 +1,11 @@
 package edu.asu.ying.mapreduce.database.table;
 
-import com.google.common.collect.SortedMultiset;
-import com.google.common.collect.TreeMultiset;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.asu.ying.mapreduce.common.Sink;
@@ -60,9 +59,9 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
   @Override
   public void accept(final Collection<Element> elements) throws IOException {
     // Sort the elements largest-to-smallest for bin packing
-    final SortedMultiset<Element> sortedElements =
-        TreeMultiset.create(new ElementSizeComparator()).descendingMultiset();
-    sortedElements.addAll(elements);
+    final List<Element> sortedElements = new LinkedList<>(elements);
+    Collections.sort(sortedElements, new ElementSizeComparator());
+    Collections.reverse(sortedElements);
 
     // Capture elements that won't fit on any page
     final List<Element> failedElements = new ArrayList<>(elements.size());
