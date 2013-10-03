@@ -59,6 +59,8 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
   @Override
   public void accept(final Collection<Element> elements) throws IOException {
     // Sort the elements largest-to-smallest for bin packing
+    // ElementSizeComparator breaks the following collection contract:
+    // (a.compareTo(b) == 0) == (a.equals(b))
     final List<Element> sortedElements = new LinkedList<>(elements);
     Collections.sort(sortedElements, new ElementSizeComparator());
     Collections.reverse(sortedElements);
