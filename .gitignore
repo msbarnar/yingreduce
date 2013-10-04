@@ -7,6 +7,9 @@
 # Package Files #
 
 target/
-!deployment/target/deployment-1.0-SNAPSHOT.jar
+!deployment/target/
+
+deployment/target/*
+!deployment*.jar
 
 
