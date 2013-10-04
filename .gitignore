@@ -5,10 +5,8 @@
 *.class
 
 # Package Files #
-*.jar
-*.war
-*.ear
 
-target
+target/
+!deployment/target/deployment-1.0-SNAPSHOT.jar
 
 
