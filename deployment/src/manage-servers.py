@@ -5,7 +5,11 @@ __author__ = 'msbarnar@gmail.com'
 
 from fabric.api import cd, run, env, execute, parallel
 
-env.hosts = ['msbarnar@149.169.30.' + str(x) for x in range(9, 13)+range(35, 39)]
+username = 'msbarnar'
+host_prefix = '149.169.30.'
+hosts = range(9, 13)+range(35, 39)
+
+env.hosts = [username+'@'+host_prefix + str(x) for x in hosts]
 env.warn_only = True
 env.skip_bad_hosts = True
 
@@ -41,21 +45,25 @@ def run_client():
     run('java -jar mapreduce.jar')
 
 if __name__ == '__main__':
-    print '1) Update git repository'
-    print '7) Init git repository'
-    print '8) Add user "msbarnar"'
-    print '9) Update jdk to java-1.7.0-openjdk'
+    selection = ''
+    options = {'1': git_pull, '2': run_client, '7': git_clone,
+               '8': create_user, '9': update_java}
 
-    selection = raw_input('? ')
+    while selection != 'q':
+        print '-------Ying Server Cluster---------'
+        print 'User:\t' + username
+        print 'Hosts:\t' + host_prefix + str(hosts)
+        print ''
+        print '1) Update git repository'
+        print '2) Run client'
+        print '7) Init git repository'
+        print '8) Add user "msbarnar"'
+        print '9) Update jdk to java-1.7.0-openjdk'
+        print '-----------------------------------'
+        selection = raw_input('(q to exit) ? ')
 
-    if selection == '1':
-        execute(git_pull)
-    elif selection == '7':
-        execute(git_clone)
-    elif selection == '8':
-        execute(create_user)
-    elif selection == '9':
-        execute(update_java)
-    else:
-        exit(0)
+        try:
+            execute(options[selection])
+        except KeyError:
+            pass
 
