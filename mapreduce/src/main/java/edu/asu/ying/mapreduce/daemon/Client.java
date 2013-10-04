@@ -31,7 +31,6 @@ public class Client {
    */
   private Client(final String[] args) {
     // TODO: Logging
-    System.out.println("SERVER 11");
     System.out.println("Getting things ready...");
   }
 
