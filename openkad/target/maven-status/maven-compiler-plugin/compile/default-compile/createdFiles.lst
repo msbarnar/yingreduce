@@ -8,7 +8,9 @@ il/technion/ewolf/kbr/openkad/msg/KadMessage.class
 il/technion/ewolf/kbr/openkad/handlers/ForwardHandler$4.class
 il/technion/ewolf/kbr/openkad/NodeStorage.class
 il/technion/ewolf/kbr/openkad/net/filter/SrcExcluderMessageFilter.class
+il/technion/ewolf/kbr/KeyColorComparator$NodeKeyColorComparator.class
 il/technion/ewolf/kbr/openkad/handlers/ForwardHandler$2.class
+il/technion/ewolf/kbr/KeyComparator$NodeKeyComparator.class
 il/technion/ewolf/kbr/openkad/KadNet$1.class
 il/technion/ewolf/kbr/openkad/msg/PingResponse.class
 il/technion/ewolf/kbr/openkad/op/JoinOperation.class
@@ -52,8 +54,8 @@ il/technion/ewolf/kbr/openkad/cache/LRUKadCache.class
 il/technion/ewolf/kbr/openkad/UndeadKadNode.class
 il/technion/ewolf/kbr/openkad/KadNetModule$1.class
 il/technion/ewolf/kbr/openkad/op/JoinOperation$1.class
-il/technion/ewolf/kbr/openkad/op/ForwardFindValueOperation.class
 il/technion/ewolf/kbr/KeybasedRouting.class
+il/technion/ewolf/kbr/openkad/op/ForwardFindValueOperation.class
 il/technion/ewolf/kbr/openkad/msg/ContentResponse.class
 il/technion/ewolf/kbr/openkad/handlers/StoreHandler.class
 il/technion/ewolf/kbr/openkad/IncomingContentHandler.class
@@ -93,7 +95,7 @@ il/technion/ewolf/kbr/openkad/msg/ContentMessage.class
 il/technion/ewolf/kbr/openkad/net/KadSerializer.class
 il/technion/ewolf/kbr/openkad/handlers/ForwardHandler$1.class
 il/technion/ewolf/kbr/openkad/msg/FindNodeRequest.class
-il/technion/ewolf/kbr/openkad/op/FindValueOperation.class
 il/technion/ewolf/kbr/openkad/msg/KadRequest.class
+il/technion/ewolf/kbr/openkad/op/FindValueOperation.class
 il/technion/ewolf/kbr/KeyComparator.class
 il/technion/ewolf/kbr/openkad/op/KadCacheFindValueOperation.class

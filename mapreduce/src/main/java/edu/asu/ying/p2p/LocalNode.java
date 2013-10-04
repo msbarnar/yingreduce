@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 
+import edu.asu.ying.mapreduce.common.RemoteSink;
+import edu.asu.ying.mapreduce.database.page.Page;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 
@@ -20,6 +22,8 @@ public interface LocalNode {
   RMIActivator getActivator();
 
   LocalScheduler getScheduler();
+
+  RemoteSink<Page> getPageSink();
 
   RemoteNode findNode(final NodeIdentifier uri) throws UnknownHostException;
 

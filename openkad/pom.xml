@@ -3,7 +3,7 @@
   <groupId>il.technion.ewolf.kbr</groupId>
   <artifactId>openkad</artifactId>
   <version>1.0</version>
-  <name>Kademlia DHT</name>
+  <name>OpenKAD DHT</name>
   <description>Open source implementation of the Kademlia Distributed Hash Table algorithm.</description>
   <build>
     <testSourceDirectory>src/test</testSourceDirectory>

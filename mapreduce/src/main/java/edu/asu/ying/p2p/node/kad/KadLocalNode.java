@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import edu.asu.ying.mapreduce.common.RemoteSink;
+import edu.asu.ying.mapreduce.database.page.Page;
 import edu.asu.ying.mapreduce.database.page.RemotePageSink;
 import edu.asu.ying.mapreduce.database.page.RemotePageSinkImpl;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
@@ -37,8 +39,7 @@ import il.technion.ewolf.kbr.Node;
 /**
  *
  */
-public final class KadLocalNode
-    implements LocalNode {
+public final class KadLocalNode implements LocalNode {
 
   /**
    * Provides the implementation of {@code RemoteNode} which will be accessible by remote peers when
@@ -63,6 +64,11 @@ public final class KadLocalNode
 
     public final long getTimeMs() throws RemoteException {
       return System.currentTimeMillis();
+    }
+
+    @Override
+    public RemoteSink<Page> getPageSink() throws RemoteException {
+      return this.localNode.getPageSink();
     }
   }
 
@@ -181,6 +187,11 @@ public final class KadLocalNode
 
   public LocalScheduler getScheduler() {
     return this.scheduler;
+  }
+
+  @Override
+  public RemoteSink<Page> getPageSink() {
+    return this.pageSinkProxy;
   }
 
 
