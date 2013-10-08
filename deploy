@@ -1,5 +1,6 @@
 #!/bin/bash
 
+git add .
 git commit -am "Deployment"
 git push origin develop
 git checkout master
