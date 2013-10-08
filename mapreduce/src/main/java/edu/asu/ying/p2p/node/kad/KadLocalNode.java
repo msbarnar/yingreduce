@@ -106,7 +106,7 @@ public final class KadLocalNode implements LocalNode {
 
     // The local Kademlia node for node discovery
     this.kbrNode = KademliaNetwork.createNode(port);  // throws InstantiationException
-    this.localUri = new KadNodeIdentifier(this.kbrNode.getLocalNode().getKey());
+    this.localUri = new KadNodeIdentifier(this.kbrNode.getLocalNode().getInetAddress().toString());
 
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
