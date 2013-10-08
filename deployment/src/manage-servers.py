@@ -58,7 +58,7 @@ def set_numhosts():
 
 if __name__ == '__main__':
     selection = ''
-    options = {'1': [git_pull, run_client], '5': [git_pull], '6': [run_client], '7': [git_clone],
+    options = {'1': [git_pull, run_client], '2': [git_pull], '3': [run_client], '7': [git_clone],
                '8': [create_user], '9': [update_java]}
 
     while selection != 'q':
@@ -68,8 +68,8 @@ if __name__ == '__main__':
         print ''
         print '0) Set number of hosts to target'
         print '1) Pull and run'
-        print '5) Pull deployed package'
-        print '6) Run client'
+        print '2) Pull deployed package'
+        print '3) Run client'
         print '7) Init git repository'
         print '8) Add user "msbarnar"'
         print '9) Update jdk to java-1.7.0-openjdk'

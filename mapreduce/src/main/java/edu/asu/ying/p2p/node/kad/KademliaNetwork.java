@@ -28,6 +28,7 @@ public final class KademliaNetwork {
     try {
       kadNode.create();
     } catch (final IOException e) {
+      e.printStackTrace();
       throw new InstantiationException("Failed to create local Kademlia node");
     }
 
