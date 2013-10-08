@@ -45,7 +45,7 @@ public class Client {
 
     System.out.println(String.format("%d daemons running", instances.length));
 
-    /*final File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
+    final File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
     BufferedReader reader = null;
     try {
       reader = new BufferedReader(new FileReader(nodeList));
@@ -67,7 +67,7 @@ public class Client {
       } catch (final IOException e) {
         e.printStackTrace();
       }
-    }*/
+    }
 
     LocalScheduler sched = null;
     sched = instances[0].getLocalNode().getScheduler();
