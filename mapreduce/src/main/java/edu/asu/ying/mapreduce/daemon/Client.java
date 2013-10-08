@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import edu.asu.ying.mapreduce.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
@@ -34,13 +37,14 @@ public class Client {
    * Initializes the appropriate services, but does not start them.
    */
   private Client(final String[] args) {
+    LogManager.getLogManager().reset();
   }
 
   /**
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
   private void start() {
-    final Daemon[] instances = new Daemon[2];
+    final Daemon[] instances = new Daemon[10];
 
     for (int i = 0; i < instances.length; i++) {
       instances[i] = new Daemon(5000 + i);
@@ -72,7 +76,7 @@ public class Client {
 
           instances[0].join(URI.create(String.format("//%s:5000", line)));
 
-          if (line.equals("149.169.30.37")) {
+          if (line.equals("149.169.30.10")) {
             fullyConnected = true;
           }
         }

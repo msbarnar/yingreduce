@@ -12,6 +12,8 @@ import org.w3c.dom.Element;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -61,10 +63,10 @@ public final class JobStatusRestlet extends ServerResource {
 
       final Element eleHist = doc.createElement("history");
       eleJob.appendChild(eleHist);
-      for (int i = 0; i < 20 + (new Random()).nextInt(45); i++) {
-        final Element en = doc.createElement("node");
-        eleHist.appendChild(en);
-        final Element enid = doc.createElement("peer-id");
+
+      List<String> nodes = new ArrayList<>();
+
+      for (int i = 0; i < 10; i++) {
         MessageDigest md = null;
         try {
           md = MessageDigest.getInstance("SHA-1");
@@ -72,7 +74,15 @@ public final class JobStatusRestlet extends ServerResource {
           e.printStackTrace();
         }
         String kk = byteArrayToHexString(md.digest(UUID.randomUUID().toString().getBytes()));
-        enid.appendChild(doc.createTextNode(kk));
+        nodes.add(kk);
+      }
+
+      for (int i = 0; i < 10 + (new Random()).nextInt(20); i++) {
+        int j = (new Random()).nextInt(nodes.size());
+        final Element en = doc.createElement("node");
+        eleHist.appendChild(en);
+        final Element enid = doc.createElement("peer-id");
+        enid.appendChild(doc.createTextNode(nodes.get(j)));
         en.appendChild(enid);
       }
 
