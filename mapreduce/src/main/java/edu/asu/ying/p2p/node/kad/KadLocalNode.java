@@ -142,10 +142,6 @@ public final class KadLocalNode implements LocalNode {
     } catch (final IllegalStateException e) {
       throw new NodeNotFoundException(bootstrap);
     }
-
-    // TODO: Logging
-    System.out.println(String.format("[%s] <-> [%s]", this.localUri,
-                                     bootstrap.toString()));
   }
 
 

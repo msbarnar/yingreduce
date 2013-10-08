@@ -35,6 +35,9 @@ public final class Daemon {
   public final void join(final URI bootstrap) {
     try {
       this.localNode.join(bootstrap);
+      // TODO: Logging
+      System.out.println(String.format("[%s] <-> [%s]", this.localNode.getIdentifier(),
+                                       bootstrap.toString()));
     } catch (final IOException e) {
       e.printStackTrace();
     }
