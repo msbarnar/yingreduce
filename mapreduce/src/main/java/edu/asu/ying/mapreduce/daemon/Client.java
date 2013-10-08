@@ -72,7 +72,7 @@ public class Client {
 
           instances[0].join(URI.create(String.format("//%s:5000", line)));
 
-          if (line.equals("149.169.30.9")) {
+          if (line.equals("149.169.30.37")) {
             fullyConnected = true;
           }
         }
