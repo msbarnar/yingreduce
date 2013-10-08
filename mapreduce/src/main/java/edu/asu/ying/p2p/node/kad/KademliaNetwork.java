@@ -18,10 +18,12 @@ public final class KademliaNetwork {
   public static KeybasedRouting createNode(final int port) throws InstantiationException {
     final Injector injector = Guice.createInjector(
         new KadNetModule()
-         .setProperty("openkad.keyfactory.keysize", String.valueOf(16))
-         .setProperty("openkad.bucket.kbuckets.maxsize", String.valueOf(16))
-         .setProperty("openkad.seed", String.valueOf(port))
-         .setProperty("openkad.net.udp.port", String.valueOf(port))
+            .setProperty("openkad.keyfactory.keysize", String.valueOf(16))
+            .setProperty("openkad.bucket.kbuckets.maxsize", String.valueOf(16))
+            .setProperty("openkad.seed", String.valueOf(port))
+            .setProperty("openkad.net.udp.port", String.valueOf(port))
+            .setProperty("openkad.file.nodes.path",
+                         System.getProperty("user.home").concat("/.kadhosts"))
     );
 
     final KeybasedRouting kadNode = injector.getInstance(KeybasedRouting.class);
