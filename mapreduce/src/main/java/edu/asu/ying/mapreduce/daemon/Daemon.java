@@ -3,6 +3,7 @@ package edu.asu.ying.mapreduce.daemon;
 import java.io.IOException;
 import java.net.URI;
 
+import edu.asu.ying.mapreduce.daemon.web.RestInterface;
 import edu.asu.ying.p2p.LocalNode;
 import edu.asu.ying.p2p.node.kad.KadLocalNode;
 
@@ -14,11 +15,20 @@ public final class Daemon {
   private final int port;
   private LocalNode localNode;
 
+  private final DaemonInterface iface;
+
   public Daemon(final int port) {
     this.port = port;
     try {
       this.localNode = new KadLocalNode(port);
     } catch (final InstantiationException e) {
+      e.printStackTrace();
+    }
+
+    this.iface = new RestInterface();
+    try {
+      this.iface.start();
+    } catch (final Exception e) {
       e.printStackTrace();
     }
   }

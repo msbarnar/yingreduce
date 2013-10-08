@@ -23,6 +23,10 @@
     </build>
     <dependencies>
         <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.healthmarketscience.rmiio</groupId>
             <artifactId>rmiio</artifactId>
         </dependency>

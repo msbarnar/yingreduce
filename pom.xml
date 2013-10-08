@@ -15,8 +15,21 @@
         <module>deployment</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.restlet.jse</groupId>
+                <artifactId>org.restlet</artifactId>
+                <version>2.0.0</version>
+            </dependency>
             <dependency>
                 <groupId>com.healthmarketscience.rmiio</groupId>
                 <artifactId>rmiio</artifactId>
@@ -64,5 +77,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
 </project>
