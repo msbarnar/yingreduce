@@ -1,5 +1,7 @@
 package edu.asu.ying.mapreduce.daemon;
 
+import java.io.IOException;
+
 import edu.asu.ying.mapreduce.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
@@ -59,5 +61,12 @@ public class Client {
         final JobSchedulingResult result = sched.createJob(job);
       }
     }
+
+    try {
+      System.in.read();
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
+    System.exit(0);
   }
 }
