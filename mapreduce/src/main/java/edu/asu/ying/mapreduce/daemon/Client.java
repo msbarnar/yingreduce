@@ -59,6 +59,8 @@ public class Client {
       e.printStackTrace();
     }
 
+    boolean fullyConnected = false;
+
     if (reader != null) {
       String line = null;
       try {
@@ -69,19 +71,25 @@ public class Client {
           }
 
           instances[0].join(URI.create(String.format("//%s:5000", line)));
+
+          if (line.equals("149.169.30.9")) {
+            fullyConnected = true;
+          }
         }
       } catch (final IOException e) {
         e.printStackTrace();
       }
     }
 
-    LocalScheduler sched = null;
-    sched = instances[0].getLocalNode().getScheduler();
+    if (fullyConnected) {
+      LocalScheduler sched = null;
+      sched = instances[0].getLocalNode().getScheduler();
 
-    if (sched != null) {
-      for (int i = 0; i < 1; i++) {
-        final Job job = new MapReduceJob(new TableID("hoblahsh"));
-        final JobSchedulingResult result = sched.createJob(job);
+      if (sched != null) {
+        for (int i = 0; i < 1; i++) {
+          final Job job = new MapReduceJob(new TableID("hoblahsh"));
+          final JobSchedulingResult result = sched.createJob(job);
+        }
       }
     }
   }
