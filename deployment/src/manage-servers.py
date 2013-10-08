@@ -8,6 +8,7 @@ from fabric.api import cd, run, env, execute, parallel
 username = 'msbarnar'
 host_prefix = '149.169.30.'
 hosts = range(9, 13)+range(35, 39)
+numhosts = len(hosts)
 
 env.hosts = [username+'@'+host_prefix + str(x) for x in hosts]
 env.warn_only = True
@@ -44,6 +45,16 @@ def git_pull():
 def run_client():
     run('java -jar mapreduce.jar')
 
+def set_numhosts():
+    try:
+        num = int(raw_input('# of hosts: '))
+    except ValueError:
+        return
+    global numhosts
+    numhosts = max(num, 1)
+    numhosts = min(num, len(hosts))
+    env.hosts = [username+'@'+host_prefix + str(x) for x in hosts[:numhosts]]
+
 if __name__ == '__main__':
     selection = ''
     options = {'1': git_pull, '2': run_client, '7': git_clone,
@@ -52,8 +63,9 @@ if __name__ == '__main__':
     while selection != 'q':
         print '-------Ying Server Cluster---------'
         print 'User:\t' + username
-        print 'Hosts:\t' + host_prefix + str(hosts)
+        print 'Hosts:\t' + host_prefix + str(hosts[:numhosts])
         print ''
+        print '0) Set number of hosts to target'
         print '1) Update git repository'
         print '2) Run client'
         print '7) Init git repository'
@@ -62,8 +74,11 @@ if __name__ == '__main__':
         print '-----------------------------------'
         selection = raw_input('(q to exit) ? ')
 
-        try:
-            execute(options[selection])
-        except KeyError:
-            pass
+        if selection == '0':
+            set_numhosts()
+        else:
+            try:
+                execute(options[selection])
+            except KeyError:
+                pass
 

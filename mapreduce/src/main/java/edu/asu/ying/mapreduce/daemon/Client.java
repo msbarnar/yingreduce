@@ -38,10 +38,7 @@ public class Client {
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
   private void start() {
-    // TODO: Logging
-    System.out.println("Starting the application...");
-
-    /*final Daemon[] instances = new Daemon[100];
+    final Daemon[] instances = new Daemon[20];
 
     for (int i = 0; i < instances.length; i++) {
       instances[i] = new Daemon(5000 + i);
@@ -50,27 +47,17 @@ public class Client {
       }
     }
 
-    /*try {
-      instances[0].getLocalNode().join(new KadNodeIdentifier("//127.0.0.1:5000"));
-    } catch (final IOException e) {
-      e.printStackTrace();
-      return;
-    }*
-
     System.out.println("... and we're rolling!");
-    System.out.println();
-    System.out.println("Visit http://localhost:8887/ to administer the local node.\n\n");
+    System.out.println("-------------------------------------------------------------------");
 
     LocalScheduler sched = null;
     sched = instances[0].getLocalNode().getScheduler();
 
     if (sched != null) {
-      for (int i = 0; i < 100; i++) {
+      for (int i = 0; i < 1; i++) {
         final Job job = new MapReduceJob(new TableID("hoblahsh"));
         final JobSchedulingResult result = sched.createJob(job);
       }
-    }*/
-
-    System.out.println("Hello, world!");
+    }
   }
 }

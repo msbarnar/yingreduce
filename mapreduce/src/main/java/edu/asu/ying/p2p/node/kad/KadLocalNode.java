@@ -127,13 +127,14 @@ public final class KadLocalNode implements LocalNode {
     // Allow peers to discover this node's RMI interfaces.
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);
 
-    System.out.println(String.format("Local node %s is listening on port %d",
+    /*System.out.println(String.format("Local node %s is listening on port %d",
                                      this.localUri.toString(),
                                      port));
+                                     */
   }
 
 
-  public final void join(final NodeIdentifier bootstrap) throws IOException {
+  public final void join(final URI bootstrap) throws IOException {
     try {
       final List<URI> bootstrapUris = Arrays.asList(URI.create(bootstrap.toString()));
       this.kbrNode.join(bootstrapUris);
@@ -143,8 +144,8 @@ public final class KadLocalNode implements LocalNode {
     }
 
     // TODO: Logging
-    System.out.println(String.format("Node %s connected to bootstrap node %s", this.localUri,
-                                     bootstrap.toString()));
+    //System.out.println(String.format("Node %s connected to bootstrap node %s", this.localUri,
+    //                                 bootstrap.toString()));
   }
 
 

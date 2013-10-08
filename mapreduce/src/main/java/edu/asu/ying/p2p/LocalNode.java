@@ -1,6 +1,7 @@
 package edu.asu.ying.p2p;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Collection;
 
@@ -15,7 +16,7 @@ import edu.asu.ying.p2p.rmi.RMIActivator;
  */
 public interface LocalNode {
 
-  void join(final NodeIdentifier bootstrap) throws IOException;
+  void join(final URI bootstrap) throws IOException;
 
   Collection<RemoteNode> getNeighbors();
 
@@ -25,7 +26,7 @@ public interface LocalNode {
 
   RemoteSink<Page> getPageSink();
 
-  RemoteNode findNode(final NodeIdentifier uri) throws UnknownHostException;
+  RemoteNode findNode(final NodeIdentifier identifier) throws UnknownHostException;
 
   NodeIdentifier getIdentifier();
 

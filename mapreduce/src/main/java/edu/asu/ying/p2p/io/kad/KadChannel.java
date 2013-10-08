@@ -6,17 +6,17 @@ import java.util.Map;
 
 import edu.asu.ying.p2p.io.Channel;
 import edu.asu.ying.p2p.io.InvalidContentException;
+import edu.asu.ying.p2p.io.MessageHandler;
 import edu.asu.ying.p2p.io.MessageOutputStream;
 import edu.asu.ying.p2p.io.UnhandledRequestException;
 import edu.asu.ying.p2p.io.message.ExceptionMessage;
 import edu.asu.ying.p2p.io.message.Message;
-import edu.asu.ying.p2p.io.MessageHandler;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
 
 /**
- * {@code KadChannel} encompasses the {@link MessageHandler} and {@link MessageOutputStream} tied
- * to the underlying Kademlia network. The {@code KadChannel} provides a single point of access for
+ * {@code KadChannel} encompasses the {@link MessageHandler} and {@link MessageOutputStream} tied to
+ * the underlying Kademlia network. The {@code KadChannel} provides a single point of access for
  * input from and output to the network.
  */
 public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageHandler {
@@ -36,7 +36,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
     this.kbrNode.register(tag, this);
     this.messageHandlers.put(tag, handler);
     // TODO: Logging
-    System.out.println("Bound request handler for '".concat(tag).concat("'"));
+    //System.out.println("Bound request handler for '".concat(tag).concat("'"));
   }
 
   public final MessageOutputStream getMessageOutputStream() {
