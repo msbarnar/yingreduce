@@ -21,13 +21,14 @@ public final class Daemon {
     this.port = port;
     try {
       this.localNode = new KadLocalNode(port);
+      DaemonSingleton.get(port + 3000).setId(this.localNode.getIdentifier().toString());
     } catch (final InstantiationException e) {
       e.printStackTrace();
     }
 
-    this.iface = new RestInterface();
+    this.iface = new RestInterface(port + 3000);
     try {
-      this.iface.start();
+      this.iface.startInterface();
     } catch (final Exception e) {
       e.printStackTrace();
     }

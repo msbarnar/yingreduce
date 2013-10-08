@@ -16,20 +16,23 @@ public final class RestInterface extends Application
 
   private final Component component = new Component();
 
-  public RestInterface() {
-    this.component.getServers().add(Protocol.HTTP, 8182);
+  public RestInterface(final int port) {
+    this.component.getServers().add(Protocol.HTTP, port);
     this.component.getDefaultHost().attach(this);
   }
 
   @Override
-  public void start() throws Exception {
+  public void startInterface() throws Exception {
     this.component.start();
   }
 
   @Override
   public Restlet createInboundRoot() {
     Router router = new Router(this.getContext());
-    router.attachDefault(DaemonStatusRestlet.class);
+    router.attachDefault(RootRestlet.class);
+    router.attach("/daemon", DaemonStatusRestlet.class);
+    router.attach("/job/create", JobCreateRestlet.class);
+    router.attach("/job/{jobid}", JobStatusRestlet.class);
     return router;
   }
 }
