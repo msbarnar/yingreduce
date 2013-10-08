@@ -258,7 +258,8 @@ public class KadNetModule extends AbstractModule {
 	@Singleton
 	DatagramSocket provideKadDatagramSocket(@Named("openkad.scheme.name") final String kadScheme,
 			@Named("openkad.local.node") final Node localNode) throws SocketException {
-		System.out.println("binding: " + localNode.getPort(kadScheme));
+      // FIXME: logging
+		//System.out.println("binding: " + localNode.getPort(kadScheme));
 		return new DatagramSocket(localNode.getPort(kadScheme));
 	}
 

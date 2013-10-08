@@ -39,6 +39,7 @@ def git_clone():
 @parallel
 def git_pull():
     with cd('mapreduce'):
+        run('echo data/ >> .git/info/sparse-checkout')
         run('git pull origin master')
 
 @parallel

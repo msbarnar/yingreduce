@@ -20,9 +20,7 @@ public class Client {
   public static void main(final String[] args) {
     // TODO: Logging
     System.out.println(
-        "YingReduce 0.2.1\nCopyright \u00A9 2013 Ying Lab, Arizona State University");
-    System.out.println("For help contact Matthew Barnard: msbarnar@gmail.com");
-    System.out.println();
+        "YingReduce 0.2.1 Copyright \u00A9 2013 Ying Lab, Arizona State University");
 
     final Client app = new Client(args);
     app.start();
@@ -32,8 +30,6 @@ public class Client {
    * Initializes the appropriate services, but does not start them.
    */
   private Client(final String[] args) {
-    // TODO: Logging
-    System.out.println("Getting things ready...");
   }
 
   /**
@@ -49,8 +45,7 @@ public class Client {
       }
     }
 
-    System.out.println("... and we're rolling!");
-    System.out.println("-------------------------------------------------------------------");
+    System.out.println(String.format("%d daemons running", instances.length));
 
     LocalScheduler sched = null;
     sched = instances[0].getLocalNode().getScheduler();
@@ -61,12 +56,5 @@ public class Client {
         final JobSchedulingResult result = sched.createJob(job);
       }
     }
-
-    try {
-      System.in.read();
-    } catch (final IOException e) {
-      e.printStackTrace();
-    }
-    System.exit(0);
   }
 }
