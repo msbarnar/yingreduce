@@ -32,6 +32,14 @@ public final class Daemon {
     }
   }
 
+  public final void join(final URI bootstrap) {
+    try {
+      this.localNode.join(bootstrap);
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   public final LocalNode getLocalNode() {
     return this.localNode;
   }

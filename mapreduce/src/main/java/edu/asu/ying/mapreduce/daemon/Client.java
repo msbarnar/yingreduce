@@ -1,6 +1,10 @@
 package edu.asu.ying.mapreduce.daemon;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 
 import edu.asu.ying.mapreduce.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
@@ -19,8 +23,8 @@ public class Client {
    */
   public static void main(final String[] args) {
     // TODO: Logging
-    System.out.println(
-        "YingReduce 0.2.1 Copyright \u00A9 2013 Ying Lab, Arizona State University");
+    // System.out.println(
+    //    "YingReduce 0.2.1 Copyright \u00A9 2013 Ying Lab, Arizona State University");
 
     final Client app = new Client(args);
     app.start();
@@ -46,6 +50,30 @@ public class Client {
     }
 
     System.out.println(String.format("%d daemons running", instances.length));
+
+    final File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
+    BufferedReader reader = null;
+    try {
+      reader = new BufferedReader(new FileReader(nodeList));
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
+
+    if (reader != null) {
+      String line = null;
+      try {
+        while (reader.ready()) {
+          line = reader.readLine();
+          if (line == null) {
+            break;
+          }
+
+          instances[0].join(URI.create(String.format("//%s:5000", line)));
+        }
+      } catch (final IOException e) {
+        e.printStackTrace();
+      }
+    }
 
     LocalScheduler sched = null;
     sched = instances[0].getLocalNode().getScheduler();

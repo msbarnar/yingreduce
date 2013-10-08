@@ -144,8 +144,8 @@ public final class KadLocalNode implements LocalNode {
     }
 
     // TODO: Logging
-    //System.out.println(String.format("Node %s connected to bootstrap node %s", this.localUri,
-    //                                 bootstrap.toString()));
+    System.out.println(String.format("[%s] <-> [%s]", this.localUri,
+                                     bootstrap.toString()));
   }
 
 

@@ -58,8 +58,8 @@ def set_numhosts():
 
 if __name__ == '__main__':
     selection = ''
-    options = {'1': git_pull, '2': run_client, '7': git_clone,
-               '8': create_user, '9': update_java}
+    options = {'1': [git_pull, run_client], '5': [git_pull], '6': [run_client], '7': [git_clone],
+               '8': [create_user], '9': [update_java]}
 
     while selection != 'q':
         print '-------Ying Server Cluster---------'
@@ -67,8 +67,9 @@ if __name__ == '__main__':
         print 'Hosts:\t' + host_prefix + str(hosts[:numhosts])
         print ''
         print '0) Set number of hosts to target'
-        print '1) Update git repository'
-        print '2) Run client'
+        print '1) Pull and run'
+        print '5) Pull deployed package'
+        print '6) Run client'
         print '7) Init git repository'
         print '8) Add user "msbarnar"'
         print '9) Update jdk to java-1.7.0-openjdk'
@@ -79,7 +80,8 @@ if __name__ == '__main__':
             set_numhosts()
         else:
             try:
-                execute(options[selection])
+                for target in options[selection]:
+                    execute(target)
             except KeyError:
                 pass
 
