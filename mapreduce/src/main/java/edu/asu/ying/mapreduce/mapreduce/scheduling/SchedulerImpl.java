@@ -24,7 +24,6 @@ import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadPeerIdentifier;
-import edu.asu.ying.p2p.rmi.AbstractExportable;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
 
 /**
@@ -36,8 +35,7 @@ import edu.asu.ying.p2p.rmi.RemoteImportException;
  * a random immediately-connected node.</li> </ol> Once the scheduler has placed the mapreduce in a
  * queue, the mapreduce is taken over by that queue's {@link edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue}.
  */
-public final class SchedulerImpl extends AbstractExportable<RemoteScheduler>
-    implements LocalScheduler {
+public final class SchedulerImpl implements LocalScheduler {
 
   // The node on which this scheduler is running
   private final LocalPeer localPeer;
@@ -103,6 +101,8 @@ public final class SchedulerImpl extends AbstractExportable<RemoteScheduler>
       return node.getScheduler().acceptJobAsResponsibleNode(job);
 
     } catch (final RemoteException e) {
+      // TODO: Logging
+      e.printStackTrace();
       return new JobSchedulingResult(job, this.localPeer.getProxy(), e);
     }
   }
@@ -205,5 +205,10 @@ public final class SchedulerImpl extends AbstractExportable<RemoteScheduler>
    */
   private boolean isInitialNodeForTask(final Task task) {
     return task.getInitialNode().equals(this.localPeer.getProxy());
+  }
+
+  @Override
+  public RemoteScheduler getProxy() {
+    return this.localPeer.getActivator().getReference(RemoteScheduler.class);
   }
 }

@@ -8,7 +8,7 @@ import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.database.page.IncomingPageHandler;
 import edu.asu.ying.database.page.Page;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.p2p.rmi.Exportable;
+import edu.asu.ying.p2p.rmi.Exported;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
 
@@ -16,7 +16,7 @@ import edu.asu.ying.p2p.rmi.RemoteImportException;
 /**
  * Provides an interface to the local node and its listening facilities.
  */
-public interface LocalPeer extends Exportable<RemotePeer> {
+public interface LocalPeer extends Exported<RemotePeer> {
 
   /**
    * Gets the unique network identifier for this peer.

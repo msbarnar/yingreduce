@@ -5,13 +5,11 @@ import java.io.IOException;
 import edu.asu.ying.common.event.EventBase;
 import edu.asu.ying.common.event.EventHandler;
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.p2p.rmi.AbstractExportable;
 
 /**
  *
  */
-public final class IncomingPageHandler
-    extends AbstractExportable<RemotePageSink> implements Sink<Page> {
+public final class IncomingPageHandler implements Sink<Page> {
 
   public final EventBase<EventHandler<Page>, Page> onIncomingPage = new EventBase<>();
 

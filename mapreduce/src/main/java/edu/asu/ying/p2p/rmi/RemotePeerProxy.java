@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 
 import edu.asu.ying.common.event.RemoteSink;
 import edu.asu.ying.database.page.Page;
+import edu.asu.ying.database.page.RemotePageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
@@ -30,12 +31,12 @@ public final class RemotePeerProxy implements RemotePeer {
 
   @Override
   public RemoteScheduler getScheduler() throws RemoteException {
-    return this.localPeer.getScheduler().getProxy();
+    return this.localPeer.getActivator().getReference(RemoteScheduler.class);
   }
 
   @Override
   public RemoteSink<Page> getPageSink() throws RemoteException {
-    return this.localPeer.getPageInSink().getProxy();
+    return this.localPeer.getActivator().getReference(RemotePageSink.class);
   }
 
   @Override

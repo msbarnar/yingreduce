@@ -101,11 +101,9 @@ public final class KadLocalPeer implements LocalPeer {
     // Start the scheduler and open the incoming job pipe
     this.scheduler = new SchedulerImpl(this);
     try {
-      //((SchedulerImpl) this.scheduler).export(RemoteSchedulerProxy.class, this.activator);
       this.activator.bind(RemoteScheduler.class).via(RemoteSchedulerProxy.class)
           .toInstance(this.scheduler);
     } catch (final ExportException e) {
-      // TODO: Logging
       throw new InstantiationException("Failed to export server scheduler");
     }
     // Start the scheduling workers
@@ -118,20 +116,16 @@ public final class KadLocalPeer implements LocalPeer {
     // Open the incoming page pipe
     this.pageInSink = new IncomingPageHandler();
     try {
-      //this.pageInSink.export(RemotePageSinkProxy.class, this.activator);
       this.activator.bind(RemotePageSink.class).via(RemotePageSinkProxy.class)
           .toInstance(this.pageInSink);
     } catch (final ExportException e) {
-      // TODO: Logging
       throw new InstantiationException("Failed to export server page sink");
     }
 
     // Allow peers to access the node and scheduler remotely.
     try {
-      //this.export(RemotePeerProxy.class, this.activator);
       this.activator.bind(RemotePeer.class).via(RemotePeerProxy.class).toInstance(this);
     } catch (final ExportException e) {
-      // TODO: Logging
       throw new InstantiationException("Failed to export server peer");
     }
 

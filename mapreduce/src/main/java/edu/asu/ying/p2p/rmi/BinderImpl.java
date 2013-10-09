@@ -38,7 +38,7 @@ public final class BinderImpl<TBound extends Remote>
     }
 
     /**
-     * Provides a new instance of {@code TBindee} per call.
+     * Provides a new proxyInstance of {@code TBindee} per call.
      */
     @SuppressWarnings("unchecked")
     private final class SingleCallFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
@@ -61,7 +61,7 @@ public final class BinderImpl<TBound extends Remote>
     }
 
     /**
-     * Provides a singleton instance of {@code TBindee}.
+     * Provides a singleton proxyInstance of {@code TBindee}.
      */
     @SuppressWarnings("unchecked")
     private final class SingletonFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
@@ -129,7 +129,7 @@ public final class BinderImpl<TBound extends Remote>
   }
 
   /**
-   * {@code InstanceBinding} binds a class to a specific instance of that class.
+   * {@code InstanceBinding} binds a class to a specific proxyInstance of that class.
    */
   @SuppressWarnings("unchecked")
   private final class InstanceBinding<TBound extends Remote>
@@ -163,27 +163,32 @@ public final class BinderImpl<TBound extends Remote>
       implements RMIActivator.Binding<TBound> {
 
     private final RMIActivator activator;
-    private TBound instance;
+    private TBound proxyInstance;
+    // Keep the target in scope so the connection stays open
+    private TBound targetInstance;
 
     private LazyInstanceBinding(final RMIActivator activator) {
       this.activator = activator;
     }
 
     private void set(final TBound instance) {
+      // For some reason if we don't keep it in scope here, the listening socket closes as soon
+      // as set() leaves scope
+      this.targetInstance = instance;
       TBound proxyInstance = null;
       try {
         // TODO: Port in configuration
-        proxyInstance = (TBound) UnicastRemoteObject.exportObject(instance,
+        proxyInstance = (TBound) UnicastRemoteObject.exportObject(this.targetInstance,
                                                                   this.activator.getPort());
       } catch (final RemoteException e) {
         // TODO: Logging
         e.printStackTrace();
       }
-      this.instance = proxyInstance;
+      this.proxyInstance = proxyInstance;
     }
 
     public final TBound getReference() {
-      return this.instance;
+      return this.proxyInstance;
     }
   }
 
@@ -191,7 +196,6 @@ public final class BinderImpl<TBound extends Remote>
       implements RMIActivator.ViaBinder<T> {
 
     private final Class<TBindee> proxyClass;
-    private T proxyTarget;
     private LazyInstanceBinding<T> binding;
 
     private ViaBinderImpl(final LazyInstanceBinding<T> binding,
@@ -203,7 +207,7 @@ public final class BinderImpl<TBound extends Remote>
     @Override
     public T toInstance(final Object instance) throws ExportException {
       try {
-        this.proxyTarget = ConstructorUtils.invokeConstructor(this.proxyClass, instance);
+        this.binding.set(ConstructorUtils.invokeConstructor(this.proxyClass, instance));
 
       } catch (final NoSuchMethodException e) {
         throw new ExportException("Proxy class does not have a constructor which takes this class "
@@ -216,7 +220,6 @@ public final class BinderImpl<TBound extends Remote>
         throw new ExportException("Proxy class constructor threw an exception.", e);
       }
 
-      this.binding.set(this.proxyTarget);
       return this.binding.getReference();
     }
   }
