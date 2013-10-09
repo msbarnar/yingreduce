@@ -23,8 +23,8 @@ public class Pipe {
     }
 
     @Override
-    public void accept(final E e) throws IOException {
-      this.remoteSink.accept(e);
+    public void offer(final E e) throws IOException {
+      this.remoteSink.offer(e);
     }
   }
 }

@@ -23,8 +23,8 @@ public class TestLocalWriteTable {
     private int sizeGot;
 
     @Override
-    public final void accept(final Page page) throws IOException {
-      this.sizeGot += page.getSize();
+    public final void offer(final Page page) throws IOException {
+      this.sizeGot += page.getSizeBytes();
     }
 
     public final boolean pass(final int sizeAdded) {
@@ -55,7 +55,7 @@ public class TestLocalWriteTable {
       }
 
       try {
-        table.accept(entries);
+        table.offer(entries);
       } catch (final IOException e) {
         e.printStackTrace();
       }

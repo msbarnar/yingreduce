@@ -1,23 +1,28 @@
 package edu.asu.ying.mapreduce.database.page;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import edu.asu.ying.mapreduce.database.EntriesException;
+import edu.asu.ying.mapreduce.database.DatabaseException;
+import edu.asu.ying.mapreduce.io.Writable;
 
 /**
  *
  */
-public final class EntriesExceedPageCapacityException extends EntriesException {
+public final class EntriesExceedPageCapacityException extends DatabaseException {
 
-  public EntriesExceedPageCapacityException(final Key key, final Value value) {
-    super(key, value);
+  private final List<Writable> keys = new ArrayList<>();
+
+  public EntriesExceedPageCapacityException(final Writable key) {
+    this.keys.add(key);
   }
 
-  public EntriesExceedPageCapacityException(final Map.Entry<Key, Value> entry) {
-    super(entry);
+  public EntriesExceedPageCapacityException(final Collection<Writable> keys) {
+    this.keys.addAll(keys);
   }
 
-  public EntriesExceedPageCapacityException(final Map<Key, Value> entries) {
-    super(entries);
+  public final List<Writable> getKeys() {
+    return this.keys;
   }
 }

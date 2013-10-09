@@ -52,7 +52,7 @@ public abstract class AbstractSinkPump<E> implements Runnable {
     }
 
     try {
-      this.sink.accept(obj);
+      this.sink.offer(obj);
     } catch (final IOException e) {
       // TODO: Logging
       e.printStackTrace();
@@ -61,6 +61,7 @@ public abstract class AbstractSinkPump<E> implements Runnable {
 
   // Let the derived class decide what kind of thread pool to use
   protected abstract ExecutorService createThreadPool();
+
   // Let the derived class decide how to remove elements from the queue
   protected abstract E next() throws InterruptedException;
 }

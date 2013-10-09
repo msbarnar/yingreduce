@@ -21,10 +21,10 @@ public final class PageDistributionSink implements Sink<Page> {
   }
 
   @Override
-  public final void accept(final Page page) throws IOException {
+  public final void offer(final Page page) throws IOException {
     final RemotePeer peer = this.findPeer(page);
     final Sink<Page> remotePageSink = peer.getPageSink();
-    remotePageSink.accept(page);
+    remotePageSink.offer(page);
   }
 
   private RemotePeer findPeer(final Page page) throws PeerNotFoundException {

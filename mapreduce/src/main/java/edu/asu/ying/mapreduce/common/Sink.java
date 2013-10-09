@@ -7,5 +7,7 @@ import java.io.IOException;
  */
 public interface Sink<TObject> {
 
-  void accept(final TObject object) throws IOException;
+  boolean offer(final TObject object) throws IOException;
+
+  int offer(final Iterable<TObject> objects) throws IOException;
 }

@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 public final class RemotePageSinkImpl implements RemotePageSink {
 
   @Override
-  public final void accept(final Page page) throws RemoteException {
+  public final void offer(final Page page) throws RemoteException {
     System.out.println("Got remote page!");
   }
 }

@@ -226,7 +226,7 @@ public class SchedulerImpl implements LocalScheduler {
 
     results.add(completion.getResult());
 
-    //System.out.println(String.format("[Reduce] %d / %d", results.getSize(), completion.getTask().getParentJob().getNumTasks()));
+    //System.out.println(String.format("[Reduce] %d / %d", results.getSizeBytes(), completion.getTask().getParentJob().getNumTasks()));
     if (results.size() >= completion.getTask().getParentJob().getNumTasks()) {
       final Map<Character, Integer> fin = new TreeMap<>();
 

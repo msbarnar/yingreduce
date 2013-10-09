@@ -3,13 +3,13 @@ package edu.asu.ying.mapreduce.database.page;
 import java.io.Serializable;
 import java.util.Map;
 
+import edu.asu.ying.mapreduce.common.Sink;
 import edu.asu.ying.mapreduce.database.table.TableID;
+import edu.asu.ying.mapreduce.io.Writable;
 
 /**
  */
-public interface Page extends Serializable {
-
-  boolean offer(final Map.Entry<Key, Value> element);
+public interface Page extends Serializable, Sink<Map.Entry<Writable, byte[]>> {
 
   /**
    * Gets the ID of the table to which this page belongs.
@@ -23,21 +23,33 @@ public interface Page extends Serializable {
   int getIndex();
 
   /**
-   * Returns the current number of elements in the page.
+   * Returns the maximum number of bytes allowed before the page is closed.
    */
-  int getSize();
-
-  boolean isEmpty();
+  int getCapacityBytes();
 
   /**
-   * Returns the maximum number of bytes allowed before the page requests that it be committed by
-   * its parent table.
+   * Returns the difference between the page's capacity and its current size.
    */
-  int getCapacity();
+  int getRemainingCapacityBytes();
+
+  /**
+   * Returns the current number of bytes in the page.
+   */
+  int getSizeBytes();
+
+  /**
+   * Returns the number of entries in the page.
+   */
+  int getNumEntries();
+
+  /**
+   * Returns true if there are zero elements in the page.
+   */
+  boolean isEmpty();
 
   /**
    * The page stores a slice of the main table; the elements stored in the page are only some of
    * those from the table.
    */
-  Map<Key, Value> getContents();
+  Map<Writable, byte[]> getContents();
 }
