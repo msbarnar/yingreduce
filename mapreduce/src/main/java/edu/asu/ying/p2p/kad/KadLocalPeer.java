@@ -188,10 +188,13 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
     if (kadNodes.isEmpty()) {
       return Collections.emptyList();
     }
-    final List<RemotePeer> peers = new ArrayList<>();
+    final List<RemotePeer> peers = new ArrayList<>(count);
     for (final il.technion.ewolf.kbr.Node kadNode : kadNodes) {
       try {
         peers.add(this.importProxyTo(kadNode));
+        if (peers.size() >= count) {
+          break;
+        }
       } catch (final RemoteImportException e) {
         // TODO: Logging
         e.printStackTrace();
