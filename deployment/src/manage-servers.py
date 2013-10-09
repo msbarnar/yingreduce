@@ -8,7 +8,7 @@ from fabric.api import cd, run, env, execute, parallel
 username = 'msbarnar'
 host_prefix = '149.169.30.'
 hosts = range(9, 13)+range(35, 39)
-numhosts = 2
+numhosts = 3
 
 env.hosts = [username+'@'+host_prefix + str(x) for x in hosts[:numhosts]]
 env.warn_only = True
@@ -73,7 +73,10 @@ if __name__ == '__main__':
         print '8) Add user "msbarnar"'
         print '9) Update jdk to java-1.7.0-openjdk'
         print '-----------------------------------'
-        selection = raw_input('(q to exit) ? ')
+        try:
+            selection = raw_input('(q to exit) ? ')
+        except EOFError:
+            break
 
         if selection == '0':
             set_numhosts()
