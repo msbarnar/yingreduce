@@ -23,7 +23,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
-import edu.asu.ying.p2p.peer.kad.KadPeerIdentifier;
+import edu.asu.ying.p2p.kad.KadPeerIdentifier;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 
 /**
@@ -148,7 +148,7 @@ public class SchedulerImpl implements LocalScheduler {
     // Get the responsible node by finding the node with the first page of the table
     RemotePeer node = null;
     try {
-      node = this.localPeer.findNode(
+      node = this.localPeer.findPeer(
           new KadPeerIdentifier(job.getTableID().toString().concat("0")));
       job.setResponsibleNode(node);
 

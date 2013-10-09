@@ -13,7 +13,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
-import edu.asu.ying.p2p.peer.kad.KadPeerIdentifier;
+import edu.asu.ying.p2p.kad.KadPeerIdentifier;
 
 public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
@@ -67,7 +67,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     // Find the reducer node first given the job ID
     // FIXME: Find n reducers and divide keyspace among them
     try {
-      final RemotePeer reducer = this.localPeer.findNode(
+      final RemotePeer reducer = this.localPeer.findPeer(
           new KadPeerIdentifier(job.getID().toString()));
       job.setReducerNode(reducer);
       // Get a reference start time from the reducer so it can accurately time the job
@@ -110,7 +110,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
       final Task task = tasks.pop();
       try {
         // Find the initial node by the Task's ID (table ID + page index)
-        final RemotePeer node = this.localPeer.findNode(
+        final RemotePeer node = this.localPeer.findPeer(
             new KadPeerIdentifier(task.getId().toString()));
         // TODO: Logging
         //System.out.println("[Delegate] ".concat(task.getId().toString()).concat(" - ").concat(node.getIdentifier().toString()));

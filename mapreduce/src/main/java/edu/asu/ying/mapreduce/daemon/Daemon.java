@@ -5,7 +5,7 @@ import java.net.URI;
 
 import edu.asu.ying.mapreduce.daemon.web.RestInterface;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.peer.kad.KadLocalPeer;
+import edu.asu.ying.p2p.kad.KadLocalPeer;
 
 /**
  *

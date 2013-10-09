@@ -1,9 +1,7 @@
-package edu.asu.ying.p2p.peer;
+package edu.asu.ying.p2p;
 
 import java.io.IOException;
 import java.net.URI;
-
-import edu.asu.ying.p2p.PeerIdentifier;
 
 /**
  *

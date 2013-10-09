@@ -68,7 +68,7 @@ public final class MapReduceJob implements Job {
   @Override
   public final void setStartTime(final RemotePeer referenceNode) {
     try {
-      this.startTime = referenceNode.getTimeMs();
+      this.startTime = referenceNode.getCurrentTimeMilliseconds();
     } catch (final RemoteException e) {
       // TODO: Logging
       e.printStackTrace();

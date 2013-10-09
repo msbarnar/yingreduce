@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
 import edu.asu.ying.p2p.PeerIdentifier;
 import edu.asu.ying.p2p.io.MessageOutputStream;
 import edu.asu.ying.p2p.io.message.Message;
-import edu.asu.ying.p2p.peer.kad.KadPeerIdentifier;
+import edu.asu.ying.p2p.kad.KadPeerIdentifier;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
