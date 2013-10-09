@@ -24,7 +24,7 @@ import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadPeerIdentifier;
-import edu.asu.ying.p2p.rmi.Exportable;
+import edu.asu.ying.p2p.rmi.AbstractExportable;
 
 /**
  * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another node (or from
@@ -35,7 +35,8 @@ import edu.asu.ying.p2p.rmi.Exportable;
  * a random immediately-connected node.</li> </ol> Once the scheduler has placed the mapreduce in a
  * queue, the mapreduce is taken over by that queue's {@link edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue}.
  */
-public final class SchedulerImpl extends Exportable<RemoteScheduler> implements LocalScheduler {
+public final class SchedulerImpl extends AbstractExportable<RemoteScheduler>
+    implements LocalScheduler {
 
   // The node on which this scheduler is running
   private final LocalPeer localPeer;

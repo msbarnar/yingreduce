@@ -25,7 +25,7 @@ public final class RemoteSchedulerProxy implements RemoteScheduler {
 
   private final LocalScheduler localScheduler;
 
-  private RemoteSchedulerProxy(final LocalScheduler scheduler) {
+  public RemoteSchedulerProxy(final LocalScheduler scheduler) {
     this.localScheduler = scheduler;
   }
 

@@ -19,7 +19,7 @@ public final class RemotePageSinkProxy implements RemotePageSink {
 
   private final Sink<Page> localSink;
 
-  private RemotePageSinkProxy(final Sink<Page> sink) {
+  public RemotePageSinkProxy(final Sink<Page> sink) {
     this.localSink = sink;
   }
 

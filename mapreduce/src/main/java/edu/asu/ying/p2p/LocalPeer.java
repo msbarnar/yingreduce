@@ -4,11 +4,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 
-import edu.asu.ying.common.sink.Sink;
-import edu.asu.ying.database.page.Page;
-import edu.asu.ying.database.page.RemotePageSink;
+import edu.asu.ying.database.page.ServerPageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 
 
@@ -44,14 +41,10 @@ public interface LocalPeer {
    */
   LocalScheduler getScheduler();
 
-  RemoteScheduler getSchedulerProxy();
-
   /**
    * Gets a sink which exports pages to the network via this peer.
    */
-  Sink<Page> getPageSink();
-
-  RemotePageSink getPageSinkProxy();
+  ServerPageSink getPageSink();
 
   /**
    * Finds a peer on any network of which this peer is a part.

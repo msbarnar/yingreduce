@@ -7,6 +7,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.rmi.Exportable;
 
 /**
  * {@code LocalScheduler} is responsible for the allocation of {@code map} and {@code reduce}
@@ -19,7 +20,7 @@ import edu.asu.ying.p2p.LocalPeer;
  * remote queue is full, the mapreduce is placed in this queue to be forwarded to another node.</li>
  * </ol>
  */
-public interface LocalScheduler {
+public interface LocalScheduler extends Exportable<RemoteScheduler> {
 
   /**
    * Starts all scheduling workers.

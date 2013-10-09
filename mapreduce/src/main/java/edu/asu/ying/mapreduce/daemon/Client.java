@@ -42,7 +42,7 @@ public class Client {
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
   private void start() {
-    final Daemon[] instances = new Daemon[10];
+    final Daemon[] instances = new Daemon[2];
 
     for (int i = 0; i < instances.length; i++) {
       instances[i] = new Daemon(5000 + i);
@@ -83,7 +83,7 @@ public class Client {
       }
     }
 
-    if (fullyConnected) {
+    if (!fullyConnected) {
       LocalScheduler sched = null;
       sched = instances[0].getLocalPeer().getScheduler();
 
