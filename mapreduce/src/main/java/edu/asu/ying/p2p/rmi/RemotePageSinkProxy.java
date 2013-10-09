@@ -12,11 +12,6 @@ import edu.asu.ying.database.page.RemotePageSink;
  */
 public final class RemotePageSinkProxy implements RemotePageSink {
 
-  public static RemotePageSink createProxyTo(final Sink<Page> sink) {
-    return new RemotePageSinkProxy(sink);
-  }
-
-
   private final Sink<Page> localSink;
 
   public RemotePageSinkProxy(final Sink<Page> sink) {

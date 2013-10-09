@@ -18,11 +18,6 @@ import edu.asu.ying.p2p.RemotePeer;
  */
 public final class RemoteSchedulerProxy implements RemoteScheduler {
 
-  public static RemoteScheduler createProxyTo(final LocalScheduler scheduler) {
-    return new RemoteSchedulerProxy(scheduler);
-  }
-
-
   private final LocalScheduler localScheduler;
 
   public RemoteSchedulerProxy(final LocalScheduler scheduler) {
