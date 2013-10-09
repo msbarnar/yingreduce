@@ -14,6 +14,7 @@ import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadPeerIdentifier;
+import edu.asu.ying.p2p.rmi.RemoteImportException;
 
 public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
@@ -73,7 +74,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
       // Get a reference start time from the reducer so it can accurately time the job
       job.setStartTime(reducer);
 
-    } catch (final PeerNotFoundException e) {
+    } catch (final PeerNotFoundException | RemoteImportException e) {
       // FIXME: don't runtime exception
       throw new RuntimeException(e);
     }
@@ -116,7 +117,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
         // TODO: Logging
         task.setInitialNode(node);
         node.getScheduler().acceptInitialTask(task);
-      } catch (final RemoteException | PeerNotFoundException e) {
+      } catch (final RemoteException e) {
         // TODO: Logging
         e.printStackTrace();
       }

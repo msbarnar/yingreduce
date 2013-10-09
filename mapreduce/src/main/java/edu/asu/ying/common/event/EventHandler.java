@@ -1,15 +1,14 @@
 package edu.asu.ying.common.event;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
 /**
  * The interface defining a callback method to which event can pass arguments when they are fired.
  *
- * @param <TEventArgs> the type which contains contextual information about the {@link Event}.
+ * @param <A> the type which contains contextual information about the {@link EventBase}.
  */
-public interface EventHandler<TEventArgs> {
+public interface EventHandler<A> {
 
-  boolean onEvent(final @Nonnull Object sender, final @Nullable TEventArgs args);
+  boolean onEvent(final Object sender, final @Nullable A args);
 }

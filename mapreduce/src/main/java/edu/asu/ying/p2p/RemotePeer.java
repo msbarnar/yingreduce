@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import edu.asu.ying.common.sink.RemoteSink;
+import edu.asu.ying.common.event.RemoteSink;
 import edu.asu.ying.database.page.Page;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 

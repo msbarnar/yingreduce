@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Random;
 
-import edu.asu.ying.common.sink.Sink;
+import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.database.Entry;
 import edu.asu.ying.database.io.WritableBytes;
 import edu.asu.ying.database.io.WritableString;

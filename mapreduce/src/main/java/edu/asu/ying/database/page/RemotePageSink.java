@@ -1,6 +1,6 @@
 package edu.asu.ying.database.page;
 
-import edu.asu.ying.common.sink.RemoteSink;
+import edu.asu.ying.common.event.RemoteSink;
 
 /**
  * {@code RemotePageSink} is necessary for binding the RMI interface because generics are

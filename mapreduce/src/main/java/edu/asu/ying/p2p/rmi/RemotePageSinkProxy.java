@@ -3,7 +3,7 @@ package edu.asu.ying.p2p.rmi;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
-import edu.asu.ying.common.sink.Sink;
+import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.database.page.Page;
 import edu.asu.ying.database.page.RemotePageSink;
 

@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
-import edu.asu.ying.database.page.ServerPageSink;
+import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.database.page.IncomingPageHandler;
+import edu.asu.ying.database.page.Page;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.p2p.rmi.Exportable;
 import edu.asu.ying.p2p.rmi.RMIActivator;
@@ -46,7 +48,9 @@ public interface LocalPeer extends Exportable<RemotePeer> {
   /**
    * Gets a sink which exports pages to the network via this peer.
    */
-  ServerPageSink getPageInSink();
+  Sink<Page> getPageOutSink();
+
+  IncomingPageHandler getPageInSink();
 
   /**
    * Finds a peer on any network of which this peer is a part.

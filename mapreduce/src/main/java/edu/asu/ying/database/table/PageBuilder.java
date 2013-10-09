@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ying.common.sink.Sink;
+import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.database.Entry;
 import edu.asu.ying.database.SerializedEntry;
 import edu.asu.ying.database.io.WritableComparable;

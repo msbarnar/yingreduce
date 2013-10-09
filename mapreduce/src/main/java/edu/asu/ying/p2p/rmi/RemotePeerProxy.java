@@ -3,7 +3,7 @@ package edu.asu.ying.p2p.rmi;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.common.sink.RemoteSink;
+import edu.asu.ying.common.event.RemoteSink;
 import edu.asu.ying.database.page.Page;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.p2p.LocalPeer;

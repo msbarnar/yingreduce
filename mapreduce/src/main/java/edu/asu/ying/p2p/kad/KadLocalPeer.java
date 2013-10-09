@@ -16,10 +16,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.common.sink.Sink;
+import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.database.page.IncomingPageHandler;
 import edu.asu.ying.database.page.Page;
 import edu.asu.ying.database.page.PageDistributionSink;
-import edu.asu.ying.database.page.ServerPageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.p2p.LocalPeer;
@@ -78,7 +78,7 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
   // Sends pages to the network
   private final Sink<Page> pageOutSink;
   // Accepts pages from the network
-  private final ServerPageSink pageInSink;
+  private final IncomingPageHandler pageInSink;
 
 
   public KadLocalPeer(final int port) throws InstantiationException {
@@ -113,7 +113,7 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
     this.pageOutSink = new PageDistributionSink(this);
 
     // Open the incoming page pipe
-    this.pageInSink = new ServerPageSink();
+    this.pageInSink = new IncomingPageHandler();
     try {
       this.pageInSink.export(RemotePageSinkProxy.class, this.activator);
     } catch (final ExportException e) {
@@ -123,7 +123,8 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
 
     // Allow peers to access the node and scheduler remotely.
     try {
-      this.export(RemotePeerProxy.class, this.activator);
+      //this.export(RemotePeerProxy.class, this.activator);
+      this.activator.bind(RemotePeer.class).via(RemotePeerProxy.class).toInstance(this);
     } catch (final ExportException e) {
       // TODO: Logging
       throw new InstantiationException("Failed to export server peer");
@@ -227,7 +228,7 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
    * {@inheritDoc}
    */
   @Override
-  public ServerPageSink getPageInSink() {
+  public IncomingPageHandler getPageInSink() {
     return this.pageInSink;
   }
 

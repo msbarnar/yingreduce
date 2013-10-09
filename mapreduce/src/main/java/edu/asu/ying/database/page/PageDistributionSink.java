@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.common.sink.Sink;
+import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
 import edu.asu.ying.p2p.PeerNotFoundException;

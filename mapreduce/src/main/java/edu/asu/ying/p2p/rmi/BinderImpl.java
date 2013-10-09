@@ -1,7 +1,11 @@
 package edu.asu.ying.p2p.rmi;
 
+import org.apache.commons.lang3.reflect.ConstructorUtils;
+
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
@@ -18,16 +22,18 @@ public final class BinderImpl<TBound extends Remote>
       implements RMIActivator.Binding<TBound> {
 
     /**
-     * Provides instances of {@code TBound} according to the
-     * {@link RMIActivator.ActivationMode}.
+     * Provides instances of {@code TBound} according to the {@link RMIActivator.ActivationMode}.
      */
     private abstract class InstanceFactory<TBindee> {
+
       protected final RMIActivator activator;
       protected final Class<TBindee> type;
+
       protected InstanceFactory(final Class<TBindee> type, final RMIActivator activator) {
         this.type = type;
         this.activator = activator;
       }
+
       abstract TBindee get();
     }
 
@@ -36,9 +42,11 @@ public final class BinderImpl<TBound extends Remote>
      */
     @SuppressWarnings("unchecked")
     private final class SingleCallFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
+
       private SingleCallFactory(final Class<TBindee> type, final RMIActivator activator) {
         super(type, activator);
       }
+
       final TBindee get() {
         try {
           return (TBindee) UnicastRemoteObject.exportObject(this.type.newInstance(),
@@ -57,12 +65,14 @@ public final class BinderImpl<TBound extends Remote>
      */
     @SuppressWarnings("unchecked")
     private final class SingletonFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
+
       private TBindee instance;
       private final Object instanceLock = new Object();
 
       private SingletonFactory(final Class<TBindee> type, final RMIActivator activator) {
         super(type, activator);
       }
+
       final TBindee get() {
         try {
           if (this.instance == null) {
@@ -70,7 +80,8 @@ public final class BinderImpl<TBound extends Remote>
               if (this.instance == null) {
                 // TODO: Port in configuration
                 this.instance = (TBindee) UnicastRemoteObject.exportObject(this.type.newInstance(),
-                                                                           this.activator.getPort());
+                                                                           this.activator
+                                                                               .getPort());
               }
             }
           }
@@ -112,7 +123,6 @@ public final class BinderImpl<TBound extends Remote>
       }
     }
 
-
     public final TBound getReference() {
       return this.factory.get();
     }
@@ -143,9 +153,45 @@ public final class BinderImpl<TBound extends Remote>
       this.instance = proxyInstance;
     }
 
-
     public final TBound getReference() {
       return this.instance;
+    }
+  }
+
+  private final class ViaBinderImpl<T extends TBound, TBindee extends T>
+      implements RMIActivator.ViaBinder<T> {
+
+    private final Class<T> boundClass;
+    private final RMIActivator activator;
+    private final Class<TBindee> proxyClass;
+    private T proxyTarget;
+    private RMIActivator.Binding<T> binding;
+
+    private ViaBinderImpl(final Class<T> boundClass, final RMIActivator activator,
+                          final Class<TBindee> proxyClass) {
+      this.boundClass = boundClass;
+      this.activator = activator;
+      this.proxyClass = proxyClass;
+    }
+
+    @Override
+    public T toInstance(final Object instance) throws ExportException {
+      try {
+        this.proxyTarget = ConstructorUtils.invokeConstructor(this.proxyClass, instance);
+
+      } catch (final NoSuchMethodException e) {
+        throw new ExportException("Proxy class does not have a constructor which takes this class "
+                                  + "as the sole argument.", e);
+      } catch (final IllegalAccessException e) {
+        throw new ExportException("Proxy class constructor is not accessible.", e);
+      } catch (final InstantiationException e) {
+        throw new ExportException("Proxy class can not be instantiated.", e);
+      } catch (final InvocationTargetException e) {
+        throw new ExportException("Proxy class constructor threw an exception.", e);
+      }
+
+      this.binding = new InstanceBinding<>(boundClass, this.proxyTarget, this.activator);
+      return this.binding.getReference();
     }
   }
 
@@ -158,19 +204,22 @@ public final class BinderImpl<TBound extends Remote>
     this.activator = activator;
   }
 
-
   public <TBindee extends TBound> TBound
-  to(Class<TBindee> type, RMIActivator.ActivationMode mode) {
-    this.binding = new ClassBinding<TBound, TBindee>(this.boundClass, type, mode, this.activator);
+  to(final Class<TBindee> type, final RMIActivator.ActivationMode mode) {
+    this.binding = new ClassBinding<>(this.boundClass, type, mode, this.activator);
     return this.binding.getReference();
   }
 
 
-  public TBound toInstance(TBound instance) {
-    this.binding = new InstanceBinding<TBound>(this.boundClass, instance, this.activator);
+  public TBound toInstance(final TBound instance) {
+    this.binding = new InstanceBinding<>(this.boundClass, instance, this.activator);
     return this.binding.getReference();
   }
 
+  @Override
+  public <TBindee extends TBound> RMIActivator.ViaBinder<TBound> via(Class<TBindee> proxyClass) {
+    return new ViaBinderImpl<>(this.boundClass, this.activator, proxyClass);
+  }
 
   public RMIActivator.Binding getBinding() {
     return this.binding;

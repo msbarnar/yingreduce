@@ -1,4 +1,4 @@
-package edu.asu.ying.common.sink;
+package edu.asu.ying.common.event;
 
 import java.io.Serializable;
 import java.rmi.Remote;

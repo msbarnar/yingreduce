@@ -25,6 +25,7 @@ import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadPeerIdentifier;
 import edu.asu.ying.p2p.rmi.AbstractExportable;
+import edu.asu.ying.p2p.rmi.RemoteImportException;
 
 /**
  * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another node (or from
@@ -92,7 +93,7 @@ public final class SchedulerImpl extends AbstractExportable<RemoteScheduler>
           new KadPeerIdentifier(job.getTableID().toString().concat("0")));
       job.setResponsibleNode(node);
 
-    } catch (final PeerNotFoundException e) {
+    } catch (final PeerNotFoundException | RemoteImportException e) {
       // TODO: Logging
       e.printStackTrace();
       return new JobSchedulingResult(job, this.localPeer.getProxy(), e);
