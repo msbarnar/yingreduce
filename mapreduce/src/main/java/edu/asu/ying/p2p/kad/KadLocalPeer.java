@@ -20,7 +20,9 @@ import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.database.page.IncomingPageHandler;
 import edu.asu.ying.database.page.Page;
 import edu.asu.ying.database.page.PageDistributionSink;
+import edu.asu.ying.database.page.RemotePageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
@@ -30,7 +32,6 @@ import edu.asu.ying.p2p.net.Channel;
 import edu.asu.ying.p2p.net.InvalidContentException;
 import edu.asu.ying.p2p.net.message.RequestMessage;
 import edu.asu.ying.p2p.net.message.ResponseMessage;
-import edu.asu.ying.p2p.rmi.AbstractExportable;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
@@ -48,7 +49,7 @@ import il.technion.ewolf.kbr.Node;
  * routing system. </p> The local peer maintains the Kademlia node, the local job scheduler, and the
  * local database interface.
  */
-public final class KadLocalPeer extends AbstractExportable<RemotePeer> implements LocalPeer {
+public final class KadLocalPeer implements LocalPeer {
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
@@ -100,7 +101,9 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
     // Start the scheduler and open the incoming job pipe
     this.scheduler = new SchedulerImpl(this);
     try {
-      ((SchedulerImpl) this.scheduler).export(RemoteSchedulerProxy.class, this.activator);
+      //((SchedulerImpl) this.scheduler).export(RemoteSchedulerProxy.class, this.activator);
+      this.activator.bind(RemoteScheduler.class).via(RemoteSchedulerProxy.class)
+          .toInstance(this.scheduler);
     } catch (final ExportException e) {
       // TODO: Logging
       throw new InstantiationException("Failed to export server scheduler");
@@ -115,7 +118,9 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
     // Open the incoming page pipe
     this.pageInSink = new IncomingPageHandler();
     try {
-      this.pageInSink.export(RemotePageSinkProxy.class, this.activator);
+      //this.pageInSink.export(RemotePageSinkProxy.class, this.activator);
+      this.activator.bind(RemotePageSink.class).via(RemotePageSinkProxy.class)
+          .toInstance(this.pageInSink);
     } catch (final ExportException e) {
       // TODO: Logging
       throw new InstantiationException("Failed to export server page sink");
@@ -259,6 +264,11 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
   @Override
   public PeerIdentifier getIdentifier() {
     return this.localIdentifier;
+  }
+
+  @Override
+  public RemotePeer getProxy() {
+    return this.activator.getReference(RemotePeer.class);
   }
 
   /**

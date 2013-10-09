@@ -103,7 +103,7 @@ public final class BinderImpl<TBound extends Remote>
     private final InstanceFactory<TBindee> factory;
 
     /**
-     * Binds {@code boundType} to {@code bindee} given the activation {@code mode}.
+     * Binds {@code boundType} to {@code boundToClass} given the activation {@code mode}.
      */
     public ClassBinding(final Class<TBound> boundType, final Class<TBindee> bindee,
                         final RMIActivator.ActivationMode mode,
@@ -158,20 +158,46 @@ public final class BinderImpl<TBound extends Remote>
     }
   }
 
+  @SuppressWarnings("unchecked")
+  private final class LazyInstanceBinding<TBound extends Remote>
+      implements RMIActivator.Binding<TBound> {
+
+    private final RMIActivator activator;
+    private TBound instance;
+
+    private LazyInstanceBinding(final RMIActivator activator) {
+      this.activator = activator;
+    }
+
+    private void set(final TBound instance) {
+      TBound proxyInstance = null;
+      try {
+        // TODO: Port in configuration
+        proxyInstance = (TBound) UnicastRemoteObject.exportObject(instance,
+                                                                  this.activator.getPort());
+      } catch (final RemoteException e) {
+        // TODO: Logging
+        e.printStackTrace();
+      }
+      this.instance = proxyInstance;
+    }
+
+    public final TBound getReference() {
+      return this.instance;
+    }
+  }
+
   private final class ViaBinderImpl<T extends TBound, TBindee extends T>
       implements RMIActivator.ViaBinder<T> {
 
-    private final Class<T> boundClass;
-    private final RMIActivator activator;
     private final Class<TBindee> proxyClass;
     private T proxyTarget;
-    private RMIActivator.Binding<T> binding;
+    private LazyInstanceBinding<T> binding;
 
-    private ViaBinderImpl(final Class<T> boundClass, final RMIActivator activator,
+    private ViaBinderImpl(final LazyInstanceBinding<T> binding,
                           final Class<TBindee> proxyClass) {
-      this.boundClass = boundClass;
-      this.activator = activator;
       this.proxyClass = proxyClass;
+      this.binding = binding;
     }
 
     @Override
@@ -190,7 +216,7 @@ public final class BinderImpl<TBound extends Remote>
         throw new ExportException("Proxy class constructor threw an exception.", e);
       }
 
-      this.binding = new InstanceBinding<>(boundClass, this.proxyTarget, this.activator);
+      this.binding.set(this.proxyTarget);
       return this.binding.getReference();
     }
   }
@@ -218,7 +244,9 @@ public final class BinderImpl<TBound extends Remote>
 
   @Override
   public <TBindee extends TBound> RMIActivator.ViaBinder<TBound> via(Class<TBindee> proxyClass) {
-    return new ViaBinderImpl<>(this.boundClass, this.activator, proxyClass);
+    this.binding = new LazyInstanceBinding<TBound>(this.activator);
+    return new ViaBinderImpl<>((LazyInstanceBinding<TBound>) this.binding,
+                               proxyClass);
   }
 
   public RMIActivator.Binding getBinding() {

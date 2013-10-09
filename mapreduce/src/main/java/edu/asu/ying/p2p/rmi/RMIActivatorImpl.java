@@ -28,9 +28,9 @@ public final class RMIActivatorImpl implements RMIActivator {
    * @inheritDoc
    */
   @SuppressWarnings("unchecked")
-  public final <TBound extends Remote> Binder<TBound> bind(final Class<TBound> type) {
-    final Binder binder = new BinderImpl<TBound>(type, this);
-    this.bindings.put(type, binder);
+  public final <TBound extends Remote> Binder<TBound> bind(final Class<TBound> boundClass) {
+    final Binder binder = new BinderImpl<>(boundClass, this);
+    this.bindings.put(boundClass, binder);
     return binder;
   }
 
