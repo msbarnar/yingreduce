@@ -6,13 +6,14 @@ import java.util.Collection;
 
 import edu.asu.ying.database.page.ServerPageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
+import edu.asu.ying.p2p.rmi.Exportable;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 
 
 /**
  * Provides an interface to the local node and its listening facilities.
  */
-public interface LocalPeer {
+public interface LocalPeer extends Exportable<RemotePeer> {
 
   /**
    * Gets the unique network identifier for this peer.
@@ -52,9 +53,4 @@ public interface LocalPeer {
    * @return a public, network accessible, interface to the remote peer, if found.
    */
   RemotePeer findPeer(final PeerIdentifier identifier) throws PeerNotFoundException;
-
-  /**
-   * Gets the public, network accessible, interface to this peer.
-   */
-  RemotePeer getProxy();
 }

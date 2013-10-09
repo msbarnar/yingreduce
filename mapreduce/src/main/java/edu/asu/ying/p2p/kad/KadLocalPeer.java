@@ -3,7 +3,6 @@ package edu.asu.ying.p2p.kad;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
-import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,11 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.common.sink.RemoteSink;
-import edu.asu.ying.database.page.Page;
 import edu.asu.ying.database.page.ServerPageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
@@ -27,10 +23,12 @@ import edu.asu.ying.p2p.net.Channel;
 import edu.asu.ying.p2p.net.InvalidContentException;
 import edu.asu.ying.p2p.net.message.RequestMessage;
 import edu.asu.ying.p2p.net.message.ResponseMessage;
+import edu.asu.ying.p2p.rmi.AbstractExportable;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
 import edu.asu.ying.p2p.rmi.RemotePageSinkProxy;
+import edu.asu.ying.p2p.rmi.RemotePeerProxy;
 import edu.asu.ying.p2p.rmi.RemoteSchedulerProxy;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
@@ -42,45 +40,7 @@ import il.technion.ewolf.kbr.Node;
  * routing system. </p> The local peer maintains the Kademlia node, the local job scheduler, and the
  * local database interface.
  */
-public final class KadLocalPeer implements LocalPeer {
-
-  /**
-   * Provides the implementation of {@code RemotePeer} which will be accessible by remote peers when
-   * exported. The proxy implementation glues the remote node interface to the concrete local node
-   * implementation while implementing the appropriate patterns to be RMI-compatible.
-   */
-  private final class KadRemotePeerImpl implements RemotePeer {
-
-    private final LocalPeer localPeer;
-
-    private KadRemotePeerImpl(final LocalPeer localPeer) {
-      this.localPeer = localPeer;
-    }
-
-    @Override
-    public PeerIdentifier getIdentifier() throws RemoteException {
-      return this.localPeer.getIdentifier();
-    }
-
-    @Override
-    public RemoteScheduler getScheduler() throws RemoteException {
-      return this.localPeer.getScheduler().getProxy();
-    }
-
-    @Override
-    public RemoteSink<Page> getPageSink() throws RemoteException {
-      return this.localPeer.getPageSink().getProxy();
-    }
-
-    @Override
-    public long getCurrentTimeMillis() throws RemoteException {
-      return System.currentTimeMillis();
-    }
-  }
-
-  /**
-   * *******************************************************************************************
-   */
+public final class KadLocalPeer extends AbstractExportable<RemotePeer> implements LocalPeer {
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
@@ -95,11 +55,6 @@ public final class KadLocalPeer implements LocalPeer {
   // Manages RMI export of objects for access by remote peers.
   private final RMIActivator activator;
 
-  // Glue between the remote node interface and the local node implementation.
-  private final RemotePeer nodeProxy;
-  // Necessary to keep alive the glue implementation
-  private final RemotePeer nodeProxyTarget;
-
   // Schedules mapreduce jobs and tasks
   private final LocalScheduler scheduler;
 
@@ -110,22 +65,24 @@ public final class KadLocalPeer implements LocalPeer {
   public KadLocalPeer(final int port) throws InstantiationException {
 
     // The local Kademlia node for node discovery
-    this.kbrNode = KademliaNetwork.createNode(port);  // throws InstantiationException
+    this.kbrNode = KademliaNetwork.createNode(port);
+
+    // FIXME: SEVERE: The key is chosen using the local interface address which is always localhost
     this.localIdentifier =
-        new KadPeerIdentifier(this.kbrNode.getLocalNode().getInetAddress().toString());
+        new KadPeerIdentifier(this.kbrNode.getLocalNode().getKey());
 
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
     // Start the remote reference provider
     this.activator = new RMIActivatorImpl();
+
     // Start the scheduler
     this.scheduler = new SchedulerImpl(this);
     try {
       ((SchedulerImpl) this.scheduler).export(RemoteSchedulerProxy.class, this.activator);
     } catch (final ExportException e) {
       // TODO: Logging
-      e.printStackTrace();
-      throw new InstantiationException("Failed to export server page sink");
+      throw new InstantiationException("Failed to export server scheduler");
     }
 
     this.scheduler.start();
@@ -136,18 +93,24 @@ public final class KadLocalPeer implements LocalPeer {
       this.pageSink.export(RemotePageSinkProxy.class, this.activator);
     } catch (final ExportException e) {
       // TODO: Logging
-      e.printStackTrace();
       throw new InstantiationException("Failed to export server page sink");
     }
 
     // Allow peers to access the node and scheduler remotely.
-    this.nodeProxyTarget = new KadRemotePeerImpl(this);
-    this.nodeProxy = this.activator.bind(RemotePeer.class).toInstance(this.nodeProxyTarget);
+    try {
+      this.export(RemotePeerProxy.class, this.activator);
+    } catch (final ExportException e) {
+      // TODO: Logging
+      throw new InstantiationException("Failed to export server peer");
+    }
 
     // Allow peers to discover this node's RMI interfaces.
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void join(final URI bootstrap) throws IOException {
     try {
@@ -160,7 +123,9 @@ public final class KadLocalPeer implements LocalPeer {
   }
 
 
-  // Don't let one thread munge up the cache while another reads it
+  /**
+   * {@inheritDoc}
+   */
   // TODO: 50/50 chance I'll need to be able to dirty this cache if the proxy fails
   @Override
   public synchronized Collection<RemotePeer> getNeighbors() {
@@ -187,6 +152,9 @@ public final class KadLocalPeer implements LocalPeer {
     return Collections.unmodifiableCollection(this.neighborsCache.values());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RemotePeer findPeer(final PeerIdentifier identifier) throws PeerNotFoundException {
     final Key key = this.kbrNode.getKeyFactory().create(identifier.toString());
@@ -197,29 +165,36 @@ public final class KadLocalPeer implements LocalPeer {
     return this.importProxyTo(kadNodes.get(0));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ServerPageSink getPageSink() {
     return this.pageSink;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public LocalScheduler getScheduler() {
     return this.scheduler;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RMIActivator getActivator() {
     return this.activator;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PeerIdentifier getIdentifier() {
     return this.localIdentifier;
-  }
-
-  @Override
-  public RemotePeer getProxy() {
-    return this.nodeProxy;
   }
 
   private RemotePeer importProxyTo(final il.technion.ewolf.kbr.Node node) {
