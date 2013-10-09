@@ -7,6 +7,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.LogManager;
 
+import edu.asu.ying.common.event.EventHandler;
+import edu.asu.ying.database.Entry;
+import edu.asu.ying.database.io.WritableBytes;
+import edu.asu.ying.database.io.WritableString;
+import edu.asu.ying.database.page.Page;
+import edu.asu.ying.database.table.PageBuilder;
 import edu.asu.ying.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
@@ -42,7 +48,7 @@ public class Client {
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
   private void start() {
-    final Daemon[] instances = new Daemon[2];
+    final Daemon[] instances = new Daemon[10];
 
     for (int i = 0; i < instances.length; i++) {
       instances[i] = new Daemon(5000 + i);
@@ -93,6 +99,31 @@ public class Client {
           final JobSchedulingResult result = sched.createJob(job);
         }
       }
+    }
+
+    for (final Daemon instance : instances) {
+      instance.getLocalPeer().getPageInSink().onIncomingPage.attach(new EventHandler<Page>() {
+        @Override
+        public boolean onEvent(Object sender, Page args) {
+          System.out.println(
+              String.format("[%d] PAGE! %s %d", instance.getPort(), args.getTableId().toString(),
+                            args.getIndex()));
+          return true;
+        }
+      });
+    }
+
+    final PageBuilder pb = new PageBuilder(new TableID("lipsum"),
+                                           instances[0].getLocalPeer().getPageOutSink());
+    try {
+      pb.offer(new Entry(new WritableString("hi!"),
+                         new WritableBytes("It's a small world after all".getBytes())));
+      pb.flush();
+      pb.offer(new Entry(new WritableString("hi!"),
+                         new WritableBytes("It's a small world after all".getBytes())));
+      pb.flush();
+    } catch (final IOException e) {
+      e.printStackTrace();
     }
   }
 }
