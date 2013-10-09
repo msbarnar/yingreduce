@@ -35,7 +35,7 @@ public final class RemotePeerProxy implements RemotePeer {
 
   @Override
   public RemoteSink<Page> getPageSink() throws RemoteException {
-    return this.localPeer.getPageSink().getProxy();
+    return this.localPeer.getPageInSink().getProxy();
   }
 
   @Override

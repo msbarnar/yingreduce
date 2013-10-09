@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import edu.asu.ying.common.sink.Sink;
+import edu.asu.ying.database.page.Page;
+import edu.asu.ying.database.page.PageDistributionSink;
 import edu.asu.ying.database.page.ServerPageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
@@ -57,31 +60,44 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
   // Getting RMI references to neighbors is expensive, so cache the reference every time we get one
   private Map<Node, RemotePeer> neighborsCache = new HashMap<>();
 
+  /**
+   * RMI **
+   */
   // Manages RMI export of objects for access by remote peers.
   private final RMIActivator activator;
 
+  /**
+   * SCHEDULING **
+   */
   // Schedules mapreduce jobs and tasks
   private final LocalScheduler scheduler;
 
+  /**
+   * DATABASE **
+   */
+  // Sends pages to the network
+  private final Sink<Page> pageOutSink;
   // Accepts pages from the network
-  private final ServerPageSink pageSink;
+  private final ServerPageSink pageInSink;
 
 
   public KadLocalPeer(final int port) throws InstantiationException {
 
-    // The local Kademlia node for node discovery
+    // The local Kademlia node for peer discovery
     this.kbrNode = KademliaNetwork.createNode(port);
-
+    // Identify this peer on the network
     // FIXME: SEVERE: The key is chosen using the local interface address which is always localhost
     this.localIdentifier =
         new KadPeerIdentifier(this.kbrNode.getLocalNode().getKey());
-
+    // Connect the P2P messaging system to the Kademlia node
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
-    // Start the remote reference provider
+    /*** RMI ***/
+    // Enable this peer to export remote references
     this.activator = new RMIActivatorImpl();
 
-    // Start the scheduler
+    /*** SCHEDULING ***/
+    // Start the scheduler and open the incoming job pipe
     this.scheduler = new SchedulerImpl(this);
     try {
       ((SchedulerImpl) this.scheduler).export(RemoteSchedulerProxy.class, this.activator);
@@ -89,13 +105,17 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
       // TODO: Logging
       throw new InstantiationException("Failed to export server scheduler");
     }
-
+    // Start the scheduling workers
     this.scheduler.start();
 
-    // Start the interface for sinking incoming pages
-    this.pageSink = new ServerPageSink();
+    /*** DATABASE ***/
+    // Open the outgoing page pipe
+    this.pageOutSink = new PageDistributionSink(this);
+
+    // Open the incoming page pipe
+    this.pageInSink = new ServerPageSink();
     try {
-      this.pageSink.export(RemotePageSinkProxy.class, this.activator);
+      this.pageInSink.export(RemotePageSinkProxy.class, this.activator);
     } catch (final ExportException e) {
       // TODO: Logging
       throw new InstantiationException("Failed to export server page sink");
@@ -207,8 +227,13 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
    * {@inheritDoc}
    */
   @Override
-  public ServerPageSink getPageSink() {
-    return this.pageSink;
+  public ServerPageSink getPageInSink() {
+    return this.pageInSink;
+  }
+
+  @Override
+  public Sink<Page> getPageOutSink() {
+    return this.pageOutSink;
   }
 
   /**

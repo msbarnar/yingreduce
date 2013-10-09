@@ -46,7 +46,7 @@ public interface LocalPeer extends Exportable<RemotePeer> {
   /**
    * Gets a sink which exports pages to the network via this peer.
    */
-  ServerPageSink getPageSink();
+  ServerPageSink getPageInSink();
 
   /**
    * Finds a peer on any network of which this peer is a part.

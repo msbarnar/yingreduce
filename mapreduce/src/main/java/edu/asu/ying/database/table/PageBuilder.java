@@ -23,7 +23,7 @@ import edu.asu.ying.database.page.Page;
  * an associated {@link Sink}. </p> The sink could be, for example, a distribution queue which sends
  * pages to remote peers.
  */
-public final class LocalWriteTableImpl
+public final class PageBuilder
     implements Table, Sink<Entry> {
 
   private static final long SerialVersionUID = 1L;
@@ -45,7 +45,7 @@ public final class LocalWriteTableImpl
   private final Object currentPageLock = new Object();
 
 
-  public LocalWriteTableImpl(final TableID id, final Sink<Page> pageSink) {
+  public PageBuilder(final TableID id, final Sink<Page> pageSink) {
     this.id = id;
     this.pageSink = pageSink;
     this.newPage();

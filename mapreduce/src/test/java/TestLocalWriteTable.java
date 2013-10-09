@@ -11,7 +11,7 @@ import edu.asu.ying.database.Entry;
 import edu.asu.ying.database.io.WritableBytes;
 import edu.asu.ying.database.io.WritableString;
 import edu.asu.ying.database.page.Page;
-import edu.asu.ying.database.table.LocalWriteTableImpl;
+import edu.asu.ying.database.table.PageBuilder;
 import edu.asu.ying.database.table.TableID;
 
 /**
@@ -44,7 +44,7 @@ public class TestLocalWriteTable {
 
     final MockPageSink mockSink = new MockPageSink();
     final Sink<Entry> table =
-        new LocalWriteTableImpl(TableID.createRandom(), mockSink);
+        new PageBuilder(TableID.createRandom(), mockSink);
 
     int sizeAdded = 0;
 

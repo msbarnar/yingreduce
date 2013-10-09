@@ -3,7 +3,6 @@ package edu.asu.ying.database.page;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.asu.ying.common.sink.AbstractSinkFIFO;
 import edu.asu.ying.common.sink.Sink;
 
 /**
