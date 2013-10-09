@@ -14,11 +14,11 @@ import edu.asu.ying.p2p.rmi.RMIActivator;
 /**
  * Provides an interface to the local node and its listening facilities.
  */
-public interface LocalNode {
+public interface LocalPeer {
 
   void join(final URI bootstrap) throws IOException;
 
-  Collection<RemoteNode> getNeighbors();
+  Collection<RemotePeer> getNeighbors();
 
   RMIActivator getActivator();
 
@@ -26,9 +26,9 @@ public interface LocalNode {
 
   RemoteSink<Page> getPageSink();
 
-  RemoteNode findNode(final NodeIdentifier identifier) throws UnknownHostException;
+  RemotePeer findNode(final PeerIdentifier identifier) throws UnknownHostException;
 
-  NodeIdentifier getIdentifier();
+  PeerIdentifier getIdentifier();
 
-  RemoteNode getProxy();
+  RemotePeer getProxy();
 }

@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.p2p.PeerIdentifier;
 
 /**
  *
@@ -16,6 +16,7 @@ public class ResponseMessage extends MessageBase {
   private static final long SerialVersionUID = 1L;
 
   private static final class Property {
+
     private static final String Content = "response.content";
   }
 
@@ -23,7 +24,7 @@ public class ResponseMessage extends MessageBase {
     return new ResponseMessage(request.getId(), request.getTag(), request.getSourceNode());
   }
 
-  private ResponseMessage(final String id, final String tag, final NodeIdentifier destinationNode) {
+  private ResponseMessage(final String id, final String tag, final PeerIdentifier destinationNode) {
     super(id, tag, destinationNode);
   }
 

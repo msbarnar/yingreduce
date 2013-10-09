@@ -3,7 +3,7 @@ package edu.asu.ying.p2p.io.message;
 import java.io.Serializable;
 
 import edu.asu.ying.mapreduce.common.HasProperties;
-import edu.asu.ying.p2p.NodeIdentifier;
+import edu.asu.ying.p2p.PeerIdentifier;
 
 
 /**
@@ -23,11 +23,11 @@ public interface Message
 
   String getTag();
 
-  NodeIdentifier getSourceNode();
+  PeerIdentifier getSourceNode();
 
-  void setSourceNode(NodeIdentifier uri);
+  void setSourceNode(PeerIdentifier uri);
 
-  NodeIdentifier getDestinationNode();
+  PeerIdentifier getDestinationNode();
 
   /**
    * Makes this message into a response to {@code request}.

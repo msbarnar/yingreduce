@@ -11,10 +11,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import edu.asu.ying.p2p.PeerIdentifier;
 import edu.asu.ying.p2p.io.MessageOutputStream;
-import edu.asu.ying.p2p.node.kad.KadNodeIdentifier;
-import edu.asu.ying.p2p.NodeIdentifier;
 import edu.asu.ying.p2p.io.message.Message;
+import edu.asu.ying.p2p.peer.kad.KadPeerIdentifier;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
@@ -28,15 +28,15 @@ public final class KadSendMessageStream
     implements MessageOutputStream {
 
   private final KeybasedRouting kadNode;
-  private final NodeIdentifier localUri;
+  private final PeerIdentifier localUri;
 
   public KadSendMessageStream(final KeybasedRouting kadNode) {
     this.kadNode = kadNode;
     this.localUri = this.createLocalUri();
   }
 
-  private NodeIdentifier createLocalUri() {
-    return new KadNodeIdentifier(this.kadNode.getLocalNode().getKey());
+  private PeerIdentifier createLocalUri() {
+    return new KadPeerIdentifier(this.kadNode.getLocalNode().getKey());
   }
 
   /**
@@ -48,7 +48,7 @@ public final class KadSendMessageStream
   public final void write(final Message message) throws IOException {
     message.setSourceNode(this.localUri);
 
-    final Key destKey = ((KadNodeIdentifier) message.getDestinationNode()).toKademliaKey();
+    final Key destKey = ((KadPeerIdentifier) message.getDestinationNode()).toKademliaKey();
 
     final List<Node> foundNodes = this.kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {
@@ -65,12 +65,12 @@ public final class KadSendMessageStream
     // Write the message in a background thread
     final ListenableFutureTask<Boolean> asyncTask = ListenableFutureTask.create(
         new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        KadSendMessageStream.this.write(message);
-        return true;
-      }
-    });
+          @Override
+          public Boolean call() throws Exception {
+            KadSendMessageStream.this.write(message);
+            return true;
+          }
+        });
 
     // Run the task in a background process
     ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -83,7 +83,7 @@ public final class KadSendMessageStream
   public final Future<Serializable> writeAsyncRequest(final Message request) throws IOException {
     request.setSourceNode(this.localUri);
 
-    final Key destKey = ((KadNodeIdentifier) request.getDestinationNode()).toKademliaKey();
+    final Key destKey = ((KadPeerIdentifier) request.getDestinationNode()).toKademliaKey();
 
     final List<Node> foundNodes = this.kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {

@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.node.kad;
+package edu.asu.ying.p2p.peer.kad;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
