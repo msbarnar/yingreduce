@@ -1,7 +1,6 @@
 package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
 import java.io.Serializable;
-import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +21,7 @@ import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadPeerIdentifier;
 import edu.asu.ying.p2p.rmi.RMIActivator;
@@ -152,7 +152,8 @@ public class SchedulerImpl implements LocalScheduler {
           new KadPeerIdentifier(job.getTableID().toString().concat("0")));
       job.setResponsibleNode(node);
 
-    } catch (final UnknownHostException e) {
+    } catch (final PeerNotFoundException e) {
+      // TODO: Logging
       e.printStackTrace();
       return new JobSchedulingResult(job, this.localPeer.getProxy(), e);
     }

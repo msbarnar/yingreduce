@@ -2,7 +2,6 @@ package edu.asu.ying.p2p.io.message;
 
 import java.io.Serializable;
 
-import edu.asu.ying.mapreduce.common.HasProperties;
 import edu.asu.ying.p2p.PeerIdentifier;
 
 
@@ -11,29 +10,19 @@ import edu.asu.ying.p2p.PeerIdentifier;
  * establishment around the network.
  */
 public interface Message
-    extends Serializable, HasProperties {
+    extends Serializable {
 
   /**
    * The message's ID is a universally unique identifier used to link received responses to their
-   * previously sent request counterparts.
-   *
-   * @return a universally unique identifier
+   * requests
    */
   String getId();
 
   String getTag();
 
-  PeerIdentifier getSourceNode();
+  PeerIdentifier getSender();
 
-  void setSourceNode(PeerIdentifier uri);
+  void setSender(PeerIdentifier peerId);
 
-  PeerIdentifier getDestinationNode();
-
-  /**
-   * Makes this message into a response to {@code request}.
-   *
-   * @param request the message to which to respond.
-   * @return this message.
-   */
-  Message makeResponseTo(Message request);
+  PeerIdentifier getDestination();
 }

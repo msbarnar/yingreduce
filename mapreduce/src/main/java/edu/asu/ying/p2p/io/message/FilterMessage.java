@@ -2,10 +2,6 @@ package edu.asu.ying.p2p.io.message;
 
 import com.google.common.base.Preconditions;
 
-import java.io.Serializable;
-
-import javax.annotation.Nullable;
-
 import edu.asu.ying.mapreduce.common.filter.Filter;
 import edu.asu.ying.mapreduce.common.filter.FilterBase;
 import edu.asu.ying.mapreduce.common.filter.FilterString;
@@ -29,21 +25,11 @@ public abstract class FilterMessage
   }
 
   /**
-   * Filters messages based on the value of a specific property identified by {@code key}. </p>
-   * Allows checking for null property values, though {@link edu.asu.ying.mapreduce.common.Properties}
-   * does not allow them.
-   */
-  public static Filter property(final Serializable key, final @Nullable Serializable value) {
-    Preconditions.checkNotNull(key);
-    return new FilterMessage.FilterOnProperty(key, value);
-  }
-
-  /**
-   * Filters messages based on {@link Message#getDestinationNode()}.
+   * Filters messages based on {@link Message#getDestination()}.
    */
   public static final FilterOnUri destinationUri = FilterOnUri.onDestination;
   /**
-   * Filters messages based on {@link Message#getSourceNode()}.
+   * Filters messages based on {@link Message#getSender()}.
    */
   public static final FilterOnUri sourceUri = FilterOnUri.onSource;
 
@@ -79,26 +65,6 @@ public abstract class FilterMessage
     @Override
     protected boolean match(final Message message) {
       return this.filter.match(message.getId());
-    }
-  }
-
-  private static final class FilterOnProperty extends FilterMessage {
-
-    private final Serializable key, value;
-
-    private FilterOnProperty(final Serializable key, final Serializable value) {
-      this.key = key;
-      this.value = value;
-    }
-
-    @Override
-    protected boolean match(final Message message) {
-      final Serializable messageValue = message.getProperties().get(this.key);
-      if (this.value == null) {
-        return messageValue == null;
-      } else {
-        return this.value.equals(messageValue);
-      }
     }
   }
 
@@ -158,9 +124,9 @@ public abstract class FilterMessage
       protected boolean match(final Message message) {
         final PeerIdentifier uri;
         if (this.which == WhichUri.Destination) {
-          uri = message.getDestinationNode();
+          uri = message.getDestination();
         } else if (this.which == WhichUri.Source) {
-          uri = message.getSourceNode();
+          uri = message.getSender();
         } else {
           return false;
         }

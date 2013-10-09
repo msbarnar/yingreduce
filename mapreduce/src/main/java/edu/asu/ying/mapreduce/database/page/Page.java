@@ -3,8 +3,6 @@ package edu.asu.ying.mapreduce.database.page;
 import java.io.Serializable;
 import java.util.Map;
 
-import edu.asu.ying.mapreduce.database.Key;
-import edu.asu.ying.mapreduce.database.Value;
 import edu.asu.ying.mapreduce.database.table.TableID;
 
 /**

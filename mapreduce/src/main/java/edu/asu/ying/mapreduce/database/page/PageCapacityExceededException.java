@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.database.EntriesException;
-import edu.asu.ying.mapreduce.database.Key;
-import edu.asu.ying.mapreduce.database.Value;
 
 /**
  *

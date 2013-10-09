@@ -1,6 +1,5 @@
 package edu.asu.ying.mapreduce.mapreduce.job;
 
-import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -12,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import edu.asu.ying.mapreduce.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadPeerIdentifier;
 
@@ -73,7 +73,8 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
       // Get a reference start time from the reducer so it can accurately time the job
       job.setStartTime(reducer);
 
-    } catch (final UnknownHostException e) {
+    } catch (final PeerNotFoundException e) {
+      // FIXME: don't runtime exception
       throw new RuntimeException(e);
     }
 
@@ -113,10 +114,10 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
         final RemotePeer node = this.localPeer.findPeer(
             new KadPeerIdentifier(task.getId().toString()));
         // TODO: Logging
-        //System.out.println("[Delegate] ".concat(task.getId().toString()).concat(" - ").concat(node.getIdentifier().toString()));
         task.setInitialNode(node);
         node.getScheduler().acceptInitialTask(task);
-      } catch (final RemoteException | UnknownHostException e) {
+      } catch (final RemoteException | PeerNotFoundException e) {
+        // TODO: Logging
         e.printStackTrace();
       }
     }

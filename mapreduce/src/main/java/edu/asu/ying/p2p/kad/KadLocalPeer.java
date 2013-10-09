@@ -3,7 +3,6 @@ package edu.asu.ying.p2p.kad;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +36,9 @@ import il.technion.ewolf.kbr.Node;
 
 
 /**
- *
+ * {@code KadLocalPeer} implements the local high-level peer-to-peer behavior on top of the Kademlia
+ * routing system. </p> The local peer maintains the Kademlia node, the local job scheduler, and the
+ * local database interface.
  */
 public final class KadLocalPeer implements LocalPeer {
 
@@ -54,21 +55,24 @@ public final class KadLocalPeer implements LocalPeer {
       this.localPeer = localPeer;
     }
 
+    @Override
     public final PeerIdentifier getIdentifier() throws RemoteException {
       return this.localPeer.getIdentifier();
     }
 
+    @Override
     public final RemoteScheduler getScheduler() throws RemoteException {
       return this.localPeer.getScheduler().getProxy();
-    }
-
-    public final long getCurrentTimeMilliseconds() throws RemoteException {
-      return System.currentTimeMillis();
     }
 
     @Override
     public RemoteSink<Page> getPageSink() throws RemoteException {
       return this.localPeer.getPageSink();
+    }
+
+    @Override
+    public final long getCurrentTimeMilliseconds() throws RemoteException {
+      return System.currentTimeMillis();
     }
   }
 
@@ -78,7 +82,7 @@ public final class KadLocalPeer implements LocalPeer {
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
-  private final PeerIdentifier localUri;
+  private final PeerIdentifier localIdentifier;
 
   // Pipe to the kad network
   private final Channel networkChannel;
@@ -106,7 +110,8 @@ public final class KadLocalPeer implements LocalPeer {
 
     // The local Kademlia node for node discovery
     this.kbrNode = KademliaNetwork.createNode(port);  // throws InstantiationException
-    this.localUri = new KadPeerIdentifier(this.kbrNode.getLocalNode().getInetAddress().toString());
+    this.localIdentifier =
+        new KadPeerIdentifier(this.kbrNode.getLocalNode().getInetAddress().toString());
 
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
@@ -128,7 +133,7 @@ public final class KadLocalPeer implements LocalPeer {
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);
 
     /*System.out.println(String.format("Local node %s is listening on port %d",
-                                     this.localUri.toString(),
+                                     this.localIdentifier.toString(),
                                      port));
                                      */
   }
@@ -172,11 +177,11 @@ public final class KadLocalPeer implements LocalPeer {
   }
 
 
-  public RemotePeer findPeer(final PeerIdentifier uri) throws UnknownHostException {
-    final Key key = this.kbrNode.getKeyFactory().create(uri.toString());
+  public RemotePeer findPeer(final PeerIdentifier identifier) throws PeerNotFoundException {
+    final Key key = this.kbrNode.getKeyFactory().create(identifier.toString());
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
-      throw new UnknownHostException(uri.getKey());
+      throw new PeerNotFoundException(identifier);
     }
     return this.importProxyTo(kadNodes.get(0));
   }
@@ -198,7 +203,7 @@ public final class KadLocalPeer implements LocalPeer {
 
 
   public PeerIdentifier getIdentifier() {
-    return this.localUri;
+    return this.localIdentifier;
   }
 
   public RemotePeer getProxy() {

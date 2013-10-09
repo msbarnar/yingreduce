@@ -28,27 +28,25 @@ public final class KadSendMessageStream
     implements MessageOutputStream {
 
   private final KeybasedRouting kadNode;
-  private final PeerIdentifier localUri;
+  // Sign outgoing messages with the sender peer identifier
+  private final PeerIdentifier localIdentifier;
 
   public KadSendMessageStream(final KeybasedRouting kadNode) {
     this.kadNode = kadNode;
-    this.localUri = this.createLocalUri();
-  }
-
-  private PeerIdentifier createLocalUri() {
-    return new KadPeerIdentifier(this.kadNode.getLocalNode().getKey());
+    // Sign outgoing messages with the local peer key
+    this.localIdentifier = new KadPeerIdentifier(this.kadNode.getLocalNode().getKey());
   }
 
   /**
-   * Sends a message to the host identified on {@link Message#getDestinationNode()}.
+   * Sends a message to the host identified on {@link Message#getDestination()}.
    *
    * @param message the message to send, complete with the destination URI.
    */
   @Override
   public final void write(final Message message) throws IOException {
-    message.setSourceNode(this.localUri);
+    message.setSender(this.localIdentifier);
 
-    final Key destKey = ((KadPeerIdentifier) message.getDestinationNode()).toKademliaKey();
+    final Key destKey = ((KadPeerIdentifier) message.getDestination()).toKademliaKey();
 
     final List<Node> foundNodes = this.kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {
@@ -81,9 +79,9 @@ public final class KadSendMessageStream
 
   @Override
   public final Future<Serializable> writeAsyncRequest(final Message request) throws IOException {
-    request.setSourceNode(this.localUri);
+    request.setSender(this.localIdentifier);
 
-    final Key destKey = ((KadPeerIdentifier) request.getDestinationNode()).toKademliaKey();
+    final Key destKey = ((KadPeerIdentifier) request.getDestination()).toKademliaKey();
 
     final List<Node> foundNodes = this.kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {
@@ -98,7 +96,7 @@ public final class KadSendMessageStream
   public Future<Serializable> writeAsyncRequest(final Node node, final Message request)
       throws IOException {
 
-    request.setSourceNode(this.localUri);
+    request.setSender(this.localIdentifier);
     return this.kadNode.sendRequest(node, request.getTag(), request);
   }
 }

@@ -5,8 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import edu.asu.ying.mapreduce.database.Key;
-import edu.asu.ying.mapreduce.database.Value;
 import edu.asu.ying.mapreduce.database.table.TableID;
 
 /**

@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.common.Sink;
-import edu.asu.ying.mapreduce.database.Key;
-import edu.asu.ying.mapreduce.database.Value;
 import edu.asu.ying.mapreduce.database.ValueSizeComparator;
 import edu.asu.ying.mapreduce.database.page.BoundedPage;
 import edu.asu.ying.mapreduce.database.page.EntriesExceedPageCapacityException;
@@ -54,12 +52,10 @@ public final class LocalWriteTableImpl implements Table, Sink<Iterable<Map.Entry
     return this.id;
   }
 
-  @Override
   public int getPageCount() {
     return this.currentPageIndex + 1;
   }
 
-  @Override
   public int getMaxPageSize() {
     return this.maxPageSize;
   }

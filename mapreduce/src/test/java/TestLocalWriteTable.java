@@ -2,12 +2,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Map;
 import java.util.Random;
 
 import edu.asu.ying.mapreduce.common.Sink;
-import edu.asu.ying.mapreduce.database.element.ImmutableKeyValuePair;
 import edu.asu.ying.mapreduce.database.page.Page;
 import edu.asu.ying.mapreduce.database.table.LocalWriteTableImpl;
 import edu.asu.ying.mapreduce.database.table.TableID;
@@ -35,30 +36,31 @@ public class TestLocalWriteTable {
   public void ItPagesOut() {
 
     final MockPageSink mockSink = new MockPageSink();
-    final LocalWriteTable table = new LocalWriteTableImpl(TableID.createRandom(), mockSink);
+    final Sink<Iterable<Map.Entry<Key, Value>>> table =
+        new LocalWriteTableImpl(TableID.createRandom(), mockSink);
 
     int sizeAdded = 0;
 
     final Random rnd = new Random();
 
-    final Deque<Element> elements = new ArrayDeque<>();
+    final Deque<Map.Entry<Key, Value>> entries = new ArrayDeque<>();
     for (int k = 0; k < 5 + rnd.nextInt(20); k++) {
       for (int i = 0; i < 5 + rnd.nextInt(20); i++) {
         final byte[] data = new byte[1 + rnd.nextInt(199)];
         sizeAdded += data.length;
 
-        elements
-            .add(new ImmutableKeyValuePair(new ImmutableKey(String.valueOf(i), String.valueOf(i)),
-                                           new ImmutableValue(data)));
+        entries
+            .add(new AbstractMap.SimpleImmutableEntry<Key, Value>(new StringKey(String.valueOf(i)),
+                                                                  new ImmutableValue(data)));
       }
 
       try {
-        table.accept(elements);
+        table.accept(entries);
       } catch (final IOException e) {
         e.printStackTrace();
       }
 
-      elements.clear();
+      entries.clear();
     }
 
     Assert.assertTrue(mockSink.pass(sizeAdded));
