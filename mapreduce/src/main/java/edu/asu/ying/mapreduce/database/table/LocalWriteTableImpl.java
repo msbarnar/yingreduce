@@ -193,7 +193,10 @@ public final class LocalWriteTableImpl
     synchronized (this.currentPageLock) {
       if (this.currentPage != null) {
         try {
-          this.pageSink.offer(this.currentPage);
+          // TODO: Logging
+          if (!this.pageSink.offer(this.currentPage)) {
+            throw new IOException("Page sink rejected page");
+          }
         } catch (final IOException e) {
           // TODO: Logging
           e.printStackTrace();
