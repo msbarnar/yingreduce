@@ -2,7 +2,7 @@ package edu.asu.ying.p2p;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collection;
+import java.util.List;
 
 import edu.asu.ying.database.page.ServerPageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
@@ -26,12 +26,12 @@ public interface LocalPeer extends Exportable<RemotePeer> {
    *
    * @param bootstrap the address of a peer in an existing network to join.
    */
-  void join(final URI bootstrap) throws IOException;
+  void join(URI bootstrap) throws IOException;
 
   /**
    * Gets the peers to which this peer is directly connected.
    */
-  Collection<RemotePeer> getNeighbors();
+  List<RemotePeer> getNeighbors();
 
   /**
    * Gets the activator capable of exposing objects to the network through this peer.
@@ -51,8 +51,15 @@ public interface LocalPeer extends Exportable<RemotePeer> {
   /**
    * Finds a peer on any network of which this peer is a part.
    *
-   * @return a public, network accessible, interface to the remote peer, if found.
+   * @return a public, network accessible, reference to the remote peer.
    */
-  RemotePeer findPeer(final PeerIdentifier identifier) throws PeerNotFoundException,
-                                                              RemoteImportException;
+  RemotePeer findPeer(PeerIdentifier identifier) throws PeerNotFoundException,
+                                                        RemoteImportException;
+
+  /**
+   * Finds up to {@code count} peers near {@code identifier} and imports references to them. If any
+   * reference imports fail with {@link RemoteImportException}, they are quietly excluded from the
+   * list.
+   */
+  List<RemotePeer> findPeers(PeerIdentifier identifier, int count);
 }

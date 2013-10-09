@@ -1,12 +1,14 @@
 package edu.asu.ying.p2p.kad;
 
+import com.google.common.collect.ImmutableList;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -130,8 +132,9 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
    * {@inheritDoc}
    */
   // TODO: 50/50 chance I'll need to be able to dirty this cache if the proxy fails
+  // TODO: I don't know what the above comment means anymore, but it looks important
   @Override
-  public synchronized Collection<RemotePeer> getNeighbors() {
+  public synchronized List<RemotePeer> getNeighbors() {
     final List<Node> kadNodes = this.kbrNode.getNeighbours();
 
     // To prune old nodes in one pass, update the whole cache every time keeping old values.
@@ -140,19 +143,23 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
       RemotePeer rmiRef = this.neighborsCache.get(kadNode);
       // Update missing refs
       if (rmiRef == null) {
-        rmiRef = this.importProxyTo(kadNode);
-        if (rmiRef == null) {
-          throw new NullPointerException("Couldn't get RMI reference to remote node.");
+        try {
+          rmiRef = this.importProxyTo(kadNode);
+        } catch (final RemoteException e) {
+          // TODO: Logging
+          e.printStackTrace();
         }
       }
-      // Retain only nodes that are still connected
-      newCache.put(kadNode, rmiRef);
+      if (rmiRef != null) {
+        // Retain only nodes that are still connected
+        newCache.put(kadNode, rmiRef);
+      }
     }
 
     // Keep the cache up to date
     this.neighborsCache = newCache;
 
-    return Collections.unmodifiableCollection(this.neighborsCache.values());
+    return ImmutableList.copyOf(this.neighborsCache.values());
   }
 
   /**
@@ -161,12 +168,36 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
   @Override
   public RemotePeer findPeer(final PeerIdentifier identifier)
       throws PeerNotFoundException, RemoteImportException {
+
     final Key key = this.kbrNode.getKeyFactory().create(identifier.toString());
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
       throw new PeerNotFoundException(identifier);
     }
     return this.importProxyTo(kadNodes.get(0));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<RemotePeer> findPeers(final PeerIdentifier identifier, final int count) {
+
+    final Key key = this.kbrNode.getKeyFactory().create(identifier.toString());
+    final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
+    if (kadNodes.isEmpty()) {
+      return Collections.emptyList();
+    }
+    final List<RemotePeer> peers = new ArrayList<>();
+    for (final il.technion.ewolf.kbr.Node kadNode : kadNodes) {
+      try {
+        peers.add(this.importProxyTo(kadNode));
+      } catch (final RemoteImportException e) {
+        // TODO: Logging
+        e.printStackTrace();
+      }
+    }
+    return peers;
   }
 
   /**

@@ -23,7 +23,7 @@ public final class RemotePageSinkProxy implements RemotePageSink {
     try {
       return this.localSink.offer(page);
     } catch (final IOException e) {
-      throw new RemoteException("Remote peer threw an exception", e);
+      throw new RemoteException("Remote page sink threw an exception", e);
     }
   }
 
@@ -32,7 +32,7 @@ public final class RemotePageSinkProxy implements RemotePageSink {
     try {
       return this.localSink.offer(pages);
     } catch (final IOException e) {
-      throw new RemoteException("Remote peer threw an exception", e);
+      throw new RemoteException("Remote page sink threw an exception", e);
     }
   }
 }

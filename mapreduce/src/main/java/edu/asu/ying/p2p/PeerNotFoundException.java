@@ -1,12 +1,12 @@
 package edu.asu.ying.p2p;
 
-import java.io.IOException;
 import java.net.URI;
+import java.rmi.RemoteException;
 
 /**
  *
  */
-public class PeerNotFoundException extends IOException {
+public final class PeerNotFoundException extends RemoteException {
 
   public PeerNotFoundException(final PeerIdentifier address) {
     super(address.toString());
