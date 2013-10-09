@@ -5,24 +5,24 @@ import java.util.Collection;
 import java.util.List;
 
 import edu.asu.ying.mapreduce.database.DatabaseException;
-import edu.asu.ying.mapreduce.io.Writable;
+import edu.asu.ying.mapreduce.io.WritableComparable;
 
 /**
  *
  */
 public final class EntriesExceedPageCapacityException extends DatabaseException {
 
-  private final List<Writable> keys = new ArrayList<>();
+  private final List<WritableComparable> keys = new ArrayList<>();
 
-  public EntriesExceedPageCapacityException(final Writable key) {
+  public EntriesExceedPageCapacityException(final WritableComparable key) {
     this.keys.add(key);
   }
 
-  public EntriesExceedPageCapacityException(final Collection<Writable> keys) {
+  public EntriesExceedPageCapacityException(final Collection<WritableComparable> keys) {
     this.keys.addAll(keys);
   }
 
-  public final List<Writable> getKeys() {
+  public final List<WritableComparable> getKeys() {
     return this.keys;
   }
 }

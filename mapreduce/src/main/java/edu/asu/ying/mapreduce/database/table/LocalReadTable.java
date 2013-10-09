@@ -2,7 +2,8 @@ package edu.asu.ying.mapreduce.database.table;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
+
+import edu.asu.ying.mapreduce.database.Entry;
 
 /**
  * {@code LocalReadTable} is the interface to the locally stored contents of a particular table. The
@@ -12,5 +13,5 @@ import java.util.Map;
  */
 public interface LocalReadTable extends Table {
 
-  Iterator<Map.Entry<Key, Value>> iterator() throws IOException;
+  Iterator<Entry> iterator() throws IOException;
 }

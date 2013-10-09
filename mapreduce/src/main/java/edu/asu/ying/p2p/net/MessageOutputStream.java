@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.io;
+package edu.asu.ying.p2p.net;
 
 import com.google.common.util.concurrent.ListenableFutureTask;
 
@@ -6,12 +6,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.p2p.io.message.Message;
 import il.technion.ewolf.kbr.Node;
 
 /**
- * Writes {@link edu.asu.ying.p2p.io.message.Message} objects to an underlying {@link
- * java.io.OutputStream}.
+ * Writes {@link Message} objects to an underlying {@link java.io.OutputStream}.
  */
 public interface MessageOutputStream {
 

@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.Map;
 
 import edu.asu.ying.mapreduce.common.Sink;
+import edu.asu.ying.mapreduce.database.SerializedEntry;
 import edu.asu.ying.mapreduce.database.table.TableID;
-import edu.asu.ying.mapreduce.io.Writable;
+import edu.asu.ying.mapreduce.io.WritableComparable;
 
 /**
  */
-public interface Page extends Serializable, Sink<Map.Entry<Writable, byte[]>> {
+public interface Page extends Serializable, Sink<SerializedEntry> {
 
   /**
    * Gets the ID of the table to which this page belongs.
@@ -51,5 +52,5 @@ public interface Page extends Serializable, Sink<Map.Entry<Writable, byte[]>> {
    * The page stores a slice of the main table; the elements stored in the page are only some of
    * those from the table.
    */
-  Map<Writable, byte[]> getContents();
+  Map<WritableComparable, byte[]> getContents();
 }

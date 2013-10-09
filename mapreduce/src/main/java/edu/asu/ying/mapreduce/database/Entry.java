@@ -8,10 +8,21 @@ import edu.asu.ying.mapreduce.io.WritableComparable;
 /**
  *
  */
-public interface Entry<K extends WritableComparable,
-    V extends Writable> extends Serializable, Comparable<Entry<K, V>> {
+public final class Entry implements Serializable {
 
-  K getKey();
+  private final WritableComparable key;
+  private final Writable value;
 
-  V getValue();
+  public Entry(final WritableComparable key, final Writable value) {
+    this.key = key;
+    this.value = value;
+  }
+
+  public final WritableComparable getKey() {
+    return this.key;
+  }
+
+  public final Writable getValue() {
+    return this.value;
+  }
 }

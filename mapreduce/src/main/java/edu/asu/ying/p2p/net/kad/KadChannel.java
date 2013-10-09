@@ -1,16 +1,16 @@
-package edu.asu.ying.p2p.io.kad;
+package edu.asu.ying.p2p.net.kad;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.asu.ying.p2p.io.Channel;
-import edu.asu.ying.p2p.io.InvalidContentException;
-import edu.asu.ying.p2p.io.MessageHandler;
-import edu.asu.ying.p2p.io.MessageOutputStream;
-import edu.asu.ying.p2p.io.UnhandledRequestException;
-import edu.asu.ying.p2p.io.message.ExceptionMessage;
-import edu.asu.ying.p2p.io.message.Message;
+import edu.asu.ying.p2p.net.Channel;
+import edu.asu.ying.p2p.net.ExceptionMessage;
+import edu.asu.ying.p2p.net.InvalidContentException;
+import edu.asu.ying.p2p.net.Message;
+import edu.asu.ying.p2p.net.MessageHandler;
+import edu.asu.ying.p2p.net.MessageOutputStream;
+import edu.asu.ying.p2p.net.UnhandledRequestException;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
 

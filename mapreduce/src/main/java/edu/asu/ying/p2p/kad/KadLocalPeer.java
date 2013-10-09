@@ -23,10 +23,10 @@ import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
-import edu.asu.ying.p2p.io.Channel;
-import edu.asu.ying.p2p.io.InvalidContentException;
-import edu.asu.ying.p2p.io.message.RequestMessage;
-import edu.asu.ying.p2p.io.message.ResponseMessage;
+import edu.asu.ying.p2p.net.Channel;
+import edu.asu.ying.p2p.net.InvalidContentException;
+import edu.asu.ying.p2p.net.RequestMessage;
+import edu.asu.ying.p2p.net.ResponseMessage;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
@@ -103,7 +103,6 @@ public final class KadLocalPeer implements LocalPeer {
 
   // Accepts pages from the network
   private final RemotePageSink pageSink;
-  private final RemotePageSink pageSinkProxy;
 
 
   public KadLocalPeer(final int port) throws InstantiationException {
@@ -131,11 +130,6 @@ public final class KadLocalPeer implements LocalPeer {
 
     // Allow peers to discover this node's RMI interfaces.
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);
-
-    /*System.out.println(String.format("Local node %s is listening on port %d",
-                                     this.localIdentifier.toString(),
-                                     port));
-                                     */
   }
 
 

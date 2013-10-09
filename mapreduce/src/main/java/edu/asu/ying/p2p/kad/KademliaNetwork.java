@@ -5,8 +5,8 @@ import com.google.inject.Injector;
 
 import java.io.IOException;
 
-import edu.asu.ying.p2p.io.Channel;
-import edu.asu.ying.p2p.io.kad.KadChannel;
+import edu.asu.ying.p2p.net.Channel;
+import edu.asu.ying.p2p.net.kad.KadChannel;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.openkad.KadNetModule;
 

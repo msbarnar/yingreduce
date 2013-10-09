@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.io;
+package edu.asu.ying.p2p.net;
 
 import com.google.inject.BindingAnnotation;
 
@@ -12,10 +12,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 
 /**
- * Marks a field or parameters as receiving an injected
- * {@link edu.asu.ying.p2p.io.MessageOutputStream} that will send messages to remote hosts.
- * </p> Apply to a method with {@link com.google.inject.Provides} to provide an implementation of
- * that stream.
+ * Marks a field or parameters as receiving an injected {@link edu.asu.ying.p2p.net.MessageOutputStream}
+ * that will send messages to remote hosts. </p> Apply to a method with {@link
+ * com.google.inject.Provides} to provide an implementation of that stream.
  */
 @BindingAnnotation
 @Target({FIELD, PARAMETER, METHOD})

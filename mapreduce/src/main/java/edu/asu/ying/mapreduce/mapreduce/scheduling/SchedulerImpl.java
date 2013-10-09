@@ -107,7 +107,7 @@ public class SchedulerImpl implements LocalScheduler {
   private final
   Map<TaskID, List<Serializable>>
       reductions =
-      new HashMap<TaskID, List<Serializable>>();
+      new HashMap<>();
 
 
   public SchedulerImpl(final LocalPeer localPeer) {

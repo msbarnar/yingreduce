@@ -3,22 +3,20 @@ package edu.asu.ying.mapreduce.database.table;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Longs;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import edu.asu.ying.mapreduce.common.Sink;
+import edu.asu.ying.mapreduce.database.Entry;
+import edu.asu.ying.mapreduce.database.SerializedEntry;
 import edu.asu.ying.mapreduce.database.page.BoundedPage;
 import edu.asu.ying.mapreduce.database.page.EntriesExceedPageCapacityException;
 import edu.asu.ying.mapreduce.database.page.Page;
-import edu.asu.ying.mapreduce.io.Writable;
+import edu.asu.ying.mapreduce.io.WritableComparable;
 
 /**
  * {@code LocalWriteTable} accepts elements locally, places them on pages, and sends full pages to
@@ -26,7 +24,7 @@ import edu.asu.ying.mapreduce.io.Writable;
  * pages to remote peers.
  */
 public final class LocalWriteTableImpl
-    implements Table, Sink<Map.Entry<Writable, Writable>> {
+    implements Table, Sink<Entry> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -74,21 +72,19 @@ public final class LocalWriteTableImpl
    *         on any page.
    */
   @Override
-  public boolean offer(final Map.Entry<Writable, Writable> entry) throws IOException {
+  public boolean offer(final Entry entry) throws IOException {
     // Serialize entry value
-    final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    entry.getValue().write(new DataOutputStream(buffer));
+    final SerializedEntry serializedEntry = new SerializedEntry(entry);
+    final int length = serializedEntry.getValue().length;
 
-    final byte[] bytes = buffer.toByteArray();
-    if (bytes.length > this.currentPage.getCapacityBytes()) {
+    if (length > this.currentPage.getCapacityBytes()) {
       return false;
     }
-
-    if (bytes.length > this.currentPage.getRemainingCapacityBytes()) {
+    if (length > this.currentPage.getRemainingCapacityBytes()) {
       this.newPage();
     }
 
-    return this.currentPage.offer(new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), bytes));
+    return this.currentPage.offer(serializedEntry);
   }
 
   /**
@@ -96,21 +92,22 @@ public final class LocalWriteTableImpl
    * pages when necessary until all entries are added.
    */
   @Override
-  public int offer(final Iterable<Map.Entry<Writable, Writable>> entries) throws IOException {
+  public int offer(final Iterable<Entry> entries) throws IOException {
     // Serialize and sort the entries for packing
-    final List<Map.Entry<Writable, byte[]>> serializedEntries = this.serializeEntries(entries);
+    final List<SerializedEntry> serializedEntries =
+        this.serializeEntries(entries);
     this.sortEntries(serializedEntries);
 
     // Capture elements that won't fit on any page
-    final List<Writable> oversizedEntries = new LinkedList<>();
+    final List<WritableComparable> oversizedEntries = new LinkedList<>();
 
-    Iterator<Map.Entry<Writable, byte[]>> iter;
+    Iterator<SerializedEntry> iter;
     // Remove any elements that exceed the maximum getSizeBytes
     final int pageCapacity = this.currentPage.getCapacityBytes();
     synchronized (currentPageLock) {
       iter = serializedEntries.iterator();
       while (iter.hasNext()) {
-        final Map.Entry<Writable, byte[]> entry = iter.next();
+        final SerializedEntry entry = iter.next();
 
         if (entry.getValue().length > pageCapacity) {
           oversizedEntries.add(entry.getKey());
@@ -130,7 +127,7 @@ public final class LocalWriteTableImpl
       synchronized (currentPageLock) {
         iter = serializedEntries.iterator();
         while (iter.hasNext()) {
-          final Map.Entry<Writable, byte[]> entry = iter.next();
+          final SerializedEntry entry = iter.next();
           if (this.currentPage.offer(entry)) {
             iter.remove();
             entriesAdded++;
@@ -158,16 +155,13 @@ public final class LocalWriteTableImpl
   /**
    * Serializes the entries' values for sorting and storage.
    */
-  private List<Map.Entry<Writable, byte[]>> serializeEntries(
-      final Iterable<Map.Entry<Writable, Writable>> entries) throws IOException {
+  private List<SerializedEntry> serializeEntries(
+      final Iterable<Entry> entries) throws IOException {
 
-    final List<Map.Entry<Writable, byte[]>> serializedEntries = Lists.newLinkedList();
+    final List<SerializedEntry> serializedEntries = Lists.newLinkedList();
 
-    for (final Map.Entry<Writable, Writable> entry : entries) {
-      final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-      entry.getValue().write(new DataOutputStream(buffer));
-      serializedEntries.add(new AbstractMap.SimpleImmutableEntry<>(entry.getKey(),
-                                                                   buffer.toByteArray()));
+    for (final Entry entry : entries) {
+      serializedEntries.add(new SerializedEntry(entry));
     }
 
     return serializedEntries;
@@ -176,10 +170,11 @@ public final class LocalWriteTableImpl
   /**
    * Sorts the entries by descending value length for bin packing.
    */
-  private void sortEntries(final List<Map.Entry<Writable, byte[]>> entries) {
-    Collections.sort(entries, new Comparator<Map.Entry<Writable, byte[]>>() {
+  private void sortEntries(final List<SerializedEntry> entries) {
+    Collections.sort(entries, new Comparator<SerializedEntry>() {
       @Override
-      public int compare(Map.Entry<Writable, byte[]> a, Map.Entry<Writable, byte[]> b) {
+      public int compare(SerializedEntry a,
+                         SerializedEntry b) {
         return Longs.compare(a.getValue().length, b.getValue().length);
       }
     });

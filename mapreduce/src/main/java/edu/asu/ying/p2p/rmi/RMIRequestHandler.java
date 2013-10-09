@@ -2,10 +2,10 @@ package edu.asu.ying.p2p.rmi;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
-import edu.asu.ying.p2p.io.Channel;
-import edu.asu.ying.p2p.io.MessageHandler;
-import edu.asu.ying.p2p.io.message.Message;
-import edu.asu.ying.p2p.io.message.ResponseMessage;
+import edu.asu.ying.p2p.net.Channel;
+import edu.asu.ying.p2p.net.Message;
+import edu.asu.ying.p2p.net.MessageHandler;
+import edu.asu.ying.p2p.net.ResponseMessage;
 
 /**
  * {@code RMIRequestHandler} listens for requests from the network and returns a {@link
@@ -52,6 +52,8 @@ public final class RMIRequestHandler implements MessageHandler {
    */
   @Override
   public void onIncomingMessage(final Message message) {
+    // TODO: Logging
+    System.out.println("Unexpected message to RMIRequestHandler: ".concat(message.toString()));
   }
 
   /**

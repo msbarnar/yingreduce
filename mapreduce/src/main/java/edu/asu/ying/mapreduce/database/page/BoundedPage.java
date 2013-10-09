@@ -5,8 +5,9 @@ import com.google.common.collect.ImmutableMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import edu.asu.ying.mapreduce.database.SerializedEntry;
 import edu.asu.ying.mapreduce.database.table.TableID;
-import edu.asu.ying.mapreduce.io.Writable;
+import edu.asu.ying.mapreduce.io.WritableComparable;
 
 /**
  * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
@@ -20,7 +21,7 @@ public final class BoundedPage implements Page {
   // The index of this page on the table
   private final int index;
 
-  private final Map<Writable, byte[]> contents = new LinkedHashMap<>();
+  private final Map<WritableComparable, byte[]> contents = new LinkedHashMap<>();
   // Don't accept any entries that would cause the page to exceed this size in bytes.
   private final int capacityBytes;
   // Keep track of the sum length of the contents.
@@ -37,7 +38,7 @@ public final class BoundedPage implements Page {
   }
 
   @Override
-  public final boolean offer(final Map.Entry<Writable, byte[]> entry) {
+  public final boolean offer(final SerializedEntry entry) {
     final byte[] value = entry.getValue();
     if (value.length > (this.capacityBytes - this.curSizeBytes)) {
       return false;
@@ -54,9 +55,9 @@ public final class BoundedPage implements Page {
    * @return the number of entries added.
    */
   @Override
-  public final int offer(final Iterable<Map.Entry<Writable, byte[]>> entries) {
+  public final int offer(final Iterable<SerializedEntry> entries) {
     int i = 0;
-    for (final Map.Entry<Writable, byte[]> entry : entries) {
+    for (final SerializedEntry entry : entries) {
       if (entry.getValue().length > (this.capacityBytes - this.curSizeBytes)) {
         return i;
       }
@@ -85,7 +86,7 @@ public final class BoundedPage implements Page {
    */
 
   @Override
-  public Map<Writable, byte[]> getContents() {
+  public Map<WritableComparable, byte[]> getContents() {
     synchronized (this.contents) {
       return ImmutableMap.copyOf(this.contents);
     }
