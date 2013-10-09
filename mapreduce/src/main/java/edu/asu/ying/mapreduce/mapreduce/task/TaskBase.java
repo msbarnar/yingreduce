@@ -1,20 +1,11 @@
 package edu.asu.ying.mapreduce.mapreduce.task;
 
-import com.google.common.base.Preconditions;
-
-import java.net.InetAddress;
-
-import edu.asu.ying.mapreduce.common.Properties;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.p2p.NodeIdentifier;
-import edu.asu.ying.p2p.RemoteNode;
+import edu.asu.ying.p2p.RemotePeer;
 
 /**
- * {@code TaskBase} is the base class of all distributable mapreduce.
- * </p>
- * Properties defined by this class are:
- * <ul>
- *   <il>{@code mapreduce.id} - the universally unique ID of the mapreduce</il>
+ * {@code TaskBase} is the base class of all distributable mapreduce. </p> Properties defined by
+ * this class are: <ul> <il>{@code mapreduce.id} - the universally unique ID of the mapreduce</il>
  * </ul>
  */
 public abstract class TaskBase implements Task {
@@ -26,7 +17,7 @@ public abstract class TaskBase implements Task {
   protected final Job parentJob;
 
   protected TaskStartParameters startParameters;
-  protected RemoteNode initialNode;
+  protected RemotePeer initialNode;
 
   protected TaskBase(final Job parentJob, final TaskID taskID) {
     this.history = new TaskHistory();
@@ -44,8 +35,9 @@ public abstract class TaskBase implements Task {
 
   /**
    * The {@code TaskStartParameters} define the timing of the mapreduce's starting.
+   *
    * @return the mapreduce's start parameters, or {@link TaskStartParameters#Default} if they are
-   * not set.
+   *         not set.
    */
   public final TaskStartParameters getTaskStartParameters() {
     return this.startParameters;
@@ -59,10 +51,11 @@ public abstract class TaskBase implements Task {
     return this.history;
   }
 
-  public final RemoteNode getInitialNode() {
+  public final RemotePeer getInitialNode() {
     return this.initialNode;
   }
-  public final void setInitialNode(final RemoteNode initialNode) {
+
+  public final void setInitialNode(final RemotePeer initialNode) {
     this.initialNode = initialNode;
   }
 }

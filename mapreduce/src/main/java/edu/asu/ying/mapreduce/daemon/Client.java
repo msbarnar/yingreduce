@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Handler;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import edu.asu.ying.mapreduce.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
@@ -87,7 +85,7 @@ public class Client {
 
     if (fullyConnected) {
       LocalScheduler sched = null;
-      sched = instances[0].getLocalNode().getScheduler();
+      sched = instances[0].getLocalPeer().getScheduler();
 
       if (sched != null) {
         for (int i = 0; i < 1; i++) {

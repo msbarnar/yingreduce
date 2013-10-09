@@ -1,14 +1,24 @@
 package edu.asu.ying.mapreduce.database.page;
 
-import edu.asu.ying.mapreduce.database.element.Element;
-import edu.asu.ying.mapreduce.database.element.ElementException;
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.asu.ying.mapreduce.database.EntriesException;
+import edu.asu.ying.mapreduce.database.Key;
+import edu.asu.ying.mapreduce.database.Value;
 
 /**
  *
  */
-public class PageCapacityExceededException extends ElementException {
+public final class PageCapacityExceededException extends EntriesException {
 
-  public PageCapacityExceededException(final Element element) {
-    super(element);
+  private final Map<Key, Value> entries = new HashMap<>();
+
+  public PageCapacityExceededException(final Map.Entry<Key, Value> entry) {
+    super(entry);
+  }
+
+  public PageCapacityExceededException(final Map<Key, Value> entries) {
+    super(entries);
   }
 }

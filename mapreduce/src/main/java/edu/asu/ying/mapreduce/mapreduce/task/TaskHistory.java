@@ -9,14 +9,11 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.mapreduce.common.HasProperties;
-import edu.asu.ying.p2p.NodeIdentifier;
-import edu.asu.ying.p2p.RemoteNode;
+import edu.asu.ying.p2p.RemotePeer;
 
 /**
  * {@code TaskHistory} keeps a journal of all of the schedulers that observe a particular mapreduce.
- * </p>
- * It is the scheduler's responsibility to append itself to the history.
+ * </p> It is the scheduler's responsibility to append itself to the history.
  */
 public final class TaskHistory implements Serializable {
 
@@ -39,7 +36,7 @@ public final class TaskHistory implements Serializable {
     Responsible,    // The responsible node delegates the mapreduce
     Initial,        // The initial node contains the table for a particular mapreduce segment
     Child           // A child node was delegated a mapreduce by an initial node because the initial
-                    // node's Local queue was full.
+    // node's Local queue was full.
   }
 
   /**
@@ -50,7 +47,7 @@ public final class TaskHistory implements Serializable {
     private static final long SerialVersionUID = 1L;
 
     // Any node visiting the history should be able to contact this node.
-    private RemoteNode node;
+    private RemotePeer node;
     // The role of the visiting node plays in the task.
     private NodeRole nodeRole;
     // What the visiting scheduler ultimately did with the mapreduce.
@@ -58,10 +55,12 @@ public final class TaskHistory implements Serializable {
 
     public Entry() {
     }
-    public Entry(final RemoteNode node) {
+
+    public Entry(final RemotePeer node) {
       this.node = node;
     }
-    public Entry(final RemoteNode node, final NodeRole nodeRole,
+
+    public Entry(final RemotePeer node, final NodeRole nodeRole,
                  final SchedulerAction schedulerAction) {
 
       this.node = node;
@@ -69,13 +68,14 @@ public final class TaskHistory implements Serializable {
       this.schedulerAction = schedulerAction;
     }
 
-    public final RemoteNode getNode() {
+    public final RemotePeer getNode() {
       return this.node;
     }
 
     public final void setSchedulerAction(final SchedulerAction action) {
       this.schedulerAction = action;
     }
+
     public final SchedulerAction getSchedulerAction() {
       return this.schedulerAction;
     }
@@ -104,14 +104,18 @@ public final class TaskHistory implements Serializable {
   /**
    * Returns the first (oldest) item in the history, or null if the history is empty.
    */
-  public final @Nullable Entry first() {
+  public final
+  @Nullable
+  Entry first() {
     return this.history.peekLast();
   }
 
   /**
    * Returns the last (most recent) item in the history, or null if the history is empty.
    */
-  public final @Nullable Entry last() {
+  public final
+  @Nullable
+  Entry last() {
     return this.history.peek();
   }
 
@@ -137,10 +141,9 @@ public final class TaskHistory implements Serializable {
   }
 
   /**
-   * Returns an iterator over an immutable copy of the history.
-   * </p>
-   * If you are going to use this more than once without modifying the collection, use
-   * {@link #asList} to get a copy of the collection and iterate over that, instead.
+   * Returns an iterator over an immutable copy of the history. </p> If you are going to use this
+   * more than once without modifying the collection, use {@link #asList} to get a copy of the
+   * collection and iterate over that, instead.
    */
   public final Iterator<Entry> iterator() {
     return this.asList().iterator();

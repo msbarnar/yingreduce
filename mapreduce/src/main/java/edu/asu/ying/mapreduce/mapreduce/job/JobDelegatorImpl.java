@@ -4,7 +4,6 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,13 +11,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.mapreduce.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
-import edu.asu.ying.p2p.node.kad.KadNodeIdentifier;
-import edu.asu.ying.p2p.LocalNode;
-import edu.asu.ying.p2p.RemoteNode;
+import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.RemotePeer;
+import edu.asu.ying.p2p.peer.kad.KadPeerIdentifier;
 
 public final class JobDelegatorImpl implements JobDelegator, Runnable {
 
-  private final LocalNode localNode;
+  private final LocalPeer localPeer;
 
   // Holds unstarted jobs to be split into tasks, each sent to its inital node
   private final BlockingQueue<Job> jobQueue = new LinkedBlockingQueue<Job>();
@@ -26,8 +25,8 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
   // One job at a time
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
-  public JobDelegatorImpl(final LocalNode localNode) {
-    this.localNode = localNode;
+  public JobDelegatorImpl(final LocalPeer localPeer) {
+    this.localPeer = localPeer;
   }
 
   @Override
@@ -68,8 +67,8 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     // Find the reducer node first given the job ID
     // FIXME: Find n reducers and divide keyspace among them
     try {
-      final RemoteNode reducer = this.localNode.findNode(
-        new KadNodeIdentifier(job.getID().toString()));
+      final RemotePeer reducer = this.localPeer.findNode(
+          new KadPeerIdentifier(job.getID().toString()));
       job.setReducerNode(reducer);
       // Get a reference start time from the reducer so it can accurately time the job
       job.setStartTime(reducer);
@@ -86,7 +85,7 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
     for (int i = 0; i < 40; i++) {
       // Pass the responsible node as a remote proxy so other peers can access it
-      final LetterFreqTask task = new LetterFreqTask(job, this.localNode.getProxy(), i);
+      final LetterFreqTask task = new LetterFreqTask(job, this.localPeer.getProxy(), i);
       // Jobs are delegated at the responsible node, defined as the node bearing the first page of
       // data. We know we are already at T0's initial node, then.
       // Save a little overhead by routing the first task locally instead of through RMI
@@ -98,12 +97,12 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
       }
     }
 
-    job.setNumTasks(tasks.size()+1);
+    job.setNumTasks(tasks.size() + 1);
 
     // Now that the number of tasks is known for the job, start with the loopback task
     if (loopbackTask != null) {
-      loopbackTask.setInitialNode(this.localNode.getProxy());
-      this.localNode.getScheduler().acceptInitialTask(loopbackTask);
+      loopbackTask.setInitialNode(this.localPeer.getProxy());
+      this.localPeer.getScheduler().acceptInitialTask(loopbackTask);
     }
 
     // Attempt to distribute the tasks to their initial nodes
@@ -111,8 +110,8 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
       final Task task = tasks.pop();
       try {
         // Find the initial node by the Task's ID (table ID + page index)
-        final RemoteNode node = this.localNode.findNode(
-            new KadNodeIdentifier(task.getId().toString()));
+        final RemotePeer node = this.localPeer.findNode(
+            new KadPeerIdentifier(task.getId().toString()));
         // TODO: Logging
         //System.out.println("[Delegate] ".concat(task.getId().toString()).concat(" - ").concat(node.getIdentifier().toString()));
         task.setInitialNode(node);

@@ -4,33 +4,33 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 import edu.asu.ying.mapreduce.common.Sink;
-import edu.asu.ying.p2p.LocalNode;
-import edu.asu.ying.p2p.NodeIdentifier;
-import edu.asu.ying.p2p.RemoteNode;
-import edu.asu.ying.p2p.node.kad.KadNodeIdentifier;
+import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.RemotePeer;
+import edu.asu.ying.p2p.peer.kad.KadPeerIdentifier;
 
 /**
  * {@code PageDistributionSink} distributes accepted pages to appropriate peers on the network.
  */
 public final class PageDistributionSink implements Sink<Page> {
 
-  private final LocalNode localNode;
+  private final LocalPeer localPeer;
 
-  public PageDistributionSink(final LocalNode localNode) {
-    this.localNode = localNode;
+  public PageDistributionSink(final LocalPeer localPeer) {
+    this.localPeer = localPeer;
   }
 
   @Override
   public final void accept(final Page page) throws IOException {
-    final RemoteNode peer = this.findNode(page);
+    final RemotePeer peer = this.findNode(page);
     final Sink<Page> remotePageSink = peer.getPageSink();
     remotePageSink.accept(page);
   }
 
-  private RemoteNode findNode(final Page page) throws UnknownHostException {
+  private RemotePeer findNode(final Page page) throws UnknownHostException {
     // Tags: PAGE KEY IDENTIFIER ROUTING ID
-    final NodeIdentifier id =
-        new KadNodeIdentifier(page.getTableId().toString().concat(String.valueOf(page.getIndex())));
-    return this.localNode.findNode(id);
+    final PeerIdentifier id =
+        new KadPeerIdentifier(page.getTableId().toString().concat(String.valueOf(page.getIndex())));
+    return this.localPeer.findNode(id);
   }
 }

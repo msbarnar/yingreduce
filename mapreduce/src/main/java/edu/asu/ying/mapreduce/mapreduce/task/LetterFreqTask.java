@@ -7,22 +7,21 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.p2p.RemoteNode;
+import edu.asu.ying.p2p.RemotePeer;
 
 /**
  *
  */
 public final class LetterFreqTask extends TaskBase {
 
-  private final RemoteNode reductionNode;
+  private final RemotePeer reductionNode;
 
   private final int index;
   private final File file;
 
-  public LetterFreqTask(final Job parentJob, final RemoteNode reductionNode, final int index) {
+  public LetterFreqTask(final Job parentJob, final RemotePeer reductionNode, final int index) {
     // Task ID = table name + page index
     super(parentJob, new TaskID(parentJob.getTableID().toString().concat(String.valueOf(index))));
     this.reductionNode = reductionNode;
@@ -30,7 +29,7 @@ public final class LetterFreqTask extends TaskBase {
     this.file = new File(System.getProperty("user.home").concat("/mapreduce/data/lipsum.txt"));
   }
 
-  public final RemoteNode getReductionNode() {
+  public final RemotePeer getReductionNode() {
     return this.reductionNode;
   }
 

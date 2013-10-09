@@ -1,18 +1,20 @@
 package edu.asu.ying.mapreduce.database.table;
 
+import com.google.common.collect.Lists;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import edu.asu.ying.mapreduce.common.Sink;
-import edu.asu.ying.mapreduce.database.element.Element;
-import edu.asu.ying.mapreduce.database.element.ElementSizeComparator;
-import edu.asu.ying.mapreduce.database.element.ValueTooLargeException;
-import edu.asu.ying.mapreduce.database.page.ImmutableBoundedPage;
+import edu.asu.ying.mapreduce.database.Key;
+import edu.asu.ying.mapreduce.database.Value;
+import edu.asu.ying.mapreduce.database.ValueSizeComparator;
+import edu.asu.ying.mapreduce.database.page.BoundedPage;
+import edu.asu.ying.mapreduce.database.page.EntriesExceedPageCapacityException;
 import edu.asu.ying.mapreduce.database.page.Page;
 
 /**
@@ -20,7 +22,7 @@ import edu.asu.ying.mapreduce.database.page.Page;
  * an associated {@link Sink}. </p> The sink could be, for example, a distribution queue which sends
  * pages to remote peers.
  */
-public final class LocalWriteTableImpl implements LocalWriteTable {
+public final class LocalWriteTableImpl implements Table, Sink<Iterable<Map.Entry<Key, Value>>> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -37,6 +39,7 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
   // Stores table elements not yet committed to the network.
   private Page currentPage = null;
   private int currentPageIndex = 0;
+  private final int maxPageSize = DEFAULT_PAGE_CAPACITY;
   private final Object currentPageLock = new Object();
 
 
@@ -52,32 +55,37 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
   }
 
   @Override
-  public long getPageCount() {
+  public int getPageCount() {
     return this.currentPageIndex + 1;
   }
 
   @Override
-  public void accept(final Collection<Element> elements) throws IOException {
+  public int getMaxPageSize() {
+    return this.maxPageSize;
+  }
+
+  @Override
+  public void accept(final Iterable<Map.Entry<Key, Value>> entries) throws IOException {
     // Sort the elements largest-to-smallest for bin packing
-    // ElementSizeComparator breaks the following collection contract:
+    // ValueSizeComparator breaks the following collection contract:
     // (a.compareTo(b) == 0) == (a.equals(b))
-    final List<Element> sortedElements = new LinkedList<>(elements);
-    Collections.sort(sortedElements, new ElementSizeComparator());
+    final List<Map.Entry<Key, Value>> sortedElements = Lists.newLinkedList(entries);
+    Collections.sort(sortedElements, new ValueSizeComparator());
     Collections.reverse(sortedElements);
 
     // Capture elements that won't fit on any page
-    final List<Element> failedElements = new ArrayList<>(elements.size());
+    final Map<Key, Value> failedElements = new HashMap<>();
 
-    // Remove any elements that exceed the maximum size
+    // Remove any elements that exceed the maximum getSize
     final int pageCapacity = this.currentPage.getCapacity();
-    Iterator<Element> iter = sortedElements.iterator();
+    Iterator<Map.Entry<Key, Value>> iter = sortedElements.iterator();
     while (iter.hasNext()) {
-      final Element element = iter.next();
-      if (element.getValue().getSize() > pageCapacity) {
-        failedElements.add(element);
+      final Map.Entry<Key, Value> entry = iter.next();
+      if (entry.getValue().getSize() > pageCapacity) {
+        failedElements.put(entry.getKey(), entry.getValue());
         iter.remove();
       } else {
-        // The elements are sorted by descending size, so none of the rest can be too large
+        // The elements are sorted by descending getSize, so none of the rest can be too large
         break;
       }
     }
@@ -91,7 +99,7 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
       synchronized (this.currentPageLock) {
         iter = sortedElements.iterator();
         while (iter.hasNext()) {
-          final Element element = iter.next();
+          final Map.Entry<Key, Value> element = iter.next();
           // If the element is added to the page, remove it from further iterations
           if (this.currentPage.offer(element)) {
             iter.remove();
@@ -103,7 +111,7 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
     }
 
     if (!failedElements.isEmpty()) {
-      throw new ValueTooLargeException(failedElements);
+      throw new EntriesExceedPageCapacityException(failedElements);
     }
   }
 
@@ -122,8 +130,7 @@ public final class LocalWriteTableImpl implements LocalWriteTable {
         this.currentPageIndex++;
       }
       // TODO: Set page capacity with configuration
-      this.currentPage = new ImmutableBoundedPage(this.id, this.currentPageIndex,
-                                                  DEFAULT_PAGE_CAPACITY);
+      this.currentPage = new BoundedPage(this.id, this.currentPageIndex, this.maxPageSize);
     }
   }
 }

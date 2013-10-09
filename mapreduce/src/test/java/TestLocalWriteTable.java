@@ -7,12 +7,8 @@ import java.util.Deque;
 import java.util.Random;
 
 import edu.asu.ying.mapreduce.common.Sink;
-import edu.asu.ying.mapreduce.database.element.Element;
-import edu.asu.ying.mapreduce.database.element.ImmutableElement;
-import edu.asu.ying.mapreduce.database.element.ImmutableKey;
-import edu.asu.ying.mapreduce.database.element.ImmutableValue;
+import edu.asu.ying.mapreduce.database.element.ImmutableKeyValuePair;
 import edu.asu.ying.mapreduce.database.page.Page;
-import edu.asu.ying.mapreduce.database.table.LocalWriteTable;
 import edu.asu.ying.mapreduce.database.table.LocalWriteTableImpl;
 import edu.asu.ying.mapreduce.database.table.TableID;
 
@@ -51,8 +47,9 @@ public class TestLocalWriteTable {
         final byte[] data = new byte[1 + rnd.nextInt(199)];
         sizeAdded += data.length;
 
-        elements.add(new ImmutableElement(new ImmutableKey(String.valueOf(i), String.valueOf(i)),
-                                          new ImmutableValue(data)));
+        elements
+            .add(new ImmutableKeyValuePair(new ImmutableKey(String.valueOf(i), String.valueOf(i)),
+                                           new ImmutableValue(data)));
       }
 
       try {

@@ -9,7 +9,7 @@ import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
-import edu.asu.ying.p2p.RemoteNode;
+import edu.asu.ying.p2p.RemotePeer;
 
 /**
  * {@code RemoteScheduler} provides the interface for remote peers to access the scheduler on the
@@ -20,7 +20,7 @@ public interface RemoteScheduler extends Remote, Serializable {
   /**
    * Returns a {@link Remote} reference to the node that owns this scheduler.
    */
-  RemoteNode getNode() throws RemoteException;
+  RemotePeer getNode() throws RemoteException;
 
   /**
    * As an instruction to a {@link Job}'s {@code responsible node}, {@code startJob} begins the
@@ -30,10 +30,9 @@ public interface RemoteScheduler extends Remote, Serializable {
 
   /**
    * At a task's {@code initial node} (the node which contains the data pages referenced by the
-   * task), {@code delegateTask} begins scheduling the task for local execution.
-   * </p>
-   * At a node that is <i>not</i> the task's {@code initial node}, {@code delegateTask} schedules
-   * the task as a {@code remote} task or forwards it to an available peer.
+   * task), {@code delegateTask} begins scheduling the task for local execution. </p> At a node that
+   * is <i>not</i> the task's {@code initial node}, {@code delegateTask} schedules the task as a
+   * {@code remote} task or forwards it to an available peer.
    */
   TaskSchedulingResult acceptTask(final Task task) throws RemoteException;
 
