@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.asu.ying.p2p.net.Channel;
-import edu.asu.ying.p2p.net.ExceptionMessage;
 import edu.asu.ying.p2p.net.InvalidContentException;
-import edu.asu.ying.p2p.net.Message;
-import edu.asu.ying.p2p.net.MessageHandler;
-import edu.asu.ying.p2p.net.MessageOutputStream;
 import edu.asu.ying.p2p.net.UnhandledRequestException;
+import edu.asu.ying.p2p.net.message.ExceptionMessage;
+import edu.asu.ying.p2p.net.message.Message;
+import edu.asu.ying.p2p.net.message.MessageHandler;
+import edu.asu.ying.p2p.net.message.MessageOutputStream;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
 

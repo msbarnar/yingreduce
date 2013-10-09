@@ -1,61 +1,66 @@
 import com.google.common.util.concurrent.ListenableFuture;
-import edu.asu.ying.mapreduce.common.concurrency.FilteredFutures;
-import edu.asu.ying.mapreduce.common.event.FilteredValueEvent;
-import edu.asu.ying.mapreduce.common.event.FilteredValueEventBase;
-import edu.asu.ying.mapreduce.common.filter.Filter;
-import edu.asu.ying.mapreduce.common.filter.Filter.on;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
 
+import edu.asu.ying.common.concurrency.FilteredFutures;
+import edu.asu.ying.common.event.FilteredValueEvent;
+import edu.asu.ying.common.event.FilteredValueEventBase;
+import edu.asu.ying.common.filter.Filter;
+import edu.asu.ying.common.filter.Filter.on;
+
 
 /**
  *
  */
-public class TestFilteredFutures
-{
-	@Test
-	public void ItReturnedTheRightOneOfThree() throws Exception {
-		FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<Integer>();
+public class TestFilteredFutures {
 
-		Filter numberFilter = Filter.on.anyOf(on.equalTo(1));
+  @Test
+  public void ItReturnedTheRightOneOfThree() throws Exception {
+    FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<Integer>();
 
-		final ListenableFuture<Integer> future = FilteredFutures.getFrom(numberEvent).filter(numberFilter).get(0);
+    Filter numberFilter = Filter.on.anyOf(on.equalTo(1));
 
-		Assert.assertFalse(future.isDone());
+    final
+    ListenableFuture<Integer>
+        future =
+        FilteredFutures.getFrom(numberEvent).filter(numberFilter).get(0);
 
-		for (int i = 0; i < 3; i++) {
-			numberEvent.fire(this, i);
-		}
+    Assert.assertFalse(future.isDone());
 
-		Assert.assertTrue(future.isDone());
-		Assert.assertEquals(1, (int)future.get());
-	}
+    for (int i = 0; i < 3; i++) {
+      numberEvent.fire(this, i);
+    }
 
-	@Test
-	public void ItReturnedTheRightThreeOfNine() throws Exception {
-		FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<Integer>();
+    Assert.assertTrue(future.isDone());
+    Assert.assertEquals(1, (int) future.get());
+  }
 
-		Filter numberFilter = Filter.on.anyOf(on.equalTo(1), on.equalTo(3), on.equalTo(6));
+  @Test
+  public void ItReturnedTheRightThreeOfNine() throws Exception {
+    FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<Integer>();
 
-		List<ListenableFuture<Integer>> futureNumbers
-				= FilteredFutures.getFrom(numberEvent).get(3).filter(numberFilter);
+    Filter numberFilter = Filter.on.anyOf(on.equalTo(1), on.equalTo(3), on.equalTo(6));
 
-		for (final ListenableFuture<Integer> future : futureNumbers) {
-			Assert.assertFalse(future.isDone());
-		}
+    List<ListenableFuture<Integer>> futureNumbers
+        = FilteredFutures.getFrom(numberEvent).get(3).filter(numberFilter);
 
-		for (int i = 0; i < 9; i++) {
-			numberEvent.fire(this, i);
-		}
+    for (final ListenableFuture<Integer> future : futureNumbers) {
+      Assert.assertFalse(future.isDone());
+    }
 
-		for (final ListenableFuture<Integer> future : futureNumbers) {
-			Assert.assertTrue(future.isDone());
-		}
+    for (int i = 0; i < 9; i++) {
+      numberEvent.fire(this, i);
+    }
 
-		Assert.assertEquals(1, (int)futureNumbers.get(0).get());
-		Assert.assertEquals(3, (int)futureNumbers.get(1).get());
-		Assert.assertEquals(6, (int)futureNumbers.get(2).get());
-	}
+    for (final ListenableFuture<Integer> future : futureNumbers) {
+      Assert.assertTrue(future.isDone());
+    }
+
+    Assert.assertEquals(1, (int) futureNumbers.get(0).get());
+    Assert.assertEquals(3, (int) futureNumbers.get(1).get());
+    Assert.assertEquals(6, (int) futureNumbers.get(2).get());
+  }
 }

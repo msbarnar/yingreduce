@@ -6,8 +6,6 @@ import java.rmi.Remote;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 
 /**
  * Controls creation and lifetime management for server-side object instances available for
@@ -21,7 +19,7 @@ public final class RMIActivatorImpl implements RMIActivator {
 
   // Activation of other classes is controlled via bindings
   // i.e. Class/Interface -> Subclass or Instance
-  private final Map<Class<? extends Remote>, Binder<? extends Remote>> bindings = new HashMap<Class<? extends Remote>, Binder<? extends Remote>>();
+  private final Map<Class<? extends Remote>, Binder<? extends Remote>> bindings = new HashMap<>();
 
   public RMIActivatorImpl() {
   }
@@ -43,12 +41,14 @@ public final class RMIActivatorImpl implements RMIActivator {
   public final <TBound extends Remote> TBound getReference(final Class<TBound> type) {
 
     final Binder<?> binder = this.bindings.get(type);
-    if (binder == null)
+    if (binder == null) {
       return null;
+    }
 
     final Binding<?> binding = binder.getBinding();
-    if (binding == null)
+    if (binding == null) {
       return null;
+    }
 
     return (TBound) binding.getReference();
   }
@@ -56,7 +56,7 @@ public final class RMIActivatorImpl implements RMIActivator {
 
   public final int getPort() {
     if (this.rmiPort == 0) {
-      synchronized(this.portLock) {
+      synchronized (this.portLock) {
         if (this.rmiPort == 0) {
           this.rmiPort = this.allocatePort();
         }

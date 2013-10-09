@@ -8,10 +8,10 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.Random;
 
-import edu.asu.ying.mapreduce.common.Sink;
-import edu.asu.ying.mapreduce.database.page.Page;
-import edu.asu.ying.mapreduce.database.table.LocalWriteTableImpl;
-import edu.asu.ying.mapreduce.database.table.TableID;
+import edu.asu.ying.common.sink.Sink;
+import edu.asu.ying.database.page.Page;
+import edu.asu.ying.database.table.LocalWriteTableImpl;
+import edu.asu.ying.database.table.TableID;
 
 /**
  *

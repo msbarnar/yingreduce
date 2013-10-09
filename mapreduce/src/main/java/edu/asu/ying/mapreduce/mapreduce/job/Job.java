@@ -2,7 +2,7 @@ package edu.asu.ying.mapreduce.mapreduce.job;
 
 import java.io.Serializable;
 
-import edu.asu.ying.mapreduce.database.table.TableID;
+import edu.asu.ying.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
 import edu.asu.ying.p2p.RemotePeer;
 

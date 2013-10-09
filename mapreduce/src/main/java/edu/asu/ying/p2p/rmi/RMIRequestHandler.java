@@ -3,9 +3,9 @@ package edu.asu.ying.p2p.rmi;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.net.Channel;
-import edu.asu.ying.p2p.net.Message;
-import edu.asu.ying.p2p.net.MessageHandler;
-import edu.asu.ying.p2p.net.ResponseMessage;
+import edu.asu.ying.p2p.net.message.Message;
+import edu.asu.ying.p2p.net.message.MessageHandler;
+import edu.asu.ying.p2p.net.message.ResponseMessage;
 
 /**
  * {@code RMIRequestHandler} listens for requests from the network and returns a {@link

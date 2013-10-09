@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.LogManager;
 
-import edu.asu.ying.mapreduce.database.table.TableID;
+import edu.asu.ying.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;

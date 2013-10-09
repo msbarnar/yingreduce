@@ -1,7 +1,5 @@
 package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
-import java.rmi.Remote;
-
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue;
@@ -9,7 +7,6 @@ import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.rmi.RMIActivator;
 
 /**
  * {@code LocalScheduler} is responsible for the allocation of {@code map} and {@code reduce}
@@ -23,8 +20,6 @@ import edu.asu.ying.p2p.rmi.RMIActivator;
  * </ol>
  */
 public interface LocalScheduler {
-
-  void export(final RMIActivator activator);
 
   /**
    * Starts all scheduling workers.
@@ -58,13 +53,6 @@ public interface LocalScheduler {
   void completeTask(final TaskCompletion completion);
 
   void reduceTaskCompletion(final TaskCompletion completion);
-
-  /**
-   * Provides a {@link Remote} proxy to this scheduler. The proxy is <b>not exported</b> by default
-   * and is therefore unavailable to RMI clients; the caller is responsible for exporting the
-   * proxy.
-   */
-  RemoteScheduler getProxy();
 
   LocalPeer getLocalPeer();
 

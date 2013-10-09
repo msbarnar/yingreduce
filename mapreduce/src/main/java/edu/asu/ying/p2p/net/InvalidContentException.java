@@ -5,7 +5,7 @@ import java.io.IOException;
 
 /**
  * Signals to a message sender that its message was malformed. <p> In practice, this generally means
- * the content did not derive from {@link Message}.
+ * the content did not derive from {@link edu.asu.ying.p2p.net.message.Message}.
  */
 public class InvalidContentException
     extends IOException {

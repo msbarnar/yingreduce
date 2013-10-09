@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,10 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.mapreduce.common.RemoteSink;
-import edu.asu.ying.mapreduce.database.page.Page;
-import edu.asu.ying.mapreduce.database.page.RemotePageSink;
-import edu.asu.ying.mapreduce.database.page.RemotePageSinkImpl;
+import edu.asu.ying.common.sink.RemoteSink;
+import edu.asu.ying.common.sink.Sink;
+import edu.asu.ying.database.page.Page;
+import edu.asu.ying.database.page.RemotePageSink;
+import edu.asu.ying.database.page.ServerPageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
@@ -25,11 +27,13 @@ import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.net.Channel;
 import edu.asu.ying.p2p.net.InvalidContentException;
-import edu.asu.ying.p2p.net.RequestMessage;
-import edu.asu.ying.p2p.net.ResponseMessage;
+import edu.asu.ying.p2p.net.message.RequestMessage;
+import edu.asu.ying.p2p.net.message.ResponseMessage;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
+import edu.asu.ying.p2p.rmi.RemotePageSinkProxy;
+import edu.asu.ying.p2p.rmi.RemoteSchedulerProxy;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
@@ -56,22 +60,22 @@ public final class KadLocalPeer implements LocalPeer {
     }
 
     @Override
-    public final PeerIdentifier getIdentifier() throws RemoteException {
+    public PeerIdentifier getIdentifier() throws RemoteException {
       return this.localPeer.getIdentifier();
     }
 
     @Override
-    public final RemoteScheduler getScheduler() throws RemoteException {
-      return this.localPeer.getScheduler().getProxy();
+    public RemoteScheduler getScheduler() throws RemoteException {
+      return this.localPeer.getSchedulerProxy();
     }
 
     @Override
     public RemoteSink<Page> getPageSink() throws RemoteException {
-      return this.localPeer.getPageSink();
+      return this.localPeer.getPageSinkProxy();
     }
 
     @Override
-    public final long getCurrentTimeMilliseconds() throws RemoteException {
+    public long getCurrentTimeMillis() throws RemoteException {
       return System.currentTimeMillis();
     }
   }
@@ -100,9 +104,10 @@ public final class KadLocalPeer implements LocalPeer {
 
   // Schedules mapreduce jobs and tasks
   private final LocalScheduler scheduler;
+  private final RemoteScheduler schedulerProxy;
 
   // Accepts pages from the network
-  private final RemotePageSink pageSink;
+  private final ServerPageSink pageSink;
 
 
   public KadLocalPeer(final int port) throws InstantiationException {
@@ -118,11 +123,19 @@ public final class KadLocalPeer implements LocalPeer {
     this.activator = new RMIActivatorImpl();
     // Start the scheduler
     this.scheduler = new SchedulerImpl(this);
-    this.scheduler.export(this.activator);
+    this.schedulerProxy = RemoteSchedulerProxy.createProxyTo(this.scheduler);
+    this.activator.bind(RemoteScheduler.class).toInstance(this.schedulerProxy);
     this.scheduler.start();
-    // Start the interface for sinking remote pages
-    this.pageSink = new RemotePageSinkImpl();
-    this.pageSinkProxy = this.activator.bind(RemotePageSink.class).toInstance(this.pageSink);
+
+    // Start the interface for sinking incoming pages
+    this.pageSink = new ServerPageSink();
+    try {
+      this.pageSink.export(RemotePageSinkProxy.class, this.activator);
+    } catch (final ExportException e) {
+      // TODO: Logging
+      e.printStackTrace();
+      throw new InstantiationException("Failed to export server page sink");
+    }
 
     // Allow peers to access the node and scheduler remotely.
     this.nodeProxyTarget = new KadRemotePeerImpl(this);
@@ -133,7 +146,7 @@ public final class KadLocalPeer implements LocalPeer {
   }
 
 
-  public final void join(final URI bootstrap) throws IOException {
+  public void join(final URI bootstrap) throws IOException {
     try {
       final List<URI> bootstrapUris = Arrays.asList(URI.create(bootstrap.toString()));
       this.kbrNode.join(bootstrapUris);
@@ -181,18 +194,28 @@ public final class KadLocalPeer implements LocalPeer {
   }
 
 
-  public LocalScheduler getScheduler() {
-    return this.scheduler;
+  public RemoteScheduler getSchedulerProxy() {
+    return this.schedulerProxy;
   }
 
   @Override
-  public RemoteSink<Page> getPageSink() {
-    return this.pageSinkProxy;
+  public Sink<Page> getPageSink() {
+    return this.pageSink;
+  }
+
+  @Override
+  public RemotePageSink getPageSinkProxy() {
+    return this.pageSink.getProxy();
   }
 
 
   public RMIActivator getActivator() {
     return this.activator;
+  }
+
+  @Override
+  public LocalScheduler getScheduler() {
+    return this.scheduler;
   }
 
 

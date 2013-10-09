@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import edu.asu.ying.mapreduce.common.RemoteSink;
-import edu.asu.ying.mapreduce.database.page.Page;
+import edu.asu.ying.common.sink.RemoteSink;
+import edu.asu.ying.database.page.Page;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 
 /**
@@ -31,5 +31,5 @@ public interface RemotePeer extends Remote, Serializable {
   /**
    * Gets the current time according to the remote peer.
    */
-  long getCurrentTimeMilliseconds() throws RemoteException;
+  long getCurrentTimeMillis() throws RemoteException;
 }

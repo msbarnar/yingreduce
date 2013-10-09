@@ -24,7 +24,7 @@ import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadPeerIdentifier;
-import edu.asu.ying.p2p.rmi.RMIActivator;
+import edu.asu.ying.p2p.rmi.Exportable;
 
 /**
  * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another node (or from
@@ -35,59 +35,7 @@ import edu.asu.ying.p2p.rmi.RMIActivator;
  * a random immediately-connected node.</li> </ol> Once the scheduler has placed the mapreduce in a
  * queue, the mapreduce is taken over by that queue's {@link edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue}.
  */
-public class SchedulerImpl implements LocalScheduler {
-
-  /**
-   * Provides the implementation of {@code RemoteScheduler} which will be accessible to remote peers
-   * when exported. The proxy implementation glues the remote scheduler proxy to the concrete local
-   * scheduler implementation while implementing the appropriate patterns to be RMI-compatible.
-   */
-  private final class SchedulerProxyImpl implements RemoteScheduler {
-
-    private final LocalScheduler localScheduler;
-
-    private SchedulerProxyImpl(final LocalScheduler localScheduler) {
-      this.localScheduler = localScheduler;
-    }
-
-    public final JobSchedulingResult acceptJobAsResponsibleNode(final Job job)
-        throws RemoteException {
-      return this.localScheduler.acceptJobAsResponsibleNode(job);
-    }
-
-    public final TaskSchedulingResult acceptInitialTask(final Task task) throws RemoteException {
-      return this.localScheduler.acceptInitialTask(task);
-    }
-
-    public final TaskSchedulingResult acceptTask(final Task task) throws RemoteException {
-      return this.localScheduler.acceptTask(task);
-    }
-
-    public final void reduceTaskCompletion(final TaskCompletion completion) throws RemoteException {
-      this.localScheduler.reduceTaskCompletion(completion);
-    }
-
-    public final int getBackpressure() throws RemoteException {
-      return this.localScheduler.getForwardQueue().size();
-    }
-
-    public final RemotePeer getNode() throws RemoteException {
-      return this.localScheduler.getLocalPeer().getProxy();
-    }
-
-    public final long getTimeMs() throws RemoteException {
-      return System.currentTimeMillis();
-    }
-  }
-
-  /**
-   * *******************************************************************************************
-   */
-
-  // Glue between the RMI interface and the local implementation
-  private RemoteScheduler schedulerProxy;
-  // Necessary to keep alive the proxy implementation
-  private final RemoteScheduler schedulerProxyTarget;
+public final class SchedulerImpl extends Exportable<RemoteScheduler> implements LocalScheduler {
 
   // The node on which this scheduler is running
   private final LocalPeer localPeer;
@@ -114,20 +62,11 @@ public class SchedulerImpl implements LocalScheduler {
 
     this.localPeer = localPeer;
 
-    // Initialize the implementation for the glue proxy
-    this.schedulerProxyTarget = new SchedulerProxyImpl(this);
-
     // Set up forwarding queue with node reference so it can find neighbors
     this.forwardingQueue = new ForwardingTaskQueue(this, this.localPeer);
 
     // Set up the delegator that splits jobs into tasks and sends them to initial nodes
     this.jobDelegator = new JobDelegatorImpl(this.localPeer);
-  }
-
-  public final void export(final RMIActivator activator) {
-    // Create the proxy which will glue the remote interface to the local implementation.
-    this.schedulerProxy = activator.bind(RemoteScheduler.class)
-        .toInstance(this.schedulerProxyTarget);
   }
 
   /**
@@ -253,10 +192,6 @@ public class SchedulerImpl implements LocalScheduler {
 
   public final TaskQueue getForwardQueue() {
     return this.forwardingQueue;
-  }
-
-  public final RemoteScheduler getProxy() {
-    return this.schedulerProxy;
   }
 
   public LocalPeer getLocalPeer() {

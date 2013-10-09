@@ -2,7 +2,7 @@ package edu.asu.ying.mapreduce.mapreduce.job;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.mapreduce.database.table.TableID;
+import edu.asu.ying.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskID;
 import edu.asu.ying.p2p.RemotePeer;
 
@@ -68,7 +68,7 @@ public final class MapReduceJob implements Job {
   @Override
   public final void setStartTime(final RemotePeer referenceNode) {
     try {
-      this.startTime = referenceNode.getCurrentTimeMilliseconds();
+      this.startTime = referenceNode.getCurrentTimeMillis();
     } catch (final RemoteException e) {
       // TODO: Logging
       e.printStackTrace();
