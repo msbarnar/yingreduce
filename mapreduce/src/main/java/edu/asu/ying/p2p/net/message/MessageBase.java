@@ -60,47 +60,47 @@ public abstract class MessageBase
   /**
    * Initializes the message ID with a random {@link UUID}.
    */
-  public void setId() {
+  public final void setId() {
     this.setId(UUID.randomUUID().toString());
   }
 
-  public void setId(final String id) {
+  public final void setId(final String id) {
     this.id = Preconditions.checkNotNull(Strings.emptyToNull(id));
   }
 
-  public void setId(final UUID id) {
+  public final void setId(final UUID id) {
     Preconditions.checkNotNull(id);
     this.setId(id.toString());
   }
 
   @Override
-  public String getId() {
+  public final String getId() {
     return this.id;
   }
 
   @Override
-  public String getTag() {
+  public final String getTag() {
     return this.tag;
   }
 
-  public void setTag(final String tag) {
+  public final void setTag(final String tag) {
     this.tag = Preconditions.checkNotNull(Strings.emptyToNull(tag));
   }
 
-  public void setSender(final PeerIdentifier sender) {
+  public final void setSender(final PeerIdentifier sender) {
     this.sender = Preconditions.checkNotNull(sender);
   }
 
   @Override
-  public PeerIdentifier getSender() {
+  public final PeerIdentifier getSender() {
     return this.sender;
   }
 
-  public void setDestination(final PeerIdentifier destination) {
+  public final void setDestination(final PeerIdentifier destination) {
     this.destination = Preconditions.checkNotNull(destination);
   }
 
-  public PeerIdentifier getDestination() {
+  public final PeerIdentifier getDestination() {
     return this.destination;
   }
 
@@ -111,13 +111,19 @@ public abstract class MessageBase
   /**
    * Gets a {@link RemoteException} wrapping the underlying cause from the remote host.
    */
-  public final
   @Nullable
-  RemoteException getException() {
+  public final RemoteException getException() {
     if (this.exception != null) {
-      return new RemoteException("Remote node raised an exception", this.exception);
+      return new RemoteException("Remote node threw an exception", this.exception);
     } else {
       return null;
+    }
+  }
+
+  public final void checkException() throws RemoteException {
+    final RemoteException ex = this.getException();
+    if (ex != null) {
+      throw ex;
     }
   }
 

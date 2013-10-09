@@ -3,6 +3,7 @@ package edu.asu.ying.p2p.kad;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
+import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.database.page.ServerPageSink;
@@ -27,6 +29,7 @@ import edu.asu.ying.p2p.rmi.AbstractExportable;
 import edu.asu.ying.p2p.rmi.RMIActivator;
 import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
+import edu.asu.ying.p2p.rmi.RemoteImportException;
 import edu.asu.ying.p2p.rmi.RemotePageSinkProxy;
 import edu.asu.ying.p2p.rmi.RemotePeerProxy;
 import edu.asu.ying.p2p.rmi.RemoteSchedulerProxy;
@@ -156,7 +159,8 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
    * {@inheritDoc}
    */
   @Override
-  public RemotePeer findPeer(final PeerIdentifier identifier) throws PeerNotFoundException {
+  public RemotePeer findPeer(final PeerIdentifier identifier)
+      throws PeerNotFoundException, RemoteImportException {
     final Key key = this.kbrNode.getKeyFactory().create(identifier.toString());
     final List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
@@ -197,7 +201,14 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
     return this.localIdentifier;
   }
 
-  private RemotePeer importProxyTo(final il.technion.ewolf.kbr.Node node) {
+  /**
+   * Given a Kademlia node, sends a request to the remote {@link RMIRequestHandler} and waits for a
+   * response containing a {@link java.rmi.Remote} proxy to the {@link RemotePeer} on that node.
+   */
+  // TODO: Target for cleanup
+  @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+  private RemotePeer importProxyTo(final il.technion.ewolf.kbr.Node node) throws
+                                                                          RemoteImportException {
     final RequestMessage request = new RequestMessage("node.remote-proxy");
     final Future<Serializable> response;
     try {
@@ -213,19 +224,20 @@ public final class KadLocalPeer extends AbstractExportable<RemotePeer> implement
     try {
       final Serializable resp = response.get();
       if (!(resp instanceof ResponseMessage)) {
-        throw new InvalidContentException();
+        throw new InvalidContentException(ResponseMessage.class, resp);
       }
       final ResponseMessage rm = ((ResponseMessage) resp);
       if (rm.getException() != null) {
-        throw rm.getException();
+        throw new RemoteImportException(rm.getException());
       }
+
       return (RemotePeer) ((ResponseMessage) resp).getContent();
 
-    } catch (final Exception e) {
+    } catch (final RemoteException | InvalidContentException | InterruptedException
+        | ExecutionException e) {
 
       // TODO: Logging
-      e.printStackTrace();
-      return null;
+      throw new RemoteImportException(e);
     }
   }
 }

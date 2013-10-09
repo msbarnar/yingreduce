@@ -8,6 +8,7 @@ import edu.asu.ying.database.page.ServerPageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.p2p.rmi.Exportable;
 import edu.asu.ying.p2p.rmi.RMIActivator;
+import edu.asu.ying.p2p.rmi.RemoteImportException;
 
 
 /**
@@ -52,5 +53,6 @@ public interface LocalPeer extends Exportable<RemotePeer> {
    *
    * @return a public, network accessible, interface to the remote peer, if found.
    */
-  RemotePeer findPeer(final PeerIdentifier identifier) throws PeerNotFoundException;
+  RemotePeer findPeer(final PeerIdentifier identifier) throws PeerNotFoundException,
+                                                              RemoteImportException;
 }
