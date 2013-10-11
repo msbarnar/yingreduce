@@ -47,8 +47,8 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
     }
 
     @Override
-    public K wrappedBy(final WrapperFactory<T, K> wrapper) throws ExportException {
-      this.binding = new InstanceBinding<>(wrapper.createWrapper(this.targetInstance),
+    public K wrappedBy(final WrapperFactory<T, K> factory) throws ExportException {
+      this.binding = new InstanceBinding<>(factory.createWrapper(this.targetInstance),
                                            this.activator);
 
       return this.binding.getReference();

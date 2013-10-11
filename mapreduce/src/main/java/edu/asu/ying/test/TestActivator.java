@@ -1,5 +1,6 @@
 package edu.asu.ying.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.rmi.RemoteException;
@@ -50,7 +51,7 @@ public class TestActivator {
   }
 
   @Test
-  public void itExportsSingleCall() throws Exception {
+  public void itBindsAndCalls() throws Exception {
     final Activator activator = new ActivatorImpl();
 
     try {
@@ -58,8 +59,8 @@ public class TestActivator {
       RemoteCar
           remoteCar =
           activator.bind(RemoteCar.class).to(myCar).wrappedBy(new CarWrapperFactory());
-      System.out.println(myCar.honk());
-      System.out.println(remoteCar.honk());
+      Assert.assertEquals("beep!", myCar.honk());
+      Assert.assertEquals("Faraway beep!", remoteCar.honk());
     } catch (final RemoteException e) {
       throw new AssertionError("Failed remote call", e);
     }
