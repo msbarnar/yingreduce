@@ -15,20 +15,27 @@ public class TestActivator {
 
   private interface RemoteCar extends Activatable {
 
-    void honk() throws RemoteException;
+    String honk() throws RemoteException;
   }
 
-  public static class RemoteCarImpl implements RemoteCar {
+  public static class Car {
 
-    private final long timeMade = System.currentTimeMillis();
+    String honk() {
+      return "beep!";
+    }
+  }
 
-    public RemoteCarImpl() {
-      System.out.println("New car smell");
+  public static class CarWrapper implements RemoteCar {
+
+    private final Car car;
+
+    public CarWrapper(final Car car) {
+      this.car = car;
     }
 
     @Override
-    public void honk() throws RemoteException {
-      System.out.println("Faraway beep! I was built on " + Long.toString(this.timeMade));
+    public String honk() throws RemoteException {
+      return "Faraway " + this.car.honk();
     }
   }
 
@@ -37,14 +44,10 @@ public class TestActivator {
     final Activator activator = new ActivatorImpl();
 
     try {
-      activator.bind(RemoteCar.class).to(RemoteCarImpl.class, Activator.ActivationMode.Singleton)
-          .honk();
-      activator.bind(RemoteCar.class).to(RemoteCarImpl.class, Activator.ActivationMode.SingleCall)
-          .honk();
-      activator.bind(RemoteCar.class).to(RemoteCarImpl.class, Activator.ActivationMode.SingleCall)
-          .honk();
-      activator.bind(RemoteCar.class).to(RemoteCarImpl.class, Activator.ActivationMode.Singleton)
-          .honk();
+      Car myCar = new Car();
+      RemoteCar remoteCar = activator.bind(RemoteCar.class).to(myCar).wrappedBy(CarWrapper.class);
+      System.out.println(myCar.honk());
+      System.out.println(remoteCar.honk());
     } catch (final RemoteException e) {
       throw new AssertionError("Failed remote call", e);
     }

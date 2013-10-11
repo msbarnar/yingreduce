@@ -26,7 +26,7 @@ public final class RemotePeerProxy implements RemotePeer {
   }
 
   @Override
-  public <T extends Activatable> T getReference(final Class<? extends Activatable> cls)
+  public <T extends Activatable> T getReference(final Class<T> cls)
       throws RemoteException {
     return this.localPeer.getActivator().getReference(cls);
   }

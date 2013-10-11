@@ -38,19 +38,19 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
     }
   }
 
-  private final class ViaBinderImpl<K extends Activatable, T> implements ViaBinder<K> {
+  private final class WrapperBinderImpl<K extends Activatable, T> implements WrapperBinder<K> {
 
     private final Activator activator;
     private final T targetInstance;
     private InstanceBinding<K> binding;
 
-    private ViaBinderImpl(final T targetInstance, final Activator activator) {
+    private WrapperBinderImpl(final T targetInstance, final Activator activator) {
       this.activator = activator;
       this.targetInstance = targetInstance;
     }
 
     @Override
-    public <W extends K> K via(final Class<W> wrapper) throws ExportException {
+    public <W extends K> K wrappedBy(final Class<W> wrapper) throws ExportException {
       try {
         this.binding = new InstanceBinding<K>(
             ConstructorUtils.invokeConstructor(wrapper, this.targetInstance),
@@ -85,8 +85,8 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
   }
 
   @Override
-  public <T> ViaBinder<K> to(final T targetInstance) {
-    return new ViaBinderImpl<K, T>(targetInstance, this.activator);
+  public <T> WrapperBinder<K> to(final T targetInstance) {
+    return new WrapperBinderImpl<K, T>(targetInstance, this.activator);
   }
 
   public Binding<K> getBinding() {

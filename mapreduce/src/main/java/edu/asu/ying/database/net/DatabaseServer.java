@@ -32,8 +32,8 @@ public final class DatabaseServer {
     // Open the incoming page pipe
     this.pageInSink = new IncomingPageHandler();
     try {
-      this.localPeer.getActivator().bind(RemotePageSink.class).to(RemotePageSinkProxy.class)
-          .toInstance(this.pageInSink);
+      this.localPeer.getActivator().bind(RemotePageSink.class).to(this.pageInSink)
+          .wrappedBy(RemotePageSinkProxy.class);
     } catch (final ExportException e) {
       throw new InstantiationException("Failed to export server page sink");
     }

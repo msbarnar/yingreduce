@@ -2,7 +2,6 @@ package edu.asu.ying.p2p.rmi;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.rmi.Remote;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +18,7 @@ public final class ActivatorImpl implements Activator {
 
   // Activation of other classes is controlled via bindings
   // i.e. Class/Interface -> Subclass or Instance
-  private final Map<Class<?>, Binder<? extends Remote>> bindings = new HashMap<>();
+  private final Map<Class<?>, Binder<? extends Activatable>> bindings = new HashMap<>();
 
   public ActivatorImpl() {
   }
@@ -28,18 +27,15 @@ public final class ActivatorImpl implements Activator {
    * @inheritDoc
    */
   @SuppressWarnings("unchecked")
-  public final <TBound extends Activatable> Binder<TBound> bind(final Class<TBound> boundClass) {
-    final Binder binder = new BinderImpl<>(boundClass, this);
+  public <K extends Activatable> Binder<K> bind(final Class<K> boundClass) {
+    final Binder binder = new BinderImpl<>(this);
     this.bindings.put(boundClass, binder);
     return binder;
   }
 
-  /**
-   * @inheritDoc
-   */
+  @Override
   @SuppressWarnings("unchecked")
-  public final <T extends Activatable> T getReference(final Class<? extends Activatable> cls) {
-
+  public <K extends Activatable> K getReference(Class<K> cls) {
     final Binder<?> binder = this.bindings.get(cls);
     if (binder == null) {
       return null;
@@ -50,7 +46,7 @@ public final class ActivatorImpl implements Activator {
       return null;
     }
 
-    return (T) binding.getReference();
+    return (K) binding.getReference();
   }
 
   /**
