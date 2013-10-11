@@ -31,7 +31,6 @@ import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
 import edu.asu.ying.p2p.rmi.ActivatorRequestHandler;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
-import edu.asu.ying.p2p.rmi.RemotePeerProxy;
 import edu.asu.ying.p2p.rmi.RemoteSchedulerProxy;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
@@ -94,15 +93,6 @@ public final class KadLocalPeer implements LocalPeer {
     }
     // Start the scheduling workers
     this.scheduler.start();
-
-    /*** DATABASE ***/
-
-    // Allow peers to access the node and scheduler remotely.
-    try {
-      this.activator.bind(RemotePeer.class).via(RemotePeerProxy.class).toInstance(this);
-    } catch (final ExportException e) {
-      throw new InstantiationException("Failed to export server peer");
-    }
 
     // Allow peers to discover this node's RMI interfaces.
     ActivatorRequestHandler.exportNodeToChannel(this, networkChannel);

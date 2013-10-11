@@ -3,6 +3,7 @@ package edu.asu.ying.p2p.rmi;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,20 @@ import java.util.Map;
  * accession by remote nodes.
  */
 public final class ActivatorImpl implements Activator {
+
+  public final class RemoteActivatorProxy implements RemoteActivator {
+
+    private final Activator activator;
+
+    public RemoteActivatorProxy(final Activator activator) {
+      this.activator = activator;
+    }
+
+    @Override
+    public <T extends Remote> T getReference(final Class<?> cls) throws RemoteException {
+      return this.activator.getReference(cls);
+    }
+  }
 
   // The port used to export all RMI instances.
   private int rmiPort = 0;

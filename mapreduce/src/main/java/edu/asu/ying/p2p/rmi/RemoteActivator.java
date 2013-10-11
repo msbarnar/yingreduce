@@ -2,6 +2,7 @@ package edu.asu.ying.p2p.rmi;
 
 import java.io.Serializable;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * {@code RemoteActivator} is the public interface to the {@link Activator}, which provides {@link
@@ -9,5 +10,5 @@ import java.rmi.Remote;
  */
 public interface RemoteActivator extends Remote, Serializable {
 
-  public <T> T getReference(final Class<? super T> cls);
+  public <T extends Remote> T getReference(final Class<?> cls) throws RemoteException;
 }

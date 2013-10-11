@@ -1,4 +1,4 @@
-package edu.asu.ying.database.daemon;
+package edu.asu.ying.database.net;
 
 import java.rmi.server.ExportException;
 
@@ -11,9 +11,9 @@ import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.rmi.RemotePageSinkProxy;
 
 /**
- * {@code DatabaseDaemon} is the interface between the database and the network.
+ * {@code DatabaseServer} is the interface between the database and the network.
  */
-public final class DatabaseDaemon {
+public final class DatabaseServer {
 
   private final LocalPeer localPeer;
 
@@ -23,7 +23,7 @@ public final class DatabaseDaemon {
   private final IncomingPageHandler pageInSink;
 
 
-  public DatabaseDaemon(final LocalPeer localPeer) throws InstantiationException {
+  public DatabaseServer(final LocalPeer localPeer) throws InstantiationException {
     this.localPeer = localPeer;
 
     // Open the outgoing page pipe

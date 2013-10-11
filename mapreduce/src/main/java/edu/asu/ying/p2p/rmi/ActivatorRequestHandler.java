@@ -1,7 +1,8 @@
 package edu.asu.ying.p2p.rmi;
 
+import java.rmi.server.ExportException;
+
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.net.Channel;
 import edu.asu.ying.p2p.net.message.Message;
 import edu.asu.ying.p2p.net.message.MessageHandler;
@@ -23,12 +24,14 @@ public final class ActivatorRequestHandler implements MessageHandler {
    * @return the new request handler.
    */
   public static ActivatorRequestHandler exportNodeToChannel(final LocalPeer node,
-                                                            final Channel networkChannel) {
+                                                            final Channel networkChannel)
+      throws ExportException {
+
     return new ActivatorRequestHandler(node, networkChannel);
   }
 
   // The proxy instance to include in responses
-  private final RemotePeer instance;
+  private final RemoteActivator instance;
 
   // TODO: change how we handle tags?
   private final String tag = "node.remote-proxy";
@@ -38,11 +41,18 @@ public final class ActivatorRequestHandler implements MessageHandler {
    * handler on the channel. </p> The {@link edu.asu.ying.p2p.RemotePeer} should have already been
    * bound on the local node's {@link Activator} via {@link Activator#bind}.
    */
-  private ActivatorRequestHandler(final LocalPeer localPeer, final Channel networkChannel) {
-    this.instance = localPeer.getProxy();
+  private ActivatorRequestHandler(final LocalPeer localPeer, final Channel networkChannel)
+      throws ExportException {
+
+    final Activator activator = localPeer.getActivator();
+    // Allow peers to access the activator remotely.
+    this.instance = activator.bind(RemoteActivator.class)
+        .via(ActivatorImpl.RemoteActivatorProxy.class)
+        .toInstance(activator);
+
     if (this.instance == null) {
-      throw new IllegalStateException("Local node proxy is not available; remote peers will be"
-                                      + " unable to access the local node.");
+      throw new ExportException("Failed to export activator; this node will be unable to "
+                                + "participate in the network.");
     }
     networkChannel.registerMessageHandler(this, this.tag);
   }
