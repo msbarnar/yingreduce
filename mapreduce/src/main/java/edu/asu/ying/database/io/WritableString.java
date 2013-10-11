@@ -29,11 +29,15 @@ public final class WritableString implements WritableComparable<WritableString> 
 
   @Override
   public int compareTo(final WritableString o) {
-    return this.value.compareTo(o.value);
+    return this.compareTo(o.value);
+  }
+
+  public int compareTo(final String s) {
+    return this.value.compareTo(s);
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     return this == o || !(o == null || getClass() != o.getClass()) && value
         .equals(((WritableString) o).value);
   }
@@ -41,5 +45,10 @@ public final class WritableString implements WritableComparable<WritableString> 
   @Override
   public int hashCode() {
     return value.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return this.value;
   }
 }

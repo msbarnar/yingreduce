@@ -5,10 +5,11 @@ import com.google.common.base.Preconditions;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
- *
+ * {@code WriteableBytes} provides a serializable primitive for a byte array.
  */
 public final class WritableBytes implements WritableComparable<WritableBytes> {
 
@@ -36,7 +37,11 @@ public final class WritableBytes implements WritableComparable<WritableBytes> {
 
   @Override
   public int compareTo(final WritableBytes o) {
-    return 0;
+    return this.compareTo(o.value);
+  }
+
+  public int compareTo(final byte[] b) {
+    return ByteBuffer.wrap(this.value).compareTo(ByteBuffer.wrap(b));
   }
 
   @Override
