@@ -3,35 +3,36 @@ package edu.asu.ying.p2p.rmi;
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.net.Channel;
 import edu.asu.ying.p2p.net.message.Message;
 import edu.asu.ying.p2p.net.message.MessageHandler;
 import edu.asu.ying.p2p.net.message.ResponseMessage;
 
 /**
- * {@code ActivatorRequestHandler} listens for requests from the network and returns a {@link
+ * {@code RMIRequestHandler} listens for requests from the network and returns a {@link
  * ResponseMessage} wrapping a {@link java.rmi.Remote} proxy to the server-side node.
  */
-public final class ActivatorRequestHandler implements MessageHandler {
+public final class RMIRequestHandler implements MessageHandler {
 
   /**
-   * Creates an {@link ActivatorRequestHandler} which provides instances of the {@link
+   * Creates an {@link RMIRequestHandler} which provides instances of the {@link
    * edu.asu.ying.p2p.RemotePeer} proxy to the {@link edu.asu.ying.p2p.LocalPeer} for access by
    * remote peers.
    *
-   * @param node           the node to be made accessible to peers on the network.
+   * @param peer           the node to be made accessible to peers on the network.
    * @param networkChannel the channel through which the node will be accessible.
    * @return the new request handler.
    */
-  public static ActivatorRequestHandler exportNodeToChannel(final LocalPeer node,
-                                                            final Channel networkChannel)
+  public static RMIRequestHandler exportNodeToChannel(final LocalPeer peer,
+                                                      final Channel networkChannel)
       throws ExportException {
 
-    return new ActivatorRequestHandler(node, networkChannel);
+    return new RMIRequestHandler(peer, networkChannel);
   }
 
   // The proxy instance to include in responses
-  private final RemoteActivator instance;
+  private final RemotePeer instance;
 
   // TODO: change how we handle tags?
   private final String tag = "node.remote-proxy";
@@ -41,14 +42,13 @@ public final class ActivatorRequestHandler implements MessageHandler {
    * handler on the channel. </p> The {@link edu.asu.ying.p2p.RemotePeer} should have already been
    * bound on the local node's {@link Activator} via {@link Activator#bind}.
    */
-  private ActivatorRequestHandler(final LocalPeer localPeer, final Channel networkChannel)
+  private RMIRequestHandler(final LocalPeer localPeer, final Channel networkChannel)
       throws ExportException {
 
-    final Activator activator = localPeer.getActivator();
-    // Allow peers to access the activator remotely.
-    this.instance = activator.bind(RemoteActivator.class)
-        .via(ActivatorImpl.RemoteActivatorProxy.class)
-        .toInstance(activator);
+    // Cache the RMI proxy instance for the peer so we can respond to requests with it
+    this.instance = localPeer.getActivator().bind(RemotePeer.class)
+        .via(RemotePeerProxy.class)
+        .toInstance(localPeer);
 
     if (this.instance == null) {
       throw new ExportException("Failed to export activator; this node will be unable to "

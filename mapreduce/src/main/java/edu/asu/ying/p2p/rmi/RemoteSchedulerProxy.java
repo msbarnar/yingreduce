@@ -9,7 +9,6 @@ import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
-import edu.asu.ying.p2p.RemotePeer;
 
 /**
  * Provides the implementation of {@code RemoteScheduler} which will be accessible to remote peers
@@ -47,11 +46,6 @@ public final class RemoteSchedulerProxy implements RemoteScheduler {
   @Override
   public int getBackpressure() throws RemoteException {
     return this.localScheduler.getForwardQueue().size();
-  }
-
-  @Override
-  public RemotePeer getNode() throws RemoteException {
-    return this.localScheduler.getLocalPeer().getProxy();
   }
 }
 

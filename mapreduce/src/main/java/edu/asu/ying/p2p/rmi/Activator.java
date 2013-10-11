@@ -12,7 +12,7 @@ public interface Activator {
    * The {@code ActivationMode} specifies the manner in which objects are instantiated to fulfill
    * bindings.
    */
-  public enum ActivationMode {
+  enum ActivationMode {
     Singleton,
     SingleCall
   }
@@ -79,11 +79,9 @@ public interface Activator {
    * @param <TBound> the type of the bound class.
    * @return a {@link Binder} which is used to further specify the type of the binding.
    */
-  public <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
+  <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
 
-  public <T extends Remote> T getReference(final Class<?> cls);
+  <T extends Remote> T getReference(final Class<?> cls);
 
-  public int getPort();
-
-  public RemoteActivator getProxy();
+  int getPort();
 }

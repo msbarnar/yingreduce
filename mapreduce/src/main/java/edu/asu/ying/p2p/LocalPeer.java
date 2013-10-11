@@ -11,7 +11,7 @@ import edu.asu.ying.p2p.rmi.RemoteImportException;
 /**
  * Provides an interface to the local node and its listening facilities.
  */
-public interface LocalPeer extends Exported<RemotePeer> {
+public interface LocalPeer {
 
   /**
    * Gets the unique network identifier for this peer.

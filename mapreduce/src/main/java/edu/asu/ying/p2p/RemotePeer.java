@@ -4,10 +4,6 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import edu.asu.ying.common.event.RemoteSink;
-import edu.asu.ying.database.page.Page;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
-
 /**
  * {@code RemotePeer} is a proxy to a {@link LocalPeer} in another application domain.
  */
@@ -19,14 +15,9 @@ public interface RemotePeer extends Remote, Serializable {
   PeerIdentifier getIdentifier() throws RemoteException;
 
   /**
-   * Gets the public interface to the scheduler on the remote peer.
+   * Gets a {@link Remote} proxy to an object implementing {@code cls}.
    */
-  RemoteScheduler getScheduler() throws RemoteException;
-
-  /**
-   * Gets a sink through which the remote peer accepts pages.
-   */
-  RemoteSink<Page> getPageSink() throws RemoteException;
+  <T extends Remote> T getProxyToInterface(final Class<?> cls) throws RemoteException;
 
   /**
    * Gets the current time according to the remote peer.

@@ -29,7 +29,7 @@ import edu.asu.ying.p2p.net.message.RequestMessage;
 import edu.asu.ying.p2p.net.message.ResponseMessage;
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
-import edu.asu.ying.p2p.rmi.ActivatorRequestHandler;
+import edu.asu.ying.p2p.rmi.RMIRequestHandler;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
 import edu.asu.ying.p2p.rmi.RemoteSchedulerProxy;
 import il.technion.ewolf.kbr.Key;
@@ -67,7 +67,7 @@ public final class KadLocalPeer implements LocalPeer {
   private final LocalScheduler scheduler;
 
 
-  public KadLocalPeer(final int port) throws InstantiationException {
+  public KadLocalPeer(final int port) throws InstantiationException, ExportException {
 
     // The local Kademlia node for peer discovery
     this.kbrNode = KademliaNetwork.createNode(port);
@@ -95,7 +95,7 @@ public final class KadLocalPeer implements LocalPeer {
     this.scheduler.start();
 
     // Allow peers to discover this node's RMI interfaces.
-    ActivatorRequestHandler.exportNodeToChannel(this, networkChannel);
+    RMIRequestHandler.exportNodeToChannel(this, networkChannel);
   }
 
   /**
@@ -204,20 +204,16 @@ public final class KadLocalPeer implements LocalPeer {
     return this.localIdentifier;
   }
 
-  @Override
-  public RemotePeer getProxy() {
-    return this.activator.getReference(RemotePeer.class);
-  }
-
   /**
-   * Given a Kademlia node, sends a request to the remote {@link edu.asu.ying.p2p.rmi.ActivatorRequestHandler}
-   * and waits for a response containing a {@link java.rmi.Remote} proxy to the {@link RemotePeer}
-   * on that node.
+   * Given a Kademlia node, sends a request to the remote {@link edu.asu.ying.p2p.rmi.RMIRequestHandler}
+   * and waits for a response containing a {@link edu.asu.ying.p2p.RemotePeer} proxy to that peer.
    */
   // TODO: Target for cleanup
   @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-  private RemotePeer importProxyTo(final il.technion.ewolf.kbr.Node node) throws
-                                                                          RemoteImportException {
+  private RemotePeer importProxyTo(final il.technion.ewolf.kbr.Node node)
+      throws RemoteImportException {
+
+    // Send the request to the request handler with the appropriate tag
     final RequestMessage request = new RequestMessage("node.remote-proxy");
     final Future<Serializable> response;
     try {
@@ -230,6 +226,7 @@ public final class KadLocalPeer implements LocalPeer {
       return null;
     }
 
+    // Wait for the response and get the proxy
     try {
       final Serializable resp = response.get();
       if (!(resp instanceof ResponseMessage)) {

@@ -19,7 +19,7 @@ import edu.asu.ying.p2p.LocalPeer;
  * remote queue is full, the mapreduce is placed in this queue to be forwarded to another node.</li>
  * </ol>
  */
-public interface LocalScheduler extends Exported<RemoteScheduler> {
+public interface LocalScheduler {
 
   /**
    * Starts all scheduling workers.
