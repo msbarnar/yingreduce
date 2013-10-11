@@ -86,8 +86,7 @@ public final class KadLocalPeer implements LocalPeer {
     // Start the scheduler and open the incoming job pipe
     this.scheduler = new SchedulerImpl(this);
     try {
-      this.activator.bind(RemoteScheduler.class).to(RemoteSchedulerProxy.class)
-          .toInstance(this.scheduler);
+      this.activator.bind(RemoteScheduler.class).to(this.scheduler).via(RemoteSchedulerProxy.class)
     } catch (final ExportException e) {
       throw new InstantiationException("Failed to export server scheduler");
     }
