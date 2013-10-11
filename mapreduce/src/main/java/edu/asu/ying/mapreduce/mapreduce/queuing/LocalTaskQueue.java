@@ -1,8 +1,6 @@
 package edu.asu.ying.mapreduce.mapreduce.queuing;
 
 import java.io.Serializable;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;

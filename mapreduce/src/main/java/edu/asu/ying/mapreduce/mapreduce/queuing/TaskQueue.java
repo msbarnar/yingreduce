@@ -3,8 +3,8 @@ package edu.asu.ying.mapreduce.mapreduce.queuing;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 
 /**
- * A {@code TaskQueue} watches a specific {@link java.util.Queue} and handles
- * {@link edu.asu.ying.mapreduce.mapreduce.task.Task}s as they arrive.
+ * A {@code TaskQueue} watches a specific {@link java.util.Queue} and handles {@link
+ * edu.asu.ying.mapreduce.mapreduce.task.Task}s as they arrive.
  */
 public interface TaskQueue extends Runnable {
 

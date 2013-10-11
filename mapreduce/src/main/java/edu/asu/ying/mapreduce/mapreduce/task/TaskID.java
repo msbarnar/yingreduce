@@ -13,12 +13,15 @@ public final class TaskID implements Serializable {
   public TaskID() {
     this.id = UUID.randomUUID().toString();
   }
+
   public TaskID(final TaskID id) {
     this.id = id.toString();
   }
+
   public TaskID(final UUID uuid) {
     this.id = uuid.toString();
   }
+
   public TaskID(final String id) {
     this.id = id;
   }
@@ -27,17 +30,20 @@ public final class TaskID implements Serializable {
   public final String toString() {
     return this.id;
   }
-  
+
   @Override
   public final boolean equals(final Object o) {
-    if (o == this)
+    if (o == this) {
       return true;
+    }
 
-    if (o == null)
+    if (o == null) {
       return false;
+    }
 
-    if (!(o instanceof TaskID))
+    if (!(o instanceof TaskID)) {
       return false;
+    }
 
     return this.id.equals(((TaskID) o).toString());
   }

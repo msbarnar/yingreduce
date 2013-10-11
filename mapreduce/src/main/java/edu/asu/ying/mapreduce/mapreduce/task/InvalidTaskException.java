@@ -1,7 +1,5 @@
 package edu.asu.ying.mapreduce.mapreduce.task;
 
-import edu.asu.ying.mapreduce.mapreduce.task.Task;
-
 /**
  *
  */
@@ -12,6 +10,7 @@ public class InvalidTaskException extends Exception {
   public InvalidTaskException(final Task task) {
     this.task = task;
   }
+
   public InvalidTaskException(final Task task, final String detail) {
     super(detail);
     this.task = task;
