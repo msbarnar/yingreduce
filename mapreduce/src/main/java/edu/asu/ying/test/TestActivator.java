@@ -51,7 +51,7 @@ public class TestActivator {
   }
 
   @Test
-  public void itBindsAndCalls() throws Exception {
+  public void itBindsAndCalls() {
     final Activator activator = new ActivatorImpl();
 
     try {
