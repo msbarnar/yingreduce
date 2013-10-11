@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.mapreduce.job;
+package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
 import java.rmi.RemoteException;
 import java.util.ArrayDeque;
@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import edu.asu.ying.mapreduce.mapreduce.task.LetterFreqTask;
+import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;

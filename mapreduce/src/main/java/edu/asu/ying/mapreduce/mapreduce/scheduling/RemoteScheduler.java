@@ -3,10 +3,7 @@ package edu.asu.ying.mapreduce.mapreduce.scheduling;
 import java.rmi.RemoteException;
 
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
-import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
-import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.rmi.Activatable;
 
 /**

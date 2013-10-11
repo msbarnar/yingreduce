@@ -1,12 +1,13 @@
-package edu.asu.ying.mapreduce.mapreduce.job;
+package edu.asu.ying.mapreduce.mapreduce.scheduling;
 
 import java.io.Serializable;
 
+import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.p2p.RemotePeer;
 
 /**
- * Wraps the result of attempting to schedule a {@link Job} on a {@link
- * edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler}.
+ * Wraps the result of attempting to schedule a {@link edu.asu.ying.mapreduce.mapreduce.job.Job} on
+ * a {@link edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler}.
  */
 public final class JobSchedulingResult implements Serializable {
 

@@ -15,18 +15,18 @@ public final class WritableBytes implements WritableComparable<WritableBytes> {
 
   private byte[] value = null;
 
-  public WritableBytes(final byte[] value) {
+  public WritableBytes(byte[] value) {
     this.value = Preconditions.checkNotNull(value);
   }
 
   @Override
-  public void readFields(final DataInput in) throws IOException {
+  public void readFields(DataInput in) throws IOException {
     this.value = new byte[in.readInt()];
     in.readFully(this.value);
   }
 
   @Override
-  public void write(final DataOutput out) throws IOException {
+  public void write(DataOutput out) throws IOException {
     out.writeInt(this.value.length);
     out.write(this.value);
   }
@@ -36,11 +36,11 @@ public final class WritableBytes implements WritableComparable<WritableBytes> {
   }
 
   @Override
-  public int compareTo(final WritableBytes o) {
+  public int compareTo(WritableBytes o) {
     return this.compareTo(o.value);
   }
 
-  public int compareTo(final byte[] b) {
+  public int compareTo(byte[] b) {
     return ByteBuffer.wrap(this.value).compareTo(ByteBuffer.wrap(b));
   }
 

@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.mapreduce.task.Task;
-import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 
 /**
  *

@@ -13,8 +13,8 @@ import edu.asu.ying.database.io.WritableString;
 import edu.asu.ying.database.table.PageBuilder;
 import edu.asu.ying.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.mapreduce.mapreduce.job.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;
+import edu.asu.ying.mapreduce.mapreduce.scheduling.JobSchedulingResult;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 
 /**

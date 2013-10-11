@@ -1,15 +1,18 @@
 package edu.asu.ying.database.io;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  *
  */
-public final class WritableString implements WritableComparable<WritableString> {
+public final class WritableString implements WritableComparable<WritableString>,
+                                             Iterable<Character> {
 
   private String value = null;
 
@@ -50,5 +53,10 @@ public final class WritableString implements WritableComparable<WritableString> 
   @Override
   public String toString() {
     return this.value;
+  }
+
+  @Override
+  public Iterator<Character> iterator() {
+    return Lists.charactersOf(this.value).iterator();
   }
 }

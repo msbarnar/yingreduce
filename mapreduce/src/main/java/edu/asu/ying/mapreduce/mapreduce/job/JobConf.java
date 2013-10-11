@@ -10,15 +10,15 @@ import edu.asu.ying.mapreduce.Reducer;
  */
 public final class JobConf {
 
-  <T extends WritableComparable> void setOutputKeyClass(final Class<T> keyClass) {
+  public <T extends WritableComparable> void setOutputKeyClass(final Class<T> keyClass) {
   }
 
-  <T extends Writable> void setOutputValueClass(final Class<T> valueClass) {
+  public <T extends Writable> void setOutputValueClass(final Class<T> valueClass) {
   }
 
-  <T extends Mappable> void setMapperClass(final Class<T> mapperClass) {
+  public <T extends Mappable> void setMapperClass(final Class<T> mapperClass) {
   }
 
-  <T extends Reducer> void setReducerClass(final Class<T> reducerClass) {
+  public <T extends Reducer> void setReducerClass(final Class<T> reducerClass) {
   }
 }
