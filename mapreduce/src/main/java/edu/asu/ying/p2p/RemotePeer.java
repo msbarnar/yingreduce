@@ -19,9 +19,4 @@ public interface RemotePeer extends Activatable {
    * Gets a {@link Remote} proxy to an object implementing {@code cls}.
    */
   <T extends Activatable> T getReference(final Class<T> cls) throws RemoteException;
-
-  /**
-   * Gets the current time according to the remote peer.
-   */
-  long getCurrentTimeMillis() throws RemoteException;
 }

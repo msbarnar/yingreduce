@@ -89,7 +89,7 @@ public class Client {
 
     if (!fullyConnected) {
       LocalScheduler sched = null;
-      //sched = instances[0].getLocalPeer().getScheduler();
+      //sched = instances[0].getLocalPeer();
 
       if (sched != null) {
         for (int i = 0; i < 1; i++) {

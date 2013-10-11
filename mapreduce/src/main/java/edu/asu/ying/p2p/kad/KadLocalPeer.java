@@ -16,9 +16,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
 import edu.asu.ying.p2p.PeerNotFoundException;
@@ -31,7 +28,6 @@ import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
-import edu.asu.ying.p2p.rmi.RemoteSchedulerProxy;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
@@ -54,17 +50,8 @@ public final class KadLocalPeer implements LocalPeer {
   // Getting RMI references to neighbors is expensive, so cache the reference every time we get one
   private Map<Node, RemotePeer> neighborsCache = new HashMap<>();
 
-  /**
-   * RMI **
-   */
   // Manages RMI export of objects for access by remote peers.
   private final Activator activator;
-
-  /**
-   * SCHEDULING **
-   */
-  // Schedules mapreduce jobs and tasks
-  private final LocalScheduler scheduler;
 
 
   public KadLocalPeer(final int port) throws InstantiationException, ExportException {
@@ -78,21 +65,8 @@ public final class KadLocalPeer implements LocalPeer {
     // Connect the P2P messaging system to the Kademlia node
     this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
 
-    /*** RMI ***/
     // Enable this peer to export remote references
     this.activator = new ActivatorImpl();
-
-    /*** SCHEDULING ***/
-    // Start the scheduler and open the incoming job pipe
-    this.scheduler = new SchedulerImpl(this);
-    try {
-      this.activator.bind(RemoteScheduler.class).to(this.scheduler).wrappedBy(
-          RemoteSchedulerProxy.class);
-    } catch (final ExportException e) {
-      throw new InstantiationException("Failed to export server scheduler");
-    }
-    // Start the scheduling workers
-    this.scheduler.start();
 
     // Allow peers to discover this node's RMI interfaces.
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);

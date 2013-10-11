@@ -48,7 +48,7 @@ public final class RMIRequestHandler implements MessageHandler {
     // Cache the RMI proxy instance for the peer so we can respond to requests with it
     this.instance = localPeer.getActivator().bind(RemotePeer.class)
         .to(localPeer)
-        .wrappedBy(RemotePeerProxy.class);
+        .wrappedBy(new RemotePeerWrapperFactory());
 
     if (this.instance == null) {
       throw new ExportException("Failed to export activator; this node will be unable to "

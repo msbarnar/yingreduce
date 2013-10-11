@@ -7,6 +7,8 @@ import java.rmi.RemoteException;
 import edu.asu.ying.p2p.rmi.Activatable;
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
+import edu.asu.ying.p2p.rmi.Wrapper;
+import edu.asu.ying.p2p.rmi.WrapperFactory;
 
 /**
  *
@@ -25,7 +27,7 @@ public class TestActivator {
     }
   }
 
-  public static class CarWrapper implements RemoteCar {
+  private class CarWrapper implements Wrapper<RemoteCar>, RemoteCar {
 
     private final Car car;
 
@@ -39,13 +41,23 @@ public class TestActivator {
     }
   }
 
+  public class CarWrapperFactory implements WrapperFactory<Car, RemoteCar> {
+
+    @Override
+    public RemoteCar createWrapper(Car target) {
+      return new CarWrapper(target);
+    }
+  }
+
   @Test
   public void itExportsSingleCall() throws Exception {
     final Activator activator = new ActivatorImpl();
 
     try {
       Car myCar = new Car();
-      RemoteCar remoteCar = activator.bind(RemoteCar.class).to(myCar).wrappedBy(CarWrapper.class);
+      RemoteCar
+          remoteCar =
+          activator.bind(RemoteCar.class).to(myCar).wrappedBy(new CarWrapperFactory());
       System.out.println(myCar.honk());
       System.out.println(remoteCar.honk());
     } catch (final RemoteException e) {

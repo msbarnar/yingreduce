@@ -1,8 +1,5 @@
 package edu.asu.ying.p2p.rmi;
 
-import org.apache.commons.lang3.reflect.ConstructorUtils;
-
-import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
@@ -38,7 +35,7 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
     }
   }
 
-  private final class WrapperBinderImpl<K extends Activatable, T> implements WrapperBinder<K> {
+  private final class WrapperBinderImpl<K extends Activatable, T> implements WrapperBinder<T, K> {
 
     private final Activator activator;
     private final T targetInstance;
@@ -50,22 +47,9 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
     }
 
     @Override
-    public <W extends K> K wrappedBy(final Class<W> wrapper) throws ExportException {
-      try {
-        this.binding = new InstanceBinding<K>(
-            ConstructorUtils.invokeConstructor(wrapper, this.targetInstance),
-            this.activator);
-
-      } catch (final NoSuchMethodException e) {
-        throw new ExportException("Proxy class does not have a constructor which takes this class "
-                                  + "as the sole argument.", e);
-      } catch (final IllegalAccessException e) {
-        throw new ExportException("Proxy class constructor is not accessible.", e);
-      } catch (final InstantiationException e) {
-        throw new ExportException("Proxy class can not be instantiated.", e);
-      } catch (final InvocationTargetException e) {
-        throw new ExportException("Proxy class constructor threw an exception.", e);
-      }
+    public K wrappedBy(final WrapperFactory<T, K> wrapper) throws ExportException {
+      this.binding = new InstanceBinding<>(wrapper.createWrapper(this.targetInstance),
+                                           this.activator);
 
       return this.binding.getReference();
     }
@@ -85,7 +69,7 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
   }
 
   @Override
-  public <T> WrapperBinder<K> to(final T targetInstance) {
+  public <T> WrapperBinder<T, K> to(final T targetInstance) {
     return new WrapperBinderImpl<K, T>(targetInstance, this.activator);
   }
 

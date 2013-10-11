@@ -12,7 +12,7 @@ public interface Binder<K extends Activatable> {
    */
   <T extends K> K toInstance(T instance);
 
-  <T> WrapperBinder<K> to(T target);
+  <T> WrapperBinder<T, K> to(T target);
 
   Binding getBinding();
 }

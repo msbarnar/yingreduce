@@ -37,25 +37,19 @@ import edu.asu.ying.p2p.rmi.RemoteImportException;
  */
 public final class SchedulerImpl implements LocalScheduler {
 
+  private static final int MAX_QUEUE_SIZE = 1;
   // The node on which this scheduler is running
   private final LocalPeer localPeer;
-
   // The job delegator accepts unstarted jobs, splits them into tasks, and delegates each task to
   // its initial node.
   private final JobDelegator jobDelegator;
-
-  private static final int MAX_QUEUE_SIZE = 1;
-
   // Ql and Qr are bounded, but Qf is just a pipe to neighboring peers
   private final TaskQueue forwardingQueue;
   private final TaskQueue localQueue = new LocalTaskQueue(this);
   private final TaskQueue remoteQueue = new RemoteTaskQueue(this);
-
   // TODO: Write a reducer class
   private final
-  Map<TaskID, List<Serializable>>
-      reductions =
-      new HashMap<>();
+  Map<TaskID, List<Serializable>> reductions = new HashMap<>();
 
 
   public SchedulerImpl(final LocalPeer localPeer) {
@@ -171,7 +165,6 @@ public final class SchedulerImpl implements LocalScheduler {
 
     results.add(completion.getResult());
 
-    //System.out.println(String.format("[Reduce] %d / %d", results.getSizeBytes(), completion.getTask().getParentJob().getNumTasks()));
     if (results.size() >= completion.getTask().getParentJob().getNumTasks()) {
       final Map<Character, Integer> fin = new TreeMap<>();
 

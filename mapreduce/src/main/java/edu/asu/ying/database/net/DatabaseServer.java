@@ -1,14 +1,10 @@
 package edu.asu.ying.database.net;
 
-import java.rmi.server.ExportException;
-
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.database.page.IncomingPageHandler;
 import edu.asu.ying.database.page.Page;
 import edu.asu.ying.database.page.PageDistributionSink;
-import edu.asu.ying.database.page.RemotePageSink;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.rmi.RemotePageSinkProxy;
 
 /**
  * {@code DatabaseServer} is the interface between the database and the network.
@@ -31,11 +27,11 @@ public final class DatabaseServer {
 
     // Open the incoming page pipe
     this.pageInSink = new IncomingPageHandler();
-    try {
+    /*try {
       this.localPeer.getActivator().bind(RemotePageSink.class).to(this.pageInSink)
           .wrappedBy(RemotePageSinkProxy.class);
     } catch (final ExportException e) {
       throw new InstantiationException("Failed to export server page sink");
-    }
+    }*/
   }
 }
