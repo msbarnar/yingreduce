@@ -50,7 +50,9 @@ public final class PageDistributionSink implements Sink<Page> {
       results.add(this.peerWorkers.submit(new Callable<Boolean>() {
         @Override
         public Boolean call() throws Exception {
-          return peer.getPageSink().offer(page);
+          // FIXME: BROKEN FOR TESTING
+          //return peer.getPageSink().offer(page);
+          return false;
         }
       }));
     }

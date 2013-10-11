@@ -47,7 +47,7 @@ public final class RMIRequestHandler implements MessageHandler {
 
     // Cache the RMI proxy instance for the peer so we can respond to requests with it
     this.instance = localPeer.getActivator().bind(RemotePeer.class)
-        .via(RemotePeerProxy.class)
+        .to(RemotePeerProxy.class)
         .toInstance(localPeer);
 
     if (this.instance == null) {

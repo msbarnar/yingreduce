@@ -7,11 +7,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.LogManager;
 
-import edu.asu.ying.common.event.EventHandler;
 import edu.asu.ying.database.Entry;
 import edu.asu.ying.database.io.WritableBytes;
 import edu.asu.ying.database.io.WritableString;
-import edu.asu.ying.database.page.Page;
 import edu.asu.ying.database.table.PageBuilder;
 import edu.asu.ying.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
@@ -91,7 +89,7 @@ public class Client {
 
     if (!fullyConnected) {
       LocalScheduler sched = null;
-      sched = instances[0].getLocalPeer().getScheduler();
+      //sched = instances[0].getLocalPeer().getScheduler();
 
       if (sched != null) {
         for (int i = 0; i < 1; i++) {
@@ -102,7 +100,7 @@ public class Client {
     }
 
     for (final Daemon instance : instances) {
-      instance.getLocalPeer().getPageInSink().onIncomingPage.attach(new EventHandler<Page>() {
+      /*instance.getLocalPeer().getPageInSink().onIncomingPage.attach(new EventHandler<Page>() {
         @Override
         public boolean onEvent(Object sender, Page args) {
           System.out.println(
@@ -110,11 +108,11 @@ public class Client {
                             args.getIndex()));
           return true;
         }
-      });
+      });*/
     }
 
-    final PageBuilder pb = new PageBuilder(new TableID("lipsum"),
-                                           instances[0].getLocalPeer().getPageOutSink());
+    final PageBuilder pb = null;//new PageBuilder(new TableID("lipsum"),
+    //instances[0].getLocalPeer().getPageOutSink());
     try {
       pb.offer(new Entry(new WritableString("hi!"),
                          new WritableBytes("It's a small world after all".getBytes())));

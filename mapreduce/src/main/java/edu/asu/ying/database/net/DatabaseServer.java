@@ -32,7 +32,7 @@ public final class DatabaseServer {
     // Open the incoming page pipe
     this.pageInSink = new IncomingPageHandler();
     try {
-      this.localPeer.getActivator().bind(RemotePageSink.class).via(RemotePageSinkProxy.class)
+      this.localPeer.getActivator().bind(RemotePageSink.class).to(RemotePageSinkProxy.class)
           .toInstance(this.pageInSink);
     } catch (final ExportException e) {
       throw new InstantiationException("Failed to export server page sink");

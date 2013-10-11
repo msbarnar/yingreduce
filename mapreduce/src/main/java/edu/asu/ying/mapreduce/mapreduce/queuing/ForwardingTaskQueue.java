@@ -98,17 +98,19 @@ public final class ForwardingTaskQueue implements TaskQueue {
     // Default to forwarding to the local remote queue
     // QFn -> QRn
     int maximumBackpressure = this.size() - this.remoteQueue.size();
-    RemoteScheduler bestScheduler = this.scheduler.getProxy();
+    RemoteScheduler bestScheduler = null;//FIXME: BROKEN FOR TESTING this.scheduler.getProxy();
 
     // Unless one of our neighbors has a lower backpressure
     for (final RemotePeer node : neighbors) {
       try {
-        final RemoteScheduler remoteScheduler = node.getScheduler();
+        // FIXME: BROKEN FOR TESTING
+        /*final RemoteScheduler remoteScheduler = node.getScheduler();
         final int remoteBackpressure = this.size() - remoteScheduler.getBackpressure();
         if (remoteBackpressure > maximumBackpressure) {
           maximumBackpressure = remoteBackpressure;
           bestScheduler = remoteScheduler;
-        }
+        }*/
+        throw new RemoteException();
 
       } catch (final RemoteException e) {
         // TODO: Logging

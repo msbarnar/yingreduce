@@ -5,7 +5,6 @@ import java.net.URI;
 
 import edu.asu.ying.mapreduce.daemon.web.RestInterface;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.kad.KadLocalPeer;
 
 /**
  *
@@ -20,8 +19,10 @@ public final class Daemon {
   public Daemon(final int port) {
     this.port = port;
     try {
-      this.localPeer = new KadLocalPeer(port);
-      DaemonSingleton.get(port + 3000).setId(this.localPeer.getIdentifier().toString());
+      // FIXME: BROKEN FOR TESTING
+      this.localPeer = null;//new KadLocalPeer(port);
+      throw new InstantiationException();
+      //DaemonSingleton.get(port + 3000).setId(this.localPeer.getIdentifier().toString());
     } catch (final InstantiationException e) {
       e.printStackTrace();
     }

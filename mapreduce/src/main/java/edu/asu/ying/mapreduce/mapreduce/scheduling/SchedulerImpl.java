@@ -99,7 +99,7 @@ public final class SchedulerImpl implements LocalScheduler {
 
     try {
       //return node.getScheduler().acceptJobAsResponsibleNode(job);
-      // FIXME: TEST
+      // FIXME: BROKEN FOR TESTING
       throw new RemoteException();
 
     } catch (final RemoteException e) {
@@ -152,7 +152,9 @@ public final class SchedulerImpl implements LocalScheduler {
   public final void completeTask(final TaskCompletion completion) {
     final RemotePeer reducer = completion.getTask().getParentJob().getReducerNode();
     try {
-      reducer.getScheduler().reduceTaskCompletion(completion);
+      //reducer.getScheduler().reduceTaskCompletion(completion);
+      // FIXME: BROKEN FOR TESTING
+      throw new RemoteException();
     } catch (final RemoteException e) {
       e.printStackTrace();
     }
@@ -207,10 +209,5 @@ public final class SchedulerImpl implements LocalScheduler {
    */
   private boolean isInitialNodeForTask(final Task task) {
     return task.getInitialNode().equals(this.localPeer.getProxy());
-  }
-
-  @Override
-  public RemoteScheduler getProxy() {
-    return this.localPeer.getActivator().getReference(RemoteScheduler.class);
   }
 }

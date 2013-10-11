@@ -104,7 +104,8 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
     // Now that the number of tasks is known for the job, start with the loopback task
     if (loopbackTask != null) {
       loopbackTask.setInitialNode(this.localPeer.getProxy());
-      this.localPeer.getScheduler().acceptInitialTask(loopbackTask);
+      // FIXME: BROKEN FOR TESTING
+      //this.localPeer.getScheduler().acceptInitialTask(loopbackTask);
     }
 
     // Attempt to distribute the tasks to their initial nodes
@@ -116,7 +117,8 @@ public final class JobDelegatorImpl implements JobDelegator, Runnable {
             new KadPeerIdentifier(task.getId().toString()));
         // TODO: Logging
         task.setInitialNode(node);
-        node.getScheduler().acceptInitialTask(task);
+        // FIXME: BROKEN FOR TESTING
+        //node.getScheduler().acceptInitialTask(task);
       } catch (final RemoteException e) {
         // TODO: Logging
         e.printStackTrace();

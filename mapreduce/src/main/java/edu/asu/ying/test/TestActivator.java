@@ -18,11 +18,11 @@ public class TestActivator {
     void honk() throws RemoteException;
   }
 
-  private final class RemoteCarImpl implements RemoteCar {
+  public static class RemoteCarImpl implements RemoteCar {
 
     private final long timeMade = System.currentTimeMillis();
 
-    RemoteCarImpl() {
+    public RemoteCarImpl() {
       System.out.println("New car smell");
     }
 
@@ -33,7 +33,7 @@ public class TestActivator {
   }
 
   @Test
-  public void itExportsSingleCall() {
+  public void itExportsSingleCall() throws Exception {
     final Activator activator = new ActivatorImpl();
 
     try {
