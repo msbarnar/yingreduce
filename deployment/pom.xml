@@ -25,8 +25,9 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>edu.asu.ying.mapreduce.daemon.Client</mainClass>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>edu.asu.ying.wellington.daemon.Client</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
@@ -42,7 +43,8 @@
                                     <excludes>
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>META-INF/*.INF</exclude> <!-- This one may not be required -->
+                                        <exclude>META-INF/*.INF</exclude>
+                                        <!-- This one may not be required -->
                                     </excludes>
                                 </filter>
                             </filters>
