@@ -18,9 +18,16 @@ public final class Job implements Serializable {
   private int numTasks;
   private long startTime;
 
+  // Keep track of what has been done with the job
+  private final JobHistory history = new JobHistory();
+
   public Job(TableIdentifier tableID) {
     this.jobID = JobIdentifier.random();
     this.tableID = tableID;
+  }
+
+  public JobHistory getHistory() {
+    return this.history;
   }
 
   public JobIdentifier getID() {

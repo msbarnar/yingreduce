@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.mapreduce.mapreduce.job.JobException;
+import edu.asu.ying.mapreduce.mapreduce.job.JobHistory;
 import edu.asu.ying.mapreduce.mapreduce.job.JobService;
 import edu.asu.ying.p2p.rmi.WrapperFactory;
 
@@ -25,6 +26,8 @@ public final class JobServer implements JobService, WrapperFactory<JobServer, Re
    */
   @Override
   public void accept(Job job) throws JobException {
+    // Add ourselves to the job's history
+    job.getHistory().touch(this.localNode);
     // If we are the responsible node for the job then accept it
     if (this.isResponsibleFor(job)) {
       this.queue(job);
@@ -34,13 +37,16 @@ public final class JobServer implements JobService, WrapperFactory<JobServer, Re
       try {
         job.setResponsibleNode(responsibleNode.getIdentifier());
       } catch (RemoteException e) {
+        job.getHistory().getCurrent().setAction(JobHistory.Action.ForwardFailed);
         throw new JobException("Connection to responsible node interrupted", e);
       }
       try {
         responsibleNode.getJobService().accept(job);
       } catch (RemoteException e) {
+        job.getHistory().getCurrent().setAction(JobHistory.Action.ForwardFailed);
         throw new JobException("Responsible node failed to accept job", e);
       }
+      job.getHistory().getCurrent().setAction(JobHistory.Action.ForwardedToResponsibleNode);
     }
   }
 
@@ -56,6 +62,7 @@ public final class JobServer implements JobService, WrapperFactory<JobServer, Re
    * Queues the job for reducer allocation and task delegation.
    */
   private void queue(Job job) {
+    job.getHistory().getCurrent().setAction(JobHistory.Action.AcceptedResponsibility);
   }
 
   private boolean isResponsibleFor(Job job) {
