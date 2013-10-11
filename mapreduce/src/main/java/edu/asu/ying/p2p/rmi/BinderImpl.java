@@ -10,89 +10,51 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * @inheritDoc
  */
-public final class BinderImpl<K extends Activatable>
-    implements Activator.Binder<K> {
+final class BinderImpl<K extends Activatable> implements Binder<K> {
 
   /**
-   * {@code InstanceBinding} binds a class to a specific proxyInstance of that class.
+   * {@code InstanceBinding} binds a class to a specific instance of that class.
    */
   @SuppressWarnings("unchecked")
-  private final class InstanceBinding<K extends Activatable>
-      implements Activator.Binding<K> {
+  private final class InstanceBinding<K extends Activatable> implements Binding<K> {
 
-    private final Class<K> bindee;
-    private final K instance;
+    private final K proxy;
 
-    private InstanceBinding(final Class<K> bindee, final K instance,
-                            final Activator activator) {
-      this.bindee = bindee;
-      K proxyInstance = null;
+    private InstanceBinding(final K instance, final Activator activator) {
+
+      K proxy = null;
       try {
         // TODO: Port in configuration
-        proxyInstance = (K) UnicastRemoteObject.exportObject(instance,
-                                                             activator.getPort());
+        proxy = (K) UnicastRemoteObject.exportObject(instance, activator.getPort());
       } catch (final RemoteException e) {
         // TODO: Logging
         e.printStackTrace();
       }
-      this.instance = proxyInstance;
+      this.proxy = proxy;
     }
 
-    public final K getReference() {
-      return this.instance;
+    public K getReference() {
+      return this.proxy;
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private final class LazyInstanceBinding<K extends Activatable>
-      implements Activator.Binding<K> {
+  private final class ViaBinderImpl<K extends Activatable, T> implements ViaBinder<K> {
 
     private final Activator activator;
-    private K proxyInstance;
-    // Keep the target in scope so the connection stays open
-    private K targetInstance;
+    private final T targetInstance;
+    private InstanceBinding<K> binding;
 
-    private LazyInstanceBinding(final Activator activator) {
+    private ViaBinderImpl(final T targetInstance, final Activator activator) {
       this.activator = activator;
-    }
-
-    private void set(final K instance) {
-      // For some reason if we don't keep it in scope here, the listening socket closes as soon
-      // as set() leaves scope
-      this.targetInstance = instance;
-      K proxyInstance = null;
-      try {
-        // TODO: Port in configuration
-        proxyInstance = (K) UnicastRemoteObject.exportObject(this.targetInstance,
-                                                             this.activator.getPort());
-      } catch (final RemoteException e) {
-        // TODO: Logging
-        e.printStackTrace();
-      }
-      this.proxyInstance = proxyInstance;
-    }
-
-    public final K getReference() {
-      return this.proxyInstance;
-    }
-  }
-
-  private final class ViaBinderImpl<T extends K, V extends T>
-      implements Activator.ViaBinder<T> {
-
-    private final Class<V> proxyClass;
-    private LazyInstanceBinding<T> binding;
-
-    private ViaBinderImpl(final LazyInstanceBinding<T> binding,
-                          final Class<V> proxyClass) {
-      this.proxyClass = proxyClass;
-      this.binding = binding;
+      this.targetInstance = targetInstance;
     }
 
     @Override
-    public T toInstance(final Object instance) throws ExportException {
+    public <W extends K> K via(final Class<W> wrapper) throws ExportException {
       try {
-        this.binding.set(ConstructorUtils.invokeConstructor(this.proxyClass, instance));
+        this.binding = new InstanceBinding<K>(
+            ConstructorUtils.invokeConstructor(wrapper, this.targetInstance),
+            this.activator);
 
       } catch (final NoSuchMethodException e) {
         throw new ExportException("Proxy class does not have a constructor which takes this class "
@@ -110,27 +72,24 @@ public final class BinderImpl<K extends Activatable>
   }
 
   private final Activator activator;
-  private final Class<K> boundClass;
-  private Activator.Binding<K> binding;
+  private Binding<K> binding;
 
-  public BinderImpl(final Class<K> boundClass, final Activator activator) {
-    this.boundClass = boundClass;
+  public BinderImpl(final Activator activator) {
     this.activator = activator;
   }
 
-  public K toInstance(final K instance) {
-    this.binding = new InstanceBinding<>(this.boundClass, instance, this.activator);
+  @Override
+  public <T extends K> K toInstance(final T instance) {
+    this.binding = new InstanceBinding<K>(instance, this.activator);
     return this.binding.getReference();
   }
 
   @Override
-  public <V extends K> Activator.ViaBinder<K> to(Class<V> proxyClass) {
-    this.binding = new LazyInstanceBinding<K>(this.activator);
-    return new ViaBinderImpl<>((LazyInstanceBinding<K>) this.binding,
-                               proxyClass);
+  public <T> ViaBinder<K> to(final T targetInstance) {
+    return new ViaBinderImpl<K, T>(targetInstance, this.activator);
   }
 
-  public Activator.Binding getBinding() {
+  public Binding<K> getBinding() {
     return this.binding;
   }
 }

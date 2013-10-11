@@ -14,7 +14,7 @@ interface Binder<K extends Activatable> {
    */
   <T extends K> K toInstance(T instance);
 
-  ViaBinder<K> to(Class<?> target);
+  <T> ViaBinder<K> to(T target);
 
   Binding getBinding();
 }
@@ -26,5 +26,5 @@ interface ViaBinder<K extends Activatable> {
    * K} of the binding is requested, this binding will provide it by instantiating its wrapper class
    * with {@code instance} as the parameter.
    */
-  <T> K to(T instance) throws ExportException;
+  <W extends K> K via(Class<W> wrapper) throws ExportException;
 }
