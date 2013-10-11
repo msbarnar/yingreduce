@@ -1,3 +1,5 @@
+package edu.asu.ying.test;
+
 import org.junit.Assert;
 import org.junit.Test;
 

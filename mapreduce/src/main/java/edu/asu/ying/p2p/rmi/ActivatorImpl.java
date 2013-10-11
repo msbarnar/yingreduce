@@ -28,7 +28,7 @@ public final class ActivatorImpl implements Activator {
    * @inheritDoc
    */
   @SuppressWarnings("unchecked")
-  public final <TBound extends Remote> Binder<TBound> bind(final Class<TBound> boundClass) {
+  public final <TBound extends Activatable> Binder<TBound> bind(final Class<TBound> boundClass) {
     final Binder binder = new BinderImpl<>(boundClass, this);
     this.bindings.put(boundClass, binder);
     return binder;
@@ -38,7 +38,7 @@ public final class ActivatorImpl implements Activator {
    * @inheritDoc
    */
   @SuppressWarnings("unchecked")
-  public final <T extends Remote> T getReference(final Class<?> cls) {
+  public final <T extends Activatable> T getReference(final Class<? extends Activatable> cls) {
 
     final Binder<?> binder = this.bindings.get(cls);
     if (binder == null) {

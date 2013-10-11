@@ -21,7 +21,7 @@ public interface Activator {
    * A {@code Binding} fulfills a request for an object of type {@code TBound} by providing an
    * instance of {@code TBound} or one of its subclasses.
    */
-  interface Binding<TBound extends Remote> {
+  interface Binding<TBound extends Activatable> {
 
     /**
      * Provides a fully exported {@link Remote} proxy of type {@code TBound}.
@@ -33,7 +33,7 @@ public interface Activator {
    * {@code Binder} provides helper functions for binding a class of type {@code TBound} to a
    * subclass or instance of {@code TBound}.
    */
-  interface Binder<TBound extends Remote> {
+  interface Binder<TBound extends Activatable> {
 
     /**
      * Binds {@code TBound} to {@code type}, instantiating {@code type} as requested according to
@@ -60,7 +60,7 @@ public interface Activator {
     Binding getBinding();
   }
 
-  interface ViaBinder<TBound extends Remote> {
+  interface ViaBinder<TBound extends Activatable> {
 
     /**
      * Binds {@code TBound} to a specific instance of {@code TBound}. </p> This binding will only
@@ -79,9 +79,9 @@ public interface Activator {
    * @param <TBound> the type of the bound class.
    * @return a {@link Binder} which is used to further specify the type of the binding.
    */
-  <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
+  <TBound extends Activatable> Binder<TBound> bind(Class<TBound> type);
 
-  <T extends Remote> T getReference(final Class<?> cls);
+  <T extends Activatable> T getReference(Class<? extends Activatable> cls);
 
   int getPort();
 }

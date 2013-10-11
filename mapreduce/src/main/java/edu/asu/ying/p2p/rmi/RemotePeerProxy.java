@@ -1,7 +1,6 @@
 package edu.asu.ying.p2p.rmi;
 
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import edu.asu.ying.p2p.LocalPeer;
@@ -27,7 +26,8 @@ public final class RemotePeerProxy implements RemotePeer {
   }
 
   @Override
-  public <T extends Remote> T getProxyToInterface(Class<?> cls) throws RemoteException {
+  public <T extends Activatable> T getReference(final Class<? extends Activatable> cls)
+      throws RemoteException {
     return this.localPeer.getActivator().getReference(cls);
   }
 

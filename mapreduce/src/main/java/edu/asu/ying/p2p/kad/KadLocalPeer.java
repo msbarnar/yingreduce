@@ -204,6 +204,11 @@ public final class KadLocalPeer implements LocalPeer {
     return this.localIdentifier;
   }
 
+  @Override
+  public RemotePeer getProxy() {
+    return this.activator.getReference(RemotePeer.class);
+  }
+
   /**
    * Given a Kademlia node, sends a request to the remote {@link edu.asu.ying.p2p.rmi.RMIRequestHandler}
    * and waits for a response containing a {@link edu.asu.ying.p2p.RemotePeer} proxy to that peer.

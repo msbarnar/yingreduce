@@ -5,13 +5,14 @@ import java.net.URI;
 import java.util.List;
 
 import edu.asu.ying.p2p.rmi.Activator;
+import edu.asu.ying.p2p.rmi.Exportable;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
 
 
 /**
  * Provides an interface to the local node and its listening facilities.
  */
-public interface LocalPeer {
+public interface LocalPeer extends Exportable<RemotePeer> {
 
   /**
    * Gets the unique network identifier for this peer.

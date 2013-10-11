@@ -3,7 +3,6 @@ package edu.asu.ying.p2p.rmi;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
@@ -11,14 +10,14 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * @inheritDoc
  */
-public final class BinderImpl<TBound extends Remote>
+public final class BinderImpl<TBound extends Activatable>
     implements Activator.Binder<TBound> {
 
   /**
    * {@code ClassBinding} binds a class to another class with an activation mode controlling the
    * instantiation of the bound class.
    */
-  private final class ClassBinding<TBound extends Remote, TBindee extends TBound>
+  private final class ClassBinding<TBound extends Activatable, TBindee extends TBound>
       implements Activator.Binding<TBound> {
 
     /**
@@ -41,7 +40,8 @@ public final class BinderImpl<TBound extends Remote>
      * Provides a new proxyInstance of {@code TBindee} per call.
      */
     @SuppressWarnings("unchecked")
-    private final class SingleCallFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
+    private final class SingleCallFactory<TBindee extends Activatable>
+        extends InstanceFactory<TBindee> {
 
       private SingleCallFactory(final Class<TBindee> type, final Activator activator) {
         super(type, activator);
@@ -64,7 +64,8 @@ public final class BinderImpl<TBound extends Remote>
      * Provides a singleton proxyInstance of {@code TBindee}.
      */
     @SuppressWarnings("unchecked")
-    private final class SingletonFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
+    private final class SingletonFactory<TBindee extends Activatable>
+        extends InstanceFactory<TBindee> {
 
       private TBindee instance;
       private final Object instanceLock = new Object();
@@ -132,7 +133,7 @@ public final class BinderImpl<TBound extends Remote>
    * {@code InstanceBinding} binds a class to a specific proxyInstance of that class.
    */
   @SuppressWarnings("unchecked")
-  private final class InstanceBinding<TBound extends Remote>
+  private final class InstanceBinding<TBound extends Activatable>
       implements Activator.Binding<TBound> {
 
     private final Class<TBound> bindee;
@@ -159,7 +160,7 @@ public final class BinderImpl<TBound extends Remote>
   }
 
   @SuppressWarnings("unchecked")
-  private final class LazyInstanceBinding<TBound extends Remote>
+  private final class LazyInstanceBinding<TBound extends Activatable>
       implements Activator.Binding<TBound> {
 
     private final Activator activator;

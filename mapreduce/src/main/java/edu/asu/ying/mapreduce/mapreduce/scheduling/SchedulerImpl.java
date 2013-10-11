@@ -98,7 +98,9 @@ public final class SchedulerImpl implements LocalScheduler {
     }
 
     try {
-      return node.getScheduler().acceptJobAsResponsibleNode(job);
+      //return node.getScheduler().acceptJobAsResponsibleNode(job);
+      // FIXME: TEST
+      throw new RemoteException();
 
     } catch (final RemoteException e) {
       // TODO: Logging

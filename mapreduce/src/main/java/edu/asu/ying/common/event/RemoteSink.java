@@ -1,13 +1,13 @@
 package edu.asu.ying.common.event;
 
-import java.io.Serializable;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+import edu.asu.ying.p2p.rmi.Activatable;
 
 /**
  *
  */
-public interface RemoteSink<E> extends Remote, Serializable {
+public interface RemoteSink<E> extends Activatable {
 
   boolean offer(E object) throws RemoteException;
 
