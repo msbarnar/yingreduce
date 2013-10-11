@@ -12,24 +12,24 @@ import java.rmi.server.UnicastRemoteObject;
  * @inheritDoc
  */
 public final class BinderImpl<TBound extends Remote>
-    implements RMIActivator.Binder<TBound> {
+    implements Activator.Binder<TBound> {
 
   /**
    * {@code ClassBinding} binds a class to another class with an activation mode controlling the
    * instantiation of the bound class.
    */
   private final class ClassBinding<TBound extends Remote, TBindee extends TBound>
-      implements RMIActivator.Binding<TBound> {
+      implements Activator.Binding<TBound> {
 
     /**
-     * Provides instances of {@code TBound} according to the {@link RMIActivator.ActivationMode}.
+     * Provides instances of {@code TBound} according to the {@link Activator.ActivationMode}.
      */
     private abstract class InstanceFactory<TBindee> {
 
-      protected final RMIActivator activator;
+      protected final Activator activator;
       protected final Class<TBindee> type;
 
-      protected InstanceFactory(final Class<TBindee> type, final RMIActivator activator) {
+      protected InstanceFactory(final Class<TBindee> type, final Activator activator) {
         this.type = type;
         this.activator = activator;
       }
@@ -43,7 +43,7 @@ public final class BinderImpl<TBound extends Remote>
     @SuppressWarnings("unchecked")
     private final class SingleCallFactory<TBindee extends Remote> extends InstanceFactory<TBindee> {
 
-      private SingleCallFactory(final Class<TBindee> type, final RMIActivator activator) {
+      private SingleCallFactory(final Class<TBindee> type, final Activator activator) {
         super(type, activator);
       }
 
@@ -69,7 +69,7 @@ public final class BinderImpl<TBound extends Remote>
       private TBindee instance;
       private final Object instanceLock = new Object();
 
-      private SingletonFactory(final Class<TBindee> type, final RMIActivator activator) {
+      private SingletonFactory(final Class<TBindee> type, final Activator activator) {
         super(type, activator);
       }
 
@@ -106,8 +106,8 @@ public final class BinderImpl<TBound extends Remote>
      * Binds {@code boundType} to {@code boundToClass} given the activation {@code mode}.
      */
     public ClassBinding(final Class<TBound> boundType, final Class<TBindee> bindee,
-                        final RMIActivator.ActivationMode mode,
-                        final RMIActivator activator) {
+                        final Activator.ActivationMode mode,
+                        final Activator activator) {
       this.boundType = boundType;
       this.bindee = bindee;
 
@@ -133,13 +133,13 @@ public final class BinderImpl<TBound extends Remote>
    */
   @SuppressWarnings("unchecked")
   private final class InstanceBinding<TBound extends Remote>
-      implements RMIActivator.Binding<TBound> {
+      implements Activator.Binding<TBound> {
 
     private final Class<TBound> bindee;
     private final TBound instance;
 
     private InstanceBinding(final Class<TBound> bindee, final TBound instance,
-                            final RMIActivator activator) {
+                            final Activator activator) {
       this.bindee = bindee;
       TBound proxyInstance = null;
       try {
@@ -160,14 +160,14 @@ public final class BinderImpl<TBound extends Remote>
 
   @SuppressWarnings("unchecked")
   private final class LazyInstanceBinding<TBound extends Remote>
-      implements RMIActivator.Binding<TBound> {
+      implements Activator.Binding<TBound> {
 
-    private final RMIActivator activator;
+    private final Activator activator;
     private TBound proxyInstance;
     // Keep the target in scope so the connection stays open
     private TBound targetInstance;
 
-    private LazyInstanceBinding(final RMIActivator activator) {
+    private LazyInstanceBinding(final Activator activator) {
       this.activator = activator;
     }
 
@@ -193,7 +193,7 @@ public final class BinderImpl<TBound extends Remote>
   }
 
   private final class ViaBinderImpl<T extends TBound, TBindee extends T>
-      implements RMIActivator.ViaBinder<T> {
+      implements Activator.ViaBinder<T> {
 
     private final Class<TBindee> proxyClass;
     private LazyInstanceBinding<T> binding;
@@ -224,17 +224,17 @@ public final class BinderImpl<TBound extends Remote>
     }
   }
 
-  private final RMIActivator activator;
+  private final Activator activator;
   private final Class<TBound> boundClass;
-  private RMIActivator.Binding<TBound> binding;
+  private Activator.Binding<TBound> binding;
 
-  public BinderImpl(final Class<TBound> boundClass, final RMIActivator activator) {
+  public BinderImpl(final Class<TBound> boundClass, final Activator activator) {
     this.boundClass = boundClass;
     this.activator = activator;
   }
 
   public <TBindee extends TBound> TBound
-  to(final Class<TBindee> type, final RMIActivator.ActivationMode mode) {
+  to(final Class<TBindee> type, final Activator.ActivationMode mode) {
     this.binding = new ClassBinding<>(this.boundClass, type, mode, this.activator);
     return this.binding.getReference();
   }
@@ -246,13 +246,13 @@ public final class BinderImpl<TBound extends Remote>
   }
 
   @Override
-  public <TBindee extends TBound> RMIActivator.ViaBinder<TBound> via(Class<TBindee> proxyClass) {
+  public <TBindee extends TBound> Activator.ViaBinder<TBound> via(Class<TBindee> proxyClass) {
     this.binding = new LazyInstanceBinding<TBound>(this.activator);
     return new ViaBinderImpl<>((LazyInstanceBinding<TBound>) this.binding,
                                proxyClass);
   }
 
-  public RMIActivator.Binding getBinding() {
+  public Activator.Binding getBinding() {
     return this.binding;
   }
 }

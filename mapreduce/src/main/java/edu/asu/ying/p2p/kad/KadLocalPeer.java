@@ -16,11 +16,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.database.page.IncomingPageHandler;
-import edu.asu.ying.database.page.Page;
-import edu.asu.ying.database.page.PageDistributionSink;
-import edu.asu.ying.database.page.RemotePageSink;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
 import edu.asu.ying.mapreduce.mapreduce.scheduling.SchedulerImpl;
@@ -32,11 +27,10 @@ import edu.asu.ying.p2p.net.Channel;
 import edu.asu.ying.p2p.net.InvalidContentException;
 import edu.asu.ying.p2p.net.message.RequestMessage;
 import edu.asu.ying.p2p.net.message.ResponseMessage;
-import edu.asu.ying.p2p.rmi.RMIActivator;
-import edu.asu.ying.p2p.rmi.RMIActivatorImpl;
-import edu.asu.ying.p2p.rmi.RMIRequestHandler;
+import edu.asu.ying.p2p.rmi.Activator;
+import edu.asu.ying.p2p.rmi.ActivatorImpl;
+import edu.asu.ying.p2p.rmi.ActivatorRequestHandler;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
-import edu.asu.ying.p2p.rmi.RemotePageSinkProxy;
 import edu.asu.ying.p2p.rmi.RemotePeerProxy;
 import edu.asu.ying.p2p.rmi.RemoteSchedulerProxy;
 import il.technion.ewolf.kbr.Key;
@@ -65,21 +59,13 @@ public final class KadLocalPeer implements LocalPeer {
    * RMI **
    */
   // Manages RMI export of objects for access by remote peers.
-  private final RMIActivator activator;
+  private final Activator activator;
 
   /**
    * SCHEDULING **
    */
   // Schedules mapreduce jobs and tasks
   private final LocalScheduler scheduler;
-
-  /**
-   * DATABASE **
-   */
-  // Sends pages to the network
-  private final Sink<Page> pageOutSink;
-  // Accepts pages from the network
-  private final IncomingPageHandler pageInSink;
 
 
   public KadLocalPeer(final int port) throws InstantiationException {
@@ -95,7 +81,7 @@ public final class KadLocalPeer implements LocalPeer {
 
     /*** RMI ***/
     // Enable this peer to export remote references
-    this.activator = new RMIActivatorImpl();
+    this.activator = new ActivatorImpl();
 
     /*** SCHEDULING ***/
     // Start the scheduler and open the incoming job pipe
@@ -110,17 +96,6 @@ public final class KadLocalPeer implements LocalPeer {
     this.scheduler.start();
 
     /*** DATABASE ***/
-    // Open the outgoing page pipe
-    this.pageOutSink = new PageDistributionSink(this);
-
-    // Open the incoming page pipe
-    this.pageInSink = new IncomingPageHandler();
-    try {
-      this.activator.bind(RemotePageSink.class).via(RemotePageSinkProxy.class)
-          .toInstance(this.pageInSink);
-    } catch (final ExportException e) {
-      throw new InstantiationException("Failed to export server page sink");
-    }
 
     // Allow peers to access the node and scheduler remotely.
     try {
@@ -130,7 +105,7 @@ public final class KadLocalPeer implements LocalPeer {
     }
 
     // Allow peers to discover this node's RMI interfaces.
-    RMIRequestHandler.exportNodeToChannel(this, networkChannel);
+    ActivatorRequestHandler.exportNodeToChannel(this, networkChannel);
   }
 
   /**
@@ -227,28 +202,7 @@ public final class KadLocalPeer implements LocalPeer {
    * {@inheritDoc}
    */
   @Override
-  public IncomingPageHandler getPageInSink() {
-    return this.pageInSink;
-  }
-
-  @Override
-  public Sink<Page> getPageOutSink() {
-    return this.pageOutSink;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public LocalScheduler getScheduler() {
-    return this.scheduler;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public RMIActivator getActivator() {
+  public Activator getActivator() {
     return this.activator;
   }
 
@@ -266,8 +220,9 @@ public final class KadLocalPeer implements LocalPeer {
   }
 
   /**
-   * Given a Kademlia node, sends a request to the remote {@link RMIRequestHandler} and waits for a
-   * response containing a {@link java.rmi.Remote} proxy to the {@link RemotePeer} on that node.
+   * Given a Kademlia node, sends a request to the remote {@link edu.asu.ying.p2p.rmi.ActivatorRequestHandler}
+   * and waits for a response containing a {@link java.rmi.Remote} proxy to the {@link RemotePeer}
+   * on that node.
    */
   // TODO: Target for cleanup
   @SuppressWarnings("ThrowableResultOfMethodCallIgnored")

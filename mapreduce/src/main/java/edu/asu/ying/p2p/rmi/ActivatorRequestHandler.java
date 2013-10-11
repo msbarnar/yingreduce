@@ -8,13 +8,13 @@ import edu.asu.ying.p2p.net.message.MessageHandler;
 import edu.asu.ying.p2p.net.message.ResponseMessage;
 
 /**
- * {@code RMIRequestHandler} listens for requests from the network and returns a {@link
+ * {@code ActivatorRequestHandler} listens for requests from the network and returns a {@link
  * ResponseMessage} wrapping a {@link java.rmi.Remote} proxy to the server-side node.
  */
-public final class RMIRequestHandler implements MessageHandler {
+public final class ActivatorRequestHandler implements MessageHandler {
 
   /**
-   * Creates an {@link RMIRequestHandler} which provides instances of the {@link
+   * Creates an {@link ActivatorRequestHandler} which provides instances of the {@link
    * edu.asu.ying.p2p.RemotePeer} proxy to the {@link edu.asu.ying.p2p.LocalPeer} for access by
    * remote peers.
    *
@@ -22,9 +22,9 @@ public final class RMIRequestHandler implements MessageHandler {
    * @param networkChannel the channel through which the node will be accessible.
    * @return the new request handler.
    */
-  public static RMIRequestHandler exportNodeToChannel(final LocalPeer node,
-                                                      final Channel networkChannel) {
-    return new RMIRequestHandler(node, networkChannel);
+  public static ActivatorRequestHandler exportNodeToChannel(final LocalPeer node,
+                                                            final Channel networkChannel) {
+    return new ActivatorRequestHandler(node, networkChannel);
   }
 
   // The proxy instance to include in responses
@@ -36,9 +36,9 @@ public final class RMIRequestHandler implements MessageHandler {
   /**
    * Gets an instance of the {@link edu.asu.ying.p2p.RemotePeer} proxy and registers the message
    * handler on the channel. </p> The {@link edu.asu.ying.p2p.RemotePeer} should have already been
-   * bound on the local node's {@link RMIActivator} via {@link RMIActivator#bind}.
+   * bound on the local node's {@link Activator} via {@link Activator#bind}.
    */
-  private RMIRequestHandler(final LocalPeer localPeer, final Channel networkChannel) {
+  private ActivatorRequestHandler(final LocalPeer localPeer, final Channel networkChannel) {
     this.instance = localPeer.getProxy();
     if (this.instance == null) {
       throw new IllegalStateException("Local node proxy is not available; remote peers will be"
@@ -53,7 +53,8 @@ public final class RMIRequestHandler implements MessageHandler {
   @Override
   public void onIncomingMessage(final Message message) {
     // TODO: Logging
-    System.out.println("Unexpected message to RMIRequestHandler: ".concat(message.toString()));
+    System.out
+        .println("Unexpected message to activator request handler: ".concat(message.toString()));
   }
 
   /**

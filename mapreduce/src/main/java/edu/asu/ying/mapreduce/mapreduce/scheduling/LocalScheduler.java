@@ -7,7 +7,6 @@ import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskCompletion;
 import edu.asu.ying.mapreduce.mapreduce.task.TaskSchedulingResult;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.rmi.Exported;
 
 /**
  * {@code LocalScheduler} is responsible for the allocation of {@code map} and {@code reduce}

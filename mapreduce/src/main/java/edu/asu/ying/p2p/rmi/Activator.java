@@ -6,7 +6,7 @@ import java.rmi.server.ExportException;
 /**
  *
  */
-public interface RMIActivator {
+public interface Activator {
 
   /**
    * The {@code ActivationMode} specifies the manner in which objects are instantiated to fulfill
@@ -21,7 +21,7 @@ public interface RMIActivator {
    * A {@code Binding} fulfills a request for an object of type {@code TBound} by providing an
    * instance of {@code TBound} or one of its subclasses.
    */
-  public interface Binding<TBound extends Remote> {
+  interface Binding<TBound extends Remote> {
 
     /**
      * Provides a fully exported {@link Remote} proxy of type {@code TBound}.
@@ -33,7 +33,7 @@ public interface RMIActivator {
    * {@code Binder} provides helper functions for binding a class of type {@code TBound} to a
    * subclass or instance of {@code TBound}.
    */
-  public interface Binder<TBound extends Remote> {
+  interface Binder<TBound extends Remote> {
 
     /**
      * Binds {@code TBound} to {@code type}, instantiating {@code type} as requested according to
@@ -44,7 +44,7 @@ public interface RMIActivator {
      * @param <TBindee> the type of the class bound.
      */
     <TBindee extends TBound> TBound to(Class<TBindee> type,
-                                       RMIActivator.ActivationMode mode);
+                                       Activator.ActivationMode mode);
 
     /**
      * Binds {@code TBound} to a specific instance of {@code TBound}. </p> This binding will only
@@ -60,7 +60,7 @@ public interface RMIActivator {
     Binding getBinding();
   }
 
-  public interface ViaBinder<TBound extends Remote> {
+  interface ViaBinder<TBound extends Remote> {
 
     /**
      * Binds {@code TBound} to a specific instance of {@code TBound}. </p> This binding will only
@@ -73,15 +73,17 @@ public interface RMIActivator {
    * Creates a binding of the class {@code type} to an instance or subclass of {@code type}. If a
    * subclass is bound, it will be instantiated according to the {@link ActivationMode} given. </p>
    * When a class is activated, the instance provided will be determined by bindings made with
-   * {@link RMIActivator#bind}.
+   * {@link Activator#bind}.
    *
    * @param type     the class to bind.
    * @param <TBound> the type of the bound class.
    * @return a {@link Binder} which is used to further specify the type of the binding.
    */
-  <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
+  public <TBound extends Remote> Binder<TBound> bind(Class<TBound> type);
 
-  <TBound extends Remote> TBound getReference(final Class<TBound> type);
+  public <T extends Remote> T getReference(final Class<?> cls);
 
-  int getPort();
+  public int getPort();
+
+  public RemoteActivator getProxy();
 }

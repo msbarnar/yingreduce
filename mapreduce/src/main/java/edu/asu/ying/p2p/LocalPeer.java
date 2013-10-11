@@ -4,12 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
-import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.database.page.IncomingPageHandler;
-import edu.asu.ying.database.page.Page;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.p2p.rmi.Exported;
-import edu.asu.ying.p2p.rmi.RMIActivator;
+import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
 
 
@@ -38,19 +33,7 @@ public interface LocalPeer extends Exported<RemotePeer> {
   /**
    * Gets the activator capable of exposing objects to the network through this peer.
    */
-  RMIActivator getActivator();
-
-  /**
-   * Gets the local scheduler which creates and manages tasks on this peer.
-   */
-  LocalScheduler getScheduler();
-
-  /**
-   * Gets a sink which exports pages to the network via this peer.
-   */
-  Sink<Page> getPageOutSink();
-
-  IncomingPageHandler getPageInSink();
+  Activator getActivator();
 
   /**
    * Finds a peer on any network of which this peer is a part.
