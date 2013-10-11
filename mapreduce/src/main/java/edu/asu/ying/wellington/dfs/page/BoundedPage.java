@@ -1,11 +1,11 @@
-package edu.asu.ying.wellington.database.page;
+package edu.asu.ying.wellington.dfs.page;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import edu.asu.ying.wellington.database.SerializedEntry;
+import edu.asu.ying.wellington.dfs.SerializedEntry;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**

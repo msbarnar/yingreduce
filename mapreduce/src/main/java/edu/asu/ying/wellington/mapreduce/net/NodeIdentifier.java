@@ -1,41 +1,17 @@
 package edu.asu.ying.wellington.mapreduce.net;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
-import java.io.Serializable;
+import edu.asu.ying.wellington.Identifier;
 
 /**
  *
  */
-public final class NodeIdentifier implements Serializable, Comparable<NodeIdentifier> {
+public final class NodeIdentifier extends Identifier {
 
   private static final long SerialVersionUID = 1L;
 
-  private final String id;
+  private static final String NODE_PREFIX = "node";
 
   public NodeIdentifier(String id) {
-    this.id = Preconditions.checkNotNull(Strings.emptyToNull((id)));
-  }
-
-  @Override
-  public int compareTo(NodeIdentifier o) {
-    return this.id.compareTo(o.id);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return this == o || !(o == null || getClass() != o.getClass()) && this.id
-        .equals(((NodeIdentifier) o).id);
-  }
-
-  @Override
-  public int hashCode() {
-    return this.id.hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return this.id;
+    super(NODE_PREFIX, id);
   }
 }

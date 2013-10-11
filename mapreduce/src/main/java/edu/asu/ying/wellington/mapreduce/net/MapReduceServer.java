@@ -1,7 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.net;
 
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.wellington.MapReduceService;
+import edu.asu.ying.wellington.mapreduce.MapReduceService;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
 
 /**

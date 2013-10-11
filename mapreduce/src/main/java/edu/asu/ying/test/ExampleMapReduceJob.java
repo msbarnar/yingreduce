@@ -3,13 +3,13 @@ package edu.asu.ying.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.asu.ying.wellington.Mappable;
-import edu.asu.ying.wellington.OutputCollector;
-import edu.asu.ying.wellington.Reducer;
-import edu.asu.ying.wellington.Reporter;
 import edu.asu.ying.wellington.io.WritableChar;
 import edu.asu.ying.wellington.io.WritableInt;
 import edu.asu.ying.wellington.io.WritableString;
+import edu.asu.ying.wellington.mapreduce.Mappable;
+import edu.asu.ying.wellington.mapreduce.OutputCollector;
+import edu.asu.ying.wellington.mapreduce.Reducer;
+import edu.asu.ying.wellington.mapreduce.Reporter;
 import edu.asu.ying.wellington.mapreduce.job.JobConf;
 
 /**

@@ -1,10 +1,10 @@
-package edu.asu.ying.wellington.database.net;
+package edu.asu.ying.wellington.dfs.net;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.wellington.database.page.IncomingPageHandler;
-import edu.asu.ying.wellington.database.page.Page;
-import edu.asu.ying.wellington.database.page.PageDistributionSink;
+import edu.asu.ying.wellington.dfs.page.IncomingPageHandler;
+import edu.asu.ying.wellington.dfs.page.Page;
+import edu.asu.ying.wellington.dfs.page.PageDistributionSink;
 
 /**
  * {@code DatabaseServer} is the interface between the database and the network.

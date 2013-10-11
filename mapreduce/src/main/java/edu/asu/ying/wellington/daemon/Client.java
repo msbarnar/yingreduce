@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.LogManager;
 
-import edu.asu.ying.wellington.database.Entry;
-import edu.asu.ying.wellington.database.table.PageBuilder;
+import edu.asu.ying.wellington.dfs.Entry;
+import edu.asu.ying.wellington.dfs.table.PageBuilder;
 import edu.asu.ying.wellington.io.WritableBytes;
 import edu.asu.ying.wellington.io.WritableString;
 import edu.asu.ying.wellington.mapreduce.job.Job;

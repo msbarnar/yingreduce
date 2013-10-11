@@ -1,9 +1,9 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
-import edu.asu.ying.wellington.Mappable;
-import edu.asu.ying.wellington.Reducer;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
+import edu.asu.ying.wellington.mapreduce.Mappable;
+import edu.asu.ying.wellington.mapreduce.Reducer;
 
 /**
  *

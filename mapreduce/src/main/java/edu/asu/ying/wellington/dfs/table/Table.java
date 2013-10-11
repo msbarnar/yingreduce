@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.database.table;
+package edu.asu.ying.wellington.dfs.table;
 
 /**
  *

@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.database.table;
+package edu.asu.ying.wellington.dfs.table;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Longs;
@@ -11,11 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.database.Entry;
-import edu.asu.ying.wellington.database.SerializedEntry;
-import edu.asu.ying.wellington.database.page.BoundedPage;
-import edu.asu.ying.wellington.database.page.EntriesExceedPageCapacityException;
-import edu.asu.ying.wellington.database.page.Page;
+import edu.asu.ying.wellington.dfs.Entry;
+import edu.asu.ying.wellington.dfs.SerializedEntry;
+import edu.asu.ying.wellington.dfs.page.BoundedPage;
+import edu.asu.ying.wellington.dfs.page.EntriesExceedPageCapacityException;
+import edu.asu.ying.wellington.dfs.page.Page;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**

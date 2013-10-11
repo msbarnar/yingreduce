@@ -2,7 +2,7 @@ package edu.asu.ying.wellington.mapreduce.job;
 
 import java.io.Serializable;
 
-import edu.asu.ying.wellington.database.table.TableIdentifier;
+import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.mapreduce.net.NodeIdentifier;
 
 /**

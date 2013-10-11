@@ -1,16 +1,16 @@
-package edu.asu.ying.wellington.database.page;
+package edu.asu.ying.wellington.dfs.page;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import edu.asu.ying.wellington.database.DatabaseException;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  *
  */
-public final class EntriesExceedPageCapacityException extends DatabaseException {
+public final class EntriesExceedPageCapacityException extends IOException {
 
   private final List<WritableComparable> keys = new ArrayList<>();
 

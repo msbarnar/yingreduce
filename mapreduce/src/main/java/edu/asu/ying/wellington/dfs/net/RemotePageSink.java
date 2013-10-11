@@ -1,7 +1,7 @@
-package edu.asu.ying.wellington.database.net;
+package edu.asu.ying.wellington.dfs.net;
 
 import edu.asu.ying.common.event.RemoteSink;
-import edu.asu.ying.wellington.database.page.Page;
+import edu.asu.ying.wellington.dfs.page.Page;
 
 /**
  * {@code RemotePageSink} is necessary for binding the RMI interface because generics are

@@ -1,10 +1,10 @@
-package edu.asu.ying.wellington.database.page;
+package edu.asu.ying.wellington.dfs.page;
 
 import java.io.Serializable;
 import java.util.Map;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.database.SerializedEntry;
+import edu.asu.ying.wellington.dfs.SerializedEntry;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
