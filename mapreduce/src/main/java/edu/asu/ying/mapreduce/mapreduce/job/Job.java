@@ -2,31 +2,56 @@ package edu.asu.ying.mapreduce.mapreduce.job;
 
 import java.io.Serializable;
 
-import edu.asu.ying.database.table.TableID;
-import edu.asu.ying.p2p.RemotePeer;
+import edu.asu.ying.database.table.TableIdentifier;
+import edu.asu.ying.mapreduce.mapreduce.net.NodeIdentifier;
 
 /**
- * {@code Job} is the base interface for a full map/reduce job.
+ *
  */
-public interface Job extends Serializable {
+public final class Job implements Serializable {
 
-  TaskID getID();
+  private static final long SerialVersionUID = 1L;
 
-  TableID getTableID();
+  private final JobIdentifier jobID;
+  private final TableIdentifier tableID;
+  private NodeIdentifier responsibleNodeID;
+  private int numTasks;
+  private long startTime;
 
-  void setResponsibleNode(final RemotePeer node);
+  public Job(TableIdentifier tableID) {
+    this.jobID = JobIdentifier.random();
+    this.tableID = tableID;
+  }
 
-  RemotePeer getResponsibleNode();
+  public JobIdentifier getID() {
+    return this.jobID;
+  }
 
-  void setReducerNode(final RemotePeer node);
+  public TableIdentifier getTableID() {
+    return this.tableID;
+  }
 
-  RemotePeer getReducerNode();
+  public void setResponsibleNode(NodeIdentifier nodeID) {
+    this.responsibleNodeID = nodeID;
+  }
 
-  void setNumTasks(final int n);
+  public NodeIdentifier getResponsibleNodeID() {
+    return this.responsibleNodeID;
+  }
 
-  int getNumTasks();
+  public int getNumTasks() {
+    return this.numTasks;
+  }
 
-  void setStartTime(final RemotePeer referenceNode);
+  public void setNumTasks(int n) {
+    this.numTasks = n;
+  }
 
-  long getTimeElapsed();
+  public void setStartTime(long startTime) {
+    this.startTime = startTime;
+  }
+
+  public long getTimeElapsed() {
+    return System.currentTimeMillis() - this.startTime;
+  }
 }

@@ -1,9 +1,6 @@
-package edu.asu.ying.mapreduce.mapreduce.queuing;
+package edu.asu.ying.mapreduce.mapreduce.job.scheduling;
 
 import java.io.Serializable;
-
-import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.mapreduce.task.Task;
 
 /**
  *

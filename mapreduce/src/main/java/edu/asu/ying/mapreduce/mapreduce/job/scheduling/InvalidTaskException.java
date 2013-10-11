@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.job.scheduling;
 
 /**
  *

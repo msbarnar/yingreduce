@@ -11,11 +11,9 @@ import edu.asu.ying.database.Entry;
 import edu.asu.ying.database.io.WritableBytes;
 import edu.asu.ying.database.io.WritableString;
 import edu.asu.ying.database.table.PageBuilder;
-import edu.asu.ying.database.table.TableID;
 import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.mapreduce.mapreduce.job.MapReduceJob;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.JobSchedulingResult;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
+import edu.asu.ying.mapreduce.mapreduce.job.scheduling.JobSchedulingResult;
+import edu.asu.ying.mapreduce.mapreduce.job.scheduling.LocalScheduler;
 
 /**
  * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
@@ -93,7 +91,7 @@ public class Client {
 
       if (sched != null) {
         for (int i = 0; i < 1; i++) {
-          final Job job = new MapReduceJob(new TableID("hoblahsh"));
+          final Job job = new Job(new TableID("hoblahsh"));
           final JobSchedulingResult result = sched.createJob(job);
         }
       }

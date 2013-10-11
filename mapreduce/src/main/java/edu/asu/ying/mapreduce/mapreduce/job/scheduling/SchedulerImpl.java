@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.mapreduce.scheduling;
+package edu.asu.ying.mapreduce.mapreduce.job.scheduling;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -8,12 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.mapreduce.mapreduce.queuing.ForwardingTaskQueue;
-import edu.asu.ying.mapreduce.mapreduce.queuing.LocalTaskQueue;
-import edu.asu.ying.mapreduce.mapreduce.queuing.RemoteTaskQueue;
-import edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue;
-import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
@@ -27,7 +21,7 @@ import edu.asu.ying.p2p.rmi.RemoteImportException;
  * Local} - mapreduce are executed directly on the local node.</li> <li>{@code Forwarding} -
  * mapreduce are sent to either the local node's {@code remote} queue, or to the forwarding queue of
  * a random immediately-connected node.</li> </ol> Once the scheduler has placed the mapreduce in a
- * queue, the mapreduce is taken over by that queue's {@link edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue}.
+ * queue, the mapreduce is taken over by that queue's {@link TaskQueue}.
  */
 public final class SchedulerImpl implements LocalScheduler {
 

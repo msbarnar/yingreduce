@@ -1,8 +1,5 @@
-package edu.asu.ying.mapreduce.mapreduce.scheduling;
+package edu.asu.ying.mapreduce.mapreduce.job.scheduling;
 
-import edu.asu.ying.mapreduce.mapreduce.job.Job;
-import edu.asu.ying.mapreduce.mapreduce.queuing.TaskQueue;
-import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.p2p.LocalPeer;
 
 /**

@@ -1,6 +1,4 @@
-package edu.asu.ying.mapreduce.mapreduce.scheduling;
-
-import edu.asu.ying.mapreduce.mapreduce.job.Job;
+package edu.asu.ying.mapreduce.mapreduce.job.scheduling;
 
 /**
  * {@code JobDelegator} watches a {@link edu.asu.ying.mapreduce.mapreduce.job.Job} queue and

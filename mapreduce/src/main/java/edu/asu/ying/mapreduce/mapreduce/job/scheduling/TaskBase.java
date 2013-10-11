@@ -1,6 +1,5 @@
-package edu.asu.ying.mapreduce.mapreduce.task;
+package edu.asu.ying.mapreduce.mapreduce.job.scheduling;
 
-import edu.asu.ying.mapreduce.mapreduce.job.Job;
 import edu.asu.ying.p2p.RemotePeer;
 
 /**

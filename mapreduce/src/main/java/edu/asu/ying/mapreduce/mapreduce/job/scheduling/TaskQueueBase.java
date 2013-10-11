@@ -1,12 +1,9 @@
-package edu.asu.ying.mapreduce.mapreduce.queuing;
+package edu.asu.ying.mapreduce.mapreduce.job.scheduling;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.mapreduce.task.Task;
 
 /**
  *

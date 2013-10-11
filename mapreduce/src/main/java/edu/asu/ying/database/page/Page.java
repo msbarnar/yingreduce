@@ -6,7 +6,6 @@ import java.util.Map;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.database.SerializedEntry;
 import edu.asu.ying.database.io.WritableComparable;
-import edu.asu.ying.database.table.TableID;
 
 /**
  */

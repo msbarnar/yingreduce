@@ -1,4 +1,4 @@
-package edu.asu.ying.mapreduce.mapreduce.queuing;
+package edu.asu.ying.mapreduce.mapreduce.job.scheduling;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -7,9 +7,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import edu.asu.ying.mapreduce.mapreduce.scheduling.LocalScheduler;
-import edu.asu.ying.mapreduce.mapreduce.scheduling.RemoteScheduler;
-import edu.asu.ying.mapreduce.mapreduce.task.Task;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
 
