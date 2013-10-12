@@ -13,15 +13,16 @@ import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadPeerIdentifier;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
+import edu.asu.ying.wellington.mapreduce.task.Task;
 
 /**
- * The {@code SchedulerImpl} is responsible for accepting a {@link Task} from another node (or from
- * the local node, if the mapreduce was started locally) and queuing it for execution in one of the
- * following queues, deferring to {@code forwarding} if {@code local} is full. <ol> <li>{@code
- * Local} - mapreduce are executed directly on the local node.</li> <li>{@code Forwarding} -
- * mapreduce are sent to either the local node's {@code remote} queue, or to the forwarding queue of
- * a random immediately-connected node.</li> </ol> Once the scheduler has placed the mapreduce in a
- * queue, the mapreduce is taken over by that queue's {@link TaskQueue}.
+ * The {@code SchedulerImpl} is responsible for accepting a {@link edu.asu.ying.wellington.mapreduce.task.Task}
+ * from another node (or from the local node, if the mapreduce was started locally) and queuing it
+ * for execution in one of the following queues, deferring to {@code forwarding} if {@code local} is
+ * full. <ol> <li>{@code Local} - mapreduce are executed directly on the local node.</li> <li>{@code
+ * Forwarding} - mapreduce are sent to either the local node's {@code remote} queue, or to the
+ * forwarding queue of a random immediately-connected node.</li> </ol> Once the scheduler has placed
+ * the mapreduce in a queue, the mapreduce is taken over by that queue's {@link TaskQueue}.
  */
 public final class SchedulerImpl implements LocalScheduler {
 
@@ -48,7 +49,7 @@ public final class SchedulerImpl implements LocalScheduler {
     this.forwardingQueue = new ForwardingTaskQueue(this, this.localPeer);
 
     // Set up the delegator that splits jobs into tasks and sends them to initial nodes
-    this.jobDelegator = new JobDelegatorImpl(this.localPeer);
+    this.jobDelegator = new JobDelegator(this.localPeer);
   }
 
   /**

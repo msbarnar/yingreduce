@@ -2,6 +2,8 @@ package edu.asu.ying.wellington.mapreduce.job.scheduling;
 
 import java.io.Serializable;
 
+import edu.asu.ying.wellington.mapreduce.task.Task;
+
 /**
  *
  */
@@ -26,6 +28,6 @@ public final class LocalTaskQueue extends TaskQueueBase {
 
     //System.out.println("[Local] Complete ".concat(task.getId().toString()));
 
-    this.scheduler.completeTask(new TaskCompletion(task, result));
+    //this.scheduler.completeTask(new TaskCompletion(task, result));
   }
 }

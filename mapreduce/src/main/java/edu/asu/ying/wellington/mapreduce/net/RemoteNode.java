@@ -12,4 +12,6 @@ public interface RemoteNode extends Activatable {
   NodeIdentifier getIdentifier() throws RemoteException;
 
   RemoteJobService getJobService() throws RemoteException;
+
+  RemoteTaskService getTaskService() throws RemoteException;
 }

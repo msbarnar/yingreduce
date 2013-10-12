@@ -1,8 +1,10 @@
 package edu.asu.ying.wellington.mapreduce.job.scheduling;
 
+import edu.asu.ying.wellington.mapreduce.task.Task;
+
 /**
  * A {@code TaskQueue} watches a specific {@link java.util.Queue} and handles {@link
- * edu.asu.ying.wellington.mapreduce.job.scheduling.Task}s as they arrive.
+ * edu.asu.ying.wellington.mapreduce.task.Task}s as they arrive.
  */
 public interface TaskQueue extends Runnable {
 

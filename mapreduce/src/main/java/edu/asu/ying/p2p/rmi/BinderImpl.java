@@ -1,5 +1,9 @@
 package edu.asu.ying.p2p.rmi;
 
+import org.apache.commons.lang3.reflect.ConstructorUtils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
@@ -47,10 +51,26 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
     }
 
     @Override
-    public K wrappedBy(final WrapperFactory<T, K> factory) throws ExportException {
-      this.binding = new InstanceBinding<>(factory.createWrapper(this.targetInstance),
-                                           this.activator);
+    public K wrappedBy(Class<? extends K> wrapper) throws ExportException {
+      K wrapperInstance = null;
+      try {
+        Constructor<? extends K> ctor
+            = ConstructorUtils.getMatchingAccessibleConstructor(wrapper,
+                                                                this.targetInstance.getClass(),
+                                                                Activator.class);
+        if (ctor == null) {
+          throw new ExportException("Wrapper does not implement correct constructor");
+        }
+        wrapperInstance = ctor.newInstance(this.targetInstance, this.activator);
+      } catch (InvocationTargetException e) {
+        throw new ExportException("Wrapper constructor threw an exception", e);
+      } catch (InstantiationException e) {
+        throw new ExportException("Can't call wrapper constructor", e);
+      } catch (IllegalAccessException e) {
+        throw new ExportException("Wrapper constructor is inaccessible", e);
+      }
 
+      this.binding = new InstanceBinding<>(wrapperInstance, this.activator);
       return this.binding.getReference();
     }
   }

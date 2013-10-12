@@ -1,6 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.job.scheduling;
 
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.wellington.mapreduce.task.Task;
 
 /**
  * {@code LocalScheduler} is responsible for the allocation of {@code map} and {@code reduce}

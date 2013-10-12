@@ -9,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
+import edu.asu.ying.wellington.mapreduce.task.Task;
 
 /**
  * {@code ForwardingTaskQueue} removes tasks from the local {@code Forwarding} queue and places them

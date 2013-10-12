@@ -3,6 +3,7 @@ package edu.asu.ying.wellington.mapreduce.job.scheduling;
 import java.rmi.RemoteException;
 
 import edu.asu.ying.p2p.rmi.Activatable;
+import edu.asu.ying.wellington.mapreduce.task.Task;
 
 /**
  * {@code RemoteScheduler} provides the interface for remote peers to access the scheduler on the

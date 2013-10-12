@@ -8,8 +8,6 @@ import java.rmi.RemoteException;
 import edu.asu.ying.p2p.rmi.Activatable;
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
-import edu.asu.ying.p2p.rmi.Wrapper;
-import edu.asu.ying.p2p.rmi.WrapperFactory;
 
 /**
  *
@@ -28,7 +26,7 @@ public class TestActivator {
     }
   }
 
-  private class CarWrapper implements Wrapper<RemoteCar>, RemoteCar {
+  private class CarWrapper implements RemoteCar {
 
     private final Car car;
 

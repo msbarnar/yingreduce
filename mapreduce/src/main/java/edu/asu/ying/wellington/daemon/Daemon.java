@@ -22,7 +22,6 @@ public final class Daemon {
       // FIXME: BROKEN FOR TESTING
       this.localPeer = null;//new KadLocalPeer(port);
       throw new InstantiationException();
-      //DaemonSingleton.get(port + 3000).setId(this.localPeer.getIdentifier().toString());
     } catch (final InstantiationException e) {
       e.printStackTrace();
     }

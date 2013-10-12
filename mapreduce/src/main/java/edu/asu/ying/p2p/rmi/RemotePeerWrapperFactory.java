@@ -19,7 +19,7 @@ public final class RemotePeerWrapperFactory implements WrapperFactory<LocalPeer,
     return new RemotePeerWrapper(target);
   }
 
-  private final class RemotePeerWrapper implements Wrapper<LocalPeer>, RemotePeer {
+  private final class RemotePeerWrapper implements RemotePeer {
 
     private final LocalPeer localPeer;
 

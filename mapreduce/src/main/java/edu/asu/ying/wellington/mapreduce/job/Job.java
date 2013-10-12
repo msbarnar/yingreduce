@@ -1,20 +1,39 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
+import com.google.common.collect.ImmutableList;
+
 import java.io.Serializable;
+import java.util.List;
 
 import edu.asu.ying.wellington.dfs.table.TableIdentifier;
-import edu.asu.ying.wellington.mapreduce.net.NodeIdentifier;
+import edu.asu.ying.wellington.mapreduce.net.RemoteNode;
 
 /**
  *
  */
 public final class Job implements Serializable {
 
+  public enum Status {
+    Created,
+    Accepted,
+    Rejected,
+    Delegated
+  }
+
+  private static final int DEFAULT_REDUCER_COUNT = 3;
+  private static final int MAX_REDUCER_COUNT = 128;
+
   private static final long SerialVersionUID = 1L;
 
   private final JobIdentifier jobID;
+  private Status status;
+
   private final TableIdentifier tableID;
-  private NodeIdentifier responsibleNodeID;
+
+  private RemoteNode responsibleNode;
+  private List<RemoteNode> reducerNodes;
+  private int reducerCount = DEFAULT_REDUCER_COUNT;
+
   private int numTasks;
   private long startTime;
 
@@ -24,6 +43,7 @@ public final class Job implements Serializable {
   public Job(TableIdentifier tableID) {
     this.jobID = JobIdentifier.random();
     this.tableID = tableID;
+    this.status = Status.Created;
   }
 
   public JobHistory getHistory() {
@@ -38,12 +58,36 @@ public final class Job implements Serializable {
     return this.tableID;
   }
 
-  public void setResponsibleNode(NodeIdentifier nodeID) {
-    this.responsibleNodeID = nodeID;
+  public void setResponsibleNode(RemoteNode nodeID) {
+    this.responsibleNode = nodeID;
   }
 
-  public NodeIdentifier getResponsibleNodeID() {
-    return this.responsibleNodeID;
+  public RemoteNode getResponsibleNode() {
+    return this.responsibleNode;
+  }
+
+  public void setReducerNodeIDs(List<RemoteNode> reducers) {
+    this.reducerNodes = ImmutableList.copyOf(reducers);
+  }
+
+  public List<RemoteNode> getReducerNodeIDs() {
+    return this.reducerNodes;
+  }
+
+  public void setReducerCount(int count) {
+    this.reducerCount = Math.min(MAX_REDUCER_COUNT, Math.max(1, count));
+  }
+
+  public int getReducerCount() {
+    return this.reducerCount;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
+  }
+
+  public Status getStatus() {
+    return this.status;
   }
 
   public int getNumTasks() {

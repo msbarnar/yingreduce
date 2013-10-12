@@ -3,6 +3,8 @@ package edu.asu.ying.wellington.mapreduce.job.scheduling;
 import java.io.Serializable;
 import java.util.Random;
 
+import edu.asu.ying.wellington.mapreduce.task.Task;
+
 /**
  *
  */

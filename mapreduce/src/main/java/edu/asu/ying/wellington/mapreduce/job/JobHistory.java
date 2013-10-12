@@ -30,7 +30,7 @@ public final class JobHistory implements Serializable {
     private Action nodeAction;
 
     private Entry(LocalNode node) {
-      this.nodeID = node.getNodeID();
+      this.nodeID = node.getIdentifier();
     }
 
     public NodeIdentifier getNodeID() {
@@ -43,7 +43,8 @@ public final class JobHistory implements Serializable {
   }
 
   public enum Action {
-    AcceptedResponsibility,
+    AcceptedJob,
+    RejectedJob,
     ForwardedToResponsibleNode,
     ForwardFailed
   }
