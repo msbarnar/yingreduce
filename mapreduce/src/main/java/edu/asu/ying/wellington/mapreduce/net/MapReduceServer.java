@@ -6,9 +6,10 @@ import java.util.List;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.wellington.mapreduce.job.JobService;
+import edu.asu.ying.wellington.mapreduce.JobService;
+import edu.asu.ying.wellington.mapreduce.TaskService;
+import edu.asu.ying.wellington.mapreduce.job.JobServer;
 import edu.asu.ying.wellington.mapreduce.task.TaskServer;
-import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  * {@code MapReduceServer} is the layer between the network and the mapreduce services. The server
@@ -22,12 +23,14 @@ public final class MapReduceServer implements LocalNode {
   private final RemoteNode remoteNode;
 
   // Service layer
+  private final NodeIdentifier identifier;
   private final JobService jobService;
   private final TaskService taskService;
 
 
   public MapReduceServer(final LocalPeer localPeer) {
     this.localPeer = localPeer;
+    this.identifier = new NodeIdentifier(localPeer.getIdentifier().toString());
     this.jobService = new JobServer(this);
     this.taskService = new TaskServer(this);
 
@@ -43,12 +46,12 @@ public final class MapReduceServer implements LocalNode {
 
   @Override
   public NodeIdentifier getIdentifier() {
-    return null;
+    return this.identifier;
   }
 
   @Override
   public RemoteNode getAsRemote() {
-    return null;
+    return this.remoteNode;
   }
 
   @Override
@@ -80,13 +83,11 @@ public final class MapReduceServer implements LocalNode {
     private MapReduceServerWrapper(MapReduceServer server, Activator activator) {
       this.server = server;
       try {
-        JobService jobService = server.getJobService();
-        this.jobServiceProxy = activator.bind(RemoteJobService.class).to(jobService)
-            .wrappedBy(jobService.getWrapper());
+        this.jobServiceProxy = activator.bind(RemoteJobService.class).to(server.getJobService())
+            .wrappedBy(JobServiceWrapper.class);
 
-        TaskService taskService = server.getTaskService();
-        this.taskServiceProxy = activator.bind(RemoteTaskService.class).to(taskService)
-            .wrappedBy(taskService.getWrapper());
+        this.taskServiceProxy = activator.bind(RemoteTaskService.class).to(server.getTaskService())
+            .wrappedBy(TaskServiceWrapper.class);
       } catch (ExportException e) {
         throw new RuntimeException(e);
       }

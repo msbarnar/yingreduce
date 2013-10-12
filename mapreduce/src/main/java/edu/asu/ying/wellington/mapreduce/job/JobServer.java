@@ -1,13 +1,11 @@
-package edu.asu.ying.wellington.mapreduce.net;
+package edu.asu.ying.wellington.mapreduce.job;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.wellington.mapreduce.job.Job;
-import edu.asu.ying.wellington.mapreduce.job.JobException;
-import edu.asu.ying.wellington.mapreduce.job.JobHistory;
-import edu.asu.ying.wellington.mapreduce.job.JobService;
+import edu.asu.ying.wellington.mapreduce.JobService;
 import edu.asu.ying.wellington.mapreduce.job.scheduling.JobDelegator;
+import edu.asu.ying.wellington.mapreduce.net.LocalNode;
+import edu.asu.ying.wellington.mapreduce.net.RemoteNode;
 
 /**
  * The {@code JobServer} hosts the job service, accepting jobs locally and remotely and managing
@@ -77,28 +75,5 @@ public final class JobServer implements JobService {
    */
   private RemoteNode findResponsibleNode(Job job) {
     return this.localNode.findNode(job.getTableID().forPage(0).toString());
-  }
-
-  @Override
-  public Class<? extends RemoteJobService> getWrapper() {
-    return JobServerWrapper.class;
-  }
-
-  public final class JobServerWrapper implements RemoteJobService {
-
-    private final JobServer wrappedServer;
-
-    public JobServerWrapper(JobServer server, Activator activator) {
-      this.wrappedServer = server;
-    }
-
-    @Override
-    public void accept(Job job) throws RemoteException {
-      try {
-        this.wrappedServer.accept(job);
-      } catch (JobException e) {
-        throw new RemoteException("Remote node failed to accept job", e);
-      }
-    }
   }
 }
