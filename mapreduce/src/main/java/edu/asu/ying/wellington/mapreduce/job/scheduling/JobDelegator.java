@@ -1,6 +1,6 @@
 package edu.asu.ying.wellington.mapreduce.job.scheduling;
 
-import java.rmi.RemoteException;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -63,10 +63,16 @@ public final class JobDelegator implements Runnable {
   // FIXME: Potentially very slow
   private List<RemoteNode> findReducers(Job job) {
     int numReducers = job.getReducerCount();
+    String jobID = job.getID().toString();
 
     List<RemoteNode> reducers = new ArrayList<>(numReducers);
     for (int i = 0; i < numReducers; i++) {
-      reducers.add(this.localNode.findNode(job.getID().toString().concat(Integer.toString(i))));
+      try {
+        reducers.add(this.localNode.findNode(jobID.concat(Integer.toString(i))));
+      } catch (IOException e) {
+        // TODO: Logging
+        e.printStackTrace();
+      }
     }
     return reducers;
   }
@@ -104,7 +110,7 @@ public final class JobDelegator implements Runnable {
       try {
         this.localNode.getTaskService().accept(loopbackTask);
       } catch (TaskException e) {
-        // TODO: Report this somehow
+        // TODO: Logging
         e.printStackTrace();
       }
     }
@@ -115,11 +121,9 @@ public final class JobDelegator implements Runnable {
       try {
         // Find the initial node by the Task's ID (table ID + page index)
         final RemoteNode node = this.localNode.findNode(task.getId().toString());
-        // TODO: Logging
         task.setInitialNode(node);
-        // FIXME: BROKEN FOR TESTING
         node.getTaskService().accept(task);
-      } catch (final RemoteException e) {
+      } catch (final IOException e) {
         // TODO: Logging
         e.printStackTrace();
       }

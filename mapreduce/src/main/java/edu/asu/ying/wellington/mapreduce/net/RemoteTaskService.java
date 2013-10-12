@@ -11,4 +11,6 @@ import edu.asu.ying.wellington.mapreduce.task.Task;
 public interface RemoteTaskService extends Activatable {
 
   void accept(Task task) throws RemoteException;
+
+  int getBackpressure() throws RemoteException;
 }

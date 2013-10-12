@@ -1,10 +1,13 @@
 package edu.asu.ying.wellington.mapreduce.net;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.wellington.mapreduce.job.JobServer;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
@@ -12,10 +15,10 @@ import edu.asu.ying.wellington.mapreduce.task.TaskServer;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
- * {@code MapReduceServer} is the layer between the network and the mapreduce services. The server
+ * {@code NodeServer} is the layer between the network and the mapreduce services. The server
  * implements the {@link LocalNode} and {@link RemoteNode} interfaces.
  */
-public final class MapReduceServer implements LocalNode {
+public final class NodeServer implements LocalNode {
 
   // Network layer
   private final LocalPeer localPeer;
@@ -28,7 +31,7 @@ public final class MapReduceServer implements LocalNode {
   private final TaskService taskService;
 
 
-  public MapReduceServer(final LocalPeer localPeer) {
+  public NodeServer(final LocalPeer localPeer) {
     this.localPeer = localPeer;
     this.identifier = new NodeIdentifier(localPeer.getIdentifier().toString());
     this.jobService = new JobServer(this);
@@ -55,13 +58,36 @@ public final class MapReduceServer implements LocalNode {
   }
 
   @Override
-  public RemoteNode findNode(String searchKey) {
-    return null;
+  public RemoteNode findNode(String searchKey) throws IOException {
+    return this.localPeer.findPeer(searchKey).getReference(RemoteNode.class);
   }
 
   @Override
-  public List<RemoteNode> findNodes(String searchKey) {
-    return null;
+  public List<RemoteNode> findNodes(String searchKey, int count) throws IOException {
+    List<RemoteNode> nodes = new ArrayList<>();
+    for (RemotePeer peer : this.localPeer.findPeers(searchKey, count)) {
+      try {
+        nodes.add(peer.getReference(RemoteNode.class));
+      } catch (RemoteException e) {
+        // TODO: Logging
+        e.printStackTrace();
+      }
+    }
+    return nodes;
+  }
+
+  @Override
+  public List<RemoteNode> getNeighbors() {
+    List<RemoteNode> neighbors = new ArrayList<>();
+    for (RemotePeer peer : this.localPeer.getNeighbors()) {
+      try {
+        neighbors.add(peer.getReference(RemoteNode.class));
+      } catch (RemoteException e) {
+        // TODO: Logging
+        e.printStackTrace();
+      }
+    }
+    return neighbors;
   }
 
   @Override
@@ -76,11 +102,11 @@ public final class MapReduceServer implements LocalNode {
 
   public final class MapReduceServerWrapper implements RemoteNode {
 
-    private final MapReduceServer server;
+    private final NodeServer server;
     private final RemoteJobService jobServiceProxy;
     private final RemoteTaskService taskServiceProxy;
 
-    private MapReduceServerWrapper(MapReduceServer server, Activator activator) {
+    private MapReduceServerWrapper(NodeServer server, Activator activator) {
       this.server = server;
       try {
         this.jobServiceProxy = activator.bind(RemoteJobService.class).to(server.getJobService())

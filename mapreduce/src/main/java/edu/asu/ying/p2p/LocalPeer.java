@@ -44,10 +44,14 @@ public interface LocalPeer extends Exportable<RemotePeer> {
   RemotePeer findPeer(PeerIdentifier identifier) throws PeerNotFoundException,
                                                         RemoteImportException;
 
+  RemotePeer findPeer(String identifier) throws PeerNotFoundException, RemoteImportException;
+
   /**
    * Finds up to {@code count} peers near {@code identifier} and imports references to them. If any
    * reference imports fail with {@link RemoteImportException}, they are quietly excluded from the
    * list.
    */
   List<RemotePeer> findPeers(PeerIdentifier identifier, int count);
+
+  List<RemotePeer> findPeers(String identifier, int count);
 }

@@ -1,5 +1,6 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 import edu.asu.ying.wellington.mapreduce.job.scheduling.JobDelegator;
@@ -35,7 +36,13 @@ public final class JobServer implements JobService {
       this.queue(job);
     } else {
       // Forward the job to the responsible node
-      RemoteNode responsibleNode = this.findResponsibleNode(job);
+      RemoteNode responsibleNode = null;
+      try {
+        responsibleNode = this.findResponsibleNode(job);
+      } catch (IOException e) {
+        throw new JobException("Exception finding responsible node for job", e);
+      }
+
       job.setResponsibleNode(responsibleNode);
       try {
         responsibleNode.getJobService().accept(job);
@@ -72,7 +79,7 @@ public final class JobServer implements JobService {
   /**
    * Finds the node most closely matching the job's table ID.
    */
-  private RemoteNode findResponsibleNode(Job job) {
+  private RemoteNode findResponsibleNode(Job job) throws IOException {
     return this.localNode.findNode(job.getTableID().forPage(0).toString());
   }
 }

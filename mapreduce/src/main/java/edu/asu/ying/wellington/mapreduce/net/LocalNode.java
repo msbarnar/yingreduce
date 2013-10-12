@@ -1,5 +1,6 @@
 package edu.asu.ying.wellington.mapreduce.net;
 
+import java.io.IOException;
 import java.util.List;
 
 import edu.asu.ying.wellington.mapreduce.job.JobService;
@@ -14,9 +15,11 @@ public interface LocalNode {
 
   RemoteNode getAsRemote();
 
-  RemoteNode findNode(String searchKey);
+  RemoteNode findNode(String searchKey) throws IOException;
 
-  List<RemoteNode> findNodes(String searchKey);
+  List<RemoteNode> findNodes(String searchKey, int count) throws IOException;
+
+  List<RemoteNode> getNeighbors();
 
   JobService getJobService();
 

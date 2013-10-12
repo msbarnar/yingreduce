@@ -5,6 +5,7 @@ import java.util.Map;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.SerializedEntry;
+import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
@@ -14,7 +15,7 @@ public interface Page extends Serializable, Sink<SerializedEntry> {
   /**
    * Gets the ID of the table to which this page belongs.
    */
-  TableID getTableId();
+  TableIdentifier getTableId();
 
   /**
    * The index is the unique identifier of the page within the table. <p>Indices must be zero-based,

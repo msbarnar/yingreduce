@@ -12,8 +12,6 @@ import edu.asu.ying.wellington.dfs.table.PageBuilder;
 import edu.asu.ying.wellington.io.WritableBytes;
 import edu.asu.ying.wellington.io.WritableString;
 import edu.asu.ying.wellington.mapreduce.job.Job;
-import edu.asu.ying.wellington.mapreduce.job.scheduling.JobSchedulingResult;
-import edu.asu.ying.wellington.mapreduce.job.scheduling.LocalScheduler;
 
 /**
  * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
