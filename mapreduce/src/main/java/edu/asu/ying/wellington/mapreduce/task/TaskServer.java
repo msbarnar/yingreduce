@@ -1,6 +1,5 @@
 package edu.asu.ying.wellington.mapreduce.task;
 
-import edu.asu.ying.wellington.mapreduce.TaskService;
 import edu.asu.ying.wellington.mapreduce.net.LocalNode;
 
 /**

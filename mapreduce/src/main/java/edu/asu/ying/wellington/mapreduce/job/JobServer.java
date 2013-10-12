@@ -2,7 +2,6 @@ package edu.asu.ying.wellington.mapreduce.job;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.wellington.mapreduce.JobService;
 import edu.asu.ying.wellington.mapreduce.job.scheduling.JobDelegator;
 import edu.asu.ying.wellington.mapreduce.net.LocalNode;
 import edu.asu.ying.wellington.mapreduce.net.RemoteNode;

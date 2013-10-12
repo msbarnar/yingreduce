@@ -1,7 +1,5 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
-import edu.asu.ying.wellington.mapreduce.JobService;
-
 /**
  * {@code JobClient} is the local interface to the job service, facilitating the starting and
  * examining of jobs on the local system.

@@ -6,10 +6,10 @@ import java.util.List;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.wellington.mapreduce.JobService;
-import edu.asu.ying.wellington.mapreduce.TaskService;
 import edu.asu.ying.wellington.mapreduce.job.JobServer;
+import edu.asu.ying.wellington.mapreduce.job.JobService;
 import edu.asu.ying.wellington.mapreduce.task.TaskServer;
+import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  * {@code MapReduceServer} is the layer between the network and the mapreduce services. The server

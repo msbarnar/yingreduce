@@ -2,8 +2,8 @@ package edu.asu.ying.wellington.mapreduce.net;
 
 import java.util.List;
 
-import edu.asu.ying.wellington.mapreduce.JobService;
-import edu.asu.ying.wellington.mapreduce.TaskService;
+import edu.asu.ying.wellington.mapreduce.job.JobService;
+import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  *
