@@ -11,7 +11,6 @@ import edu.asu.ying.wellington.dfs.Entry;
 import edu.asu.ying.wellington.dfs.table.PageBuilder;
 import edu.asu.ying.wellington.io.WritableBytes;
 import edu.asu.ying.wellington.io.WritableString;
-import edu.asu.ying.wellington.mapreduce.job.Job;
 
 /**
  * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
@@ -84,7 +83,7 @@ public class Client {
     }
 
     if (!fullyConnected) {
-      LocalScheduler sched = null;
+      /*LocalScheduler sched = null;
       //sched = instances[0].getLocalPeer();
 
       if (sched != null) {
@@ -92,7 +91,7 @@ public class Client {
           final Job job = new Job(new TableID("hoblahsh"));
           final JobSchedulingResult result = sched.createJob(job);
         }
-      }
+      }*/
     }
 
     for (final Daemon instance : instances) {

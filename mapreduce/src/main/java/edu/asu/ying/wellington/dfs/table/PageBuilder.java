@@ -33,7 +33,7 @@ public final class PageBuilder
   private static final int DEFAULT_PAGE_CAPACITY = 200;
 
   // Uniquely identifies the table in the data store
-  private final TableID id;
+  private final TableIdentifier id;
 
   // Sinks full pages
   private final Sink<Page> pageSink;
@@ -45,14 +45,14 @@ public final class PageBuilder
   private final Object currentPageLock = new Object();
 
 
-  public PageBuilder(final TableID id, final Sink<Page> pageSink) {
+  public PageBuilder(final TableIdentifier id, final Sink<Page> pageSink) {
     this.id = id;
     this.pageSink = pageSink;
     this.newPage();
   }
 
   @Override
-  public final TableID getId() {
+  public final TableIdentifier getId() {
     return this.id;
   }
 

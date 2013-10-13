@@ -12,6 +12,7 @@ import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Entry;
 import edu.asu.ying.wellington.dfs.page.Page;
 import edu.asu.ying.wellington.dfs.table.PageBuilder;
+import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.io.WritableBytes;
 import edu.asu.ying.wellington.io.WritableString;
 
@@ -45,7 +46,7 @@ public class TestLocalWriteTable {
 
     final MockPageSink mockSink = new MockPageSink();
     final Sink<Entry> table =
-        new PageBuilder(TableID.createRandom(), mockSink);
+        new PageBuilder(TableIdentifier.random(), mockSink);
 
     int sizeAdded = 0;
 

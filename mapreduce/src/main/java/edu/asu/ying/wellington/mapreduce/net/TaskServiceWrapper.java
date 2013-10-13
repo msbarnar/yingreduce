@@ -23,4 +23,9 @@ public final class TaskServiceWrapper implements RemoteTaskService {
       throw new RemoteException("Remote task server threw an exception", e);
     }
   }
+
+  @Override
+  public int getBackpressure() throws RemoteException {
+    return 0;
+  }
 }

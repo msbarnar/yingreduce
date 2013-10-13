@@ -26,25 +26,17 @@ public class TestActivator {
     }
   }
 
-  private class CarWrapper implements RemoteCar {
+  public static class CarWrapper implements RemoteCar {
 
     private final Car car;
 
-    public CarWrapper(final Car car) {
+    public CarWrapper(Car car, Activator activator) {
       this.car = car;
     }
 
     @Override
     public String honk() throws RemoteException {
       return "Faraway " + this.car.honk();
-    }
-  }
-
-  public class CarWrapperFactory implements WrapperFactory<Car, RemoteCar> {
-
-    @Override
-    public RemoteCar createWrapper(Car target) {
-      return new CarWrapper(target);
     }
   }
 
@@ -56,7 +48,7 @@ public class TestActivator {
       Car myCar = new Car();
       RemoteCar
           remoteCar =
-          activator.bind(RemoteCar.class).to(myCar).wrappedBy(new CarWrapperFactory());
+          activator.bind(RemoteCar.class).to(myCar).wrappedBy(CarWrapper.class);
       Assert.assertEquals("beep!", myCar.honk());
       Assert.assertEquals("Faraway beep!", remoteCar.honk());
     } catch (final RemoteException e) {

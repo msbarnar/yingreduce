@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import edu.asu.ying.wellington.dfs.SerializedEntry;
+import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
@@ -16,7 +17,7 @@ public final class BoundedPage implements Page {
 
   private static final long SerialVersionUID = 1L;
 
-  private final TableID tableId;
+  private final TableIdentifier tableId;
   // The index of this page on the table
   private final int index;
 
@@ -26,7 +27,7 @@ public final class BoundedPage implements Page {
   // Keep track of the sum length of the contents.
   private int curSizeBytes = 0;
 
-  public BoundedPage(final TableID parentTableId,
+  public BoundedPage(final TableIdentifier parentTableId,
                      final int index,
                      final int capacityBytes) {
 
@@ -71,7 +72,7 @@ public final class BoundedPage implements Page {
    * uniquely in the database.
    */
   @Override
-  public final TableID getTableId() {
+  public final TableIdentifier getTableId() {
     return this.tableId;
   }
 
