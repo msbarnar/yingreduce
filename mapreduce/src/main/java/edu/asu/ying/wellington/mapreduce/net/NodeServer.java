@@ -9,6 +9,7 @@ import java.util.List;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.rmi.Activator;
+import edu.asu.ying.p2p.rmi.WrapperFactory;
 import edu.asu.ying.wellington.mapreduce.job.JobServer;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
 import edu.asu.ying.wellington.mapreduce.task.TaskServer;
@@ -41,7 +42,7 @@ public final class NodeServer implements LocalNode {
       this.remoteNode = this.localPeer.getActivator()
           .bind(RemoteNode.class)
           .to(this)
-          .wrappedBy(MapReduceServerWrapper.class);
+          .wrappedBy(new MapReduceServerWrapperFactory());
     } catch (ExportException e) {
       throw new RuntimeException("Failed to export remote node reference", e);
     }
@@ -100,38 +101,50 @@ public final class NodeServer implements LocalNode {
     return this.taskService;
   }
 
-  public final class MapReduceServerWrapper implements RemoteNode {
+  public final class MapReduceServerWrapperFactory implements
+                                                   WrapperFactory<NodeServer, RemoteNode> {
 
-    private final NodeServer server;
-    private final RemoteJobService jobServiceProxy;
-    private final RemoteTaskService taskServiceProxy;
+    @Override
+    public RemoteNode create(NodeServer target, Activator activator) {
+      return new MapReduceServerWrapper(target, activator);
+    }
 
-    private MapReduceServerWrapper(NodeServer server, Activator activator) {
-      this.server = server;
-      try {
-        this.jobServiceProxy = activator.bind(RemoteJobService.class).to(server.getJobService())
-            .wrappedBy(JobServiceWrapper.class);
+    private final class MapReduceServerWrapper implements RemoteNode {
 
-        this.taskServiceProxy = activator.bind(RemoteTaskService.class).to(server.getTaskService())
-            .wrappedBy(TaskServiceWrapper.class);
-      } catch (ExportException e) {
-        throw new RuntimeException(e);
+      private final NodeServer server;
+      private final RemoteJobService jobServiceProxy;
+      private final RemoteTaskService taskServiceProxy;
+
+      private MapReduceServerWrapper(NodeServer server, Activator activator) {
+        this.server = server;
+        try {
+          this.jobServiceProxy = activator.bind(RemoteJobService.class)
+              .to(server.getJobService())
+              .wrappedBy(new JobServiceWrapperFactory());
+
+          this.taskServiceProxy = activator.bind(RemoteTaskService.class)
+              .to(server.getTaskService())
+              .wrappedBy(new TaskServiceWrapperFactory());
+
+        } catch (ExportException e) {
+          throw new RuntimeException(e);
+        }
       }
-    }
 
-    @Override
-    public NodeIdentifier getIdentifier() throws RemoteException {
-      return server.getIdentifier();
-    }
+      @Override
+      public NodeIdentifier getIdentifier() throws RemoteException {
+        return server.getIdentifier();
+      }
 
-    @Override
-    public RemoteJobService getJobService() throws RemoteException {
-      return this.jobServiceProxy;
-    }
+      @Override
+      public RemoteJobService getJobService() throws RemoteException {
+        return this.jobServiceProxy;
+      }
 
-    @Override
-    public RemoteTaskService getTaskService() throws RemoteException {
-      return this.taskServiceProxy;
+      @Override
+      public RemoteTaskService getTaskService() throws RemoteException {
+        return this.taskServiceProxy;
+      }
     }
   }
 }

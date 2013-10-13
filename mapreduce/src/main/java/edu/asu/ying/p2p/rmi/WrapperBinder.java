@@ -9,5 +9,5 @@ public interface WrapperBinder<T, K extends Activatable> {
    * K} of the binding is requested, this binding will provide it by instantiating its wrapper class
    * with {@code instance} as the parameter.
    */
-  K wrappedBy(Class<? extends K> wrapper) throws ExportException;
+  <W extends WrapperFactory<T, K>> K wrappedBy(W wrapperFactory) throws ExportException;
 }
