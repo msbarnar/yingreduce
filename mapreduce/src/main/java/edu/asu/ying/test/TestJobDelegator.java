@@ -15,6 +15,9 @@ public class TestJobDelegator {
   @Test
   public void itDelegatesJobs() throws Exception {
     NodeServer server = new NodeServer(new KadLocalPeer(5000));
-    server.getJobService().accept(new Job(TableIdentifier.forString("hi!")));
+    Job job = new Job(TableIdentifier.forString("hi!"));
+    job.setResponsibleNode(server.getAsRemote());
+
+    server.getJobService().accept(job);
   }
 }
