@@ -39,14 +39,17 @@ public final class TableIdentifier extends Identifier {
   private static final long SerialVersionUID = 1L;
   private static final String TABLE_PREFIX = "tab";
 
-  private int page;
+  private final String tableName;
+  private final int page;
 
-  private TableIdentifier(String id) {
-    this(id, NO_PAGE);
+  private TableIdentifier(String tableName) {
+    this(tableName, NO_PAGE);
   }
 
-  private TableIdentifier(String id, int page) {
-    super(TABLE_PREFIX, id);
+  private TableIdentifier(String tableName, int page) {
+    super(TABLE_PREFIX, tableName.concat(Character.toString(PAGE_DELIMITER)).concat(
+        Integer.toString(page)));
+    this.tableName = tableName;
     this.page = page;
   }
 
@@ -54,10 +57,18 @@ public final class TableIdentifier extends Identifier {
     if (index < 0) {
       throw new IndexOutOfBoundsException("Page index must be 0 or a positive integer.");
     }
-    return new TableIdentifier(this.id.concat("~").concat(Integer.toString(index)));
+    return new TableIdentifier(this.tableName, index);
+  }
+
+  public String getTableName() {
+    return this.tableName;
   }
 
   public int getPageIndex() {
     return this.page;
+  }
+
+  public boolean isPageSpecified() {
+    return this.page > NO_PAGE;
   }
 }
