@@ -13,11 +13,15 @@ public final class TableIdentifier extends Identifier {
     return new TableIdentifier(UUID.randomUUID().toString());
   }
 
+  public static TableIdentifier forString(String id) {
+    return new TableIdentifier(id);
+  }
+
   private static final long SerialVersionUID = 1L;
 
   private static final String TABLE_PREFIX = "tab";
 
-  public TableIdentifier(String id) {
+  private TableIdentifier(String id) {
     super(TABLE_PREFIX, id);
   }
 

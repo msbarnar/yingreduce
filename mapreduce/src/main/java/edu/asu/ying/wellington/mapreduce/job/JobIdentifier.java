@@ -13,11 +13,15 @@ public final class JobIdentifier extends Identifier {
     return new JobIdentifier(UUID.randomUUID().toString());
   }
 
+  public static JobIdentifier forString(String id) {
+    return new JobIdentifier(id);
+  }
+
   private static final long SerialVersionUID = 1L;
 
   private static final String JOB_PREFIX = "job";
 
-  public JobIdentifier(String id) {
+  private JobIdentifier(String id) {
     super(JOB_PREFIX, id);
   }
 }

@@ -34,7 +34,7 @@ public final class NodeServer implements LocalNode {
 
   public NodeServer(final LocalPeer localPeer) {
     this.localPeer = localPeer;
-    this.identifier = new NodeIdentifier(localPeer.getIdentifier().toString());
+    this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
     this.jobService = new JobServer(this);
     this.taskService = new TaskServer(this);
 
