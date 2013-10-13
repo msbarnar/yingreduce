@@ -48,4 +48,8 @@ public class TaskServer implements TaskService {
   public void accept(Task task) throws TaskException {
     System.out.println("Task: ".concat(task.getId().toString()));
   }
+
+  private boolean isInitialNodeFor(Task task) {
+    return true;
+  }
 }

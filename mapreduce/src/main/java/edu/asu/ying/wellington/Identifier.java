@@ -24,8 +24,7 @@ public abstract class Identifier implements WritableComparable<Identifier> {
 
   protected Identifier(String prefix, String id) {
     this.prefix = Preconditions.checkNotNull(Strings.emptyToNull(prefix));
-    this.id = (this.prefix + SEPARATOR)
-        .concat(Preconditions.checkNotNull(Strings.emptyToNull((id))));
+    this.id = Preconditions.checkNotNull(Strings.emptyToNull((id)));
   }
 
   @Override

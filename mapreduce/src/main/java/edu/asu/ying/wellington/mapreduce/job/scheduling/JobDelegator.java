@@ -121,9 +121,9 @@ public final class JobDelegator implements Runnable {
       final Task task = tasks.pop();
       try {
         // Find the initial node by the Task's ID (table ID + page index)
-        final RemoteNode node = this.localNode.findNode(task.getId().toString());
-        task.setInitialNode(node);
-        node.getTaskService().accept(task);
+        final RemoteNode initialNode = this.localNode.findNode(task.getInitialNodeID().toString());
+        task.setInitialNode(initialNode);
+        initialNode.getTaskService().accept(task);
       } catch (final IOException e) {
         // TODO: Logging
         e.printStackTrace();
