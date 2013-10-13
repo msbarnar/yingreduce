@@ -2,6 +2,8 @@ package edu.asu.ying.test;
 
 import org.junit.Test;
 
+import java.util.Scanner;
+
 import edu.asu.ying.p2p.kad.KadLocalPeer;
 import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.mapreduce.job.Job;
@@ -19,5 +21,9 @@ public class TestJobDelegator {
     job.setResponsibleNode(server.getAsRemote());
 
     server.getJobService().accept(job);
+
+    System.out.println("Press return to exit");
+    Scanner scanner = new Scanner(System.in);
+    scanner.nextLine();
   }
 }

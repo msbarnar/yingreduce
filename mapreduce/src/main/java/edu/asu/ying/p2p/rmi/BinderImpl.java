@@ -9,6 +9,30 @@ import java.rmi.server.UnicastRemoteObject;
  */
 final class BinderImpl<K extends Activatable> implements Binder<K> {
 
+  private final Activator activator;
+  private Binding<K> binding;
+
+  public BinderImpl(Activator activator) {
+    this.activator = activator;
+  }
+
+  @Override
+  public <T extends K> K toInstance(T instance) {
+    this.binding = new InstanceBinding<K>(instance, this.activator);
+    return this.binding.getReference();
+  }
+
+  @Override
+  public <T> WrapperBinder<T, K> to(T targetInstance) {
+    WrapperBinder<T, K> binder = new WrapperBinderImpl<T, K>(targetInstance, this.activator);
+    this.binding = binder.getBinding();
+    return binder;
+  }
+
+  public Binding<K> getBinding() {
+    return this.binding;
+  }
+
   /**
    * {@code InstanceBinding} binds a class to a specific instance of that class.
    */
@@ -17,7 +41,7 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
 
     private final K proxy;
 
-    private InstanceBinding(final K instance, final Activator activator) {
+    private InstanceBinding(K instance, Activator activator) {
 
       K proxy = null;
       try {
@@ -35,45 +59,42 @@ final class BinderImpl<K extends Activatable> implements Binder<K> {
     }
   }
 
-  private final class WrapperBinderImpl<K extends Activatable, T> implements WrapperBinder<T, K> {
+  private final class WrapperBinderImpl<T, K extends Activatable> implements WrapperBinder<T, K> {
 
     private final Activator activator;
     private final T targetInstance;
-    private InstanceBinding<K> binding;
+    private LazyBinding<K> binding;
 
-    private WrapperBinderImpl(final T targetInstance, final Activator activator) {
+    private WrapperBinderImpl(T targetInstance, Activator activator) {
       this.activator = activator;
       this.targetInstance = targetInstance;
+      this.binding = new LazyBinding<>();
     }
 
     @Override
     public <W extends WrapperFactory<T, K>> K wrappedBy(W wrapperFactory) throws ExportException {
-      this.binding = new InstanceBinding<>(wrapperFactory.create(this.targetInstance,
-                                                                 this.activator),
-                                           this.activator);
+      this.binding.set(new InstanceBinding<>(wrapperFactory.create(this.targetInstance,
+                                                                   this.activator),
+                                             this.activator));
       return this.binding.getReference();
+    }
+
+    @Override
+    public Binding<K> getBinding() {
+      return this.binding;
     }
   }
 
-  private final Activator activator;
-  private Binding<K> binding;
+  private final class LazyBinding<K extends Activatable> implements Binding<K> {
 
-  public BinderImpl(final Activator activator) {
-    this.activator = activator;
-  }
+    private Binding<K> binding;
 
-  @Override
-  public <T extends K> K toInstance(final T instance) {
-    this.binding = new InstanceBinding<K>(instance, this.activator);
-    return this.binding.getReference();
-  }
+    void set(Binding<K> binding) {
+      this.binding = binding;
+    }
 
-  @Override
-  public <T> WrapperBinder<T, K> to(final T targetInstance) {
-    return new WrapperBinderImpl<K, T>(targetInstance, this.activator);
-  }
-
-  public Binding<K> getBinding() {
-    return this.binding;
+    public K getReference() {
+      return this.binding.getReference();
+    }
   }
 }

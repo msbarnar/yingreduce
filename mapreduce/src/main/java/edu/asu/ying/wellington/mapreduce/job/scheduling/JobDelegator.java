@@ -2,9 +2,10 @@ package edu.asu.ying.wellington.mapreduce.job.scheduling;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,11 +62,11 @@ public final class JobDelegator implements Runnable {
   }
 
   // FIXME: Potentially very slow
-  private List<RemoteNode> findReducers(Job job) {
+  private Set<RemoteNode> findReducers(Job job) {
     int numReducers = job.getReducerCount();
     String jobID = job.getID().toString();
 
-    List<RemoteNode> reducers = new ArrayList<>(numReducers);
+    Set<RemoteNode> reducers = new HashSet<>(numReducers);
     for (int i = 0; i < numReducers; i++) {
       try {
         reducers.add(this.localNode.findNode(jobID.concat(Integer.toString(i))));
@@ -79,8 +80,8 @@ public final class JobDelegator implements Runnable {
 
   private void delegate(Job job) {
     // Find k reducers for the job and set them
-    List<RemoteNode> reducers = this.findReducers(job);
-    job.setReducerNodeIDs(reducers);
+    Collection<RemoteNode> reducers = this.findReducers(job);
+    job.setReducerNodes(reducers);
 
     // Since we're at the responsible node, this is also the initial node for task 0.
     // We'll forward this separately, skipping RMI

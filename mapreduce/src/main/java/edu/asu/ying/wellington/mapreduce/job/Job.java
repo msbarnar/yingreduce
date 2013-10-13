@@ -3,6 +3,7 @@ package edu.asu.ying.wellington.mapreduce.job;
 import com.google.common.collect.ImmutableList;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import edu.asu.ying.wellington.dfs.table.TableIdentifier;
@@ -66,8 +67,9 @@ public final class Job implements Serializable {
     return this.responsibleNode;
   }
 
-  public void setReducerNodeIDs(List<RemoteNode> reducers) {
+  public void setReducerNodes(Collection<RemoteNode> reducers) {
     this.reducerNodes = ImmutableList.copyOf(reducers);
+    this.reducerCount = this.reducerNodes.size();
   }
 
   public List<RemoteNode> getReducerNodeIDs() {

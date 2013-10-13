@@ -10,4 +10,6 @@ public interface WrapperBinder<T, K extends Activatable> {
    * with {@code instance} as the parameter.
    */
   <W extends WrapperFactory<T, K>> K wrappedBy(W wrapperFactory) throws ExportException;
+
+  Binding<K> getBinding();
 }
