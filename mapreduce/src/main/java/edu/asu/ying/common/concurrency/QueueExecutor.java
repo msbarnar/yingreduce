@@ -11,8 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class QueueExecutor<T> implements Runnable {
 
   private final BlockingQueue<T> queue;
-
-  private ExecutorService threadPool;
+  private final ExecutorService threadPool;
 
   /**
    * Starts a single-threaded executor
