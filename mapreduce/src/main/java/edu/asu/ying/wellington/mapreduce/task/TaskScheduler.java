@@ -45,27 +45,27 @@ public class TaskScheduler implements TaskService {
    */
   public void start() {
     // Start everything explicitly so we don't start any threads in constructors
-    this.localQueue.start();
-    this.remoteQueue.start();
-    this.forwardingQueue.start();
-    this.jobDelegator.start();
+    localQueue.start();
+    remoteQueue.start();
+    forwardingQueue.start();
+    jobDelegator.start();
   }
 
   @Override
   public void accept(Task task) throws TaskException {
     // Initial tasks go in the local queue first if available, else everything gets forwarded
-    if (this.isInitialNodeFor(task)) {
-      this.queueLocal(task);
+    if (isInitialNodeFor(task)) {
+      queueLocal(task);
     } else {
-      this.queueForward(task);
+      queueForward(task);
     }
   }
 
   private void queueLocal(Task task) throws TaskSchedulingException {
     // Forward to the shortest of {Ql, Qf}
-    if (this.localQueue.size() < this.forwardingQueue.size()) {
+    if (localQueue.size() < forwardingQueue.size()) {
       // If the local queue won't take it, forward it
-      if (!this.localQueue.offer(task)) {
+      if (!localQueue.offer(task)) {
         this.queueForward(task);
       }
     } else {
@@ -74,7 +74,7 @@ public class TaskScheduler implements TaskService {
   }
 
   private void queueForward(Task task) throws TaskSchedulingException {
-    if (!this.forwardingQueue.offer(task)) {
+    if (!forwardingQueue.offer(task)) {
       throw new TaskSchedulingException("Forwarding queue refused task; no recourse available.");
     }
   }
@@ -85,7 +85,10 @@ public class TaskScheduler implements TaskService {
   private boolean isInitialNodeFor(Task task) {
     TableIdentifier taskTableID = task.getTableID();
     try {
-      Table table = this.localNode.getDFSService().getTable(taskTableID);
+      Table table = localNode.getDFSService().getTable(taskTableID);
+      if (table == null) {
+        return false;
+      }
       return table.hasPage(taskTableID.getPageIndex());
 
     } catch (TableNotFoundException e) {

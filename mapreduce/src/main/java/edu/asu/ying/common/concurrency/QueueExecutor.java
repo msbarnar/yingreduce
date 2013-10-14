@@ -12,24 +12,13 @@ public abstract class QueueExecutor<T> implements Runnable {
 
   private final BlockingQueue<T> queue;
 
-  // One task at a time
-  private final ExecutorService threadPool;
+  private ExecutorService threadPool;
 
   /**
    * Starts a single-threaded executor
    */
   protected QueueExecutor() {
-    // Report uncaught exceptions
-    this(Executors.newSingleThreadExecutor(
-        new ExceptionHandlingThreadFactory(new Thread.UncaughtExceptionHandler() {
-
-          @Override
-          public void uncaughtException(Thread t, Throwable e) {
-            // TODO: Logging
-            e.printStackTrace();
-          }
-
-        })));
+    this(Executors.newSingleThreadExecutor());
   }
 
   protected QueueExecutor(ExecutorService executor) {
@@ -42,25 +31,26 @@ public abstract class QueueExecutor<T> implements Runnable {
   }
 
   public void start() {
-    this.threadPool.submit(this);
+    threadPool.submit(this);
   }
 
   public boolean offer(T item) {
-    return this.queue.offer(item);
+    return queue.offer(item);
   }
 
   public int size() {
-    return this.queue.size();
+    return queue.size();
   }
 
+  @Override
   public void run() {
     // Run forever
-    this.threadPool.submit(this);
+    threadPool.submit(this);
 
     T item = null;
     try {
       // Blocks until available
-      item = this.queue.take();
+      item = queue.take();
     } catch (final InterruptedException e) {
       // TODO: Logging
       e.printStackTrace();
@@ -70,7 +60,11 @@ public abstract class QueueExecutor<T> implements Runnable {
       return;
     }
 
-    this.process(item);
+    try {
+      this.process(item);
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
   }
 
   protected abstract void process(T item);
