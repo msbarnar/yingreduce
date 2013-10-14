@@ -86,10 +86,7 @@ public class TaskScheduler implements TaskService {
     TableIdentifier taskTableID = task.getTableID();
     try {
       Table table = localNode.getDFSService().getTable(taskTableID);
-      if (table == null) {
-        return false;
-      }
-      return table.hasPage(taskTableID.getPageIndex());
+      return table != null && table.hasPage(taskTableID.getPageIndex());
 
     } catch (TableNotFoundException e) {
       return false;
