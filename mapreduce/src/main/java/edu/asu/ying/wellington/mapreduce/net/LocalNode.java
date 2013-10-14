@@ -3,6 +3,7 @@ package edu.asu.ying.wellington.mapreduce.net;
 import java.io.IOException;
 import java.util.List;
 
+import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
@@ -11,7 +12,7 @@ import edu.asu.ying.wellington.mapreduce.task.TaskService;
  */
 public interface LocalNode {
 
-  NodeIdentifier getIdentifier();
+  NodeIdentifier getId();
 
   RemoteNode getAsRemote();
 
@@ -24,4 +25,6 @@ public interface LocalNode {
   JobService getJobService();
 
   TaskService getTaskService();
+
+  DFSService getDFSService();
 }

@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.net;
 
+import com.google.inject.Inject;
+
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
@@ -10,9 +12,8 @@ import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.WrapperFactory;
-import edu.asu.ying.wellington.mapreduce.job.JobServer;
+import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
-import edu.asu.ying.wellington.mapreduce.task.TaskServer;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
@@ -30,26 +31,30 @@ public final class NodeServer implements LocalNode {
   private final NodeIdentifier identifier;
   private final JobService jobService;
   private final TaskService taskService;
+  private final DFSService dfsService;
 
 
-  public NodeServer(final LocalPeer localPeer) {
+  @Inject
+  private NodeServer(LocalPeer localPeer, JobService jobService,
+                     TaskService taskService, DFSService dfsService) {
     this.localPeer = localPeer;
     this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
-    this.jobService = new JobServer(this);
-    this.taskService = new TaskServer(this);
+    this.jobService = jobService;
+    this.taskService = taskService;
+    this.dfsService = dfsService;
 
     try {
       this.remoteNode = this.localPeer.getActivator()
           .bind(RemoteNode.class)
           .to(this)
-          .wrappedBy(new MapReduceServerWrapperFactory());
+          .wrappedBy(new NodeServerWrapperFactory());
     } catch (ExportException e) {
       throw new RuntimeException("Failed to export remote node reference", e);
     }
   }
 
   @Override
-  public NodeIdentifier getIdentifier() {
+  public NodeIdentifier getId() {
     return this.identifier;
   }
 
@@ -101,8 +106,13 @@ public final class NodeServer implements LocalNode {
     return this.taskService;
   }
 
-  public final class MapReduceServerWrapperFactory implements
-                                                   WrapperFactory<NodeServer, RemoteNode> {
+  @Override
+  public DFSService getDFSService() {
+    return this.dfsService;
+  }
+
+  private final class NodeServerWrapperFactory implements
+                                               WrapperFactory<NodeServer, RemoteNode> {
 
     @Override
     public RemoteNode create(NodeServer target, Activator activator) {
@@ -133,7 +143,7 @@ public final class NodeServer implements LocalNode {
 
       @Override
       public NodeIdentifier getIdentifier() throws RemoteException {
-        return server.getIdentifier();
+        return server.getId();
       }
 
       @Override

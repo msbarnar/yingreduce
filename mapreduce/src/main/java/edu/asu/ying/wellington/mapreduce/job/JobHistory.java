@@ -30,7 +30,7 @@ public final class JobHistory implements Serializable {
     private Action nodeAction;
 
     private Entry(LocalNode node) {
-      this.nodeID = node.getIdentifier();
+      this.nodeID = node.getId();
     }
 
     public NodeIdentifier getNodeID() {

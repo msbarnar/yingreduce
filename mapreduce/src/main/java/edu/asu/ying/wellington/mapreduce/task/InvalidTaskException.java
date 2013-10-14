@@ -1,6 +1,4 @@
-package edu.asu.ying.wellington.mapreduce.job.scheduling;
-
-import edu.asu.ying.wellington.mapreduce.task.Task;
+package edu.asu.ying.wellington.mapreduce.task;
 
 /**
  *

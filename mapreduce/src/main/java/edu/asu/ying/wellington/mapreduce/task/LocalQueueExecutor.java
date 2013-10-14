@@ -1,16 +1,19 @@
-package edu.asu.ying.wellington.mapreduce.job.scheduling;
+package edu.asu.ying.wellington.mapreduce.task;
 
 import java.io.Serializable;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.Task;
+import edu.asu.ying.wellington.mapreduce.net.LocalNode;
 
 /**
  *
  */
 public final class LocalQueueExecutor extends QueueExecutor<Task> {
 
-  public LocalQueueExecutor() {
+  private final LocalNode localNode;
+
+  public LocalQueueExecutor(LocalNode localNode) {
+    this.localNode = localNode;
   }
 
   @Override
@@ -18,6 +21,8 @@ public final class LocalQueueExecutor extends QueueExecutor<Task> {
     Serializable result = null;
     try {
       result = task.run();
+      System.out.println(String.format("[%s] Local: %s", this.localNode.getId().toString(),
+                                       task.getId().toString()));
     } catch (final Exception e) {
       e.printStackTrace();
       result = e;

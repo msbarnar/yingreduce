@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.mapreduce.job.scheduling;
+package edu.asu.ying.wellington.mapreduce.task;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -11,8 +11,6 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.mapreduce.net.LocalNode;
 import edu.asu.ying.wellington.mapreduce.net.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.net.RemoteTaskService;
-import edu.asu.ying.wellington.mapreduce.task.Task;
-import edu.asu.ying.wellington.mapreduce.task.TaskException;
 
 /**
  * {@code ForwardingQueueExecutor} removes tasks from the local {@code Forwarding} queue and places
@@ -25,21 +23,21 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
   // Holds an unlimited number of tasks that need to be forwarded to neighbors
   private final BlockingQueue<Task> forwardingQueue = new LinkedBlockingQueue<>();
-  private final RemoteQueueExecutor remoteQueue;
+  private final QueueExecutor<Task> remoteQueue;
 
   // One task at a time
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
 
-  public ForwardingQueueExecutor(LocalNode localNode, RemoteQueueExecutor remoteQueue) {
+  public ForwardingQueueExecutor(LocalNode localNode, QueueExecutor<Task> remoteQueue) {
     this.localNode = localNode;
     this.remoteQueue = remoteQueue;
   }
 
   /**
    * The queue to which the task is forwarded is chosen as the shortest of QFn, QRn, and QFk where k
-   * is all of the child nodes (directly connected peers). If the chosen queue is QFn, no action is
-   * taken and the task remains on the forwarding queue.
+   * is all of the neighbor nodes (directly connected peers). If the chosen queue is QFn, no action
+   * is taken and the task remains on the forwarding queue.
    */
   protected synchronized void process(Task task) {
     final Collection<RemoteNode> neighbors = this.localNode.getNeighbors();
@@ -51,6 +49,8 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
     int maximumBackpressure = this.size() - this.remoteQueue.size();
 
     // Unless one of our neighbors has a lower backpressure
+    // Where backpressure is |QFn| - |QFk| {QFk | k E Cn}
+    // where Cn is neighbors of this node
     for (RemoteNode node : neighbors) {
       try {
         RemoteTaskService remoteScheduler = node.getTaskService();
@@ -59,8 +59,6 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
           maximumBackpressure = remoteBackpressure;
           bestScheduler = remoteScheduler;
         }
-        throw new RemoteException();
-
       } catch (final RemoteException e) {
         // TODO: Logging
         e.printStackTrace();

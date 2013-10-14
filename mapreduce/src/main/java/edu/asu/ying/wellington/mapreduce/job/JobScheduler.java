@@ -1,23 +1,27 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import java.io.IOException;
 import java.rmi.RemoteException;
 
-import edu.asu.ying.wellington.mapreduce.job.scheduling.JobDelegator;
 import edu.asu.ying.wellington.mapreduce.net.LocalNode;
 import edu.asu.ying.wellington.mapreduce.net.RemoteNode;
 
 /**
- * The {@code JobServer} hosts the job service, accepting jobs locally and remotely and managing
+ * The {@code JobScheduler} hosts the job service, accepting jobs locally and remotely and managing
  * their delegation.
  */
-public final class JobServer implements JobService {
+@Singleton
+public final class JobScheduler implements JobService {
 
   private final LocalNode localNode;
 
   private final JobDelegator jobDelegator;
 
-  public JobServer(LocalNode localNode) {
+  @Inject
+  private JobScheduler(LocalNode localNode) {
     this.localNode = localNode;
     this.jobDelegator = new JobDelegator(this.localNode);
     this.jobDelegator.start();
@@ -70,7 +74,7 @@ public final class JobServer implements JobService {
 
   private boolean isResponsibleFor(Job job) {
     try {
-      return this.localNode.getIdentifier().equals(job.getResponsibleNode().getIdentifier());
+      return this.localNode.getId().equals(job.getResponsibleNode().getIdentifier());
     } catch (RemoteException e) {
       throw new RuntimeException("Remote node is unreachable", e);
     }

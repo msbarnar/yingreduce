@@ -1,17 +1,20 @@
-package edu.asu.ying.wellington.mapreduce.job.scheduling;
+package edu.asu.ying.wellington.mapreduce.task;
 
 import java.io.Serializable;
 import java.util.Random;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.Task;
+import edu.asu.ying.wellington.mapreduce.net.LocalNode;
 
 /**
  *
  */
 public final class RemoteQueueExecutor extends QueueExecutor<Task> {
 
-  public RemoteQueueExecutor() {
+  private final LocalNode localNode;
+
+  public RemoteQueueExecutor(LocalNode localNode) {
+    this.localNode = localNode;
   }
 
   @Override
@@ -23,6 +26,8 @@ public final class RemoteQueueExecutor extends QueueExecutor<Task> {
     Serializable result = null;
     try {
       result = task.run();
+      System.out.println(String.format("[%s] Remote: %s", this.localNode.getId().toString(),
+                                       task.getId().toString()));
     } catch (final Exception e) {
       e.printStackTrace();
       result = e;

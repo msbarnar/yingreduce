@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.mapreduce.job.scheduling;
+package edu.asu.ying.wellington.mapreduce.job;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.net.LocalNode;
 import edu.asu.ying.wellington.mapreduce.net.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.LetterFreqTask;
@@ -121,7 +120,7 @@ public final class JobDelegator implements Runnable {
       final Task task = tasks.pop();
       try {
         // Find the initial node by the Task's ID (table ID + page index)
-        final RemoteNode initialNode = this.localNode.findNode(task.getInitialNodeID().toString());
+        final RemoteNode initialNode = this.localNode.findNode(task.getInitialNodeSearchString());
         task.setInitialNode(initialNode);
         initialNode.getTaskService().accept(task);
       } catch (final IOException e) {
