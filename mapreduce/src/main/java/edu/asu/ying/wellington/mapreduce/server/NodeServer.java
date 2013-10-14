@@ -1,6 +1,7 @@
-package edu.asu.ying.wellington.mapreduce.net;
+package edu.asu.ying.wellington.mapreduce.server;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -20,6 +21,7 @@ import edu.asu.ying.wellington.mapreduce.task.TaskService;
  * {@code NodeServer} is the layer between the network and the mapreduce services. The server
  * implements the {@link LocalNode} and {@link RemoteNode} interfaces.
  */
+@Singleton
 public final class NodeServer implements LocalNode {
 
   // Network layer
@@ -37,7 +39,9 @@ public final class NodeServer implements LocalNode {
   @Inject
   private NodeServer(LocalPeer localPeer, JobService jobService,
                      TaskService taskService, DFSService dfsService) {
+
     this.localPeer = localPeer;
+    // Use the same node identifier as the underlying P2P node
     this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
     this.jobService = jobService;
     this.taskService = taskService;
@@ -48,6 +52,7 @@ public final class NodeServer implements LocalNode {
           .bind(RemoteNode.class)
           .to(this)
           .wrappedBy(new NodeServerWrapperFactory());
+
     } catch (ExportException e) {
       throw new RuntimeException("Failed to export remote node reference", e);
     }

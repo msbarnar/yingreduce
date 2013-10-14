@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.mapreduce.net;
+package edu.asu.ying.wellington.mapreduce.server;
 
 import java.rmi.RemoteException;
 

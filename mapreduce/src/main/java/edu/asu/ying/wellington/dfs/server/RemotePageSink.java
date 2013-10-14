@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.net;
+package edu.asu.ying.wellington.dfs.server;
 
 import edu.asu.ying.common.event.RemoteSink;
 import edu.asu.ying.wellington.dfs.page.Page;

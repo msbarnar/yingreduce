@@ -56,10 +56,28 @@ public final class PageBuilder
     return this.id;
   }
 
+  /**
+   * Returns {@code true} if the index is the same as the current page held by the page builder. The
+   * page builder does not maintain other pages, as they are immediately sent to the page sink on
+   * being filled.
+   */
+  @Override
+  public boolean hasPage(int index) {
+    return index == this.currentPageIndex;
+  }
+
+  /**
+   * Returns the number of pages this page builder has committed to the table, including the current
+   * incomplete page.
+   */
   public int getPageCount() {
     return this.currentPageIndex + 1;
   }
 
+  /**
+   * Returns the maximum number of bytes allowed in any page before that page is committed to the
+   * page sink.
+   */
   public int getMaxPageSize() {
     return this.maxPageSize;
   }

@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.net;
+package edu.asu.ying.wellington.dfs.client;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;

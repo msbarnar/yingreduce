@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.net;
+package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -7,7 +7,7 @@ import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.table.Table;
 import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.dfs.table.TableNotFoundException;
-import edu.asu.ying.wellington.mapreduce.net.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**
  *

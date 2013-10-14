@@ -4,10 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.wellington.dfs.table.Table;
 import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.dfs.table.TableNotFoundException;
 import edu.asu.ying.wellington.mapreduce.job.JobDelegator;
-import edu.asu.ying.wellington.mapreduce.net.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**
  *
@@ -56,9 +57,7 @@ public class TaskScheduler implements TaskService {
     if (this.isInitialNodeFor(task)) {
       this.queueLocal(task);
     } else {
-      if (!this.forwardingQueue.offer(task)) {
-        throw new TaskSchedulingException("Forwarding queue refused task; no recourse available.");
-      }
+      this.queueForward(task);
     }
   }
 
@@ -67,12 +66,16 @@ public class TaskScheduler implements TaskService {
     if (this.localQueue.size() < this.forwardingQueue.size()) {
       // If the local queue won't take it, forward it
       if (!this.localQueue.offer(task)) {
-        this.forwardingQueue.offer(task);
+        this.queueForward(task);
       }
     } else {
-      if (!this.forwardingQueue.offer(task)) {
-        throw new TaskSchedulingException("Forwarding queue refused task; no recourse available.");
-      }
+      this.queueForward(task);
+    }
+  }
+
+  private void queueForward(Task task) throws TaskSchedulingException {
+    if (!this.forwardingQueue.offer(task)) {
+      throw new TaskSchedulingException("Forwarding queue refused task; no recourse available.");
     }
   }
 
@@ -82,9 +85,9 @@ public class TaskScheduler implements TaskService {
   private boolean isInitialNodeFor(Task task) {
     TableIdentifier taskTableID = task.getTableID();
     try {
-      return this.localNode.getDFSService()
-          .getTable(taskTableID)
-          .hasPage(taskTableID.getPageIndex());
+      Table table = this.localNode.getDFSService().getTable(taskTableID);
+      return table.hasPage(taskTableID.getPageIndex());
+
     } catch (TableNotFoundException e) {
       return false;
     }

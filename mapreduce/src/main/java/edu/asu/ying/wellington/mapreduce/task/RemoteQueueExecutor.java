@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.mapreduce.net.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**
  *
@@ -25,7 +25,7 @@ public final class RemoteQueueExecutor extends QueueExecutor<Task> {
     }
     Serializable result = null;
     try {
-      result = task.run();
+      //result = task.run();
       System.out.println(String.format("[%s] Remote: %s", this.localNode.getId().toString(),
                                        task.getId().toString()));
     } catch (final Exception e) {

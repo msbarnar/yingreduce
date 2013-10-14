@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.net;
+package edu.asu.ying.wellington.dfs.server;
 
 import java.rmi.RemoteException;
 

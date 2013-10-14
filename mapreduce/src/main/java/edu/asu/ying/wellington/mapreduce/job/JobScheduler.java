@@ -6,8 +6,8 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
-import edu.asu.ying.wellington.mapreduce.net.LocalNode;
-import edu.asu.ying.wellington.mapreduce.net.RemoteNode;
+import edu.asu.ying.wellington.mapreduce.server.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
  * The {@code JobScheduler} hosts the job service, accepting jobs locally and remotely and managing

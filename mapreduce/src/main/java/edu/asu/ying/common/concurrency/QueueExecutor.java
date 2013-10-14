@@ -19,7 +19,17 @@ public abstract class QueueExecutor<T> implements Runnable {
    * Starts a single-threaded executor
    */
   protected QueueExecutor() {
-    this(Executors.newSingleThreadExecutor());
+    // Report uncaught exceptions
+    this(Executors.newSingleThreadExecutor(
+        new ExceptionHandlingThreadFactory(new Thread.UncaughtExceptionHandler() {
+
+          @Override
+          public void uncaughtException(Thread t, Throwable e) {
+            // TODO: Logging
+            e.printStackTrace();
+          }
+
+        })));
   }
 
   protected QueueExecutor(ExecutorService executor) {

@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ying.wellington.mapreduce.net.LocalNode;
-import edu.asu.ying.wellington.mapreduce.net.NodeIdentifier;
+import edu.asu.ying.wellington.mapreduce.server.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 
 /**
  *

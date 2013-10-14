@@ -6,78 +6,24 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import edu.asu.ying.wellington.mapreduce.net.LocalNode;
-import edu.asu.ying.wellington.mapreduce.net.RemoteNode;
+import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.wellington.mapreduce.server.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskException;
 
-public final class JobDelegator implements Runnable {
+public final class JobDelegator extends QueueExecutor<Job> {
 
   private final LocalNode localNode;
-
-  // Holds unstarted jobs to be split into tasks, each sent to its inital node
-  private final BlockingQueue<Job> jobQueue = new LinkedBlockingQueue<>();
-
-  // One job at a time
-  private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
   public JobDelegator(LocalNode localNode) {
     this.localNode = localNode;
   }
 
-  public void start() {
-    this.threadPool.submit(this);
-  }
-
-  public boolean offer(Job job) {
-    return this.jobQueue.offer(job);
-  }
-
   @Override
-  public void run() {
-    // Run forever
-    this.threadPool.submit(this);
-
-    Job job = null;
-    try {
-      // Blocks until available
-      job = this.jobQueue.take();
-    } catch (final InterruptedException e) {
-      // TODO: Logging
-      e.printStackTrace();
-    }
-
-    if (job == null) {
-      return;
-    }
-
-    this.delegate(job);
-  }
-
-  // FIXME: Potentially very slow
-  private Set<RemoteNode> findReducers(Job job) {
-    int numReducers = job.getReducerCount();
-    String jobID = job.getID().toString();
-
-    Set<RemoteNode> reducers = new HashSet<>(numReducers);
-    for (int i = 0; i < numReducers; i++) {
-      try {
-        reducers.add(this.localNode.findNode(jobID.concat(Integer.toString(i))));
-      } catch (IOException e) {
-        // TODO: Logging
-        e.printStackTrace();
-      }
-    }
-    return reducers;
-  }
-
-  private void delegate(Job job) {
+  protected void process(Job job) {
     // Find k reducers for the job and set them
     Collection<RemoteNode> reducers = this.findReducers(job);
     job.setReducerNodes(reducers);
@@ -119,8 +65,8 @@ public final class JobDelegator implements Runnable {
     while (!tasks.isEmpty()) {
       final Task task = tasks.pop();
       try {
-        // Find the initial node by the Task's ID (table ID + page index)
-        final RemoteNode initialNode = this.localNode.findNode(task.getInitialNodeSearchString());
+        // Find the initial node by the Task's table ID (table ID + page index)
+        final RemoteNode initialNode = this.localNode.findNode(task.getTableID().toString());
         task.setInitialNode(initialNode);
         initialNode.getTaskService().accept(task);
       } catch (final IOException e) {
@@ -128,5 +74,22 @@ public final class JobDelegator implements Runnable {
         e.printStackTrace();
       }
     }
+  }
+
+  // FIXME: Potentially very slow
+  private Set<RemoteNode> findReducers(Job job) {
+    int numReducers = job.getReducerCount();
+    String jobID = job.getID().toString();
+
+    Set<RemoteNode> reducers = new HashSet<>(numReducers);
+    for (int i = 0; i < numReducers; i++) {
+      try {
+        reducers.add(this.localNode.findNode(jobID.concat(Integer.toString(i))));
+      } catch (IOException e) {
+        // TODO: Logging
+        e.printStackTrace();
+      }
+    }
+    return reducers;
   }
 }

@@ -8,9 +8,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.mapreduce.net.LocalNode;
-import edu.asu.ying.wellington.mapreduce.net.RemoteNode;
-import edu.asu.ying.wellington.mapreduce.net.RemoteTaskService;
+import edu.asu.ying.wellington.mapreduce.server.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
+import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 
 /**
  * {@code ForwardingQueueExecutor} removes tasks from the local {@code Forwarding} queue and places
