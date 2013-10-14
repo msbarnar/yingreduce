@@ -17,11 +17,12 @@ public final class LocalQueueExecutor extends QueueExecutor<Task> {
   }
 
   @Override
-  protected void process(final Task task) {
+  protected void process(Task task) {
     Serializable result = null;
     try {
       //result = task.run();
-      System.out.println(String.format("[%s] Local: %s", this.localNode.getId().toString(),
+      Thread.sleep(10);
+      System.out.println(String.format("[%s] Local: %s", localNode.getId().toString(),
                                        task.getId().toString()));
     } catch (final Exception e) {
       e.printStackTrace();

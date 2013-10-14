@@ -29,8 +29,8 @@ public class TaskScheduler implements TaskService {
   private TaskScheduler(LocalNode localNode) {
     this.localNode = localNode;
     // Set up queues for task execution/forwarding
-    this.localQueue = new RemoteQueueExecutor(localNode);
-    this.remoteQueue = new LocalQueueExecutor(localNode);
+    this.localQueue = new LocalQueueExecutor(localNode);
+    this.remoteQueue = new RemoteQueueExecutor(localNode);
     this.forwardingQueue = new ForwardingQueueExecutor(localNode, remoteQueue);
     // Set up the delegator that splits jobs into tasks and sends them to initial nodes
     this.jobDelegator = new JobDelegator(localNode);
