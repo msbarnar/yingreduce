@@ -61,7 +61,7 @@ public class TaskScheduler implements TaskService {
 
   private void queueLocal(Task task) throws TaskSchedulingException {
     // Forward to the shortest of {Ql, Qf}
-    if (localQueue.size() < forwardingQueue.size()) {
+    if (localQueue.size() <= forwardingQueue.size()) {
       // If the local queue won't take it, forward it
       if (!localQueue.offer(task)) {
         queueForward(task);
