@@ -29,6 +29,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
    * is all of the neighbor nodes (directly connected peers). If the chosen queue is QFn, no action
    * is taken and the task remains on the forwarding queue.
    */
+  @Override
   protected synchronized void process(Task task) {
     final Collection<RemoteNode> neighbors = localNode.getNeighbors();
 
@@ -57,6 +58,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
     if (bestScheduler == null) {
       try {
+        System.out.println("-> self");
         localNode.getTaskService().accept(task);
       } catch (TaskException e) {
         // TODO: Logging
@@ -74,6 +76,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
     try {
       // Forward the task to the remote node
+      System.out.println("->".concat(bestScheduler.toString()));
       bestScheduler.accept(task);
     } catch (final RemoteException e) {
       // TODO: Logging

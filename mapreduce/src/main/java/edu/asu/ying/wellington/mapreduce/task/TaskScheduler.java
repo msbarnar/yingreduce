@@ -32,17 +32,18 @@ public class TaskScheduler implements TaskService {
   private TaskScheduler(LocalNode localNode) {
     this.localNode = localNode;
     // Set up queues for task execution/forwarding
-    this.localQueue = new RemoteQueueExecutor(this.localNode);
-    this.remoteQueue = new LocalQueueExecutor(this.localNode);
-    this.forwardingQueue = new ForwardingQueueExecutor(localNode, this.remoteQueue);
+    this.localQueue = new RemoteQueueExecutor(localNode);
+    this.remoteQueue = new LocalQueueExecutor(localNode);
+    this.forwardingQueue = new ForwardingQueueExecutor(localNode, remoteQueue);
     // Set up the delegator that splits jobs into tasks and sends them to initial nodes
-    this.jobDelegator = new JobDelegator(this.localNode);
+    this.jobDelegator = new JobDelegator(localNode);
 
   }
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public void start() {
     // Start everything explicitly so we don't start any threads in constructors
     localQueue.start();
@@ -66,10 +67,10 @@ public class TaskScheduler implements TaskService {
     if (localQueue.size() < forwardingQueue.size()) {
       // If the local queue won't take it, forward it
       if (!localQueue.offer(task)) {
-        this.queueForward(task);
+        queueForward(task);
       }
     } else {
-      this.queueForward(task);
+      queueForward(task);
     }
   }
 

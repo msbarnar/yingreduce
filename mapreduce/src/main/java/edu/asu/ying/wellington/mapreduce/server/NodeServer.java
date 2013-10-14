@@ -56,6 +56,10 @@ public final class NodeServer implements LocalNode {
     } catch (ExportException e) {
       throw new RuntimeException("Failed to export remote node reference", e);
     }
+
+    this.jobService.start();
+    this.taskService.start();
+    this.dfsService.start();
   }
 
   @Override

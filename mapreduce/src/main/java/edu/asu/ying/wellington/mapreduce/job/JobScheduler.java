@@ -23,7 +23,11 @@ public final class JobScheduler implements JobService {
   @Inject
   private JobScheduler(LocalNode localNode) {
     this.localNode = localNode;
-    this.jobDelegator = new JobDelegator(this.localNode);
+    this.jobDelegator = new JobDelegator(localNode);
+  }
+
+  @Override
+  public void start() {
     this.jobDelegator.start();
   }
 
@@ -34,15 +38,15 @@ public final class JobScheduler implements JobService {
   @Override
   public void accept(Job job) throws JobException {
     // Add ourselves to the job's history
-    job.getHistory().touch(this.localNode);
+    job.getHistory().touch(localNode);
     // If we are the responsible node for the job then accept it
-    if (this.isResponsibleFor(job)) {
-      this.queue(job);
+    if (isResponsibleFor(job)) {
+      queue(job);
     } else {
       // Forward the job to the responsible node
       RemoteNode responsibleNode = null;
       try {
-        responsibleNode = this.findResponsibleNode(job);
+        responsibleNode = findResponsibleNode(job);
       } catch (IOException e) {
         throw new JobException("Exception finding responsible node for job", e);
       }
@@ -62,7 +66,7 @@ public final class JobScheduler implements JobService {
    * Queues the job for reducer allocation and task delegation.
    */
   private void queue(Job job) throws JobException {
-    if (this.jobDelegator.offer(job)) {
+    if (jobDelegator.offer(job)) {
       job.getHistory().getCurrent().setAction(JobHistory.Action.AcceptedJob);
       job.setStatus(Job.Status.Accepted);
     } else {
@@ -74,7 +78,7 @@ public final class JobScheduler implements JobService {
 
   private boolean isResponsibleFor(Job job) {
     try {
-      return this.localNode.getId().equals(job.getResponsibleNode().getIdentifier());
+      return localNode.getId().equals(job.getResponsibleNode().getIdentifier());
     } catch (RemoteException e) {
       throw new RuntimeException("Remote node is unreachable", e);
     }
@@ -84,6 +88,6 @@ public final class JobScheduler implements JobService {
    * Finds the node most closely matching the job's table ID.
    */
   private RemoteNode findResponsibleNode(Job job) throws IOException {
-    return this.localNode.findNode(job.getTableID().forPage(0).toString());
+    return localNode.findNode(job.getTableID().forPage(0).toString());
   }
 }

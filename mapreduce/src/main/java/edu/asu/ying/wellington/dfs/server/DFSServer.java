@@ -23,6 +23,10 @@ public class DFSServer implements DFSService {
   }
 
   @Override
+  public void start() {
+  }
+
+  @Override
   public Table getTable(TableIdentifier id) throws TableNotFoundException {
     return null;
   }
