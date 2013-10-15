@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-import edu.asu.ying.wellington.dfs.table.TableIdentifier;
+import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**

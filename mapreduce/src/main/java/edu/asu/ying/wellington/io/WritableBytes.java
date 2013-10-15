@@ -13,6 +13,8 @@ import java.util.Arrays;
  */
 public final class WritableBytes implements WritableComparable<WritableBytes> {
 
+  public static final int SIZE = 4;
+
   private byte[] value = null;
 
   public WritableBytes(byte[] value) {

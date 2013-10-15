@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.page;
+package edu.asu.ying.wellington.dfs;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,15 +10,15 @@ import edu.asu.ying.wellington.io.WritableComparable;
 /**
  *
  */
-public final class EntriesExceedPageCapacityException extends IOException {
+public final class ElementsExceedPageCapacityException extends IOException {
 
   private final List<WritableComparable> keys = new ArrayList<>();
 
-  public EntriesExceedPageCapacityException(final WritableComparable key) {
+  public ElementsExceedPageCapacityException(final WritableComparable key) {
     this.keys.add(key);
   }
 
-  public EntriesExceedPageCapacityException(final Collection<WritableComparable> keys) {
+  public ElementsExceedPageCapacityException(final Collection<WritableComparable> keys) {
     this.keys.addAll(keys);
   }
 

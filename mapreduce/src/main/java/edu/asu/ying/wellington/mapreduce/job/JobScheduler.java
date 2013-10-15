@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.dfs.page.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 

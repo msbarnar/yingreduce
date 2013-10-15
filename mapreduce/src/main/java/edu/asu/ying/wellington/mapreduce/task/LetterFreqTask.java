@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.asu.ying.wellington.dfs.page.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 

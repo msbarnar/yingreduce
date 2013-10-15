@@ -7,7 +7,7 @@ import edu.asu.ying.common.event.RemoteSink;
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.WrapperFactory;
 import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.dfs.page.Page;
+import edu.asu.ying.wellington.dfs.Page;
 
 /**
  *

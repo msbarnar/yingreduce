@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.util.Scanner;
 
 import edu.asu.ying.wellington.WellingtonModule;
-import edu.asu.ying.wellington.dfs.table.TableIdentifier;
+import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 

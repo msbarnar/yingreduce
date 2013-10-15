@@ -1,11 +1,9 @@
-package edu.asu.ying.wellington.dfs.page;
+package edu.asu.ying.wellington.dfs;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.SerializedElement;
-import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  */
@@ -45,5 +43,5 @@ public interface Page extends Serializable, Sink<SerializedElement> {
    * The page stores a slice of the main table; the elements stored in the page are only some of
    * those from the table.
    */
-  Map<WritableComparable, byte[]> getContents();
+  List<SerializedElement> asList();
 }

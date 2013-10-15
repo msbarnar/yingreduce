@@ -8,10 +8,10 @@ import javax.annotation.Nullable;
 import edu.asu.ying.common.event.EventHandler;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.dfs.page.IncomingPageHandler;
-import edu.asu.ying.wellington.dfs.page.Page;
-import edu.asu.ying.wellington.dfs.table.TableIdentifier;
-import edu.asu.ying.wellington.dfs.table.TableNotFoundException;
+import edu.asu.ying.wellington.dfs.Page;
+import edu.asu.ying.wellington.dfs.Table;
+import edu.asu.ying.wellington.dfs.TableIdentifier;
+import edu.asu.ying.wellington.dfs.TableNotFoundException;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**

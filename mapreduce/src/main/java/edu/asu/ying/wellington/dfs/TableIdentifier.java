@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.table;
+package edu.asu.ying.wellington.dfs;
 
 import java.util.UUID;
 

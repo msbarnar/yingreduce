@@ -1,13 +1,9 @@
-package edu.asu.ying.wellington.dfs.page;
+package edu.asu.ying.wellington.dfs;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import edu.asu.ying.wellington.dfs.SerializedElement;
-import edu.asu.ying.wellington.dfs.table.TableIdentifier;
-import edu.asu.ying.wellington.io.WritableComparable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
@@ -19,7 +15,7 @@ public final class BoundedPage implements Page {
 
   private final PageIdentifier pageId;
 
-  private final Map<WritableComparable, byte[]> contents = new LinkedHashMap<>();
+  private final List<SerializedElement> contents = new ArrayList<>();
   // Don't accept any entries that would cause the page to exceed this size in bytes.
   private final int capacityBytes;
   // Keep track of the sum length of the contents.
@@ -33,12 +29,14 @@ public final class BoundedPage implements Page {
   }
 
   @Override
-  public boolean offer(SerializedElement entry) {
-    byte[] value = entry.getValue();
-    if (value.length > (capacityBytes - curSizeBytes)) {
+  public boolean offer(SerializedElement element) {
+    if (element.length > (capacityBytes - curSizeBytes)) {
       return false;
     }
-    contents.put(entry.getKey(), value);
+
+    contents.add(element);
+    curSizeBytes += element.length;
+
     return true;
   }
 
@@ -50,14 +48,12 @@ public final class BoundedPage implements Page {
    * @return the number of entries added.
    */
   @Override
-  public int offer(Iterable<SerializedElement> entries) {
+  public int offer(Iterable<SerializedElement> elements) {
     int i = 0;
-    for (SerializedElement entry : entries) {
-      if (entry.getValue().length > (capacityBytes - curSizeBytes)) {
-        return i;
+    for (SerializedElement element : elements) {
+      if (offer(element)) {
+        i++;
       }
-      contents.put(entry.getKey(), entry.getValue());
-      i++;
     }
     return i;
   }
@@ -68,9 +64,9 @@ public final class BoundedPage implements Page {
   }
 
   @Override
-  public Map<WritableComparable, byte[]> getContents() {
+  public List<SerializedElement> asList() {
     synchronized (contents) {
-      return ImmutableMap.copyOf(contents);
+      return ImmutableList.copyOf(contents);
     }
   }
 

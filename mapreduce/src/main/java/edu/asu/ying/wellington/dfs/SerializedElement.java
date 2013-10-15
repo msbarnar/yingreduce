@@ -13,36 +13,47 @@ import edu.asu.ying.wellington.io.WritableComparable;
  */
 public final class SerializedElement implements Serializable {
 
-  private final WritableComparable key;
-  private final byte[] value;
+  private static final long SerialVersionUID = 1L;
 
-  public SerializedElement(final Element element) {
+  private final byte[] key;
+  private final byte[] value;
+  public final int length;
+
+  public SerializedElement(Element element) {
     this(element.getKey(), element.getValue());
   }
 
-  public SerializedElement(final WritableComparable key, final byte[] value) {
+  public SerializedElement(byte[] key, byte[] value) {
     this.key = key;
     this.value = value;
+    this.length = key.length + value.length;
   }
 
-  public <V extends Writable> SerializedElement(final WritableComparable key,
-                                                final Writable value) {
-    final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+  public <V extends Writable> SerializedElement(WritableComparable key, Writable value) {
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    DataOutputStream writer = new DataOutputStream(buffer);
+
     try {
-      value.write(new DataOutputStream(buffer));
-    } catch (final IOException e) {
+      key.write(writer);
+      this.key = buffer.toByteArray();
+
+      buffer.reset();
+      value.write(writer);
+      this.value = buffer.toByteArray();
+
+      buffer.close();
+    } catch (IOException e) {
       throw new ExceptionInInitializerError(e);
     }
 
-    this.key = key;
-    this.value = buffer.toByteArray();
+    this.length = this.key.length + this.value.length;
   }
 
-  public final WritableComparable getKey() {
+  public byte[] getKey() {
     return this.key;
   }
 
-  public final byte[] getValue() {
+  public byte[] getValue() {
     return this.value;
   }
 }

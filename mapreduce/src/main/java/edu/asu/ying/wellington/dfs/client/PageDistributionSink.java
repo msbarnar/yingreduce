@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.page;
+package edu.asu.ying.wellington.dfs.client;
 
 import com.google.inject.Inject;
 
@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 

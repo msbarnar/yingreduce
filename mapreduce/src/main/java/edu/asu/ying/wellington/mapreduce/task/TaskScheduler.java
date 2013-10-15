@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.dfs.page.PageIdentifier;
-import edu.asu.ying.wellington.dfs.table.TableNotFoundException;
+import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.TableNotFoundException;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**

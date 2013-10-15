@@ -9,6 +9,8 @@ import java.io.IOException;
  */
 public final class WritableInt implements WritableComparable<WritableInt> {
 
+  public static final int SIZE = 4;
+
   private int value;
 
   public WritableInt(final int i) {
