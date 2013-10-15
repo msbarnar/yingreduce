@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Page;
-import edu.asu.ying.wellington.mapreduce.server.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
@@ -23,7 +23,8 @@ public final class PageDistributionSink implements Sink<Page> {
 
   private static final int DEFAULT_DUPLICATION_FACTOR = 3;
 
-  private final LocalNode localNode;
+  private final NodeLocator locator;
+
   private final int pageDuplicationFactor = DEFAULT_DUPLICATION_FACTOR;
 
   // Used to offer a page to several peers at once
@@ -33,8 +34,8 @@ public final class PageDistributionSink implements Sink<Page> {
 
 
   @Inject
-  private PageDistributionSink(LocalNode localNode) {
-    this.localNode = localNode;
+  private PageDistributionSink(NodeLocator locator) {
+    this.locator = locator;
   }
 
   /**
@@ -47,7 +48,7 @@ public final class PageDistributionSink implements Sink<Page> {
 
     // Concurrently offer the page to all of the peers
     for (final RemoteNode node : nodes) {
-      results.add(this.workersByNode.submit(new Callable<Boolean>() {
+      results.add(workersByNode.submit(new Callable<Boolean>() {
         @Override
         public Boolean call() throws Exception {
           return node.getDFSService().getPageDepository().offer(page);
@@ -100,6 +101,6 @@ public final class PageDistributionSink implements Sink<Page> {
   }
 
   private List<RemoteNode> findRecipientsFor(Page page) throws IOException {
-    return localNode.find(page.getPageID().toString(), pageDuplicationFactor);
+    return locator.find(page.getPageID().toString(), pageDuplicationFactor);
   }
 }

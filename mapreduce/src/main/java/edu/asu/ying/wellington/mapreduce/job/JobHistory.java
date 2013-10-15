@@ -14,7 +14,7 @@ public final class JobHistory implements Serializable {
 
   private final List<Entry> history = new LinkedList<>();
 
-  public void touch(LocalNode node) {
+  public void touchedBy(LocalNode node) {
     this.history.add(new Entry(node));
   }
 

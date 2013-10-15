@@ -20,15 +20,15 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 public final class JobScheduler implements JobService {
 
   private final LocalNode localNode;
-  private final NodeLocator locator;
+  private final NodeLocator nodeLocator;
 
   private final QueueExecutor<Job> jobDelegator;
 
   @Inject
-  private JobScheduler(LocalNode localNode, NodeLocator locator) {
+  private JobScheduler(LocalNode localNode, NodeLocator nodeLocator, JobDelegator jobDelegator) {
     this.localNode = localNode;
-    this.locator = locator;
-    this.jobDelegator = new JobDelegator(localNode);
+    this.nodeLocator = nodeLocator;
+    this.jobDelegator = jobDelegator;
   }
 
   @Override
@@ -43,7 +43,7 @@ public final class JobScheduler implements JobService {
   @Override
   public void accept(Job job) throws JobException {
     // Add ourselves to the job's history
-    job.getHistory().touch(localNode);
+    job.getHistory().touchedBy(localNode);
     // If we are the responsible node for the job then accept it
     if (isResponsibleFor(job)) {
       queue(job);
@@ -94,6 +94,6 @@ public final class JobScheduler implements JobService {
    */
   // FIXME: page duplication means we have to pick a random one of the nodes that has this page
   private RemoteNode findResponsibleNode(Job job) throws IOException {
-    return locator.find(PageIdentifier.firstPageOf(job.getTableID()).toString());
+    return nodeLocator.find(PageIdentifier.firstPageOf(job.getTableID()).toString());
   }
 }
