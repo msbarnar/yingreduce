@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.mapreduce.server.LocalNodeProxy;
+import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.LetterFreqTask;
@@ -25,7 +25,7 @@ public final class JobDelegator extends QueueExecutor<Job> {
   private final TaskService taskService;
 
   @Inject
-  private JobDelegator(@LocalNodeProxy RemoteNode loopbackProxy,
+  private JobDelegator(@Local RemoteNode loopbackProxy,
                        NodeLocator nodeLocator,
                        TaskService taskService) {
 

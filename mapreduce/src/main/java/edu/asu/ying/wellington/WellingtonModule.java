@@ -10,6 +10,10 @@ import java.util.Properties;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.common.remoting.Activator;
+import edu.asu.ying.common.remoting.ClassNotExportedException;
+import edu.asu.ying.common.remoting.Local;
+import edu.asu.ying.common.remoting.Remote;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.client.PageDistributionSink;
@@ -23,9 +27,8 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeImpl;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
+import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.Forwarding;
-import edu.asu.ying.wellington.mapreduce.task.Local;
-import edu.asu.ying.wellington.mapreduce.task.Remote;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskScheduler;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
@@ -34,7 +37,15 @@ import edu.asu.ying.wellington.mapreduce.task.exc.LocalQueueExecutor;
 import edu.asu.ying.wellington.mapreduce.task.exc.RemoteQueueExecutor;
 
 /**
- * {@code WellingtonModule} provides the bindings for dependency injection.
+ * {@code WellingtonModule} binds Wellington service classes. </p> The module depends on {@link
+ * edu.asu.ying.p2p.LocalPeer} and {@link Activator} being bound, so it must be used to create a
+ * child injector of a module that binds those classes:
+ * <pre>
+ *   {@code
+ *    Injector injector = Guice.createInjector(new KadP2PModule())
+ *      .createChildInjector(new WellingtonModule());
+ * }
+ * </pre>
  */
 public final class WellingtonModule extends AbstractModule {
 
@@ -59,18 +70,14 @@ public final class WellingtonModule extends AbstractModule {
     Names.bindProperties(binder(), properties);
 
     configureServiceNetwork();
-    configureServices();
+    configureJobService();
+    configureTaskService();
+    configureDFSService();
   }
 
   private void configureServiceNetwork() {
     bind(LocalNode.class).to(NodeImpl.class).in(Scopes.SINGLETON);
     bind(NodeLocator.class).to(NodeImpl.class).in(Scopes.SINGLETON);
-  }
-
-  private void configureServices() {
-    configureJobService();
-    configureTaskService();
-    configureDFSService();
   }
 
   private void configureJobService() {
@@ -111,12 +118,17 @@ public final class WellingtonModule extends AbstractModule {
 
   @Provides
   @Local
+  private RemoteNode provideLoopbackProxy(Activator activator) throws ClassNotExportedException {
+    return activator.getReference(RemoteNode.class);
+  }
+
+  @Provides
+  @Local
   private NodeIdentifier provideLocalNodeID(LocalNode localNode) {
     return localNode.getID();
   }
 
   private Properties getDefaultProperties() {
-    Properties props = new Properties();
-    return props;
+    return new Properties();
   }
 }

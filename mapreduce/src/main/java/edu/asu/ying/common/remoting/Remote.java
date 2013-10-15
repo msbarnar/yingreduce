@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.mapreduce.task;
+package edu.asu.ying.common.remoting;
 
 import com.google.inject.BindingAnnotation;
 

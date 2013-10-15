@@ -51,8 +51,9 @@ public class Client {
     Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
-          new KadP2PModule(),
-          new WellingtonModule().setProperty("p2p.port", Integer.toString(5000 + i)));
+          new KadP2PModule().setProperty("p2p.port", Integer.toString(5000 + i)))
+          .createChildInjector(
+              new WellingtonModule());
 
       instances[i] = injector.getInstance(Daemon.class);
       if (i > 0) {

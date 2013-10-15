@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.JobServiceExporter;
 import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
-import edu.asu.ying.wellington.mapreduce.task.Local;
 
 /**
  * The {@code JobScheduler} hosts the job service, accepting jobs locally and remotely and managing

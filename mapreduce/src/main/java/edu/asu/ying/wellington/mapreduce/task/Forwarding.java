@@ -11,7 +11,8 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- *
+ * Specifies the {@link edu.asu.ying.common.concurrency.QueueExecutor} is the {@code forwarding}
+ * queue.
  */
 @BindingAnnotation
 @Target({FIELD, PARAMETER, METHOD})
