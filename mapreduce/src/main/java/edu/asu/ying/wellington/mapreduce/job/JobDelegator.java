@@ -1,7 +1,6 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -19,7 +18,6 @@ import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskException;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
-@Singleton
 public final class JobDelegator extends QueueExecutor<Job> {
 
   private final RemoteNode localRemoteProxy;

@@ -1,7 +1,6 @@
 package edu.asu.ying.wellington.mapreduce.server;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -16,7 +15,6 @@ import edu.asu.ying.p2p.RemotePeer;
  * {@code NodeServer} is the layer between the network and the mapreduce services. The server
  * implements the {@link LocalNode} and {@link RemoteNode} interfaces.
  */
-@Singleton
 public final class NodeServer implements LocalNode, NodeLocator {
 
   // Network layer

@@ -1,7 +1,6 @@
 package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import javax.annotation.Nullable;
 
@@ -17,7 +16,6 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 /**
  *
  */
-@Singleton
 public class DFSServer implements DFSService {
 
   private final LocalNode localNode;

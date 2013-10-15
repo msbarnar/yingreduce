@@ -1,7 +1,6 @@
 package edu.asu.ying.wellington.mapreduce.task;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -16,7 +15,6 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
  * them either in the local {@code Remote} queue (if the local node is <b>not</b> the initial node),
  * or in the {@code Forwarding} queue of one of the immediately connected child nodes.
  */
-@Singleton
 public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
   private final NodeLocator locator;

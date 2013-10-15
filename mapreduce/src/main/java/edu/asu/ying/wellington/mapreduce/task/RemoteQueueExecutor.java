@@ -1,7 +1,6 @@
 package edu.asu.ying.wellington.mapreduce.task;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -12,7 +11,6 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 /**
  *
  */
-@Singleton
 public final class RemoteQueueExecutor extends QueueExecutor<Task> {
 
   private final LocalNode localNode;

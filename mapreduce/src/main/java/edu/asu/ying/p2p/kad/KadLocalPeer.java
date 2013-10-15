@@ -2,7 +2,6 @@ package edu.asu.ying.p2p.kad;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -40,7 +39,6 @@ import il.technion.ewolf.kbr.Node;
  * routing system. </p> The local peer maintains the Kademlia node, the local job scheduler, and the
  * local database interface.
  */
-@Singleton
 public final class KadLocalPeer implements LocalPeer {
 
   // Local kademlia node
