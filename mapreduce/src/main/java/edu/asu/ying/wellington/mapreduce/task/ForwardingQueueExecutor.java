@@ -1,12 +1,13 @@
 package edu.asu.ying.wellington.mapreduce.task;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.mapreduce.server.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 
@@ -15,17 +16,19 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
  * them either in the local {@code Remote} queue (if the local node is <b>not</b> the initial node),
  * or in the {@code Forwarding} queue of one of the immediately connected child nodes.
  */
+@Singleton
 public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
-  private final LocalNode localNode;
+  private final NodeLocator locator;
   private final TaskService taskService;
 
   private final QueueExecutor<Task> remoteQueue;
 
   @Inject
-  private ForwardingQueueExecutor(LocalNode localNode, TaskService taskService,
+  private ForwardingQueueExecutor(NodeLocator locator,
+                                  TaskService taskService,
                                   QueueExecutor<Task> remoteQueue) {
-    this.localNode = localNode;
+    this.locator = locator;
     this.taskService = taskService;
     this.remoteQueue = remoteQueue;
   }
@@ -37,7 +40,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
    */
   @Override
   protected synchronized void process(Task task) {
-    final Collection<RemoteNode> neighbors = localNode.getNeighbors();
+    Collection<RemoteNode> neighbors = locator.neighbors();
 
     // Default to forwarding to the local remote queue
     // QFn -> QRn
@@ -56,7 +59,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
           maximumBackpressure = remoteBackpressure;
           bestScheduler = remoteScheduler;
         }
-      } catch (final RemoteException e) {
+      } catch (RemoteException e) {
         // TODO: Logging
         e.printStackTrace();
       }
@@ -84,7 +87,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
       // Forward the task to the remote node
       System.out.println("->".concat(bestScheduler.toString()));
       bestScheduler.accept(task);
-    } catch (final RemoteException e) {
+    } catch (RemoteException e) {
       // TODO: Logging
       e.printStackTrace();
     }

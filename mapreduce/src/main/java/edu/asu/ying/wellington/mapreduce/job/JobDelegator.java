@@ -71,7 +71,7 @@ public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExe
       final Task task = tasks.pop();
       try {
         // Find the initial node by the Task's table ID (table ID + page index)
-        final RemoteNode initialNode = localNode.findNode(task.getTargetPageID().toString());
+        final RemoteNode initialNode = localNode.find(task.getTargetPageID().toString());
         task.setInitialNode(initialNode);
         initialNode.getTaskService().accept(task);
       } catch (final IOException e) {
@@ -89,7 +89,7 @@ public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExe
     Set<RemoteNode> reducers = new HashSet<>(numReducers);
     for (int i = 0; i < numReducers; i++) {
       try {
-        reducers.add(localNode.findNode(jobID.concat(Integer.toString(i))));
+        reducers.add(localNode.find(jobID.concat(Integer.toString(i))));
       } catch (IOException e) {
         // TODO: Logging
         e.printStackTrace();

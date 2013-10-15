@@ -17,7 +17,7 @@ import edu.asu.ying.p2p.RemotePeer;
  * implements the {@link LocalNode} and {@link RemoteNode} interfaces.
  */
 @Singleton
-public final class NodeServer implements LocalNode {
+public final class NodeServer implements LocalNode, NodeLocator {
 
   // Network layer
   private final LocalPeer localPeer;
@@ -29,7 +29,7 @@ public final class NodeServer implements LocalNode {
 
 
   @Inject
-  private NodeServer(LocalPeer localPeer) {
+  private NodeServer(LocalPeer localPeer, RemoteNodeWrapperFactory nodeWrapperFactory) {
 
     this.localPeer = localPeer;
     // Use the same node identifier as the underlying P2P node
@@ -39,7 +39,7 @@ public final class NodeServer implements LocalNode {
       this.remoteNode = localPeer.getActivator()
           .bind(RemoteNode.class)
           .to(this)
-          .wrappedBy(new RemoteNodeWrapperFactory());
+          .wrappedBy(nodeWrapperFactory);
 
     } catch (ExportException e) {
       throw new RuntimeException("Failed to export remote node reference", e);
@@ -57,12 +57,12 @@ public final class NodeServer implements LocalNode {
   }
 
   @Override
-  public RemoteNode findNode(String searchKey) throws IOException {
+  public RemoteNode find(String searchKey) throws IOException {
     return localPeer.findPeer(searchKey).getReference(RemoteNode.class);
   }
 
   @Override
-  public List<RemoteNode> findNodes(String searchKey, int count) throws IOException {
+  public List<RemoteNode> find(String searchKey, int count) throws IOException {
     List<RemoteNode> nodes = new ArrayList<>();
     for (RemotePeer peer : localPeer.findPeers(searchKey, count)) {
       try {
@@ -76,7 +76,7 @@ public final class NodeServer implements LocalNode {
   }
 
   @Override
-  public List<RemoteNode> getNeighbors() {
+  public List<RemoteNode> neighbors() {
     List<RemoteNode> neighbors = new ArrayList<>();
     for (RemotePeer peer : localPeer.getNeighbors()) {
       try {

@@ -100,6 +100,6 @@ public final class PageDistributionSink implements Sink<Page> {
   }
 
   private List<RemoteNode> findRecipientsFor(Page page) throws IOException {
-    return localNode.findNodes(page.getPageID().toString(), pageDuplicationFactor);
+    return localNode.find(page.getPageID().toString(), pageDuplicationFactor);
   }
 }

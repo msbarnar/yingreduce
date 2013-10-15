@@ -1,21 +1,39 @@
 package edu.asu.ying.wellington.mapreduce.server;
 
+import com.google.inject.Inject;
+
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.WrapperFactory;
+import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.server.DFSServiceWrapperFactory;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
+import edu.asu.ying.wellington.mapreduce.job.JobService;
+import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  *
  */
-public final class RemoteNodeWrapperFactory implements WrapperFactory<NodeServer, RemoteNode> {
+public final class RemoteNodeWrapperFactory implements WrapperFactory<LocalNode, RemoteNode> {
+
+  private final JobService jobService;
+  private final TaskService taskService;
+  private final DFSService dfsService;
+
+  @Inject
+  private RemoteNodeWrapperFactory(JobService jobService, TaskService taskService,
+                                   DFSService dfsService) {
+
+    this.jobService = jobService;
+    this.taskService = taskService;
+    this.dfsService = dfsService;
+  }
 
   @Override
-  public RemoteNode create(NodeServer target, Activator activator) {
-    return new RemoteNodeWrapper(target, activator);
+  public RemoteNode create(LocalNode target, Activator activator) {
+    return new RemoteNodeWrapper(target, activator, jobService, taskService, dfsService);
   }
 
   private final class RemoteNodeWrapper implements RemoteNode {
@@ -25,20 +43,23 @@ public final class RemoteNodeWrapperFactory implements WrapperFactory<NodeServer
     private final RemoteTaskService taskServiceProxy;
     private final RemoteDFSService dfsServiceProxy;
 
-    private RemoteNodeWrapper(LocalNode localNode, Activator activator) {
+    private RemoteNodeWrapper(LocalNode localNode, Activator activator,
+                              JobService jobService, TaskService taskService,
+                              DFSService dfsService) {
+
       this.localNode = localNode;
 
       try {
         this.jobServiceProxy = activator.bind(RemoteJobService.class)
-            .to(localNode.getJobService())
+            .to(jobService)
             .wrappedBy(new JobServiceWrapperFactory());
 
         this.taskServiceProxy = activator.bind(RemoteTaskService.class)
-            .to(localNode.getTaskService())
+            .to(taskService)
             .wrappedBy(new TaskServiceWrapperFactory());
 
         this.dfsServiceProxy = activator.bind(RemoteDFSService.class)
-            .to(localNode.getDFSService())
+            .to(dfsService)
             .wrappedBy(new DFSServiceWrapperFactory());
 
       } catch (ExportException e) {
