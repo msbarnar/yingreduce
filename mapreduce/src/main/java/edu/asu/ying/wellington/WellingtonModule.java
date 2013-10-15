@@ -32,9 +32,9 @@ import edu.asu.ying.wellington.mapreduce.task.Forwarding;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskScheduler;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
-import edu.asu.ying.wellington.mapreduce.task.exc.ForwardingQueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.exc.LocalQueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.exc.RemoteQueueExecutor;
+import edu.asu.ying.wellington.mapreduce.task.execution.ForwardingQueueExecutor;
+import edu.asu.ying.wellington.mapreduce.task.execution.LocalQueueExecutor;
+import edu.asu.ying.wellington.mapreduce.task.execution.RemoteQueueExecutor;
 
 /**
  * {@code WellingtonModule} binds Wellington service classes. </p> The module depends on {@link

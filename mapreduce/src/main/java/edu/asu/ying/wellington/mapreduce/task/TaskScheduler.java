@@ -8,9 +8,9 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.TableNotFoundException;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.wellington.mapreduce.server.TaskServiceExporter;
-import edu.asu.ying.wellington.mapreduce.task.exc.ForwardingQueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.exc.LocalQueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.exc.RemoteQueueExecutor;
+import edu.asu.ying.wellington.mapreduce.task.execution.ForwardingQueueExecutor;
+import edu.asu.ying.wellington.mapreduce.task.execution.LocalQueueExecutor;
+import edu.asu.ying.wellington.mapreduce.task.execution.RemoteQueueExecutor;
 
 /**
  *
