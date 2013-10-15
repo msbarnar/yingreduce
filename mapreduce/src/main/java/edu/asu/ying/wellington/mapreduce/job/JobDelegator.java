@@ -1,6 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -9,6 +10,8 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.wellington.mapreduce.server.LocalNodeProxy;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.LetterFreqTask;
@@ -16,18 +19,19 @@ import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskException;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
-public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExecutor<Job> {
+@Singleton
+public final class JobDelegator extends QueueExecutor<Job> {
 
   private final RemoteNode localRemoteProxy;
   private final NodeLocator nodeLocator;
   private final TaskService taskService;
 
   @Inject
-  private JobDelegator(RemoteNode localRemoteProxy,
+  private JobDelegator(@LocalNodeProxy RemoteNode localProxy,
                        NodeLocator nodeLocator,
                        TaskService taskService) {
 
-    this.localRemoteProxy = localRemoteProxy;
+    this.localRemoteProxy = localProxy;
     this.nodeLocator = nodeLocator;
     this.taskService = taskService;
   }

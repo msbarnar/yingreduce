@@ -27,7 +27,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
   @Inject
   private ForwardingQueueExecutor(NodeLocator locator,
                                   TaskService taskService,
-                                  QueueExecutor<Task> remoteQueue) {
+                                  RemoteQueueExecutor remoteQueue) {
     this.locator = locator;
     this.taskService = taskService;
     this.remoteQueue = remoteQueue;

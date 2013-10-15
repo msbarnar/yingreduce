@@ -24,7 +24,7 @@ public final class NodeServer implements LocalNode, NodeLocator {
   // Exported to network
   private final RemoteNode remoteNode;
 
-  // Service layer
+  // Derived from network
   private final NodeIdentifier identifier;
 
 
@@ -35,6 +35,7 @@ public final class NodeServer implements LocalNode, NodeLocator {
     // Use the same node identifier as the underlying P2P node
     this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
 
+    // Export this object to the network using the injected factory
     try {
       this.remoteNode = localPeer.getActivator()
           .bind(RemoteNode.class)

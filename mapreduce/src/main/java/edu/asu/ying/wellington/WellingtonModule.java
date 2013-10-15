@@ -3,6 +3,7 @@ package edu.asu.ying.wellington;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
 import java.io.IOException;
@@ -20,7 +21,10 @@ import edu.asu.ying.wellington.dfs.server.DFSServer;
 import edu.asu.ying.wellington.mapreduce.job.JobScheduler;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.LocalNodeProxy;
+import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.NodeServer;
+import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.TaskScheduler;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 import il.technion.ewolf.kbr.KeybasedRouting;
@@ -64,11 +68,19 @@ public final class WellingtonModule extends AbstractModule {
     bind(LocalPeer.class).to(KadLocalPeer.class);
     // Service network
     bind(LocalNode.class).to(NodeServer.class);
+    bind(NodeLocator.class).to(NodeServer.class);
+
     // Services
     bind(JobService.class).to(JobScheduler.class);
     bind(TaskService.class).to(TaskScheduler.class);
     bind(Sink.class).annotatedWith(PageDistributor.class).to(PageDistributionSink.class);
     bind(DFSService.class).to(DFSServer.class);
+  }
+
+  @Provides
+  @LocalNodeProxy
+  private RemoteNode provideRemoteNode(LocalNode localNode) {
+    return localNode.getAsRemote();
   }
 
   private Properties getDefaultProperties() {
