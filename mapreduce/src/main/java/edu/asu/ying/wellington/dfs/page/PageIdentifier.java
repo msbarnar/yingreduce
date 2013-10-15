@@ -19,6 +19,10 @@ public final class PageIdentifier extends AbstractIdentifier {
     return new PageIdentifier(parentTable, index);
   }
 
+  public static PageIdentifier firstPageOf(TableIdentifier table) {
+    return new PageIdentifier(table, 0);
+  }
+
   public static PageIdentifier forString(String id) {
     int lastDelimiter = id.lastIndexOf(PAGE_DELIMITER);
     if (lastDelimiter > -1) {

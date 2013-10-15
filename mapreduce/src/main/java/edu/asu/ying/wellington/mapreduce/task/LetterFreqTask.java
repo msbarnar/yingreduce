@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.asu.ying.wellington.dfs.page.PageIdentifier;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
@@ -23,7 +24,7 @@ public final class LetterFreqTask extends Task {
 
   public LetterFreqTask(Job parentJob, RemoteNode reductionNode, int index) {
     // Task ID = table name + page index
-    super(parentJob, TaskIdentifier.random(), parentJob.getTableID());
+    super(parentJob, TaskIdentifier.random(), PageIdentifier.create(parentJob.getTableID(), index));
     this.reductionNode = reductionNode;
     this.index = index;
     this.file = new File(System.getProperty("user.home").concat("/mapreduce/data/lipsum.txt"));

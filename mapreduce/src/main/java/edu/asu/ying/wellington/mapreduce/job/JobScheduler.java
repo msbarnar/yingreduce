@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.wellington.dfs.page.PageIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
@@ -86,9 +87,10 @@ public final class JobScheduler implements JobService {
   }
 
   /**
-   * Finds the node most closely matching the job's table ID.
+   * Finds the node with the first page of the job's table.
    */
+  // FIXME: page duplication means we have to pick a random one of the nodes that has this page
   private RemoteNode findResponsibleNode(Job job) throws IOException {
-    return localNode.findNode(job.getTableID().forPage(0).toString());
+    return localNode.findNode(PageIdentifier.firstPageOf(job.getTableID()).toString());
   }
 }
