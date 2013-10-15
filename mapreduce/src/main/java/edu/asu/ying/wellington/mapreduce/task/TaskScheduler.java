@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.mapreduce.job.JobDelegator;
+import edu.asu.ying.wellington.dfs.table.Table;
+import edu.asu.ying.wellington.dfs.table.TableIdentifier;
+import edu.asu.ying.wellington.dfs.table.TableNotFoundException;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**
@@ -16,9 +18,6 @@ public class TaskScheduler implements TaskService {
   private static final int MAX_QUEUE_SIZE = 1;
 
   private final LocalNode localNode;
-  // The job delegator accepts unstarted jobs, splits them into tasks, and delegates each task to
-  // its initial node.
-  private final JobDelegator jobDelegator;
   // Ql and Qr are bounded, but Qf is just a pipe to neighboring peers
   private final QueueExecutor<Task> forwardingQueue;
   private final QueueExecutor<Task> localQueue;
@@ -32,9 +31,6 @@ public class TaskScheduler implements TaskService {
     this.localQueue = new LocalQueueExecutor(localNode);
     this.remoteQueue = new RemoteQueueExecutor(localNode);
     this.forwardingQueue = new ForwardingQueueExecutor(localNode, remoteQueue);
-    // Set up the delegator that splits jobs into tasks and sends them to initial nodes
-    this.jobDelegator = new JobDelegator(localNode);
-
   }
 
   /**
@@ -46,7 +42,6 @@ public class TaskScheduler implements TaskService {
     localQueue.start();
     remoteQueue.start();
     forwardingQueue.start();
-    jobDelegator.start();
   }
 
   @Override
@@ -81,7 +76,6 @@ public class TaskScheduler implements TaskService {
    * Returns true if the local DFS service has the correct page of the table specified by the task.
    */
   private boolean isInitialNodeFor(Task task) {
-    return true;/*
     TableIdentifier taskTableID = task.getTableID();
     try {
       Table table = localNode.getDFSService().getTable(taskTableID);
@@ -89,6 +83,6 @@ public class TaskScheduler implements TaskService {
 
     } catch (TableNotFoundException e) {
       return false;
-    }*/
+    }
   }
 }

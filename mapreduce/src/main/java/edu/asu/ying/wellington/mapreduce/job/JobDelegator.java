@@ -7,14 +7,13 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskException;
 
-public final class JobDelegator extends QueueExecutor<Job> {
+public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExecutor<Job> {
 
   private final LocalNode localNode;
 

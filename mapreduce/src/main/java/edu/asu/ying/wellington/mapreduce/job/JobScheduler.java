@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
+import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
@@ -18,7 +19,7 @@ public final class JobScheduler implements JobService {
 
   private final LocalNode localNode;
 
-  private final JobDelegator jobDelegator;
+  private final QueueExecutor<Job> jobDelegator;
 
   @Inject
   private JobScheduler(LocalNode localNode) {
@@ -28,7 +29,7 @@ public final class JobScheduler implements JobService {
 
   @Override
   public void start() {
-    this.jobDelegator.start();
+    jobDelegator.start();
   }
 
   /**
