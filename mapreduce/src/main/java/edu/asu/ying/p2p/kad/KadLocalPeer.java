@@ -22,11 +22,10 @@ import edu.asu.ying.p2p.InvalidContentException;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
 import edu.asu.ying.p2p.PeerNotFoundException;
-import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.message.RequestMessage;
 import edu.asu.ying.p2p.message.ResponseMessage;
-import edu.asu.ying.p2p.rmi.RMIRequestHandler;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
+import edu.asu.ying.p2p.rmi.RemotePeer;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
@@ -51,8 +50,7 @@ public final class KadLocalPeer implements LocalPeer {
 
 
   @Inject
-  private KadLocalPeer(KeybasedRouting kbrNode, Channel channel)
-      throws ExportException {
+  private KadLocalPeer(KeybasedRouting kbrNode, Channel channel) throws ExportException {
 
     // The local Kademlia node for peer discovery
     this.kbrNode = kbrNode;
@@ -62,9 +60,6 @@ public final class KadLocalPeer implements LocalPeer {
         new KadPeerIdentifier(this.kbrNode.getLocalNode().getKey());
     // Connect the P2P messaging system to the Kademlia node
     this.networkChannel = channel;
-
-    // Allow peers to discover this node's RMI interfaces.
-    RMIRequestHandler.exportNodeToChannel(this, networkChannel);
   }
 
   /**

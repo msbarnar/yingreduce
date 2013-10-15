@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 
 import edu.asu.ying.p2p.rmi.RemoteImportException;
+import edu.asu.ying.p2p.rmi.RemotePeer;
 
 
 /**

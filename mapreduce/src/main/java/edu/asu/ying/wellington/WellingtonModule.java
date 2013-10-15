@@ -16,17 +16,18 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadChannel;
 import edu.asu.ying.p2p.kad.KadLocalPeer;
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIPort;
-import edu.asu.ying.p2p.rmi.RemotePeerWrapper;
+import edu.asu.ying.p2p.rmi.ReferenceNotExportedException;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.client.PageDistributionSink;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
+import edu.asu.ying.wellington.dfs.server.DFSServiceWrapper;
+import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.job.JobDelegator;
 import edu.asu.ying.wellington.mapreduce.job.JobScheduler;
@@ -40,6 +41,8 @@ import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.NodeServer;
 import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
+import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
+import edu.asu.ying.wellington.mapreduce.server.TaskServiceWrapper;
 import edu.asu.ying.wellington.mapreduce.task.Forwarding;
 import edu.asu.ying.wellington.mapreduce.task.Local;
 import edu.asu.ying.wellington.mapreduce.task.Remote;
@@ -89,7 +92,6 @@ public final class WellingtonModule extends AbstractModule {
     bind(Activator.class).to(ActivatorImpl.class).in(Scopes.SINGLETON);
     bind(Channel.class).to(KadChannel.class).in(Scopes.SINGLETON);
     bind(LocalPeer.class).to(KadLocalPeer.class).in(Scopes.SINGLETON);
-    bind(RemotePeer.class).to(RemotePeerWrapper.class).in(Scopes.SINGLETON);
 
     // Service network
     bind(LocalNode.class).to(NodeServer.class).in(Scopes.SINGLETON);
@@ -107,6 +109,7 @@ public final class WellingtonModule extends AbstractModule {
 
     // Task Execution
     bind(TaskService.class).to(TaskScheduler.class).in(Scopes.SINGLETON);
+    bind(RemoteTaskService.class).to(TaskServiceWrapper.class);
     bind(new TypeLiteral<QueueExecutor<Task>>() {
     })
         .annotatedWith(Forwarding.class)
@@ -128,13 +131,21 @@ public final class WellingtonModule extends AbstractModule {
         .annotatedWith(PageDistributor.class)
         .to(PageDistributionSink.class)
         .in(Scopes.SINGLETON);
+
     bind(DFSService.class).to(DFSServer.class).in(Scopes.SINGLETON);
+    bind(RemoteDFSService.class).to(DFSServiceWrapper.class);
   }
 
   @Provides
   @LocalNodeProxy
   private RemoteNode provideRemoteNode(Activator activator) {
-    return activator.getReference(RemoteNode.class);
+    try {
+      return activator.getReference(RemoteNode.class);
+    } catch (ReferenceNotExportedException e) {
+      // TODO: Logging
+      e.printStackTrace();
+      return null;
+    }
   }
 
   @Provides

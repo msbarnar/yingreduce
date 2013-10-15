@@ -1,22 +1,28 @@
 package edu.asu.ying.p2p.rmi;
 
 import java.rmi.Remote;
+import java.rmi.server.ExportException;
 
 /**
  *
  */
-public interface Activator {
+public interface Activator extends Activatable {
 
   /**
    * Creates a binding for the class {@code cls}. </p> The binding is not active until it is
    * assigned to a target.
    */
-  <T extends Activatable> Binder<T> bind(Class<T> cls);
+  <R extends Activatable, T extends R> R bind(Class<R> cls, T target) throws ExportException;
+
+  <R extends Activatable, T, W extends Wrapper<R, ? super T>> R bind(Class<R> cls,
+                                                                     T target,
+                                                                     W wrapper)
+      throws ExportException;
 
   /**
    * Gets a {@link Remote} proxy referencing an object of class {@code cls}.
    */
-  <K extends Activatable> K getReference(Class<K> cls);
+  <R extends Activatable> R getReference(Class<R> cls) throws ReferenceNotExportedException;
 
   int getPort();
 }

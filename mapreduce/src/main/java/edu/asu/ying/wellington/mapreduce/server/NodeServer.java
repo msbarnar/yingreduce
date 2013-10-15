@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.RemotePeer;
+import edu.asu.ying.p2p.rmi.RemotePeer;
 
 /**
  * {@code NodeServer} is the layer between the network and the mapreduce services. The server
@@ -24,11 +24,17 @@ public final class NodeServer implements LocalNode, NodeLocator {
 
 
   @Inject
-  private NodeServer(LocalPeer localPeer) {
+  private NodeServer(LocalPeer localPeer, RemoteNodeWrapper wrapper) {
 
     this.localPeer = localPeer;
     // Use the same node identifier as the underlying P2P node
     this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
+
+    try {
+      wrapper.wrap(this);
+    } catch (RemoteException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
