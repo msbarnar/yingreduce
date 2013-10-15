@@ -23,8 +23,7 @@ import edu.asu.ying.wellington.io.WritableComparable;
  * an associated {@link Sink}. </p> The sink could be, for example, a distribution queue which sends
  * pages to remote peers.
  */
-public final class PageBuilder
-    implements Table, Sink<Entry> {
+public final class PageBuilder implements Table, Sink<Entry> {
 
   private static final long SerialVersionUID = 1L;
 
