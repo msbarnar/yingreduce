@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.TableNotFoundException;
-import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**
  *
@@ -14,7 +14,8 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 @Singleton
 public class TaskScheduler implements TaskService {
 
-  private final LocalNode localNode;
+  private final DFSService dfsService;
+
   // Ql and Qr are bounded, but Qf is just a pipe to neighboring peers
   private final QueueExecutor<Task> forwardingQueue;
   private final QueueExecutor<Task> localQueue;
@@ -22,12 +23,16 @@ public class TaskScheduler implements TaskService {
 
 
   @Inject
-  private TaskScheduler(LocalNode localNode) {
-    this.localNode = localNode;
-    // Set up queues for task execution/forwarding
-    this.localQueue = new LocalQueueExecutor(localNode);
-    this.remoteQueue = new RemoteQueueExecutor(localNode);
-    this.forwardingQueue = new ForwardingQueueExecutor(localNode, remoteQueue);
+  private TaskScheduler(DFSService dfsService,
+                        ForwardingQueueExecutor forwardingQueue,
+                        LocalQueueExecutor localQueue,
+                        RemoteQueueExecutor remoteQueue) {
+
+    this.dfsService = dfsService;
+
+    this.localQueue = localQueue;
+    this.remoteQueue = remoteQueue;
+    this.forwardingQueue = forwardingQueue;
   }
 
   /**
@@ -75,7 +80,7 @@ public class TaskScheduler implements TaskService {
   private boolean isInitialNodeFor(Task task) {
     PageIdentifier pageId = task.getTargetPageID();
     try {
-      return localNode.getDFSService().getTable(pageId.getTableID()).hasPage(pageId.getIndex());
+      return dfsService.getTable(pageId.getTableID()).hasPage(pageId.getIndex());
     } catch (TableNotFoundException e) {
       return false;
     }

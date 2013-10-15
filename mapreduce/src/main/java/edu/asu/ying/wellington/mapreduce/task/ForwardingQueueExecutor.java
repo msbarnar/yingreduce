@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.task;
 
+import com.google.inject.Inject;
+
 import java.rmi.RemoteException;
 import java.util.Collection;
 
@@ -16,11 +18,15 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
   private final LocalNode localNode;
+  private final TaskService taskService;
 
   private final QueueExecutor<Task> remoteQueue;
 
-  public ForwardingQueueExecutor(LocalNode localNode, QueueExecutor<Task> remoteQueue) {
+  @Inject
+  private ForwardingQueueExecutor(LocalNode localNode, TaskService taskService,
+                                  QueueExecutor<Task> remoteQueue) {
     this.localNode = localNode;
+    this.taskService = taskService;
     this.remoteQueue = remoteQueue;
   }
 
@@ -59,7 +65,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
     if (bestScheduler == null) {
       try {
         System.out.println("-> self");
-        localNode.getTaskService().accept(task);
+        taskService.accept(task);
       } catch (TaskException e) {
         // TODO: Logging
         e.printStackTrace();

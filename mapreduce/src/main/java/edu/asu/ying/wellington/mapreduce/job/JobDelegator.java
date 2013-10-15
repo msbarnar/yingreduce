@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
+import com.google.inject.Inject;
+
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Collection;
@@ -12,13 +14,17 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskException;
+import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExecutor<Job> {
 
   private final LocalNode localNode;
+  private final TaskService taskService;
 
-  public JobDelegator(LocalNode localNode) {
+  @Inject
+  private JobDelegator(LocalNode localNode, TaskService taskService) {
     this.localNode = localNode;
+    this.taskService = taskService;
   }
 
   @Override
@@ -35,7 +41,7 @@ public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExe
     final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
     for (int i = 0; i < 40; i++) {
       // Pass the responsible node as a remote proxy so other peers can access it
-      final LetterFreqTask task = new LetterFreqTask(job, this.localNode.getAsRemote(), i);
+      final LetterFreqTask task = new LetterFreqTask(job, localNode.getAsRemote(), i);
       // Jobs are delegated at the responsible node, defined as the node bearing the first page of
       // data. We know we are already at T0's initial node, then.
       // Save a little overhead by routing the first task locally instead of through RMI
@@ -51,9 +57,9 @@ public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExe
 
     // Now that the number of tasks is known for the job, start with the loopback task
     if (loopbackTask != null) {
-      loopbackTask.setInitialNode(this.localNode.getAsRemote());
+      loopbackTask.setInitialNode(localNode.getAsRemote());
       try {
-        this.localNode.getTaskService().accept(loopbackTask);
+        taskService.accept(loopbackTask);
       } catch (TaskException e) {
         // TODO: Logging
         e.printStackTrace();
@@ -65,7 +71,7 @@ public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExe
       final Task task = tasks.pop();
       try {
         // Find the initial node by the Task's table ID (table ID + page index)
-        final RemoteNode initialNode = this.localNode.findNode(task.getTargetPageID().toString());
+        final RemoteNode initialNode = localNode.findNode(task.getTargetPageID().toString());
         task.setInitialNode(initialNode);
         initialNode.getTaskService().accept(task);
       } catch (final IOException e) {
@@ -83,7 +89,7 @@ public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExe
     Set<RemoteNode> reducers = new HashSet<>(numReducers);
     for (int i = 0; i < numReducers; i++) {
       try {
-        reducers.add(this.localNode.findNode(jobID.concat(Integer.toString(i))));
+        reducers.add(localNode.findNode(jobID.concat(Integer.toString(i))));
       } catch (IOException e) {
         // TODO: Logging
         e.printStackTrace();
