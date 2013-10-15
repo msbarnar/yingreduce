@@ -17,6 +17,7 @@ import edu.asu.ying.wellington.dfs.page.BoundedPage;
 import edu.asu.ying.wellington.dfs.page.EntriesExceedPageCapacityException;
 import edu.asu.ying.wellington.dfs.page.Page;
 import edu.asu.ying.wellington.dfs.page.PageIdentifier;
+import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
@@ -24,7 +25,9 @@ import edu.asu.ying.wellington.io.WritableComparable;
  * an associated {@link Sink}. </p> The sink could be, for example, a distribution queue which sends
  * pages to remote peers.
  */
-public final class PageBuilder implements Table, Sink<Entry> {
+public final class PageBuilder<C extends WritableComparable,
+    R extends WritableComparable,
+    V extends Writable> implements Table, Sink<Entry<C, R, V>> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -44,52 +47,11 @@ public final class PageBuilder implements Table, Sink<Entry> {
   private final Object currentPageLock = new Object();
 
 
-  public PageBuilder(final TableIdentifier id, final Sink<Page> pageSink) {
+  public PageBuilder(TableIdentifier id, Sink<Page> pageSink) {
     this.id = id;
     this.pageSink = pageSink;
     this.newPage();
   }
-
-  @Override
-  public final TableIdentifier getId() {
-    return id;
-  }
-
-  /**
-   * Returns {@code true} if the index is the same as the current page held by the page builder. The
-   * page builder does not maintain other pages, as they are immediately sent to the page sink on
-   * being filled.
-   */
-  @Override
-  public boolean hasPage(int index) {
-    return index == currentPageIndex;
-  }
-
-  /**
-   * Returns {@code true} if the table specified by the page identifier is this table, and if the
-   * current page held by this table is the index specified by the identifier.
-   */
-  @Override
-  public boolean hasPage(PageIdentifier pageID) {
-    return (pageID.getTableID().equals(getId())) && (pageID.getIndex() == currentPageIndex);
-  }
-
-  /**
-   * Returns the number of pages this page builder has committed to the table, including the current
-   * incomplete page.
-   */
-  public int getPageCount() {
-    return currentPageIndex + 1;
-  }
-
-  /**
-   * Returns the maximum number of bytes allowed in any page before that page is committed to the
-   * page sink.
-   */
-  public int getPageCapacityBytes() {
-    return maxPageBytes;
-  }
-
 
   /**
    * Adds the entry to the table, starting a new page if necessary.
@@ -98,7 +60,7 @@ public final class PageBuilder implements Table, Sink<Entry> {
    *         on any page.
    */
   @Override
-  public boolean offer(Entry entry) throws IOException {
+  public boolean offer(Entry<C, R, V> entry) throws IOException {
     // Serialize entry value
     SerializedEntry serializedEntry = new SerializedEntry(entry);
     int length = serializedEntry.getValue().length;
@@ -118,7 +80,7 @@ public final class PageBuilder implements Table, Sink<Entry> {
    * pages when necessary until all entries are added.
    */
   @Override
-  public int offer(Iterable<Entry> entries) throws IOException {
+  public int offer(Iterable<Entry<C, R, V>> entries) throws IOException {
     // Serialize and sort the entries for packing
     List<SerializedEntry> serializedEntries = serializeEntries(entries);
     sortEntries(serializedEntries);
@@ -177,14 +139,55 @@ public final class PageBuilder implements Table, Sink<Entry> {
     this.newPage();
   }
 
+  @Override
+  public TableIdentifier getId() {
+    return id;
+  }
+
+  /**
+   * Returns {@code true} if the index is the same as the current page held by the page builder. The
+   * page builder does not maintain other pages, as they are immediately sent to the page sink on
+   * being filled.
+   */
+  @Override
+  public boolean hasPage(int index) {
+    return index == currentPageIndex;
+  }
+
+  /**
+   * Returns {@code true} if the table specified by the page identifier is this table, and if the
+   * current page held by this table is the index specified by the identifier.
+   */
+  @Override
+  public boolean hasPage(PageIdentifier pageID) {
+    return (pageID.getTableID().equals(getId())) && (pageID.getIndex() == currentPageIndex);
+  }
+
+  /**
+   * Returns the number of pages this page builder has committed to the table, including the current
+   * incomplete page.
+   */
+  public int getPageCount() {
+    return currentPageIndex + 1;
+  }
+
+  /**
+   * Returns the maximum number of bytes allowed in any page before that page is committed to the
+   * page sink.
+   */
+  public int getPageCapacityBytes() {
+    return maxPageBytes;
+  }
+
   /**
    * Serializes the entries' values for sorting and storage.
    */
-  private List<SerializedEntry> serializeEntries(Iterable<Entry> entries) throws IOException {
+  private List<SerializedEntry> serializeEntries(Iterable<Entry<C, R, V>> entries)
+      throws IOException {
 
     List<SerializedEntry> serializedEntries = Lists.newLinkedList();
 
-    for (Entry entry : entries) {
+    for (Entry<C, R, V> entry : entries) {
       serializedEntries.add(new SerializedEntry(entry));
     }
 

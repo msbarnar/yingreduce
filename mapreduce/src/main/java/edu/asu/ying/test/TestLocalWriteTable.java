@@ -14,6 +14,7 @@ import edu.asu.ying.wellington.dfs.page.Page;
 import edu.asu.ying.wellington.dfs.table.PageBuilder;
 import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.io.WritableBytes;
+import edu.asu.ying.wellington.io.WritableInt;
 import edu.asu.ying.wellington.io.WritableString;
 
 /**
@@ -26,40 +27,42 @@ public class TestLocalWriteTable {
     private int sizeGot;
 
     @Override
-    public boolean offer(final Page page) throws IOException {
-      this.sizeGot += page.getSizeBytes();
+    public boolean offer(Page page) throws IOException {
+      sizeGot += page.getSizeBytes();
       return true;
     }
 
     @Override
-    public int offer(final Iterable<Page> objects) throws IOException {
+    public int offer(Iterable<Page> objects) throws IOException {
       return 0;
     }
 
-    public final boolean pass(final int sizeAdded) {
-      return this.sizeGot == sizeAdded;
+    public boolean pass(int sizeAdded) {
+      System.out.println(sizeGot);
+      System.out.println(sizeAdded);
+      return sizeGot == sizeAdded;
     }
   }
 
   @Test
   public void ItPagesOut() {
 
-    final MockPageSink mockSink = new MockPageSink();
-    final Sink<Entry> table =
-        new PageBuilder(TableIdentifier.random(), mockSink);
+    MockPageSink mockSink = new MockPageSink();
+    Sink<Entry<WritableString, WritableInt, WritableBytes>> table =
+        new PageBuilder<>(TableIdentifier.random(), mockSink);
 
     int sizeAdded = 0;
 
-    final Random rnd = new Random();
+    Random rnd = new Random();
 
-    final Deque<Entry> entries = new ArrayDeque<>();
+    Deque<Entry<WritableString, WritableInt, WritableBytes>> entries = new ArrayDeque<>();
     for (int k = 0; k < 5 + rnd.nextInt(20); k++) {
       for (int i = 0; i < 5 + rnd.nextInt(20); i++) {
-        final byte[] data = new byte[1 + rnd.nextInt(199)];
+        byte[] data = new byte[1 + rnd.nextInt(198)];
         sizeAdded += data.length;
 
-        entries
-            .add(new Entry(new WritableString(String.valueOf(i)), new WritableBytes(data)));
+        entries.add(new Entry<>(new WritableString("stuff"), new WritableInt(i),
+                                new WritableBytes(data)));
       }
 
       try {

@@ -5,32 +5,33 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
+import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  *
  */
-public final class Entry<R extends WritableComparable,
-    C extends WritableComparable,
-    V extends WritableComparable>
+public final class Entry<C extends WritableComparable,
+    R extends WritableComparable,
+    V extends Writable>
     implements Serializable {
 
   private static final long SerialVersionUID = 1L;
 
-  private final Key<R, C> key;
+  private final Key<C, R> key;
   private final V value;
 
-  public Entry(Key<R, C> key, V value) {
+  public Entry(Key<C, R> key, V value) {
     this.key = key;
     this.value = value;
   }
 
-  public Entry(R row, C column, V value) {
-    this.key = new Key<>(row, column);
+  public Entry(C column, R row, V value) {
+    this.key = new Key<>(column, row);
     this.value = value;
   }
 
-  public final Key<R, C> getKey() {
+  public final Key<C, R> getKey() {
     return key;
   }
 
@@ -38,22 +39,22 @@ public final class Entry<R extends WritableComparable,
     return value;
   }
 
-  public final class Key<R extends WritableComparable, C extends WritableComparable>
-      implements WritableComparable<Key<R, C>> {
+  public final class Key<C extends WritableComparable, R extends WritableComparable>
+      implements WritableComparable<Key<C, R>> {
 
     private static final long SerialVersionUID = 1L;
 
-    private final R row;
     private final C column;
+    private final R row;
 
-    public Key(R row, C column) {
+    public Key(C column, R row) {
       this.row = row;
       this.column = column;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public int compareTo(Key<R, C> o) {
+    public int compareTo(Key<C, R> o) {
       int colComp = column.compareTo(o.getColumn());
       if (colComp != 0) {
         return colComp;
@@ -63,14 +64,14 @@ public final class Entry<R extends WritableComparable,
 
     @Override
     public void readFields(DataInput in) throws IOException {
-      row.readFields(in);
       column.readFields(in);
+      row.readFields(in);
     }
 
     @Override
     public void write(DataOutput out) throws IOException {
-      row.write(out);
       column.write(out);
+      row.write(out);
     }
 
     public R getRow() {
