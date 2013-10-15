@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.LogManager;
 
+import edu.asu.ying.test.ExampleMapReduceJob;
 import edu.asu.ying.wellington.WellingtonModule;
-import edu.asu.ying.wellington.io.WritableChar;
-import edu.asu.ying.wellington.io.WritableInt;
 import edu.asu.ying.wellington.mapreduce.job.JobClient;
 import edu.asu.ying.wellington.mapreduce.job.JobConf;
+import edu.asu.ying.wellington.mapreduce.job.JobException;
 
 /**
  * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
@@ -91,11 +91,12 @@ public class Client {
     }
 
     JobClient client = injector.getInstance(JobClient.class);
-    JobConf job = new JobConf();
-    job.setOutputKeyClass(WritableChar.class);
-    job.setOutputValueClass(WritableInt.class);
-
-    client.runJob(job);
+    JobConf job = ExampleMapReduceJob.createJob();
+    try {
+      client.runJob(job);
+    } catch (JobException e) {
+      throw new RuntimeException(e);
+    }
 
     if (!fullyConnected) {
       /*LocalScheduler sched = null;

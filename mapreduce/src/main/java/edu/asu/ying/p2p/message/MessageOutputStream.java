@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.net.message;
+package edu.asu.ying.p2p.message;
 
 import com.google.common.util.concurrent.ListenableFutureTask;
 

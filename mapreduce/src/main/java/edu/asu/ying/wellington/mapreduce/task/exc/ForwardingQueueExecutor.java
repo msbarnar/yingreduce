@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.mapreduce.task;
+package edu.asu.ying.wellington.mapreduce.task.exc;
 
 import com.google.inject.Inject;
 
@@ -9,6 +9,9 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
+import edu.asu.ying.wellington.mapreduce.task.Task;
+import edu.asu.ying.wellington.mapreduce.task.TaskException;
+import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  * {@code ForwardingQueueExecutor} removes tasks from the local {@code Forwarding} queue and places

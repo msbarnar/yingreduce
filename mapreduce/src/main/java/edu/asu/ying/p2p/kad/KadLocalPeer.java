@@ -17,14 +17,14 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import edu.asu.ying.p2p.Channel;
+import edu.asu.ying.p2p.InvalidContentException;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
-import edu.asu.ying.p2p.net.Channel;
-import edu.asu.ying.p2p.net.InvalidContentException;
-import edu.asu.ying.p2p.net.message.RequestMessage;
-import edu.asu.ying.p2p.net.message.ResponseMessage;
+import edu.asu.ying.p2p.message.RequestMessage;
+import edu.asu.ying.p2p.message.ResponseMessage;
 import edu.asu.ying.p2p.rmi.Activator;
 import edu.asu.ying.p2p.rmi.ActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;

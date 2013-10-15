@@ -1,5 +1,8 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
+import java.io.Serializable;
+
+import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 import edu.asu.ying.wellington.mapreduce.Mappable;
@@ -8,17 +11,42 @@ import edu.asu.ying.wellington.mapreduce.Reducer;
 /**
  *
  */
-public final class JobConf {
+public final class JobConf implements Serializable {
 
-  public <T extends WritableComparable> void setOutputKeyClass(final Class<T> keyClass) {
+  private static final long SerialVersionUID = 1L;
+
+  private final TableIdentifier tableID;
+
+  private Class<? extends WritableComparable> outputKeyClass;
+  private Class<? extends Writable> outputValueClass;
+  private Class<? extends Mappable> mapperClass;
+  private Class<? extends Reducer> reducerClass;
+
+  public JobConf(TableIdentifier tableID) {
+    this.tableID = tableID;
   }
 
-  public <T extends Writable> void setOutputValueClass(final Class<T> valueClass) {
+  public <T extends WritableComparable> JobConf setOutputKeyClass(final Class<T> keyClass) {
+    this.outputKeyClass = keyClass;
+    return this;
   }
 
-  public <T extends Mappable> void setMapperClass(final Class<T> mapperClass) {
+  public <T extends Writable> JobConf setOutputValueClass(final Class<T> valueClass) {
+    this.outputValueClass = valueClass;
+    return this;
   }
 
-  public <T extends Reducer> void setReducerClass(final Class<T> reducerClass) {
+  public <T extends Mappable> JobConf setMapperClass(final Class<T> mapperClass) {
+    this.mapperClass = mapperClass;
+    return this;
+  }
+
+  public <T extends Reducer> JobConf setReducerClass(final Class<T> reducerClass) {
+    this.reducerClass = reducerClass;
+    return this;
+  }
+
+  public TableIdentifier getTableID() {
+    return tableID;
   }
 }

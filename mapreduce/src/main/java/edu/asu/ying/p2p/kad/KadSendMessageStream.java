@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.net.kad;
+package edu.asu.ying.p2p.kad;
 
 import com.google.common.util.concurrent.ListenableFutureTask;
 
@@ -12,9 +12,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.p2p.PeerIdentifier;
-import edu.asu.ying.p2p.kad.KadPeerIdentifier;
-import edu.asu.ying.p2p.net.message.Message;
-import edu.asu.ying.p2p.net.message.MessageOutputStream;
+import edu.asu.ying.p2p.message.Message;
+import edu.asu.ying.p2p.message.MessageOutputStream;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;

@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.net.message;
+package edu.asu.ying.p2p.message;
 
 import com.google.common.base.Preconditions;
 
@@ -9,7 +9,7 @@ import edu.asu.ying.p2p.PeerIdentifier;
 
 
 /**
- * {@code FilterMessage} provides common filters for {@link edu.asu.ying.p2p.net.message.Message}
+ * {@code FilterMessage} provides common filters for {@link edu.asu.ying.p2p.message.Message}
  * types.
  */
 public abstract class FilterMessage
@@ -19,18 +19,18 @@ public abstract class FilterMessage
    * Interface to message filters.
    */
   /**
-   * Filters messages based on {@link edu.asu.ying.p2p.net.message.Message#getId()}.
+   * Filters messages based on {@link edu.asu.ying.p2p.message.Message#getId()}.
    */
   public static Filter id(final FilterString filter) {
     return new FilterMessage.FilterOnId(filter);
   }
 
   /**
-   * Filters messages based on {@link edu.asu.ying.p2p.net.message.Message#getDestination()}.
+   * Filters messages based on {@link edu.asu.ying.p2p.message.Message#getDestination()}.
    */
   public static final FilterOnUri destinationUri = FilterOnUri.onDestination;
   /**
-   * Filters messages based on {@link edu.asu.ying.p2p.net.message.Message#getSender()}.
+   * Filters messages based on {@link edu.asu.ying.p2p.message.Message#getSender()}.
    */
   public static final FilterOnUri sourceUri = FilterOnUri.onSource;
 

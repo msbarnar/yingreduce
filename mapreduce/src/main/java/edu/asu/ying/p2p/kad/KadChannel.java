@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.net.kad;
+package edu.asu.ying.p2p.kad;
 
 import com.google.inject.Inject;
 
@@ -6,13 +6,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.asu.ying.p2p.net.Channel;
-import edu.asu.ying.p2p.net.InvalidContentException;
-import edu.asu.ying.p2p.net.UnhandledRequestException;
-import edu.asu.ying.p2p.net.message.ExceptionMessage;
-import edu.asu.ying.p2p.net.message.Message;
-import edu.asu.ying.p2p.net.message.MessageHandler;
-import edu.asu.ying.p2p.net.message.MessageOutputStream;
+import edu.asu.ying.p2p.Channel;
+import edu.asu.ying.p2p.InvalidContentException;
+import edu.asu.ying.p2p.UnhandledRequestException;
+import edu.asu.ying.p2p.message.ExceptionMessage;
+import edu.asu.ying.p2p.message.Message;
+import edu.asu.ying.p2p.message.MessageHandler;
+import edu.asu.ying.p2p.message.MessageOutputStream;
 import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
 

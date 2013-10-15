@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.net;
+package edu.asu.ying.p2p;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * Signals to a message sender that its message was malformed. <p> In practice, this generally means
- * the content did not derive from {@link edu.asu.ying.p2p.net.message.Message}.
+ * the content did not derive from {@link edu.asu.ying.p2p.message.Message}.
  */
 public class InvalidContentException extends IOException {
 

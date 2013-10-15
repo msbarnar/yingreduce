@@ -11,21 +11,16 @@ import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.Table;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.dfs.TableNotFoundException;
-import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**
  *
  */
 public class DFSServer implements DFSService {
 
-  private final LocalNode localNode;
-
   private final IncomingPageHandler pageDepository = new IncomingPageHandler();
 
   @Inject
-  private DFSServer(LocalNode localNode) {
-    this.localNode = localNode;
-
+  private DFSServer() {
     // TODO: testing
     pageDepository.onIncomingPage.attach(new EventHandler<Page>() {
       @Override

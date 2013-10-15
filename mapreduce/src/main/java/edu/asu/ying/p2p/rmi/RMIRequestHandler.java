@@ -2,12 +2,12 @@ package edu.asu.ying.p2p.rmi;
 
 import java.rmi.server.ExportException;
 
+import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
-import edu.asu.ying.p2p.net.Channel;
-import edu.asu.ying.p2p.net.message.Message;
-import edu.asu.ying.p2p.net.message.MessageHandler;
-import edu.asu.ying.p2p.net.message.ResponseMessage;
+import edu.asu.ying.p2p.message.Message;
+import edu.asu.ying.p2p.message.MessageHandler;
+import edu.asu.ying.p2p.message.ResponseMessage;
 
 /**
  * {@code RMIRequestHandler} listens for requests from the network and returns a {@link

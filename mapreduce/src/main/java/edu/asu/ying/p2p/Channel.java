@@ -1,7 +1,7 @@
-package edu.asu.ying.p2p.net;
+package edu.asu.ying.p2p;
 
-import edu.asu.ying.p2p.net.message.MessageHandler;
-import edu.asu.ying.p2p.net.message.MessageOutputStream;
+import edu.asu.ying.p2p.message.MessageHandler;
+import edu.asu.ying.p2p.message.MessageOutputStream;
 
 /**
  * A {@code Channel} provides a single point of access for input from and output to the underlying

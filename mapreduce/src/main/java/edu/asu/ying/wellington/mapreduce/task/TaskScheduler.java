@@ -6,6 +6,9 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.TableNotFoundException;
+import edu.asu.ying.wellington.mapreduce.task.exc.ForwardingQueueExecutor;
+import edu.asu.ying.wellington.mapreduce.task.exc.LocalQueueExecutor;
+import edu.asu.ying.wellington.mapreduce.task.exc.RemoteQueueExecutor;
 
 /**
  *

@@ -7,9 +7,10 @@ import java.rmi.RemoteException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
-import edu.asu.ying.wellington.mapreduce.server.LocalNode;
+import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
+import edu.asu.ying.wellington.mapreduce.task.Local;
 
 /**
  * The {@code JobScheduler} hosts the job service, accepting jobs locally and remotely and managing
@@ -17,14 +18,17 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
  */
 public final class JobScheduler implements JobService {
 
-  private final LocalNode localNode;
+  private final NodeIdentifier localNodeID;
   private final NodeLocator nodeLocator;
 
   private final QueueExecutor<Job> jobDelegator;
 
   @Inject
-  private JobScheduler(LocalNode localNode, NodeLocator nodeLocator, JobDelegator jobDelegator) {
-    this.localNode = localNode;
+  private JobScheduler(@Local NodeIdentifier localNodeID,
+                       NodeLocator nodeLocator,
+                       @Jobs QueueExecutor<Job> jobDelegator) {
+
+    this.localNodeID = localNodeID;
     this.nodeLocator = nodeLocator;
     this.jobDelegator = jobDelegator;
   }
@@ -41,7 +45,7 @@ public final class JobScheduler implements JobService {
   @Override
   public void accept(Job job) throws JobException {
     // Add ourselves to the job's history
-    job.getHistory().touchedBy(localNode);
+    job.getHistory().visitedBy(localNodeID);
     // If we are the responsible node for the job then accept it
     if (isResponsibleFor(job)) {
       queue(job);
@@ -81,7 +85,8 @@ public final class JobScheduler implements JobService {
 
   private boolean isResponsibleFor(Job job) {
     try {
-      return localNode.getID().equals(job.getResponsibleNode().getIdentifier());
+      RemoteNode responsibleNode = job.getResponsibleNode();
+      return responsibleNode != null && localNodeID.equals(responsibleNode.getIdentifier());
     } catch (RemoteException e) {
       throw new RuntimeException("Remote node is unreachable", e);
     }

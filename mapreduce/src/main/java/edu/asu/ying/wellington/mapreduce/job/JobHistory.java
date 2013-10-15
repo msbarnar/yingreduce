@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 
 /**
@@ -14,8 +13,8 @@ public final class JobHistory implements Serializable {
 
   private final List<Entry> history = new LinkedList<>();
 
-  public void touchedBy(LocalNode node) {
-    this.history.add(new Entry(node));
+  public void visitedBy(NodeIdentifier nodeID) {
+    this.history.add(new Entry(nodeID));
   }
 
   public Entry getCurrent() {
@@ -29,8 +28,8 @@ public final class JobHistory implements Serializable {
     private final NodeIdentifier nodeID;
     private Action nodeAction;
 
-    private Entry(LocalNode node) {
-      this.nodeID = node.getID();
+    private Entry(NodeIdentifier nodeID) {
+      this.nodeID = nodeID;
     }
 
     public NodeIdentifier getNodeID() {
