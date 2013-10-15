@@ -1,0 +1,44 @@
+package edu.asu.ying.wellington.dfs.server;
+
+import com.google.inject.Inject;
+
+import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
+
+import edu.asu.ying.common.event.Pipe;
+import edu.asu.ying.common.event.RemoteSink;
+import edu.asu.ying.p2p.rmi.Activator;
+import edu.asu.ying.p2p.rmi.Exporter;
+import edu.asu.ying.wellington.dfs.DFSService;
+import edu.asu.ying.wellington.dfs.Page;
+
+/**
+ *
+ */
+public final class DFSServiceExporter
+    implements Exporter<DFSService, RemoteDFSService>, RemoteDFSService {
+
+  private final Activator activator;
+  private DFSService service;
+
+  @Inject
+  private DFSServiceExporter(Activator activator) {
+    this.activator = activator;
+  }
+
+  @Override
+  public RemoteSink<Page> getPageDepository() throws RemoteException {
+    return Pipe.toSink(service.getPageDepository());
+  }
+
+  @Override
+  public RemoteDFSService export(DFSService target) {
+    this.service = target;
+    try {
+      return activator.bind(RemoteDFSService.class, this);
+    } catch (ExportException e) {
+      // TODO: Logging
+      throw new RuntimeException(e);
+    }
+  }
+}

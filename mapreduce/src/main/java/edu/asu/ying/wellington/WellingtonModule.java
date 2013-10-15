@@ -26,7 +26,6 @@ import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.client.PageDistributionSink;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
-import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.job.JobDelegator;
 import edu.asu.ying.wellington.mapreduce.job.JobScheduler;
@@ -37,10 +36,7 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNodeProxy;
 import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.NodeServer;
-import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
-import edu.asu.ying.wellington.mapreduce.server.RemoteNodeWrapper;
-import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.wellington.mapreduce.task.Forwarding;
 import edu.asu.ying.wellington.mapreduce.task.Local;
 import edu.asu.ying.wellington.mapreduce.task.Remote;
@@ -93,7 +89,7 @@ public final class WellingtonModule extends AbstractModule {
     bind(Channel.class).to(KadChannel.class).in(Scopes.SINGLETON);
     bind(LocalPeer.class).to(KadLocalPeer.class).in(Scopes.SINGLETON);
 
-    // Service network
+    // Exported network
     bind(LocalNode.class).to(NodeServer.class).in(Scopes.SINGLETON);
     bind(NodeLocator.class).to(NodeServer.class).in(Scopes.SINGLETON);
 
@@ -140,48 +136,7 @@ public final class WellingtonModule extends AbstractModule {
   @LocalNodeProxy
   private RemoteNode provideRemoteNode(LocalNode node, Activator activator) {
     try {
-      RemoteNode instance = activator.getReference(RemoteNode.class);
-      if (instance == null) {
-        synchronized (providerLock) {
-          instance = activator.getReference(RemoteNode.class);
-          if (instance == null) {
-            activator.bind(RemoteNode.class, new RemoteNodeWrapper(node));
-          }
-        }
-      }
-    } catch (ReferenceNotExportedException e) {
-      // TODO: Logging
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  @Provides
-  private RemoteDFSService provideRemoteDFS(Activator activator) {
-    try {
-      return activator.getReference(RemoteDFSService.class);
-    } catch (ReferenceNotExportedException e) {
-      // TODO: Logging
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  @Provides
-  private RemoteTaskService provideRemoteTaskService(Activator activator) {
-    try {
-      return activator.getReference(RemoteTaskService.class);
-    } catch (ReferenceNotExportedException e) {
-      // TODO: Logging
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  @Provides
-  private RemoteJobService provideRemoteJobService(Activator activator) {
-    try {
-      return activator.getReference(RemoteJobService.class);
+      return activator.getReference(RemoteNode.class);
     } catch (ReferenceNotExportedException e) {
       // TODO: Logging
       e.printStackTrace();

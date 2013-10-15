@@ -5,19 +5,13 @@ import java.rmi.RemoteException;
 /**
  *
  */
-final class RemotePeerWrapper implements RemotePeer, Wrapper<RemotePeer, Activator> {
+final class RemotePeerExporter implements RemotePeer {
 
   private Activator activator;
 
-  RemotePeerWrapper(Activator activator) {
+  RemotePeerExporter(Activator activator) {
     this.activator = activator;
   }
-
-  @Override
-  public void wrap(Activator target) throws RemoteException {
-    this.activator = target;
-  }
-
 
   @Override
   public <T extends Activatable> T getReference(Class<T> cls) throws RemoteException {

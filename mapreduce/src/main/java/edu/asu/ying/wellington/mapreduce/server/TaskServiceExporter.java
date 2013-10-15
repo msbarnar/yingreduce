@@ -3,19 +3,35 @@ package edu.asu.ying.wellington.mapreduce.server;
 import com.google.inject.Inject;
 
 import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
 
-import edu.asu.ying.p2p.rmi.Wrapper;
+import edu.asu.ying.p2p.rmi.Activator;
+import edu.asu.ying.p2p.rmi.Exporter;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskException;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
-public final class TaskServiceWrapper
-    implements RemoteTaskService, Wrapper<RemoteTaskService, TaskService> {
+public final class TaskServiceExporter
+    implements Exporter<TaskService, RemoteTaskService>, RemoteTaskService {
+
+  private final Activator activator;
 
   private TaskService service;
 
   @Inject
-  public TaskServiceWrapper() {
+  private TaskServiceExporter(Activator activator) {
+    this.activator = activator;
+  }
+
+  @Override
+  public RemoteTaskService export(TaskService service) {
+    this.service = service;
+    try {
+      return activator.bind(RemoteTaskService.class, this);
+    } catch (ExportException e) {
+      // TODO: Logging
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -30,10 +46,5 @@ public final class TaskServiceWrapper
   @Override
   public int getBackpressure() throws RemoteException {
     return 0;
-  }
-
-  @Override
-  public void wrap(TaskService target) throws RemoteException {
-    this.service = target;
   }
 }

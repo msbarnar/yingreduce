@@ -6,6 +6,8 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.TableNotFoundException;
+import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
+import edu.asu.ying.wellington.mapreduce.server.TaskServiceExporter;
 import edu.asu.ying.wellington.mapreduce.task.exc.ForwardingQueueExecutor;
 import edu.asu.ying.wellington.mapreduce.task.exc.LocalQueueExecutor;
 import edu.asu.ying.wellington.mapreduce.task.exc.RemoteQueueExecutor;
@@ -14,6 +16,8 @@ import edu.asu.ying.wellington.mapreduce.task.exc.RemoteQueueExecutor;
  *
  */
 public class TaskScheduler implements TaskService {
+
+  private final RemoteTaskService proxy;
 
   private final DFSService dfsService;
 
@@ -24,7 +28,8 @@ public class TaskScheduler implements TaskService {
 
 
   @Inject
-  private TaskScheduler(DFSService dfsService,
+  private TaskScheduler(TaskServiceExporter exporter,
+                        DFSService dfsService,
                         ForwardingQueueExecutor forwardingQueue,
                         LocalQueueExecutor localQueue,
                         RemoteQueueExecutor remoteQueue) {
@@ -34,6 +39,8 @@ public class TaskScheduler implements TaskService {
     this.localQueue = localQueue;
     this.remoteQueue = remoteQueue;
     this.forwardingQueue = forwardingQueue;
+
+    this.proxy = exporter.export(this);
   }
 
   /**
@@ -85,5 +92,10 @@ public class TaskScheduler implements TaskService {
     } catch (TableNotFoundException e) {
       return false;
     }
+  }
+
+  @Override
+  public RemoteTaskService asRemote() {
+    return proxy;
   }
 }

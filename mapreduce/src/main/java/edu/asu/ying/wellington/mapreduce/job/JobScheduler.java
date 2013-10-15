@@ -7,8 +7,10 @@ import java.rmi.RemoteException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.mapreduce.server.JobServiceExporter;
 import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
+import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.Local;
 
@@ -18,19 +20,24 @@ import edu.asu.ying.wellington.mapreduce.task.Local;
  */
 public final class JobScheduler implements JobService {
 
+  private final RemoteJobService proxy;
+
   private final NodeIdentifier localNodeID;
   private final NodeLocator nodeLocator;
 
   private final QueueExecutor<Job> jobDelegator;
 
   @Inject
-  private JobScheduler(@Local NodeIdentifier localNodeID,
+  private JobScheduler(JobServiceExporter exporter,
+                       @Local NodeIdentifier localNodeID,
                        NodeLocator nodeLocator,
                        @Jobs QueueExecutor<Job> jobDelegator) {
 
     this.localNodeID = localNodeID;
     this.nodeLocator = nodeLocator;
     this.jobDelegator = jobDelegator;
+
+    this.proxy = exporter.export(this);
   }
 
   @Override
@@ -98,5 +105,10 @@ public final class JobScheduler implements JobService {
   // FIXME: page duplication means we have to pick a random one of the nodes that has this page
   private RemoteNode findResponsibleNode(Job job) throws IOException {
     return nodeLocator.find(PageIdentifier.firstPageOf(job.getTableID()).toString());
+  }
+
+  @Override
+  public RemoteJobService asRemote() {
+    return this.proxy;
   }
 }

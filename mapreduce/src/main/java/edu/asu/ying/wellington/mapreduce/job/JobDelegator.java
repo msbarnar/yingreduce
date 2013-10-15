@@ -25,11 +25,11 @@ public final class JobDelegator extends QueueExecutor<Job> {
   private final TaskService taskService;
 
   @Inject
-  private JobDelegator(@LocalNodeProxy RemoteNode localProxy,
+  private JobDelegator(@LocalNodeProxy RemoteNode loopbackProxy,
                        NodeLocator nodeLocator,
                        TaskService taskService) {
 
-    this.localRemoteProxy = localProxy;
+    this.localRemoteProxy = loopbackProxy;
     this.nodeLocator = nodeLocator;
     this.taskService = taskService;
   }

@@ -16,6 +16,8 @@ import edu.asu.ying.p2p.rmi.RemotePeer;
  */
 public final class NodeServer implements LocalNode, NodeLocator {
 
+  private final RemoteNode proxy;
+
   // Network layer
   private final LocalPeer localPeer;
 
@@ -24,17 +26,14 @@ public final class NodeServer implements LocalNode, NodeLocator {
 
 
   @Inject
-  private NodeServer(LocalPeer localPeer, RemoteNodeWrapper wrapper) {
+  private NodeServer(LocalPeer localPeer,
+                     NodeServerExporter exporter) {
 
     this.localPeer = localPeer;
     // Use the same node identifier as the underlying P2P node
     this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
 
-    try {
-      wrapper.wrap(this);
-    } catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
+    this.proxy = exporter.export(this);
   }
 
   @Override
@@ -73,5 +72,10 @@ public final class NodeServer implements LocalNode, NodeLocator {
       }
     }
     return neighbors;
+  }
+
+  @Override
+  public RemoteNode asRemote() {
+    return proxy;
   }
 }

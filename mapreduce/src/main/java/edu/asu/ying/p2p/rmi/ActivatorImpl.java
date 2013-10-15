@@ -37,7 +37,7 @@ public final class ActivatorImpl implements Activator, MessageHandler {
   private ActivatorImpl(@RMIPort int port, Channel channel) {
     this.rmiPort = port;
     try {
-      this.proxyInstance = bind(RemotePeer.class, new RemotePeerWrapper(this));
+      this.proxyInstance = bind(RemotePeer.class, new RemotePeerExporter(this));
     } catch (ExportException e) {
       throw new RuntimeException(e);
     }

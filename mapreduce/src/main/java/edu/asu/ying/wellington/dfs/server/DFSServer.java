@@ -17,10 +17,14 @@ import edu.asu.ying.wellington.dfs.TableNotFoundException;
  */
 public class DFSServer implements DFSService {
 
+  private final RemoteDFSService proxy;
+
   private final IncomingPageHandler pageDepository = new IncomingPageHandler();
 
   @Inject
-  private DFSServer() {
+  private DFSServer(DFSServiceExporter exporter) {
+    proxy = exporter.export(this);
+
     // TODO: testing
     pageDepository.onIncomingPage.attach(new EventHandler<Page>() {
       @Override
@@ -43,5 +47,10 @@ public class DFSServer implements DFSService {
   @Override
   public Sink<Page> getPageDepository() {
     return pageDepository;
+  }
+
+  @Override
+  public RemoteDFSService asRemote() {
+    return proxy;
   }
 }
