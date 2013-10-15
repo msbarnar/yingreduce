@@ -2,6 +2,8 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
+import java.rmi.server.ExportException;
+
 import javax.annotation.Nullable;
 
 import edu.asu.ying.common.event.EventHandler;
@@ -23,7 +25,11 @@ public class DFSServer implements DFSService {
 
   @Inject
   private DFSServer(DFSServiceExporter exporter) {
-    proxy = exporter.export(this);
+    try {
+      this.proxy = exporter.export(this);
+    } catch (ExportException e) {
+      throw new RuntimeException(e);
+    }
 
     // TODO: testing
     pageDepository.onIncomingPage.attach(new EventHandler<Page>() {

@@ -32,13 +32,8 @@ public final class DFSServiceExporter
   }
 
   @Override
-  public RemoteDFSService export(DFSService target) {
+  public RemoteDFSService export(DFSService target) throws ExportException {
     this.service = target;
-    try {
-      return activator.bind(RemoteDFSService.class, this);
-    } catch (ExportException e) {
-      // TODO: Logging
-      throw new RuntimeException(e);
-    }
+    return activator.bind(RemoteDFSService.class, this);
   }
 }

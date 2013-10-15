@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,11 @@ public final class NodeImpl implements LocalNode, NodeLocator {
     // Use the same node identifier as the underlying P2P node
     this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
 
-    this.proxy = exporter.export(this);
+    try {
+      this.proxy = exporter.export(this);
+    } catch (ExportException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

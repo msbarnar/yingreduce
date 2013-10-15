@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
@@ -37,7 +38,11 @@ public final class JobScheduler implements JobService {
     this.nodeLocator = nodeLocator;
     this.jobDelegator = jobDelegator;
 
-    this.proxy = exporter.export(this);
+    try {
+      this.proxy = exporter.export(this);
+    } catch (ExportException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

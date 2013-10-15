@@ -2,6 +2,8 @@ package edu.asu.ying.wellington.mapreduce.task;
 
 import com.google.inject.Inject;
 
+import java.rmi.server.ExportException;
+
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
@@ -40,7 +42,11 @@ public class TaskScheduler implements TaskService {
     this.remoteQueue = remoteQueue;
     this.forwardingQueue = forwardingQueue;
 
-    this.proxy = exporter.export(this);
+    try {
+      this.proxy = exporter.export(this);
+    } catch (ExportException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
