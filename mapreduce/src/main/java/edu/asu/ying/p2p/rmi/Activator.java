@@ -14,11 +14,6 @@ public interface Activator extends Activatable {
    */
   <R extends Activatable, T extends R> R bind(Class<R> cls, T target) throws ExportException;
 
-  <R extends Activatable, T, W extends Wrapper<R, ? super T>> R bind(Class<R> cls,
-                                                                     T target,
-                                                                     W wrapper)
-      throws ExportException;
-
   /**
    * Gets a {@link Remote} proxy referencing an object of class {@code cls}.
    */

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
@@ -30,13 +31,13 @@ public final class ActivatorImpl implements Activator, MessageHandler {
 
   // Activation of other classes is controlled via bindings
   // Interface -> proxy
-  private final transient Map<Class<? extends Activatable>, Binding<?>> bindings = new HashMap<>();
+  private final transient Map<Class<? extends Activatable>, Remote> bindings = new HashMap<>();
 
   @Inject
   private ActivatorImpl(@RMIPort int port, Channel channel) {
     this.rmiPort = port;
     try {
-      this.proxyInstance = bind(RemotePeer.class, this, new RemotePeerWrapper(this));
+      this.proxyInstance = bind(RemotePeer.class, new RemotePeerWrapper(this));
     } catch (ExportException e) {
       throw new RuntimeException(e);
     }
@@ -53,24 +54,7 @@ public final class ActivatorImpl implements Activator, MessageHandler {
     } catch (RemoteException e) {
       throw new ExportException("Exception exporting RMI proxy", e);
     }
-    bindings.put(cls, new Binding<>(instance));
-    return instance;
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public <R extends Activatable, T, W extends Wrapper<R, ? super T>> R bind(Class<R> cls,
-                                                                            T target,
-                                                                            W wrapper)
-      throws ExportException {
-    R instance;
-    try {
-      wrapper.wrap(target);
-      instance = (R) export(wrapper);
-    } catch (RemoteException | ClassCastException e) {
-      throw new ExportException("Exception exporting RMI proxy", e);
-    }
-    bindings.put(cls, new WrapperBinding<>(instance, wrapper));
+    bindings.put(cls, instance);
     return instance;
   }
 
@@ -78,11 +62,11 @@ public final class ActivatorImpl implements Activator, MessageHandler {
   @SuppressWarnings("unchecked")
   public <R extends Activatable> R getReference(Class<R> cls) throws ReferenceNotExportedException {
 
-    Binding<?> binding = bindings.get(cls);
-    if (binding == null || binding.getProxy() == null) {
+    R reference = (R) bindings.get(cls);
+    if (reference == null) {
       throw new ReferenceNotExportedException();
     }
-    return (R) binding.getProxy();
+    return reference;
   }
 
   @SuppressWarnings("unchecked")
@@ -135,28 +119,5 @@ public final class ActivatorImpl implements Activator, MessageHandler {
     final ResponseMessage response = ResponseMessage.inResponseTo(request);
     response.setContent(proxyInstance);
     return response;
-  }
-
-  private class Binding<R> {
-
-    private final R proxyInstance;
-
-    protected Binding(R proxyInstance) {
-      this.proxyInstance = proxyInstance;
-    }
-
-    private R getProxy() {
-      return proxyInstance;
-    }
-  }
-
-  private final class WrapperBinding<R, W> extends Binding<R> {
-
-    private final W wrapper;
-
-    private WrapperBinding(R proxyInstance, W wrapper) {
-      super(proxyInstance);
-      this.wrapper = wrapper;
-    }
   }
 }
