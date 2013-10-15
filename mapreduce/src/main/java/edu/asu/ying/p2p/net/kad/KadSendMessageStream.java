@@ -24,17 +24,16 @@ import il.technion.ewolf.kbr.Node;
  * {@link KadSendMessageStream} is a {@link MessageOutputStream} that serializes messages to remote
  * nodes on the Kademlia network.
  */
-public final class KadSendMessageStream
-    implements MessageOutputStream {
+final class KadSendMessageStream implements MessageOutputStream {
 
   private final KeybasedRouting kadNode;
   // Sign outgoing messages with the sender peer identifier
   private final PeerIdentifier localIdentifier;
 
-  public KadSendMessageStream(final KeybasedRouting kadNode) {
+  KadSendMessageStream(KeybasedRouting kadNode) {
     this.kadNode = kadNode;
     // Sign outgoing messages with the local peer key
-    this.localIdentifier = new KadPeerIdentifier(this.kadNode.getLocalNode().getKey());
+    this.localIdentifier = new KadPeerIdentifier(kadNode.getLocalNode().getKey());
   }
 
   /**
@@ -43,25 +42,25 @@ public final class KadSendMessageStream
    * @param message the message to send, complete with the destination URI.
    */
   @Override
-  public final void write(final Message message) throws IOException {
-    message.setSender(this.localIdentifier);
+  public void write(Message message) throws IOException {
+    message.setSender(localIdentifier);
 
-    final Key destKey = ((KadPeerIdentifier) message.getDestination()).toKademliaKey();
+    Key destKey = ((KadPeerIdentifier) message.getDestination()).toKademliaKey();
 
-    final List<Node> foundNodes = this.kadNode.findNode(destKey);
+    List<Node> foundNodes = kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {
       // This should never happen
       throw new UnknownHostException();
     }
 
-    this.kadNode.sendMessage(foundNodes.get(0), message.getTag(), message);
+    kadNode.sendMessage(foundNodes.get(0), message.getTag(), message);
   }
 
   @Override
-  public final ListenableFutureTask<Boolean> writeAsync(final Message message) throws IOException {
+  public ListenableFutureTask<Boolean> writeAsync(final Message message) throws IOException {
 
     // Write the message in a background thread
-    final ListenableFutureTask<Boolean> asyncTask = ListenableFutureTask.create(
+    ListenableFutureTask<Boolean> asyncTask = ListenableFutureTask.create(
         new Callable<Boolean>() {
           @Override
           public Boolean call() throws Exception {
@@ -78,25 +77,24 @@ public final class KadSendMessageStream
   }
 
   @Override
-  public final Future<Serializable> writeAsyncRequest(final Message request) throws IOException {
+  public Future<Serializable> writeAsyncRequest(Message request) throws IOException {
     request.setSender(this.localIdentifier);
 
-    final Key destKey = ((KadPeerIdentifier) request.getDestination()).toKademliaKey();
+    Key destKey = ((KadPeerIdentifier) request.getDestination()).toKademliaKey();
 
-    final List<Node> foundNodes = this.kadNode.findNode(destKey);
+    List<Node> foundNodes = kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {
       // This should never happen
       throw new UnknownHostException();
     }
 
-    return this.kadNode.sendRequest(foundNodes.get(0), request.getTag(), request);
+    return kadNode.sendRequest(foundNodes.get(0), request.getTag(), request);
   }
 
   @Override
-  public Future<Serializable> writeAsyncRequest(final Node node, final Message request)
-      throws IOException {
+  public Future<Serializable> writeAsyncRequest(Node node, Message request) throws IOException {
 
-    request.setSender(this.localIdentifier);
-    return this.kadNode.sendRequest(node, request.getTag(), request);
+    request.setSender(localIdentifier);
+    return kadNode.sendRequest(node, request.getTag(), request);
   }
 }

@@ -1,5 +1,7 @@
 package edu.asu.ying.p2p.net.kad;
 
+import com.google.inject.Inject;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +31,8 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   // Receives messages for particular tags
   private final Map<String, MessageHandler> messageHandlers = new HashMap<>();
 
-  public KadChannel(final KeybasedRouting kbrNode) {
+  @Inject
+  private KadChannel(final KeybasedRouting kbrNode) {
     this.kbrNode = kbrNode;
     this.sendStream = new KadSendMessageStream(kbrNode);
   }
