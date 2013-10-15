@@ -7,9 +7,9 @@ import edu.asu.ying.p2p.rmi.Activatable;
 import edu.asu.ying.wellington.dfs.page.Page;
 
 /**
- * {@code RemoteDatabaseServer} is the interface to the database server on a remote peer.
+ * {@code RemoteDFSService} is the interface to the database server on a remote peer.
  */
-public interface RemoteDatabaseServer extends Activatable {
+public interface RemoteDFSService extends Activatable {
 
-  RemoteSink<Page> getPageSink() throws RemoteException;
+  RemoteSink<Page> getPageDepository() throws RemoteException;
 }

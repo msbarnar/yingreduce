@@ -2,7 +2,7 @@ package edu.asu.ying.wellington.mapreduce.task;
 
 import java.io.Serializable;
 
-import edu.asu.ying.wellington.dfs.table.TableIdentifier;
+import edu.asu.ying.wellington.dfs.page.PageIdentifier;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
@@ -16,34 +16,34 @@ public abstract class Task implements Serializable {
 
   protected final TaskIdentifier taskID;
   protected final Job parentJob;
-  protected final TableIdentifier tablePage;
+  protected final PageIdentifier targetPage;
 
   protected RemoteNode initialNode;
 
-  protected Task(Job parentJob, TaskIdentifier taskID, TableIdentifier tablePage) {
+  protected Task(Job parentJob, TaskIdentifier taskID, PageIdentifier targetPage) {
     this.parentJob = parentJob;
     this.taskID = taskID;
-    this.tablePage = tablePage;
+    this.targetPage = targetPage;
   }
 
   public TaskIdentifier getId() {
-    return this.taskID;
+    return taskID;
   }
 
   public Job getParentJob() {
-    return this.parentJob;
+    return parentJob;
   }
 
   public RemoteNode getInitialNode() {
-    return this.initialNode;
+    return initialNode;
   }
 
   public void setInitialNode(RemoteNode initialNode) {
     this.initialNode = initialNode;
   }
 
-  public TableIdentifier getTableID() {
-    return this.tablePage;
+  public PageIdentifier getTargetPageID() {
+    return targetPage;
   }
 
   public abstract Serializable run();

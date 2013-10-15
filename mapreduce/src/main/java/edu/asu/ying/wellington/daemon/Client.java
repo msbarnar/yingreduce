@@ -7,11 +7,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.LogManager;
 
-import edu.asu.ying.wellington.dfs.Entry;
-import edu.asu.ying.wellington.dfs.table.PageBuilder;
-import edu.asu.ying.wellington.io.WritableBytes;
-import edu.asu.ying.wellington.io.WritableString;
-
 /**
  * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
  * interface services before attaching the local node to an existing Kademlia network.
@@ -106,17 +101,16 @@ public class Client {
       });*/
     }
 
-    final PageBuilder pb = null;//new PageBuilder(new TableID("lipsum"),
-    //instances[0].getLocalPeer().getPageOutSink());
+    /*final PageBuilder pb = new PageBuilder(TableIdentifier.forString("lipsum"), instances[0].getLocalPeer().getPageOutSink());
     try {
-      pb.offer(new Entry(new WritableString("hi!"),
+      pb.offer(new Entry(new WritableInt(1), new WritableString("a"),
                          new WritableBytes("It's a small world after all".getBytes())));
       pb.flush();
-      pb.offer(new Entry(new WritableString("hi!"),
+      pb.offer(new Entry(new WritableInt(2), new WritableString("b"),
                          new WritableBytes("It's a small world after all".getBytes())));
       pb.flush();
     } catch (final IOException e) {
       e.printStackTrace();
-    }
+    }*/
   }
 }

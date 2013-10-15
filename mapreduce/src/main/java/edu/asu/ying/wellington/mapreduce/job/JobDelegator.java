@@ -65,7 +65,7 @@ public final class JobDelegator extends edu.asu.ying.common.concurrency.QueueExe
       final Task task = tasks.pop();
       try {
         // Find the initial node by the Task's table ID (table ID + page index)
-        final RemoteNode initialNode = this.localNode.findNode(task.getTableID().toString());
+        final RemoteNode initialNode = this.localNode.findNode(task.getTargetPageID().toString());
         task.setInitialNode(initialNode);
         initialNode.getTaskService().accept(task);
       } catch (final IOException e) {

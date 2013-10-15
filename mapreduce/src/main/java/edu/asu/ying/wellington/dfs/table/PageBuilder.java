@@ -16,6 +16,7 @@ import edu.asu.ying.wellington.dfs.SerializedEntry;
 import edu.asu.ying.wellington.dfs.page.BoundedPage;
 import edu.asu.ying.wellington.dfs.page.EntriesExceedPageCapacityException;
 import edu.asu.ying.wellington.dfs.page.Page;
+import edu.asu.ying.wellington.dfs.page.PageIdentifier;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
@@ -65,6 +66,15 @@ public final class PageBuilder implements Table, Sink<Entry> {
   }
 
   /**
+   * Returns {@code true} if the table specified by the page identifier is this table, and if the
+   * current page held by this table is the index specified by the identifier.
+   */
+  @Override
+  public boolean hasPage(PageIdentifier pageID) {
+    return (pageID.getTableID().equals(getId())) && (pageID.getIndex() == currentPageIndex);
+  }
+
+  /**
    * Returns the number of pages this page builder has committed to the table, including the current
    * incomplete page.
    */
@@ -97,7 +107,7 @@ public final class PageBuilder implements Table, Sink<Entry> {
       return false;
     }
     if (length > currentPage.getRemainingCapacityBytes()) {
-      this.newPage();
+      newPage();
     }
 
     return currentPage.offer(serializedEntry);

@@ -4,8 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.wellington.dfs.table.Table;
-import edu.asu.ying.wellington.dfs.table.TableIdentifier;
+import edu.asu.ying.wellington.dfs.page.PageIdentifier;
 import edu.asu.ying.wellington.dfs.table.TableNotFoundException;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
@@ -74,11 +73,9 @@ public class TaskScheduler implements TaskService {
    * Returns true if the local DFS service has the correct page of the table specified by the task.
    */
   private boolean isInitialNodeFor(Task task) {
-    TableIdentifier taskTableID = task.getTableID();
+    PageIdentifier pageId = task.getTargetPageID();
     try {
-      Table table = localNode.getDFSService().getTable(taskTableID);
-      return table != null && table.hasPage(taskTableID.getPageIndex());
-
+      return localNode.getDFSService().getTable(pageId.getTableID()).hasPage(pageId.getIndex());
     } catch (TableNotFoundException e) {
       return false;
     }

@@ -25,6 +25,11 @@ public final class Entry<R extends WritableComparable,
     this.value = value;
   }
 
+  public Entry(R row, C column, V value) {
+    this.key = new Key<>(row, column);
+    this.value = value;
+  }
+
   public final Key<R, C> getKey() {
     return key;
   }
