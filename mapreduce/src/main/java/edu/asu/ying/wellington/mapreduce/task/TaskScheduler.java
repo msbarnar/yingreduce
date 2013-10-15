@@ -1,7 +1,6 @@
 package edu.asu.ying.wellington.mapreduce.task;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.wellington.dfs.DFSService;
@@ -11,7 +10,6 @@ import edu.asu.ying.wellington.dfs.TableNotFoundException;
 /**
  *
  */
-@Singleton
 public class TaskScheduler implements TaskService {
 
   private final DFSService dfsService;

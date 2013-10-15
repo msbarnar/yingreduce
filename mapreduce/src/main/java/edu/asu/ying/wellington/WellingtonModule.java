@@ -88,6 +88,7 @@ public final class WellingtonModule extends AbstractModule {
         .annotatedWith(Jobs.class)
         .to(JobDelegator.class)
         .in(Scopes.SINGLETON);
+
     // Task Execution
     bind(TaskService.class).to(TaskScheduler.class).in(Scopes.SINGLETON);
     bind(QueueExecutor.class)

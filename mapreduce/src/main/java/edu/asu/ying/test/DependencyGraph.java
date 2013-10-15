@@ -13,12 +13,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import edu.asu.ying.wellington.WellingtonModule;
+
 /**
  *
  */
 public class DependencyGraph {
 
   @Test
+  public void graphTest() throws IOException {
+    Injector injector = Guice.createInjector(new WellingtonModule());
+    String path = "dependencies.dot";
+    System.out.println("Writing dependency graph to ".concat(path));
+    graphDependencies(path, injector);
+  }
+
   private void graphDependencies(String filename, Injector demoInjector) throws IOException {
     PrintWriter out = new PrintWriter(new File(filename), "UTF-8");
 
