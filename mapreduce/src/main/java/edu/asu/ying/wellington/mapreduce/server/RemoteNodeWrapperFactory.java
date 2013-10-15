@@ -16,7 +16,7 @@ import edu.asu.ying.wellington.mapreduce.task.TaskService;
 /**
  *
  */
-public final class RemoteNodeWrapperFactory implements WrapperFactory<LocalNode, RemoteNode> {
+public final class RemoteNodeWrapperFactory implements WrapperFactory<NodeServer, RemoteNode> {
 
   private final JobService jobService;
   private final TaskService taskService;
@@ -32,7 +32,7 @@ public final class RemoteNodeWrapperFactory implements WrapperFactory<LocalNode,
   }
 
   @Override
-  public RemoteNode create(LocalNode target, Activator activator) {
+  public RemoteNode create(NodeServer target, Activator activator) {
     return new RemoteNodeWrapper(target, activator, jobService, taskService, dfsService);
   }
 
