@@ -1,12 +1,17 @@
 package edu.asu.ying.wellington;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.name.Names;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.kad.KadLocalPeer;
+import edu.asu.ying.p2p.net.Channel;
+import edu.asu.ying.p2p.net.kad.KadChannel;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
 import edu.asu.ying.wellington.mapreduce.job.JobScheduler;
@@ -15,6 +20,8 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.NodeServer;
 import edu.asu.ying.wellington.mapreduce.task.TaskScheduler;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
+import il.technion.ewolf.kbr.KeybasedRouting;
+import il.technion.ewolf.kbr.openkad.KadNetModule;
 
 /**
  * {@code WellingtonModule} provides the bindings for dependency injection.
@@ -39,15 +46,25 @@ public final class WellingtonModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    Names.bindProperties(this.binder(), this.properties);
+    Names.bindProperties(binder(), properties);
+
+    KeybasedRouting keybasedRouting = null;
+    try {
+      keybasedRouting = createKeybasedRouting(5000);
+    } catch (InstantiationException e) {
+      throw new RuntimeException(e);
+    }
+
     // P2P Network
-    this.bind(LocalPeer.class).to(KadLocalPeer.class);
+    bind(KeybasedRouting.class).toInstance(keybasedRouting);
+    bind(Channel.class).to(KadChannel.class);
+    bind(LocalPeer.class).to(KadLocalPeer.class);
     // Service network
-    this.bind(LocalNode.class).to(NodeServer.class);
+    bind(LocalNode.class).to(NodeServer.class);
     // Services
-    this.bind(JobService.class).to(JobScheduler.class);
-    this.bind(TaskService.class).to(TaskScheduler.class);
-    this.bind(DFSService.class).to(DFSServer.class);
+    bind(JobService.class).to(JobScheduler.class);
+    bind(TaskService.class).to(TaskScheduler.class);
+    bind(DFSService.class).to(DFSServer.class);
   }
 
   private Properties getDefaultProperties() {
@@ -56,5 +73,29 @@ public final class WellingtonModule extends AbstractModule {
     props.setProperty("p2p.port", "5000");
 
     return props;
+  }
+
+  private static KeybasedRouting createKeybasedRouting(final int port)
+      throws InstantiationException {
+
+    final Injector injector = Guice.createInjector(
+        new KadNetModule()
+            .setProperty("openkad.keyfactory.keysize", String.valueOf(16))
+            .setProperty("openkad.bucket.kbuckets.maxsize", String.valueOf(16))
+            .setProperty("openkad.seed", String.valueOf(port))
+            .setProperty("openkad.net.udp.port", String.valueOf(port))
+            .setProperty("openkad.file.nodes.path",
+                         System.getProperty("user.home").concat("/.kadhosts"))
+    );
+
+    final KeybasedRouting kadNode = injector.getInstance(KeybasedRouting.class);
+    try {
+      kadNode.create();
+    } catch (final IOException e) {
+      e.printStackTrace();
+      throw new InstantiationException("Failed to create local Kademlia node");
+    }
+
+    return kadNode;
   }
 }

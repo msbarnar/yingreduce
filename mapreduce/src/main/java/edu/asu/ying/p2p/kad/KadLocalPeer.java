@@ -3,7 +3,6 @@ package edu.asu.ying.p2p.kad;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -59,16 +58,17 @@ public final class KadLocalPeer implements LocalPeer {
 
 
   @Inject
-  private KadLocalPeer(@Named("p2p.port") int port) throws InstantiationException, ExportException {
+  private KadLocalPeer(KeybasedRouting kbrNode, Channel channel)
+      throws ExportException {
 
     // The local Kademlia node for peer discovery
-    this.kbrNode = KademliaNetwork.createNode(port);
+    this.kbrNode = kbrNode;
     // Identify this peer on the network
     // FIXME: SEVERE: The key is chosen using the local interface address which is always localhost
     this.localIdentifier =
         new KadPeerIdentifier(this.kbrNode.getLocalNode().getKey());
     // Connect the P2P messaging system to the Kademlia node
-    this.networkChannel = KademliaNetwork.createChannel(this.kbrNode);
+    this.networkChannel = channel;
 
     // Enable this peer to export remote references
     this.activator = new ActivatorImpl();
