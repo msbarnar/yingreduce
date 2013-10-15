@@ -10,8 +10,6 @@ import edu.asu.ying.p2p.message.Message;
 import edu.asu.ying.p2p.message.MessageHandler;
 import edu.asu.ying.p2p.message.RequestMessage;
 import edu.asu.ying.p2p.message.ResponseMessage;
-import edu.asu.ying.p2p.rmi.RemotePeer;
-import edu.asu.ying.p2p.rmi.RemotePeerExporter;
 
 /**
  * {@code RemotePeerRequestHandler} receives incoming requests for a remote peer reference and

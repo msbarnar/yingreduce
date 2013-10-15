@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.rmi.RemotePeer;
+import edu.asu.ying.p2p.RemotePeer;
 
 /**
  * {@code NodeImpl} forms a network of mapreduce services overlayed on the P2P network. The network

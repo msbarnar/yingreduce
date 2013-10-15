@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.rmi;
+package edu.asu.ying.p2p;
 
 import java.rmi.RemoteException;
 

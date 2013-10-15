@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.LogManager;
 
+import edu.asu.ying.p2p.kad.KadP2PModule;
 import edu.asu.ying.test.ExampleMapReduceJob;
 import edu.asu.ying.wellington.WellingtonModule;
 import edu.asu.ying.wellington.mapreduce.job.JobClient;
@@ -50,6 +51,7 @@ public class Client {
     Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
+          new KadP2PModule(),
           new WellingtonModule().setProperty("p2p.port", Integer.toString(5000 + i)));
 
       instances[i] = injector.getInstance(Daemon.class);

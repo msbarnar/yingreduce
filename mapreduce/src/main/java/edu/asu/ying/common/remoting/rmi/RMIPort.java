@@ -1,4 +1,4 @@
-package edu.asu.ying.p2p.rmi;
+package edu.asu.ying.common.remoting.rmi;
 
 import com.google.inject.BindingAnnotation;
 

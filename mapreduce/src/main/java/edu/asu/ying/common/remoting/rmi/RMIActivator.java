@@ -1,5 +1,7 @@
 package edu.asu.ying.common.remoting.rmi;
 
+import com.google.inject.Inject;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.rmi.Remote;
@@ -15,10 +17,12 @@ import edu.asu.ying.common.remoting.ClassNotExportedException;
 
 
 /**
- * Controls creation and lifetime management for server-side object instances available for
- * accession by remote nodes.
+ * The {@code RMIActivator} binds classes to {@link Remote} proxy instances, maintaining strong
+ * references to both the proxy and the instance it references to control the lifetime of exported
+ * objects. </p> All objects are exported to the same port, which is injected with {@link RMIPort}.
+ * The port is random by default.
  */
-public abstract class AbstractRMIActivator implements Activator {
+public class RMIActivator implements Activator {
 
   // The port used to export all RMI instances.
   protected transient int rmiPort = 0;
@@ -28,9 +32,9 @@ public abstract class AbstractRMIActivator implements Activator {
   // Interface -> proxy
   protected final transient Map<Class<? extends Activatable>, Remote> bindings = new HashMap<>();
 
-  protected AbstractRMIActivator(int port) {
+  @Inject
+  protected RMIActivator(@RMIPort int port) {
     this.rmiPort = port;
-
   }
 
   @Override
@@ -63,6 +67,13 @@ public abstract class AbstractRMIActivator implements Activator {
     try {
       return (R) UnicastRemoteObject.exportObject(obj, getPort());
     } catch (RemoteException e) {
+      if (e.getMessage().startsWith("Port already in use")) {
+        // This is fixable; pick a new port and try again
+        synchronized (portLock) {
+          rmiPort = getRandomPort();
+        }
+        return export(obj);
+      }
       throw new ExportException("Exception exporting RMI proxy", e);
     }
   }
@@ -74,7 +85,7 @@ public abstract class AbstractRMIActivator implements Activator {
     if (rmiPort <= 0) {
       synchronized (portLock) {
         if (rmiPort <= 0) {
-          rmiPort = getDefaultPort();
+          rmiPort = getRandomPort();
         }
       }
     }
@@ -84,7 +95,7 @@ public abstract class AbstractRMIActivator implements Activator {
   /**
    * Selects a random port and specifies it as the sole port for RMI.
    */
-  protected int getDefaultPort() {
+  protected int getRandomPort() {
     ServerSocket sock = null;
     int port;
     try {
