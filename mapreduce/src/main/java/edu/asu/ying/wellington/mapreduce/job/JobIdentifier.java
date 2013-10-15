@@ -2,12 +2,12 @@ package edu.asu.ying.wellington.mapreduce.job;
 
 import java.util.UUID;
 
-import edu.asu.ying.wellington.Identifier;
+import edu.asu.ying.wellington.AbstractIdentifier;
 
 /**
  *
  */
-public final class JobIdentifier extends Identifier {
+public final class JobIdentifier extends AbstractIdentifier {
 
   public static JobIdentifier random() {
     return new JobIdentifier(UUID.randomUUID().toString());
@@ -19,9 +19,7 @@ public final class JobIdentifier extends Identifier {
 
   private static final long SerialVersionUID = 1L;
 
-  private static final String JOB_PREFIX = "job";
-
   private JobIdentifier(String id) {
-    super(JOB_PREFIX, id);
+    super(id);
   }
 }

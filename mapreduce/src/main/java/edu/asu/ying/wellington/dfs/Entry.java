@@ -49,7 +49,11 @@ public final class Entry<R extends WritableComparable,
     @Override
     @SuppressWarnings("unchecked")
     public int compareTo(Key<R, C> o) {
-      return column.compareTo(o.getColumn()) + row.compareTo(o.getRow());
+      int colComp = column.compareTo(o.getColumn());
+      if (colComp != 0) {
+        return colComp;
+      }
+      return row.compareTo(o.getRow());
     }
 
     @Override

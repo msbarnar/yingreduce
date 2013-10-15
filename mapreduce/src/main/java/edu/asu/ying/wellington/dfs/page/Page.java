@@ -5,7 +5,6 @@ import java.util.Map;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.SerializedEntry;
-import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
@@ -13,15 +12,9 @@ import edu.asu.ying.wellington.io.WritableComparable;
 public interface Page extends Serializable, Sink<SerializedEntry> {
 
   /**
-   * Gets the ID of the table to which this page belongs.
+   * Gets the ID of the page, including its parent table and index on that table.
    */
-  TableIdentifier getTableId();
-
-  /**
-   * The index is the unique identifier of the page within the table. <p>Indices must be zero-based,
-   * sequential, and continuous for the table to remain consistent.
-   */
-  int getIndex();
+  PageIdentifier getPageID();
 
   /**
    * Returns the maximum number of bytes allowed before the page is closed.

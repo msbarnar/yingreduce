@@ -17,9 +17,7 @@ public final class BoundedPage implements Page {
 
   private static final long SerialVersionUID = 1L;
 
-  private final TableIdentifier tableId;
-  // The index of this page on the table
-  private final int index;
+  private final PageIdentifier pageId;
 
   private final Map<WritableComparable, byte[]> contents = new LinkedHashMap<>();
   // Don't accept any entries that would cause the page to exceed this size in bytes.
@@ -29,9 +27,8 @@ public final class BoundedPage implements Page {
 
   public BoundedPage(TableIdentifier parentTableId, int index, int capacityBytes) {
 
-    this.tableId = parentTableId;
+    this.pageId = PageIdentifier.create(parentTableId, index);
 
-    this.index = index;
     this.capacityBytes = capacityBytes;
   }
 
@@ -65,23 +62,10 @@ public final class BoundedPage implements Page {
     return i;
   }
 
-  /**
-   * ************************************************************ Table ID + index identify the page
-   * uniquely in the database.
-   */
   @Override
-  public final TableIdentifier getTableId() {
-    return tableId;
+  public PageIdentifier getPageID() {
+    return pageId;
   }
-
-  @Override
-  public final int getIndex() {
-    return index;
-  }
-
-  /**
-   * **********************************************************
-   */
 
   @Override
   public Map<WritableComparable, byte[]> getContents() {

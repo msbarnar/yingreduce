@@ -2,12 +2,12 @@ package edu.asu.ying.wellington.mapreduce.task;
 
 import java.util.UUID;
 
-import edu.asu.ying.wellington.Identifier;
+import edu.asu.ying.wellington.AbstractIdentifier;
 
 /**
  *
  */
-public final class TaskIdentifier extends Identifier {
+public final class TaskIdentifier extends AbstractIdentifier {
 
   public static TaskIdentifier random() {
     return new TaskIdentifier(UUID.randomUUID().toString());

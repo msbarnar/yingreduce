@@ -12,28 +12,20 @@ import edu.asu.ying.wellington.io.WritableComparable;
 /**
  *
  */
-public abstract class Identifier implements WritableComparable<Identifier> {
+public abstract class AbstractIdentifier implements WritableComparable<AbstractIdentifier> {
 
-  private static final char SEPARATOR = '_';
-
-  protected String prefix;
   protected String id;
 
-  protected Identifier() {
+  protected AbstractIdentifier() {
   }
 
-  protected Identifier(String prefix, String id) {
-    this.prefix = Preconditions.checkNotNull(Strings.emptyToNull(prefix));
+  protected AbstractIdentifier(String id) {
     this.id = Preconditions.checkNotNull(Strings.emptyToNull((id)));
   }
 
   @Override
   public void readFields(DataInput in) throws IOException {
     this.id = in.readUTF();
-    int prefixIndex = this.id.indexOf(SEPARATOR);
-    if (prefixIndex > 0) {
-      this.prefix = this.id.substring(0, prefixIndex);
-    }
   }
 
   @Override
@@ -42,14 +34,14 @@ public abstract class Identifier implements WritableComparable<Identifier> {
   }
 
   @Override
-  public int compareTo(Identifier o) {
+  public int compareTo(AbstractIdentifier o) {
     return this.id.compareTo(o.id);
   }
 
   @Override
   public boolean equals(Object o) {
     return this == o || !(o == null || getClass() != o.getClass()) && this.id
-        .equals(((Identifier) o).id);
+        .equals(((AbstractIdentifier) o).id);
   }
 
   @Override
