@@ -27,7 +27,7 @@ public final class NodeImpl implements LocalNode, NodeLocator {
 
   @Inject
   private NodeImpl(LocalPeer localPeer,
-                   NodeServerExporter exporter) {
+                   NodeExporter exporter) {
 
     this.localPeer = localPeer;
     // Use the same node identifier as the underlying P2P node

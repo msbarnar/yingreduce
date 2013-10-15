@@ -32,14 +32,8 @@ public final class JobServiceExporter
   }
 
   @Override
-  public RemoteJobService export(JobService service) {
+  public RemoteJobService export(JobService service) throws ExportException {
     this.service = service;
-
-    try {
-      return activator.bind(RemoteJobService.class, this);
-    } catch (ExportException e) {
-      // TODO: Logging
-      throw new RuntimeException(e);
-    }
+    return activator.bind(RemoteJobService.class, this);
   }
 }

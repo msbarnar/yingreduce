@@ -12,22 +12,26 @@ import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
-public final class NodeServerExporter implements RemoteNode, Exporter<LocalNode, RemoteNode> {
+public final class NodeExporter implements RemoteNode, Exporter<LocalNode, RemoteNode> {
 
   private final Activator activator;
-  private LocalNode localNode;
+  private LocalNode node;
   private final JobService jobService;
   private final TaskService taskService;
   private final DFSService dfsService;
 
   @Inject
-  private NodeServerExporter(Activator activator,
-                             JobService jobService,
-                             TaskService taskService,
-                             DFSService dfsService) {
+  private NodeExporter(Activator activator,
+                       JobService jobService,
+                       TaskService taskService,
+                       DFSService dfsService) {
 
     this.activator = activator;
 
+    // Don't just depend on the Remote* types, because they won't have been exported
+    // by the time we get here so we won't have any way of getting the exported proxies.
+    // Instead get them lazily from the services themselves, whose creation guarantees that the
+    // proxies are exported.
     this.jobService = jobService;
     this.taskService = taskService;
     this.dfsService = dfsService;
@@ -35,7 +39,7 @@ public final class NodeServerExporter implements RemoteNode, Exporter<LocalNode,
 
   @Override
   public NodeIdentifier getIdentifier() throws RemoteException {
-    return localNode.getID();
+    return node.getID();
   }
 
   @Override
@@ -54,12 +58,8 @@ public final class NodeServerExporter implements RemoteNode, Exporter<LocalNode,
   }
 
   @Override
-  public RemoteNode export(LocalNode node) {
-    this.localNode = node;
-    try {
-      return activator.bind(RemoteNode.class, this);
-    } catch (ExportException e) {
-      throw new RuntimeException(e);
-    }
+  public RemoteNode export(LocalNode node) throws ExportException {
+    this.node = node;
+    return activator.bind(RemoteNode.class, this);
   }
 }

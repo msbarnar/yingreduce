@@ -24,17 +24,6 @@ public final class TaskServiceExporter
   }
 
   @Override
-  public RemoteTaskService export(TaskService service) {
-    this.service = service;
-    try {
-      return activator.bind(RemoteTaskService.class, this);
-    } catch (ExportException e) {
-      // TODO: Logging
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
   public void accept(Task task) throws RemoteException {
     try {
       this.service.accept(task);
@@ -46,5 +35,11 @@ public final class TaskServiceExporter
   @Override
   public int getBackpressure() throws RemoteException {
     return 0;
+  }
+
+  @Override
+  public RemoteTaskService export(TaskService service) throws ExportException {
+    this.service = service;
+    return activator.bind(RemoteTaskService.class, this);
   }
 }
