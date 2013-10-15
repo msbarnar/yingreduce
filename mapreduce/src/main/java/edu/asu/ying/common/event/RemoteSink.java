@@ -2,7 +2,7 @@ package edu.asu.ying.common.event;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.p2p.rmi.Activatable;
+import edu.asu.ying.common.remoting.Activatable;
 
 /**
  *

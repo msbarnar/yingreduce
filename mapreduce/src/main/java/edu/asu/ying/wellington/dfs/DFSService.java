@@ -1,8 +1,8 @@
 package edu.asu.ying.wellington.dfs;
 
 import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.common.remoting.Exported;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
-import edu.asu.ying.wellington.mapreduce.Exported;
 import edu.asu.ying.wellington.mapreduce.Service;
 
 /**

@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
-import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.p2p.rmi.Exporter;
+import edu.asu.ying.common.remoting.Activator;
+import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
 import edu.asu.ying.wellington.mapreduce.job.JobService;

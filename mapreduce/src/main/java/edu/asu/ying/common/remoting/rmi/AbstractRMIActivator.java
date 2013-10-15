@@ -1,6 +1,4 @@
-package edu.asu.ying.p2p.rmi;
-
-import com.google.inject.Inject;
+package edu.asu.ying.common.remoting.rmi;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,37 +9,28 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.asu.ying.p2p.Channel;
-import edu.asu.ying.p2p.message.Message;
-import edu.asu.ying.p2p.message.MessageHandler;
-import edu.asu.ying.p2p.message.ResponseMessage;
+import edu.asu.ying.common.remoting.Activatable;
+import edu.asu.ying.common.remoting.Activator;
+import edu.asu.ying.common.remoting.ClassNotExportedException;
 
 
 /**
  * Controls creation and lifetime management for server-side object instances available for
  * accession by remote nodes.
  */
-public final class ActivatorImpl implements Activator, MessageHandler {
+public abstract class AbstractRMIActivator implements Activator {
 
   // The port used to export all RMI instances.
-  private transient int rmiPort = 0;
-  private final transient Object portLock = new Object();
-
-  private final transient RemotePeer proxyInstance;
+  protected transient int rmiPort = 0;
+  protected final transient Object portLock = new Object();
 
   // Activation of other classes is controlled via bindings
   // Interface -> proxy
-  private final transient Map<Class<? extends Activatable>, Remote> bindings = new HashMap<>();
+  protected final transient Map<Class<? extends Activatable>, Remote> bindings = new HashMap<>();
 
-  @Inject
-  private ActivatorImpl(@RMIPort int port, Channel channel) {
+  protected AbstractRMIActivator(int port) {
     this.rmiPort = port;
-    try {
-      this.proxyInstance = bind(RemotePeer.class, new RemotePeerExporter(this));
-    } catch (ExportException e) {
-      throw new RuntimeException(e);
-    }
-    channel.registerMessageHandler(this, "p2p.activator");
+
   }
 
   @Override
@@ -60,17 +49,17 @@ public final class ActivatorImpl implements Activator, MessageHandler {
 
   @Override
   @SuppressWarnings("unchecked")
-  public <R extends Activatable> R getReference(Class<R> cls) throws ReferenceNotExportedException {
+  public <R extends Activatable> R getReference(Class<R> cls) throws ClassNotExportedException {
 
     R reference = (R) bindings.get(cls);
     if (reference == null) {
-      throw new ReferenceNotExportedException();
+      throw new ClassNotExportedException();
     }
     return reference;
   }
 
   @SuppressWarnings("unchecked")
-  private <R extends Activatable> R export(R obj) throws ExportException {
+  protected <R extends Activatable> R export(R obj) throws ExportException {
     try {
       return (R) UnicastRemoteObject.exportObject(obj, getPort());
     } catch (RemoteException e) {
@@ -81,7 +70,7 @@ public final class ActivatorImpl implements Activator, MessageHandler {
   /**
    * Use a single port per node for all RMI proxies.
    */
-  public int getPort() {
+  protected int getPort() {
     if (rmiPort <= 0) {
       synchronized (portLock) {
         if (rmiPort <= 0) {
@@ -95,7 +84,7 @@ public final class ActivatorImpl implements Activator, MessageHandler {
   /**
    * Selects a random port and specifies it as the sole port for RMI.
    */
-  private int getDefaultPort() {
+  protected int getDefaultPort() {
     ServerSocket sock = null;
     int port;
     try {
@@ -107,17 +96,5 @@ public final class ActivatorImpl implements Activator, MessageHandler {
       throw new RuntimeException(e);
     }
     return port;
-  }
-
-  @Override
-  public void onIncomingMessage(Message message) {
-    // TODO: Logging
-  }
-
-  @Override
-  public Message onIncomingRequest(Message request) {
-    final ResponseMessage response = ResponseMessage.inResponseTo(request);
-    response.setContent(proxyInstance);
-    return response;
   }
 }

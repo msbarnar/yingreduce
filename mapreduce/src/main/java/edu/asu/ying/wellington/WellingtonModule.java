@@ -14,14 +14,14 @@ import java.util.Properties;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.common.remoting.Activator;
+import edu.asu.ying.common.remoting.ClassNotExportedException;
+import edu.asu.ying.common.remoting.rmi.AbstractRMIActivator;
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.kad.KadChannel;
 import edu.asu.ying.p2p.kad.KadLocalPeer;
-import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.p2p.rmi.ActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIPort;
-import edu.asu.ying.p2p.rmi.ReferenceNotExportedException;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.client.PageDistributionSink;
@@ -34,8 +34,8 @@ import edu.asu.ying.wellington.mapreduce.job.Jobs;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.LocalNodeProxy;
 import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
+import edu.asu.ying.wellington.mapreduce.server.NodeImpl;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
-import edu.asu.ying.wellington.mapreduce.server.NodeServer;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.Forwarding;
 import edu.asu.ying.wellington.mapreduce.task.Local;
@@ -85,13 +85,13 @@ public final class WellingtonModule extends AbstractModule {
 
     // P2P Network
     bind(KeybasedRouting.class).toInstance(keybasedRouting);
-    bind(Activator.class).to(ActivatorImpl.class).in(Scopes.SINGLETON);
+    bind(Activator.class).to(AbstractRMIActivator.class).in(Scopes.SINGLETON);
     bind(Channel.class).to(KadChannel.class).in(Scopes.SINGLETON);
     bind(LocalPeer.class).to(KadLocalPeer.class).in(Scopes.SINGLETON);
 
     // Exported network
-    bind(LocalNode.class).to(NodeServer.class).in(Scopes.SINGLETON);
-    bind(NodeLocator.class).to(NodeServer.class).in(Scopes.SINGLETON);
+    bind(LocalNode.class).to(NodeImpl.class).in(Scopes.SINGLETON);
+    bind(NodeLocator.class).to(NodeImpl.class).in(Scopes.SINGLETON);
 
     // Services
     /*********** Jobs ***********/
@@ -137,7 +137,7 @@ public final class WellingtonModule extends AbstractModule {
   private RemoteNode provideRemoteNode(LocalNode node, Activator activator) {
     try {
       return activator.getReference(RemoteNode.class);
-    } catch (ReferenceNotExportedException e) {
+    } catch (ClassNotExportedException e) {
       // TODO: Logging
       e.printStackTrace();
       return null;

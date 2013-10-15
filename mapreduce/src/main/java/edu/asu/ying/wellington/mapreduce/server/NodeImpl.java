@@ -11,10 +11,10 @@ import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.rmi.RemotePeer;
 
 /**
- * {@code NodeServer} is the layer between the network and the mapreduce services. The server
- * implements the {@link LocalNode} and {@link RemoteNode} interfaces.
+ * {@code NodeImpl} forms a network of mapreduce services overlayed on the P2P network. The network
+ * supports finding other nodes and obtaining remote access to their services.
  */
-public final class NodeServer implements LocalNode, NodeLocator {
+public final class NodeImpl implements LocalNode, NodeLocator {
 
   private final RemoteNode proxy;
 
@@ -26,8 +26,8 @@ public final class NodeServer implements LocalNode, NodeLocator {
 
 
   @Inject
-  private NodeServer(LocalPeer localPeer,
-                     NodeServerExporter exporter) {
+  private NodeImpl(LocalPeer localPeer,
+                   NodeServerExporter exporter) {
 
     this.localPeer = localPeer;
     // Use the same node identifier as the underlying P2P node

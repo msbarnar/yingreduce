@@ -2,6 +2,8 @@ package edu.asu.ying.p2p.rmi;
 
 import java.rmi.RemoteException;
 
+import edu.asu.ying.common.remoting.Activatable;
+
 /**
  *
  */

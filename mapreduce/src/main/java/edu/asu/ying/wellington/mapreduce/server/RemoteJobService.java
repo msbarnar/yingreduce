@@ -2,7 +2,7 @@ package edu.asu.ying.wellington.mapreduce.server;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.p2p.rmi.Activatable;
+import edu.asu.ying.common.remoting.Activatable;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 
 /**

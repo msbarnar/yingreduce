@@ -7,8 +7,8 @@ import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.event.Pipe;
 import edu.asu.ying.common.event.RemoteSink;
-import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.p2p.rmi.Exporter;
+import edu.asu.ying.common.remoting.Activator;
+import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.Page;
 

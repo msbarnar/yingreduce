@@ -5,8 +5,8 @@ import java.rmi.server.ExportException;
 
 import javax.inject.Inject;
 
-import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.p2p.rmi.Exporter;
+import edu.asu.ying.common.remoting.Activator;
+import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.job.JobException;
 import edu.asu.ying.wellington.mapreduce.job.JobService;

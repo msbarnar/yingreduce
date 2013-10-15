@@ -1,16 +1,30 @@
 package edu.asu.ying.p2p.rmi;
 
+import com.google.inject.Inject;
+
 import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
+
+import edu.asu.ying.common.remoting.Activatable;
+import edu.asu.ying.common.remoting.Activator;
+import edu.asu.ying.common.remoting.Exporter;
 
 /**
  *
  */
-final class RemotePeerExporter implements RemotePeer {
+public final class RemotePeerExporter implements RemotePeer, Exporter<Activator, RemotePeer> {
 
   private Activator activator;
+  private RemotePeer proxyInstance;
 
-  RemotePeerExporter(Activator activator) {
+  @Inject
+  private RemotePeerExporter(Activator activator) {
     this.activator = activator;
+  }
+
+  @Override
+  public RemotePeer export(Activator target) throws ExportException {
+    return activator.bind(RemotePeer.class, this);
   }
 
   @Override

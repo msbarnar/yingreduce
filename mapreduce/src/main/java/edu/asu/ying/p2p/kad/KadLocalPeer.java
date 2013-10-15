@@ -17,14 +17,15 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import edu.asu.ying.common.remoting.RemoteImportException;
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.InvalidContentException;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerIdentifier;
 import edu.asu.ying.p2p.PeerNotFoundException;
+import edu.asu.ying.p2p.RemotePeerRequestHandler;
 import edu.asu.ying.p2p.message.RequestMessage;
 import edu.asu.ying.p2p.message.ResponseMessage;
-import edu.asu.ying.p2p.rmi.RemoteImportException;
 import edu.asu.ying.p2p.rmi.RemotePeer;
 import il.technion.ewolf.kbr.Key;
 import il.technion.ewolf.kbr.KeybasedRouting;
@@ -172,15 +173,15 @@ public final class KadLocalPeer implements LocalPeer {
   }
 
   /**
-   * Given a Kademlia node, sends a request to the remote {@link edu.asu.ying.p2p.rmi.RMIRequestHandler}
-   * and waits for a response containing a {@link edu.asu.ying.p2p.RemotePeer} proxy to that peer.
+   * Given a Kademlia node, sends a request to the remote {@link RemotePeerRequestHandler} and waits
+   * for a response containing a {@link RemotePeer} proxy to that peer.
    */
   // TODO: Target for cleanup
   @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
   private RemotePeer importProxyTo(il.technion.ewolf.kbr.Node node) throws RemoteImportException {
 
-    // Send the request to the request handler with the appropriate tag
-    RequestMessage request = new RequestMessage("node.remote-proxy");
+    // Send the request to the request handler
+    RequestMessage request = RemotePeerRequestHandler.createRequest();
     Future<Serializable> response;
     try {
       response =
