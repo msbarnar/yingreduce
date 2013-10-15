@@ -27,9 +27,7 @@ public final class BoundedPage implements Page {
   // Keep track of the sum length of the contents.
   private int curSizeBytes = 0;
 
-  public BoundedPage(final TableIdentifier parentTableId,
-                     final int index,
-                     final int capacityBytes) {
+  public BoundedPage(TableIdentifier parentTableId, int index, int capacityBytes) {
 
     this.tableId = parentTableId;
 
@@ -38,12 +36,12 @@ public final class BoundedPage implements Page {
   }
 
   @Override
-  public final boolean offer(final SerializedEntry entry) {
-    final byte[] value = entry.getValue();
-    if (value.length > (this.capacityBytes - this.curSizeBytes)) {
+  public boolean offer(SerializedEntry entry) {
+    byte[] value = entry.getValue();
+    if (value.length > (capacityBytes - curSizeBytes)) {
       return false;
     }
-    this.contents.put(entry.getKey(), value);
+    contents.put(entry.getKey(), value);
     return true;
   }
 
@@ -55,13 +53,13 @@ public final class BoundedPage implements Page {
    * @return the number of entries added.
    */
   @Override
-  public final int offer(final Iterable<SerializedEntry> entries) {
+  public int offer(Iterable<SerializedEntry> entries) {
     int i = 0;
-    for (final SerializedEntry entry : entries) {
-      if (entry.getValue().length > (this.capacityBytes - this.curSizeBytes)) {
+    for (SerializedEntry entry : entries) {
+      if (entry.getValue().length > (capacityBytes - curSizeBytes)) {
         return i;
       }
-      this.contents.put(entry.getKey(), entry.getValue());
+      contents.put(entry.getKey(), entry.getValue());
       i++;
     }
     return i;
@@ -73,12 +71,12 @@ public final class BoundedPage implements Page {
    */
   @Override
   public final TableIdentifier getTableId() {
-    return this.tableId;
+    return tableId;
   }
 
   @Override
   public final int getIndex() {
-    return this.index;
+    return index;
   }
 
   /**
@@ -87,33 +85,33 @@ public final class BoundedPage implements Page {
 
   @Override
   public Map<WritableComparable, byte[]> getContents() {
-    synchronized (this.contents) {
-      return ImmutableMap.copyOf(this.contents);
+    synchronized (contents) {
+      return ImmutableMap.copyOf(contents);
     }
   }
 
   @Override
-  public final int getCapacityBytes() {
-    return this.capacityBytes;
+  public int getCapacityBytes() {
+    return capacityBytes;
   }
 
   @Override
-  public final int getRemainingCapacityBytes() {
-    return this.capacityBytes - this.curSizeBytes;
+  public int getRemainingCapacityBytes() {
+    return capacityBytes - curSizeBytes;
   }
 
   @Override
-  public final int getSizeBytes() {
-    return this.curSizeBytes;
+  public int getSizeBytes() {
+    return curSizeBytes;
   }
 
   @Override
   public int getNumEntries() {
-    return this.contents.size();
+    return contents.size();
   }
 
   @Override
-  public final boolean isEmpty() {
-    return this.contents.isEmpty();
+  public boolean isEmpty() {
+    return contents.isEmpty();
   }
 }

@@ -27,9 +27,8 @@ public final class PageBuilder implements Table, Sink<Entry> {
 
   private static final long SerialVersionUID = 1L;
 
-  // Default 200b per page
   // TODO: Set page capacity with configuration
-  private static final int DEFAULT_PAGE_CAPACITY = 200;
+  private static final int DEFAULT_PAGE_CAPACITY_BYTES = 200;
 
   // Uniquely identifies the table in the data store
   private final TableIdentifier id;
@@ -40,7 +39,7 @@ public final class PageBuilder implements Table, Sink<Entry> {
   // Stores table elements not yet committed to the network.
   private Page currentPage = null;
   private int currentPageIndex = 0;
-  private final int maxPageSize = DEFAULT_PAGE_CAPACITY;
+  private final int maxPageBytes = DEFAULT_PAGE_CAPACITY_BYTES;
   private final Object currentPageLock = new Object();
 
 
@@ -52,7 +51,7 @@ public final class PageBuilder implements Table, Sink<Entry> {
 
   @Override
   public final TableIdentifier getId() {
-    return this.id;
+    return id;
   }
 
   /**
@@ -62,7 +61,7 @@ public final class PageBuilder implements Table, Sink<Entry> {
    */
   @Override
   public boolean hasPage(int index) {
-    return index == this.currentPageIndex;
+    return index == currentPageIndex;
   }
 
   /**
@@ -70,15 +69,15 @@ public final class PageBuilder implements Table, Sink<Entry> {
    * incomplete page.
    */
   public int getPageCount() {
-    return this.currentPageIndex + 1;
+    return currentPageIndex + 1;
   }
 
   /**
    * Returns the maximum number of bytes allowed in any page before that page is committed to the
    * page sink.
    */
-  public int getMaxPageSize() {
-    return this.maxPageSize;
+  public int getPageCapacityBytes() {
+    return maxPageBytes;
   }
 
 
@@ -89,19 +88,19 @@ public final class PageBuilder implements Table, Sink<Entry> {
    *         on any page.
    */
   @Override
-  public boolean offer(final Entry entry) throws IOException {
+  public boolean offer(Entry entry) throws IOException {
     // Serialize entry value
-    final SerializedEntry serializedEntry = new SerializedEntry(entry);
-    final int length = serializedEntry.getValue().length;
+    SerializedEntry serializedEntry = new SerializedEntry(entry);
+    int length = serializedEntry.getValue().length;
 
-    if (length > this.currentPage.getCapacityBytes()) {
+    if (length > currentPage.getCapacityBytes()) {
       return false;
     }
-    if (length > this.currentPage.getRemainingCapacityBytes()) {
+    if (length > currentPage.getRemainingCapacityBytes()) {
       this.newPage();
     }
 
-    return this.currentPage.offer(serializedEntry);
+    return currentPage.offer(serializedEntry);
   }
 
   /**
@@ -109,22 +108,21 @@ public final class PageBuilder implements Table, Sink<Entry> {
    * pages when necessary until all entries are added.
    */
   @Override
-  public int offer(final Iterable<Entry> entries) throws IOException {
+  public int offer(Iterable<Entry> entries) throws IOException {
     // Serialize and sort the entries for packing
-    final List<SerializedEntry> serializedEntries =
-        this.serializeEntries(entries);
-    this.sortEntries(serializedEntries);
+    List<SerializedEntry> serializedEntries = serializeEntries(entries);
+    sortEntries(serializedEntries);
 
     // Capture elements that won't fit on any page
-    final List<WritableComparable> oversizedEntries = new LinkedList<>();
+    List<WritableComparable> oversizedEntries = new LinkedList<>();
 
     Iterator<SerializedEntry> iter;
     // Remove any elements that exceed the maximum getSizeBytes
-    final int pageCapacity = this.currentPage.getCapacityBytes();
+    int pageCapacity = currentPage.getCapacityBytes();
     synchronized (currentPageLock) {
       iter = serializedEntries.iterator();
       while (iter.hasNext()) {
-        final SerializedEntry entry = iter.next();
+        SerializedEntry entry = iter.next();
 
         if (entry.getValue().length > pageCapacity) {
           oversizedEntries.add(entry.getKey());
@@ -145,7 +143,7 @@ public final class PageBuilder implements Table, Sink<Entry> {
         iter = serializedEntries.iterator();
         while (iter.hasNext()) {
           final SerializedEntry entry = iter.next();
-          if (this.currentPage.offer(entry)) {
+          if (currentPage.offer(entry)) {
             iter.remove();
             entriesAdded++;
           }
@@ -172,12 +170,11 @@ public final class PageBuilder implements Table, Sink<Entry> {
   /**
    * Serializes the entries' values for sorting and storage.
    */
-  private List<SerializedEntry> serializeEntries(
-      final Iterable<Entry> entries) throws IOException {
+  private List<SerializedEntry> serializeEntries(Iterable<Entry> entries) throws IOException {
 
-    final List<SerializedEntry> serializedEntries = Lists.newLinkedList();
+    List<SerializedEntry> serializedEntries = Lists.newLinkedList();
 
-    for (final Entry entry : entries) {
+    for (Entry entry : entries) {
       serializedEntries.add(new SerializedEntry(entry));
     }
 
@@ -187,7 +184,7 @@ public final class PageBuilder implements Table, Sink<Entry> {
   /**
    * Sorts the entries by descending value length for bin packing.
    */
-  private void sortEntries(final List<SerializedEntry> entries) {
+  private void sortEntries(List<SerializedEntry> entries) {
     Collections.sort(entries, new Comparator<SerializedEntry>() {
       @Override
       public int compare(SerializedEntry a,
@@ -202,21 +199,21 @@ public final class PageBuilder implements Table, Sink<Entry> {
    * Sends the current page to the sink and starts a new one.
    */
   private void newPage() {
-    synchronized (this.currentPageLock) {
-      if (this.currentPage != null) {
+    synchronized (currentPageLock) {
+      if (currentPage != null) {
         try {
           // TODO: Logging
-          if (!this.pageSink.offer(this.currentPage)) {
+          if (!pageSink.offer(currentPage)) {
             throw new IOException("Page sink rejected page");
           }
-        } catch (final IOException e) {
+        } catch (IOException e) {
           // TODO: Logging
           e.printStackTrace();
         }
-        this.currentPageIndex++;
+        currentPageIndex++;
       }
       // TODO: Set page capacity with configuration
-      this.currentPage = new BoundedPage(this.id, this.currentPageIndex, this.maxPageSize);
+      currentPage = new BoundedPage(id, currentPageIndex, maxPageBytes);
     }
   }
 }
