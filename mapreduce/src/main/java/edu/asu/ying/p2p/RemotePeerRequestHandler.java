@@ -30,6 +30,7 @@ public final class RemotePeerRequestHandler implements MessageHandler {
   private RemotePeerRequestHandler(Activator activator,
                                    Channel channel,
                                    RemotePeerExporter exporter) {
+
     try {
       this.proxyInstance = exporter.export(activator);
     } catch (ExportException e) {
@@ -37,7 +38,7 @@ public final class RemotePeerRequestHandler implements MessageHandler {
       throw new RuntimeException("Exception exporting remote peer", e);
     }
 
-    channel.registerMessageHandler(this, "p2p.remotepeer");
+    channel.registerMessageHandler(this, REMOTE_PEER_TAG);
   }
 
   @Override

@@ -30,7 +30,8 @@ public class RMIActivator implements Activator {
 
   // Activation of other classes is controlled via bindings
   // Interface -> proxy
-  protected final transient Map<Class<? extends Activatable>, Remote> bindings = new HashMap<>();
+  protected final transient Map<Class<? extends Activatable>, Binding<?>> bindings
+      = new HashMap<>();
 
   @Inject
   protected RMIActivator(@RMIPort int port) {
@@ -41,25 +42,26 @@ public class RMIActivator implements Activator {
   public <R extends Activatable, T extends R> R bind(Class<R> cls, T target)
       throws ExportException {
 
-    T instance;
+    T proxy;
     try {
-      instance = export(target);
+      proxy = export(target);
     } catch (RemoteException e) {
       throw new ExportException("Exception exporting RMI proxy", e);
     }
-    bindings.put(cls, instance);
-    return instance;
+    bindings.put(cls, new Binding<>(target, proxy));
+    return proxy;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public <R extends Activatable> R getReference(Class<R> cls) throws ClassNotExportedException {
 
-    R reference = (R) bindings.get(cls);
-    if (reference == null) {
+    Binding<?> binding = bindings.get(cls);
+    if (binding == null || bindings.get(cls).getProxy() == null) {
       throw new ClassNotExportedException();
     }
-    return reference;
+
+    return (R) binding.getProxy();
   }
 
   @SuppressWarnings("unchecked")
@@ -107,5 +109,23 @@ public class RMIActivator implements Activator {
       throw new RuntimeException(e);
     }
     return port;
+  }
+
+  /**
+   * Maintains strong references to the proxy and target classes so the proxies aren't invalidated.
+   */
+  private final class Binding<T> {
+
+    private final T target;
+    private final Remote proxy;
+
+    private Binding(T target, Remote proxy) {
+      this.target = target;
+      this.proxy = proxy;
+    }
+
+    Remote getProxy() {
+      return proxy;
+    }
   }
 }

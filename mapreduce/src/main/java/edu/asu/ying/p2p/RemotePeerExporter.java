@@ -24,11 +24,17 @@ public final class RemotePeerExporter implements RemotePeer, Exporter<Activator,
 
   @Override
   public RemotePeer export(Activator target) throws ExportException {
-    return activator.bind(RemotePeer.class, this);
+    proxyInstance = activator.bind(RemotePeer.class, this);
+    return proxyInstance;
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T extends Activatable> T getReference(Class<T> cls) throws RemoteException {
-    return activator.getReference(cls);
+    if (cls.equals(RemotePeer.class)) {
+      return (T) proxyInstance;
+    } else {
+      return activator.getReference(cls);
+    }
   }
 }

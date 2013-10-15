@@ -51,7 +51,10 @@ public final class KadLocalPeer implements LocalPeer {
 
 
   @Inject
-  private KadLocalPeer(KeybasedRouting kbrNode, Channel channel) throws ExportException {
+  private KadLocalPeer(KeybasedRouting kbrNode,
+                       Channel channel,
+                       // Depend on this just to get it bound and running
+                       RemotePeerRequestHandler peerRequestHandler) throws ExportException {
 
     // The local Kademlia node for peer discovery
     this.kbrNode = kbrNode;
