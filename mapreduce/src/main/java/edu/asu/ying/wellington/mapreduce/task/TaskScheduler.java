@@ -15,8 +15,6 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 @Singleton
 public class TaskScheduler implements TaskService {
 
-  private static final int MAX_QUEUE_SIZE = 1;
-
   private final LocalNode localNode;
   // Ql and Qr are bounded, but Qf is just a pipe to neighboring peers
   private final QueueExecutor<Task> forwardingQueue;
