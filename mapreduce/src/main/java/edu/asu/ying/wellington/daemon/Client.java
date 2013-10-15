@@ -103,10 +103,10 @@ public class Client {
 
     /*final PageBuilder pb = new PageBuilder(TableIdentifier.forString("lipsum"), instances[0].getLocalPeer().getPageOutSink());
     try {
-      pb.offer(new Entry(new WritableInt(1), new WritableString("a"),
+      pb.offer(new Element(new WritableInt(1), new WritableString("a"),
                          new WritableBytes("It's a small world after all".getBytes())));
       pb.flush();
-      pb.offer(new Entry(new WritableInt(2), new WritableString("b"),
+      pb.offer(new Element(new WritableInt(2), new WritableString("b"),
                          new WritableBytes("It's a small world after all".getBytes())));
       pb.flush();
     } catch (final IOException e) {

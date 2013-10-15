@@ -11,21 +11,22 @@ import edu.asu.ying.wellington.io.WritableComparable;
 /**
  *
  */
-public final class SerializedEntry implements Serializable {
+public final class SerializedElement implements Serializable {
 
   private final WritableComparable key;
   private final byte[] value;
 
-  public SerializedEntry(final Entry entry) {
-    this(entry.getKey(), entry.getValue());
+  public SerializedElement(final Element element) {
+    this(element.getKey(), element.getValue());
   }
 
-  public SerializedEntry(final WritableComparable key, final byte[] value) {
+  public SerializedElement(final WritableComparable key, final byte[] value) {
     this.key = key;
     this.value = value;
   }
 
-  public <V extends Writable> SerializedEntry(final WritableComparable key, final Writable value) {
+  public <V extends Writable> SerializedElement(final WritableComparable key,
+                                                final Writable value) {
     final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     try {
       value.write(new DataOutputStream(buffer));

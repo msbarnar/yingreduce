@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.table;
+package edu.asu.ying.wellington.dfs.client;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Longs;
@@ -11,12 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.Entry;
-import edu.asu.ying.wellington.dfs.SerializedEntry;
+import edu.asu.ying.wellington.dfs.Element;
+import edu.asu.ying.wellington.dfs.SerializedElement;
 import edu.asu.ying.wellington.dfs.page.BoundedPage;
 import edu.asu.ying.wellington.dfs.page.EntriesExceedPageCapacityException;
 import edu.asu.ying.wellington.dfs.page.Page;
-import edu.asu.ying.wellington.dfs.page.PageIdentifier;
+import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -25,9 +25,8 @@ import edu.asu.ying.wellington.io.WritableComparable;
  * an associated {@link Sink}. </p> The sink could be, for example, a distribution queue which sends
  * pages to remote peers.
  */
-public final class PageBuilder<C extends WritableComparable,
-    R extends WritableComparable,
-    V extends Writable> implements Table, Sink<Entry<C, R, V>> {
+public final class PageBuilder<K extends WritableComparable, V extends Writable>
+    implements Sink<Element<K, V>> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -54,16 +53,16 @@ public final class PageBuilder<C extends WritableComparable,
   }
 
   /**
-   * Adds the entry to the table, starting a new page if necessary.
+   * Adds the element to the table, starting a new page if necessary.
    *
-   * @return {@code true} if the entry was added, or {@code false} if the entry is too large to fit
-   *         on any page.
+   * @return {@code true} if the element was added, or {@code false} if the element is too large to
+   *         fit on any page.
    */
   @Override
-  public boolean offer(Entry<C, R, V> entry) throws IOException {
-    // Serialize entry value
-    SerializedEntry serializedEntry = new SerializedEntry(entry);
-    int length = serializedEntry.getValue().length;
+  public boolean offer(Element<K, V> element) throws IOException {
+    // Serialize element value
+    SerializedElement serializedElement = new SerializedElement(element);
+    int length = serializedElement.getValue().length;
 
     if (length > currentPage.getCapacityBytes()) {
       return false;
@@ -72,7 +71,7 @@ public final class PageBuilder<C extends WritableComparable,
       newPage();
     }
 
-    return currentPage.offer(serializedEntry);
+    return currentPage.offer(serializedElement);
   }
 
   /**
@@ -80,21 +79,21 @@ public final class PageBuilder<C extends WritableComparable,
    * pages when necessary until all entries are added.
    */
   @Override
-  public int offer(Iterable<Entry<C, R, V>> entries) throws IOException {
+  public int offer(Iterable<Element<K, V>> elements) throws IOException {
     // Serialize and sort the entries for packing
-    List<SerializedEntry> serializedEntries = serializeEntries(entries);
+    List<SerializedElement> serializedEntries = serializeEntries(elements);
     sortEntries(serializedEntries);
 
     // Capture elements that won't fit on any page
     List<WritableComparable> oversizedEntries = new LinkedList<>();
 
-    Iterator<SerializedEntry> iter;
+    Iterator<SerializedElement> iter;
     // Remove any elements that exceed the maximum getSizeBytes
     int pageCapacity = currentPage.getCapacityBytes();
     synchronized (currentPageLock) {
       iter = serializedEntries.iterator();
       while (iter.hasNext()) {
-        SerializedEntry entry = iter.next();
+        SerializedElement entry = iter.next();
 
         if (entry.getValue().length > pageCapacity) {
           oversizedEntries.add(entry.getKey());
@@ -114,7 +113,7 @@ public final class PageBuilder<C extends WritableComparable,
       synchronized (currentPageLock) {
         iter = serializedEntries.iterator();
         while (iter.hasNext()) {
-          final SerializedEntry entry = iter.next();
+          final SerializedElement entry = iter.next();
           if (currentPage.offer(entry)) {
             iter.remove();
             entriesAdded++;
@@ -139,30 +138,6 @@ public final class PageBuilder<C extends WritableComparable,
     this.newPage();
   }
 
-  @Override
-  public TableIdentifier getId() {
-    return id;
-  }
-
-  /**
-   * Returns {@code true} if the index is the same as the current page held by the page builder. The
-   * page builder does not maintain other pages, as they are immediately sent to the page sink on
-   * being filled.
-   */
-  @Override
-  public boolean hasPage(int index) {
-    return index == currentPageIndex;
-  }
-
-  /**
-   * Returns {@code true} if the table specified by the page identifier is this table, and if the
-   * current page held by this table is the index specified by the identifier.
-   */
-  @Override
-  public boolean hasPage(PageIdentifier pageID) {
-    return (pageID.getTableID().equals(getId())) && (pageID.getIndex() == currentPageIndex);
-  }
-
   /**
    * Returns the number of pages this page builder has committed to the table, including the current
    * incomplete page.
@@ -182,13 +157,13 @@ public final class PageBuilder<C extends WritableComparable,
   /**
    * Serializes the entries' values for sorting and storage.
    */
-  private List<SerializedEntry> serializeEntries(Iterable<Entry<C, R, V>> entries)
+  private List<SerializedElement> serializeEntries(Iterable<Element<K, V>> entries)
       throws IOException {
 
-    List<SerializedEntry> serializedEntries = Lists.newLinkedList();
+    List<SerializedElement> serializedEntries = Lists.newLinkedList();
 
-    for (Entry<C, R, V> entry : entries) {
-      serializedEntries.add(new SerializedEntry(entry));
+    for (Element<K, V> element : entries) {
+      serializedEntries.add(new SerializedElement(element));
     }
 
     return serializedEntries;
@@ -197,11 +172,11 @@ public final class PageBuilder<C extends WritableComparable,
   /**
    * Sorts the entries by descending value length for bin packing.
    */
-  private void sortEntries(List<SerializedEntry> entries) {
-    Collections.sort(entries, new Comparator<SerializedEntry>() {
+  private void sortEntries(List<SerializedElement> entries) {
+    Collections.sort(entries, new Comparator<SerializedElement>() {
       @Override
-      public int compare(SerializedEntry a,
-                         SerializedEntry b) {
+      public int compare(SerializedElement a,
+                         SerializedElement b) {
         return Longs.compare(a.getValue().length, b.getValue().length);
       }
     });

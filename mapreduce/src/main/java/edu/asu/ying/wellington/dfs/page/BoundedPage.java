@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import edu.asu.ying.wellington.dfs.SerializedEntry;
+import edu.asu.ying.wellington.dfs.SerializedElement;
 import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -33,7 +33,7 @@ public final class BoundedPage implements Page {
   }
 
   @Override
-  public boolean offer(SerializedEntry entry) {
+  public boolean offer(SerializedElement entry) {
     byte[] value = entry.getValue();
     if (value.length > (capacityBytes - curSizeBytes)) {
       return false;
@@ -50,9 +50,9 @@ public final class BoundedPage implements Page {
    * @return the number of entries added.
    */
   @Override
-  public int offer(Iterable<SerializedEntry> entries) {
+  public int offer(Iterable<SerializedElement> entries) {
     int i = 0;
-    for (SerializedEntry entry : entries) {
+    for (SerializedElement entry : entries) {
       if (entry.getValue().length > (capacityBytes - curSizeBytes)) {
         return i;
       }

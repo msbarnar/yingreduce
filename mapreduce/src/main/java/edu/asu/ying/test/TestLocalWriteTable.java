@@ -9,9 +9,9 @@ import java.util.Deque;
 import java.util.Random;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.Entry;
+import edu.asu.ying.wellington.dfs.Element;
+import edu.asu.ying.wellington.dfs.client.PageBuilder;
 import edu.asu.ying.wellington.dfs.page.Page;
-import edu.asu.ying.wellington.dfs.table.PageBuilder;
 import edu.asu.ying.wellington.dfs.table.TableIdentifier;
 import edu.asu.ying.wellington.io.WritableBytes;
 import edu.asu.ying.wellington.io.WritableInt;
@@ -48,21 +48,21 @@ public class TestLocalWriteTable {
   public void ItPagesOut() {
 
     MockPageSink mockSink = new MockPageSink();
-    Sink<Entry<WritableString, WritableInt, WritableBytes>> table =
+    Sink<Element<WritableString, WritableInt, WritableBytes>> table =
         new PageBuilder<>(TableIdentifier.random(), mockSink);
 
     int sizeAdded = 0;
 
     Random rnd = new Random();
 
-    Deque<Entry<WritableString, WritableInt, WritableBytes>> entries = new ArrayDeque<>();
+    Deque<Element<WritableString, WritableInt, WritableBytes>> entries = new ArrayDeque<>();
     for (int k = 0; k < 5 + rnd.nextInt(20); k++) {
       for (int i = 0; i < 5 + rnd.nextInt(20); i++) {
         byte[] data = new byte[1 + rnd.nextInt(198)];
         sizeAdded += data.length;
 
-        entries.add(new Entry<>(new WritableString("stuff"), new WritableInt(i),
-                                new WritableBytes(data)));
+        entries.add(new Element<>(new WritableString("stuff"), new WritableInt(i),
+                                  new WritableBytes(data)));
       }
 
       try {

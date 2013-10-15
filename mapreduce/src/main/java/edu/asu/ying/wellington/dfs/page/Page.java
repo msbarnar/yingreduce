@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.Map;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.SerializedEntry;
+import edu.asu.ying.wellington.dfs.SerializedElement;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  */
-public interface Page extends Serializable, Sink<SerializedEntry> {
+public interface Page extends Serializable, Sink<SerializedElement> {
 
   /**
    * Gets the ID of the page, including its parent table and index on that table.

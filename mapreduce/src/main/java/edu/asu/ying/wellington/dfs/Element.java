@@ -8,7 +8,7 @@ import edu.asu.ying.wellington.io.WritableComparable;
 /**
  *
  */
-public final class Entry<K extends WritableComparable, V extends Writable>
+public final class Element<K extends WritableComparable, V extends Writable>
     implements Serializable {
 
   private static final long SerialVersionUID = 1L;
@@ -16,7 +16,7 @@ public final class Entry<K extends WritableComparable, V extends Writable>
   private final K key;
   private final V value;
 
-  public Entry(K key, V value) {
+  public Element(K key, V value) {
     this.key = key;
     this.value = value;
   }
