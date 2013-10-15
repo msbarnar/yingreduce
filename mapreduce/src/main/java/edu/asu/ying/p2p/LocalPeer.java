@@ -4,15 +4,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
-import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.p2p.rmi.Exportable;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
 
 
 /**
  * Provides an interface to the local node and its listening facilities.
  */
-public interface LocalPeer extends Exportable<RemotePeer> {
+public interface LocalPeer {
 
   /**
    * Gets the unique network identifier for this peer.
@@ -30,11 +28,6 @@ public interface LocalPeer extends Exportable<RemotePeer> {
    * Gets the peers to which this peer is directly connected.
    */
   List<RemotePeer> getNeighbors();
-
-  /**
-   * Gets the activator capable of exposing objects to the network through this peer.
-   */
-  Activator getActivator();
 
   /**
    * Finds a peer on any network of which this peer is a part.

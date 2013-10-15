@@ -1,5 +1,7 @@
 package edu.asu.ying.p2p.rmi;
 
+import com.google.inject.Inject;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.HashMap;
@@ -20,28 +22,30 @@ public final class ActivatorImpl implements Activator {
   // i.e. Class/Interface -> Subclass or Instance
   private final Map<Class<?>, Binder<? extends Activatable>> bindings = new HashMap<>();
 
-  public ActivatorImpl() {
+  @Inject
+  private ActivatorImpl(@RMIPort int port) {
+    this.rmiPort = port;
   }
 
   /**
    * @inheritDoc
    */
   @SuppressWarnings("unchecked")
-  public <K extends Activatable> Binder<K> bind(final Class<K> boundClass) {
-    final Binder binder = new BinderImpl<>(this);
-    this.bindings.put(boundClass, binder);
+  public <K extends Activatable> Binder<K> bind(Class<K> boundClass) {
+    Binder binder = new BinderImpl<>(this);
+    bindings.put(boundClass, binder);
     return binder;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public <K extends Activatable> K getReference(Class<K> cls) {
-    final Binder<?> binder = this.bindings.get(cls);
+    Binder<?> binder = bindings.get(cls);
     if (binder == null) {
       return null;
     }
 
-    final Binding<?> binding = binder.getBinding();
+    Binding<?> binding = binder.getBinding();
     if (binding == null) {
       return null;
     }
@@ -52,21 +56,21 @@ public final class ActivatorImpl implements Activator {
   /**
    * Use a single port per node for all RMI proxies.
    */
-  public final int getPort() {
-    if (this.rmiPort == 0) {
-      synchronized (this.portLock) {
-        if (this.rmiPort == 0) {
-          this.rmiPort = this.allocatePort();
+  public int getPort() {
+    if (rmiPort <= 0) {
+      synchronized (portLock) {
+        if (rmiPort <= 0) {
+          rmiPort = getDefaultPort();
         }
       }
     }
-    return this.rmiPort;
+    return rmiPort;
   }
 
   /**
    * Selects a random port and specifies it as the sole port for RMI.
    */
-  private int allocatePort() {
+  private int getDefaultPort() {
     ServerSocket sock = null;
     int port;
     try {

@@ -9,14 +9,20 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Properties;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadChannel;
 import edu.asu.ying.p2p.kad.KadLocalPeer;
+import edu.asu.ying.p2p.rmi.Activator;
+import edu.asu.ying.p2p.rmi.ActivatorImpl;
+import edu.asu.ying.p2p.rmi.RMIPort;
+import edu.asu.ying.p2p.rmi.RemotePeerWrapper;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.client.PageDistributionSink;
@@ -26,11 +32,13 @@ import edu.asu.ying.wellington.mapreduce.job.JobDelegator;
 import edu.asu.ying.wellington.mapreduce.job.JobScheduler;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
 import edu.asu.ying.wellington.mapreduce.job.Jobs;
+import edu.asu.ying.wellington.mapreduce.server.JobServiceWrapper;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.LocalNodeProxy;
 import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.NodeServer;
+import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.Forwarding;
 import edu.asu.ying.wellington.mapreduce.task.Local;
@@ -78,8 +86,10 @@ public final class WellingtonModule extends AbstractModule {
 
     // P2P Network
     bind(KeybasedRouting.class).toInstance(keybasedRouting);
+    bind(Activator.class).to(ActivatorImpl.class).in(Scopes.SINGLETON);
     bind(Channel.class).to(KadChannel.class).in(Scopes.SINGLETON);
     bind(LocalPeer.class).to(KadLocalPeer.class).in(Scopes.SINGLETON);
+    bind(RemotePeer.class).to(RemotePeerWrapper.class).in(Scopes.SINGLETON);
 
     // Service network
     bind(LocalNode.class).to(NodeServer.class).in(Scopes.SINGLETON);
@@ -88,6 +98,7 @@ public final class WellingtonModule extends AbstractModule {
     // Services
     // Jobs
     bind(JobService.class).to(JobScheduler.class).in(Scopes.SINGLETON);
+    bind(RemoteJobService.class).to(JobServiceWrapper.class).in(Scopes.SINGLETON);
     bind(new TypeLiteral<QueueExecutor<Job>>() {
     })
         .annotatedWith(Jobs.class)
@@ -122,14 +133,30 @@ public final class WellingtonModule extends AbstractModule {
 
   @Provides
   @LocalNodeProxy
-  private RemoteNode provideRemoteNode(LocalNode localNode) {
-    return localNode.getAsRemote();
+  private RemoteNode provideRemoteNode(Activator activator) {
+    return activator.getReference(RemoteNode.class);
   }
 
   @Provides
   @Local
   private NodeIdentifier provideLocalNodeID(LocalNode localNode) {
     return localNode.getID();
+  }
+
+  @Provides
+  @RMIPort
+  private int provideRMIPort() {
+    ServerSocket sock = null;
+    int port;
+    try {
+      sock = new ServerSocket(0);
+      port = sock.getLocalPort();
+      sock.close();
+    } catch (final IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
+    return port;
   }
 
   private Properties getDefaultProperties() {

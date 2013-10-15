@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,40 +18,22 @@ public final class NodeServer implements LocalNode, NodeLocator {
 
   // Network layer
   private final LocalPeer localPeer;
-  // Exported to network
-  private final RemoteNode remoteNode;
 
   // Derived from network
   private final NodeIdentifier identifier;
 
 
   @Inject
-  private NodeServer(LocalPeer localPeer, RemoteNodeWrapperFactory nodeWrapperFactory) {
+  private NodeServer(LocalPeer localPeer) {
 
     this.localPeer = localPeer;
     // Use the same node identifier as the underlying P2P node
     this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
-
-    // Export this object to the network using the injected factory
-    try {
-      this.remoteNode = localPeer.getActivator()
-          .bind(RemoteNode.class)
-          .to(this)
-          .wrappedBy(nodeWrapperFactory);
-
-    } catch (ExportException e) {
-      throw new RuntimeException("Failed to export remote node reference", e);
-    }
   }
 
   @Override
   public NodeIdentifier getID() {
     return identifier;
-  }
-
-  @Override
-  public RemoteNode getAsRemote() {
-    return remoteNode;
   }
 
   @Override

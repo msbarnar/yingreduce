@@ -25,8 +25,6 @@ import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.message.RequestMessage;
 import edu.asu.ying.p2p.message.ResponseMessage;
-import edu.asu.ying.p2p.rmi.Activator;
-import edu.asu.ying.p2p.rmi.ActivatorImpl;
 import edu.asu.ying.p2p.rmi.RMIRequestHandler;
 import edu.asu.ying.p2p.rmi.RemoteImportException;
 import il.technion.ewolf.kbr.Key;
@@ -51,9 +49,6 @@ public final class KadLocalPeer implements LocalPeer {
   // Getting RMI references to neighbors is expensive, so cache the reference every time we get one
   private Map<Node, RemotePeer> neighborsCache = new HashMap<>();
 
-  // Manages RMI export of objects for access by remote peers.
-  private final Activator activator;
-
 
   @Inject
   private KadLocalPeer(KeybasedRouting kbrNode, Channel channel)
@@ -67,9 +62,6 @@ public final class KadLocalPeer implements LocalPeer {
         new KadPeerIdentifier(this.kbrNode.getLocalNode().getKey());
     // Connect the P2P messaging system to the Kademlia node
     this.networkChannel = channel;
-
-    // Enable this peer to export remote references
-    this.activator = new ActivatorImpl();
 
     // Allow peers to discover this node's RMI interfaces.
     RMIRequestHandler.exportNodeToChannel(this, networkChannel);
@@ -164,7 +156,7 @@ public final class KadLocalPeer implements LocalPeer {
     List<RemotePeer> peers = new ArrayList<>(count);
     for (il.technion.ewolf.kbr.Node kadNode : kadNodes) {
       try {
-        peers.add(this.importProxyTo(kadNode));
+        peers.add(importProxyTo(kadNode));
         if (peers.size() >= count) {
           break;
         }
@@ -180,21 +172,8 @@ public final class KadLocalPeer implements LocalPeer {
    * {@inheritDoc}
    */
   @Override
-  public Activator getActivator() {
-    return this.activator;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public PeerIdentifier getIdentifier() {
     return this.localIdentifier;
-  }
-
-  @Override
-  public RemotePeer getProxy() {
-    return this.activator.getReference(RemotePeer.class);
   }
 
   /**

@@ -1,9 +1,10 @@
 package edu.asu.ying.p2p.rmi;
 
+import com.google.inject.Inject;
+
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.p2p.Channel;
-import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.message.Message;
 import edu.asu.ying.p2p.message.MessageHandler;
@@ -14,22 +15,6 @@ import edu.asu.ying.p2p.message.ResponseMessage;
  * ResponseMessage} wrapping a {@link java.rmi.Remote} proxy to the server-side node.
  */
 public final class RMIRequestHandler implements MessageHandler {
-
-  /**
-   * Creates an {@link RMIRequestHandler} which provides instances of the {@link
-   * edu.asu.ying.p2p.RemotePeer} proxy to the {@link edu.asu.ying.p2p.LocalPeer} for access by
-   * remote peers.
-   *
-   * @param peer           the node to be made accessible to peers on the network.
-   * @param networkChannel the channel through which the node will be accessible.
-   * @return the new request handler.
-   */
-  public static RMIRequestHandler exportNodeToChannel(final LocalPeer peer,
-                                                      final Channel networkChannel)
-      throws ExportException {
-
-    return new RMIRequestHandler(peer, networkChannel);
-  }
 
   // The proxy instance to include in responses
   private final RemotePeer instance;
@@ -42,15 +27,13 @@ public final class RMIRequestHandler implements MessageHandler {
    * handler on the channel. </p> The {@link edu.asu.ying.p2p.RemotePeer} should have already been
    * bound on the local node's {@link Activator} via {@link Activator#bind}.
    */
-  private RMIRequestHandler(final LocalPeer localPeer, final Channel networkChannel)
-      throws ExportException {
+  @Inject
+  private RMIRequestHandler(RemotePeer peer, Channel networkChannel) throws ExportException {
 
     // Cache the RMI proxy instance for the peer so we can respond to requests with it
-    this.instance = localPeer.getActivator().bind(RemotePeer.class)
-        .to(localPeer)
-        .wrappedBy(new RemotePeerWrapperFactory());
+    this.instance = peer;
 
-    if (this.instance == null) {
+    if (instance == null) {
       throw new ExportException("Failed to export activator; this node will be unable to "
                                 + "participate in the network.");
     }
