@@ -26,7 +26,7 @@ public final class RemoteQueueExecutor extends QueueExecutor<Task> {
     Serializable result = null;
     try {
       //result = task.run();
-      System.out.println(String.format("[%s] Remote: %s", this.localNode.getId().toString(),
+      System.out.println(String.format("[%s] Remote: %s", this.localNode.getID().toString(),
                                        task.getId().toString()));
     } catch (final Exception e) {
       e.printStackTrace();

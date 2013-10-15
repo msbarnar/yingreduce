@@ -1,11 +1,20 @@
 package edu.asu.ying.wellington.daemon;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.LogManager;
+
+import edu.asu.ying.wellington.WellingtonModule;
+import edu.asu.ying.wellington.io.WritableChar;
+import edu.asu.ying.wellington.io.WritableInt;
+import edu.asu.ying.wellington.mapreduce.job.JobClient;
+import edu.asu.ying.wellington.mapreduce.job.JobConf;
 
 /**
  * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
@@ -36,10 +45,14 @@ public class Client {
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
   private void start() {
-    final Daemon[] instances = new Daemon[10];
+    final Daemon[] instances = new Daemon[3];
 
+    Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
-      instances[i] = new Daemon(5000 + i);
+      injector = Guice.createInjector(
+          new WellingtonModule().setProperty("p2p.port", Integer.toString(5000 + i)));
+
+      instances[i] = injector.getInstance(Daemon.class);
       if (i > 0) {
         instances[i].join(instances[i - 1]);
       }
@@ -76,6 +89,13 @@ public class Client {
         e.printStackTrace();
       }
     }
+
+    JobClient client = injector.getInstance(JobClient.class);
+    JobConf job = new JobConf();
+    job.setOutputKeyClass(WritableChar.class);
+    job.setOutputValueClass(WritableInt.class);
+
+    client.runJob(job);
 
     if (!fullyConnected) {
       /*LocalScheduler sched = null;

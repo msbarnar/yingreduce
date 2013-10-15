@@ -8,11 +8,14 @@ import com.google.inject.name.Names;
 import java.io.IOException;
 import java.util.Properties;
 
+import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.kad.KadLocalPeer;
 import edu.asu.ying.p2p.net.Channel;
 import edu.asu.ying.p2p.net.kad.KadChannel;
 import edu.asu.ying.wellington.dfs.DFSService;
+import edu.asu.ying.wellington.dfs.PageDistributor;
+import edu.asu.ying.wellington.dfs.client.PageDistributionSink;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
 import edu.asu.ying.wellington.mapreduce.job.JobScheduler;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
@@ -50,7 +53,7 @@ public final class WellingtonModule extends AbstractModule {
 
     KeybasedRouting keybasedRouting = null;
     try {
-      keybasedRouting = createKeybasedRouting(5000);
+      keybasedRouting = createKeybasedRouting(Integer.parseInt(properties.getProperty("p2p.port")));
     } catch (InstantiationException e) {
       throw new RuntimeException(e);
     }
@@ -64,6 +67,7 @@ public final class WellingtonModule extends AbstractModule {
     // Services
     bind(JobService.class).to(JobScheduler.class);
     bind(TaskService.class).to(TaskScheduler.class);
+    bind(Sink.class).annotatedWith(PageDistributor.class).to(PageDistributionSink.class);
     bind(DFSService.class).to(DFSServer.class);
   }
 

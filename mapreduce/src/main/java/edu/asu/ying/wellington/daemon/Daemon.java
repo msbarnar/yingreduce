@@ -1,5 +1,8 @@
 package edu.asu.ying.wellington.daemon;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import java.io.IOException;
 import java.net.URI;
 
@@ -11,54 +14,50 @@ import edu.asu.ying.wellington.daemon.web.RestInterface;
  */
 public final class Daemon {
 
+  private final LocalPeer peer;
   private final int port;
-  private LocalPeer localPeer;
 
   private final DaemonInterface iface;
 
-  public Daemon(final int port) {
+  @Inject
+  private Daemon(LocalPeer peer, @Named("p2p.port") int port) {
+    this.peer = peer;
     this.port = port;
-    try {
-      // FIXME: BROKEN FOR TESTING
-      this.localPeer = null;//new KadLocalPeer(port);
-      throw new InstantiationException();
-    } catch (final InstantiationException e) {
-      e.printStackTrace();
-    }
 
     this.iface = new RestInterface(port + 3000);
     try {
-      this.iface.startInterface();
+      iface.startInterface();
     } catch (final Exception e) {
       e.printStackTrace();
     }
   }
 
-  public final void join(final Daemon instance) {
+  public void join(Daemon instance) {
     try {
-      this.localPeer.join(
+      peer.join(
           URI.create("//127.0.0.1:".concat(String.valueOf(instance.getPort()))));
+      System.out.println(String.format("[%d] -> [%d]", port, instance.getPort()));
     } catch (final IOException e) {
       e.printStackTrace();
     }
   }
 
-  public final void join(final URI bootstrap) {
+  public void join(URI bootstrap) {
     try {
-      this.localPeer.join(bootstrap);
+      peer.join(bootstrap);
       // TODO: Logging
-      System.out.println(String.format("[%s] <-> [%s]", this.localPeer.getIdentifier(),
+      System.out.println(String.format("%s <-> %s", peer.getIdentifier(),
                                        bootstrap.toString()));
     } catch (final IOException e) {
       e.printStackTrace();
     }
   }
 
-  public final LocalPeer getLocalPeer() {
-    return this.localPeer;
+  public LocalPeer getPeer() {
+    return peer;
   }
 
-  public final int getPort() {
-    return this.port;
+  public int getPort() {
+    return port;
   }
 }

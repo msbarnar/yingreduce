@@ -80,7 +80,7 @@ public final class JobScheduler implements JobService {
 
   private boolean isResponsibleFor(Job job) {
     try {
-      return localNode.getId().equals(job.getResponsibleNode().getIdentifier());
+      return localNode.getID().equals(job.getResponsibleNode().getIdentifier());
     } catch (RemoteException e) {
       throw new RuntimeException("Remote node is unreachable", e);
     }

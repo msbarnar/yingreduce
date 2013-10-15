@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
+import com.google.inject.Inject;
+
 /**
  * {@code JobClient} is the local interface to the job service, facilitating the starting and
  * examining of jobs on the local system.
@@ -8,7 +10,8 @@ public final class JobClient {
 
   private final JobService service;
 
-  public JobClient(JobService service) {
+  @Inject
+  private JobClient(JobService service) {
     this.service = service;
   }
 

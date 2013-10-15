@@ -22,7 +22,7 @@ public final class LocalQueueExecutor extends QueueExecutor<Task> {
     try {
       //result = task.run();
       Thread.sleep(10);
-      System.out.println(String.format("[%s] Local: %s", localNode.getId().toString(),
+      System.out.println(String.format("[%s] Local: %s", localNode.getID().toString(),
                                        task.getId().toString()));
     } catch (final Exception e) {
       e.printStackTrace();

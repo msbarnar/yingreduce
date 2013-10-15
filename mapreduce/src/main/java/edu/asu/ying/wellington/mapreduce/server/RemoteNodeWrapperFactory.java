@@ -48,7 +48,7 @@ public final class RemoteNodeWrapperFactory implements WrapperFactory<NodeServer
 
     @Override
     public NodeIdentifier getIdentifier() throws RemoteException {
-      return localNode.getId();
+      return localNode.getID();
     }
 
     @Override

@@ -11,9 +11,6 @@ import java.util.List;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
-import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.mapreduce.job.JobService;
-import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  * {@code NodeServer} is the layer between the network and the mapreduce services. The server
@@ -29,21 +26,14 @@ public final class NodeServer implements LocalNode {
 
   // Service layer
   private final NodeIdentifier identifier;
-  private final JobService jobService;
-  private final TaskService taskService;
-  private final DFSService dfsService;
 
 
   @Inject
-  private NodeServer(LocalPeer localPeer, JobService jobService,
-                     TaskService taskService, DFSService dfsService) {
+  private NodeServer(LocalPeer localPeer) {
 
     this.localPeer = localPeer;
     // Use the same node identifier as the underlying P2P node
     this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
-    this.jobService = jobService;
-    this.taskService = taskService;
-    this.dfsService = dfsService;
 
     try {
       this.remoteNode = localPeer.getActivator()
@@ -54,14 +44,10 @@ public final class NodeServer implements LocalNode {
     } catch (ExportException e) {
       throw new RuntimeException("Failed to export remote node reference", e);
     }
-
-    jobService.start();
-    taskService.start();
-    dfsService.start();
   }
 
   @Override
-  public NodeIdentifier getId() {
+  public NodeIdentifier getID() {
     return identifier;
   }
 
@@ -101,20 +87,5 @@ public final class NodeServer implements LocalNode {
       }
     }
     return neighbors;
-  }
-
-  @Override
-  public JobService getJobService() {
-    return jobService;
-  }
-
-  @Override
-  public TaskService getTaskService() {
-    return taskService;
-  }
-
-  @Override
-  public DFSService getDFSService() {
-    return dfsService;
   }
 }
