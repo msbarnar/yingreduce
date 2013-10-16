@@ -3,6 +3,8 @@ package edu.asu.ying.wellington.dfs.client;
 import javax.inject.Inject;
 
 import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.wellington.dfs.Element;
+import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
 
@@ -24,7 +26,7 @@ public final class DFSClient {
   // FIXME: These aren't pulled from a registry,
   // so if someone gets one and writes three pages then gets another and writes four pages, the
   // first three will be overwritten/
-  ElementOutputStream getElementUploadStream(TableIdentifier table) {
+  Sink<Element> getElementUploadStream(TableIdentifier table) {
     return new PageBuilder(table, pageOutSink);
   }
 }

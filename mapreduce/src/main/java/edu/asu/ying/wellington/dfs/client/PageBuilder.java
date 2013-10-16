@@ -14,10 +14,10 @@ import edu.asu.ying.wellington.dfs.TableIdentifier;
  * PageDistributionSink}, which sends the pages to their associated nodes.
  */
 //FIXME: use bin packing
-public final class PageBuilder {
+public final class PageBuilder implements Sink<Element> {
 
   // TODO: Set page capacity with configuration
-  private static final int DEFAULT_PAGE_CAPACITY_BYTES = 200;
+  public static final int DEFAULT_PAGE_CAPACITY_BYTES = 200;
 
   // Uniquely identifies the table in the data store
   private final TableIdentifier id;
@@ -40,11 +40,24 @@ public final class PageBuilder {
    * Adds the element to the table, committing the current page and starting a new one if
    * necessary.
    */
-  public void add(Element element) throws IOException {
+  public boolean offer(Element element) throws IOException {
     if (!currentPage.offer(element)) {
       newPage();
-      add(element);
+      return offer(element);
     }
+    return true;
+  }
+
+  @Override
+  public int offer(Iterable<Element> elements) throws IOException {
+    int i = 0;
+    for (Element element : elements) {
+      if (!offer(element)) {
+        break;
+      }
+      i++;
+    }
+    return i;
   }
 
   /**

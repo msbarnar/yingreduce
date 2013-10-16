@@ -14,7 +14,7 @@ import java.util.Arrays;
 public final class WritableBytes implements WritableComparable<WritableBytes> {
 
   // The number of bytes prepended to the byte array
-  private static final int SIZE = 4;
+  public static final int SIZE = 4;
 
   private byte[] value = null;
 
