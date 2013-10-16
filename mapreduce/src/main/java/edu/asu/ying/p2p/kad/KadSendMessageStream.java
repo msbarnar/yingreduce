@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.PeerName;
 import edu.asu.ying.p2p.message.Message;
 import edu.asu.ying.p2p.message.MessageOutputStream;
 import il.technion.ewolf.kbr.Key;
@@ -26,13 +26,13 @@ import il.technion.ewolf.kbr.Node;
 final class KadSendMessageStream implements MessageOutputStream {
 
   private final KeybasedRouting kadNode;
-  // Sign outgoing messages with the sender peer identifier
-  private final PeerIdentifier localIdentifier;
+  // Sign outgoing messages with the sender peer name
+  private final PeerName peerName;
 
   KadSendMessageStream(KeybasedRouting kadNode) {
     this.kadNode = kadNode;
     // Sign outgoing messages with the local peer key
-    this.localIdentifier = new KadPeerIdentifier(kadNode.getLocalNode().getKey());
+    this.peerName = new KadPeerName(kadNode.getLocalNode().getKey());
   }
 
   /**
@@ -42,9 +42,9 @@ final class KadSendMessageStream implements MessageOutputStream {
    */
   @Override
   public void write(Message message) throws IOException {
-    message.setSender(localIdentifier);
+    message.setSender(peerName);
 
-    Key destKey = ((KadPeerIdentifier) message.getDestination()).toKademliaKey();
+    Key destKey = ((KadPeerName) message.getDestination()).toKademliaKey();
 
     List<Node> foundNodes = kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {
@@ -77,9 +77,9 @@ final class KadSendMessageStream implements MessageOutputStream {
 
   @Override
   public Future<Serializable> writeAsyncRequest(Message request) throws IOException {
-    request.setSender(this.localIdentifier);
+    request.setSender(this.peerName);
 
-    Key destKey = ((KadPeerIdentifier) request.getDestination()).toKademliaKey();
+    Key destKey = ((KadPeerName) request.getDestination()).toKademliaKey();
 
     List<Node> foundNodes = kadNode.findNode(destKey);
     if (foundNodes.size() == 0) {
@@ -93,7 +93,7 @@ final class KadSendMessageStream implements MessageOutputStream {
   @Override
   public Future<Serializable> writeAsyncRequest(Node node, Message request) throws IOException {
 
-    request.setSender(localIdentifier);
+    request.setSender(peerName);
     return kadNode.sendRequest(node, request.getTag(), request);
   }
 }

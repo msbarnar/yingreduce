@@ -33,8 +33,8 @@ public final class NodeExporter implements RemoteNode, Exporter<LocalNode, Remot
   }
 
   @Override
-  public NodeIdentifier getIdentifier() throws RemoteException {
-    return node.getID();
+  public String getName() throws RemoteException {
+    return node.getName();
   }
 
   @Override

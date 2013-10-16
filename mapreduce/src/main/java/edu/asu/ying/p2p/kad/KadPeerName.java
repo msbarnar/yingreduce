@@ -4,21 +4,21 @@ import com.google.common.base.Strings;
 
 import javax.annotation.Nonnull;
 
-import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.PeerName;
 import il.technion.ewolf.kbr.Key;
 
 /**
  *
  */
-public class KadPeerIdentifier implements PeerIdentifier {
+public class KadPeerName implements PeerName {
 
   protected final Key key;
 
-  public KadPeerIdentifier(final String key) {
+  public KadPeerName(final String key) {
     this.key = new Key(key);
   }
 
-  public KadPeerIdentifier(final Key key) {
+  public KadPeerName(final Key key) {
     this.key = key;
   }
 
@@ -50,11 +50,11 @@ public class KadPeerIdentifier implements PeerIdentifier {
       return true;
     }
 
-    if (!(o instanceof KadPeerIdentifier)) {
+    if (!(o instanceof KadPeerName)) {
       return false;
     }
 
-    final KadPeerIdentifier id = (KadPeerIdentifier) o;
+    final KadPeerName id = (KadPeerName) o;
     return id.toKademliaKey().equals(this.key);
   }
 

@@ -2,7 +2,7 @@ package edu.asu.ying.p2p.message;
 
 import java.io.Serializable;
 
-import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.PeerName;
 
 
 /**
@@ -20,9 +20,9 @@ public interface Message
 
   String getTag();
 
-  PeerIdentifier getSender();
+  PeerName getSender();
 
-  void setSender(PeerIdentifier peerId);
+  void setSender(PeerName peerId);
 
-  PeerIdentifier getDestination();
+  PeerName getDestination();
 }

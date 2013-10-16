@@ -1,6 +1,6 @@
 package edu.asu.ying.p2p.message;
 
-import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.PeerName;
 
 /**
  *
@@ -15,12 +15,12 @@ public class RequestMessage extends MessageBase {
     super(id, tag);
   }
 
-  public RequestMessage(String tag, PeerIdentifier destinationNode) {
+  public RequestMessage(String tag, PeerName destinationNode) {
     super(tag, destinationNode);
   }
 
   public RequestMessage(String id, String tag,
-                        PeerIdentifier destinationNode) {
+                        PeerName destinationNode) {
 
     super(id, tag, destinationNode);
   }

@@ -7,5 +7,5 @@ import edu.asu.ying.common.remoting.Exported;
  */
 public interface LocalNode extends Exported<RemoteNode> {
 
-  NodeIdentifier getID();
+  String getName();
 }

@@ -26,7 +26,7 @@ public final class NodeImpl implements LocalNode, NodeLocator {
   private final LocalPeer localPeer;
 
   // Derived from network
-  private final NodeIdentifier identifier;
+  private final String name;
 
 
   @Inject
@@ -37,8 +37,8 @@ public final class NodeImpl implements LocalNode, NodeLocator {
                    DFSService dfsService) {
 
     this.localPeer = localPeer;
-    // Use the same node identifier as the underlying P2P node
-    this.identifier = NodeIdentifier.forString(localPeer.getIdentifier().toString());
+    // Use the same node name as the underlying P2P node
+    this.name = localPeer.getName().toString();
 
     try {
       this.proxy = exporter.export(this);
@@ -52,19 +52,19 @@ public final class NodeImpl implements LocalNode, NodeLocator {
   }
 
   @Override
-  public NodeIdentifier getID() {
-    return identifier;
+  public String getName() {
+    return name;
   }
 
   @Override
-  public RemoteNode find(String searchKey) throws IOException {
-    return localPeer.findPeer(searchKey).getReference(RemoteNode.class);
+  public RemoteNode find(String name) throws IOException {
+    return localPeer.findPeer(name).getReference(RemoteNode.class);
   }
 
   @Override
-  public List<RemoteNode> find(String searchKey, int count) throws IOException {
+  public List<RemoteNode> find(String name, int count) throws IOException {
     List<RemoteNode> nodes = new ArrayList<>();
-    for (RemotePeer peer : localPeer.findPeers(searchKey, count)) {
+    for (RemotePeer peer : localPeer.findPeers(name, count)) {
       try {
         nodes.add(peer.getReference(RemoteNode.class));
       } catch (RemoteException e) {

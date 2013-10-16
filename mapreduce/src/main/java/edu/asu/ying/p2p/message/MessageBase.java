@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.PeerName;
 
 
 /**
@@ -25,8 +25,8 @@ public abstract class MessageBase
 
   protected String id;
   protected String tag;
-  protected PeerIdentifier destination;
-  protected PeerIdentifier sender;
+  protected PeerName destination;
+  protected PeerName sender;
   protected Throwable exception;
 
   /**
@@ -42,12 +42,12 @@ public abstract class MessageBase
     this.setTag(tag);
   }
 
-  public MessageBase(final String tag, final PeerIdentifier destination) {
+  public MessageBase(final String tag, final PeerName destination) {
     this.setTag(tag);
     this.setDestination(destination);
   }
 
-  public MessageBase(final String id, final String tag, final PeerIdentifier destination) {
+  public MessageBase(final String id, final String tag, final PeerName destination) {
     this.setId(id);
     this.setTag(tag);
     this.setDestination(destination);
@@ -87,20 +87,20 @@ public abstract class MessageBase
     this.tag = Preconditions.checkNotNull(Strings.emptyToNull(tag));
   }
 
-  public final void setSender(final PeerIdentifier sender) {
+  public final void setSender(final PeerName sender) {
     this.sender = Preconditions.checkNotNull(sender);
   }
 
   @Override
-  public final PeerIdentifier getSender() {
+  public final PeerName getSender() {
     return this.sender;
   }
 
-  public final void setDestination(final PeerIdentifier destination) {
+  public final void setDestination(final PeerName destination) {
     this.destination = Preconditions.checkNotNull(destination);
   }
 
-  public final PeerIdentifier getDestination() {
+  public final PeerName getDestination() {
     return this.destination;
   }
 

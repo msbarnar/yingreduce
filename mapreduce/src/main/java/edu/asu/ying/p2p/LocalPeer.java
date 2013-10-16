@@ -13,9 +13,9 @@ import edu.asu.ying.common.remoting.RemoteImportException;
 public interface LocalPeer {
 
   /**
-   * Gets the unique network identifier for this peer.
+   * Gets the unique network name for this peer.
    */
-  PeerIdentifier getIdentifier();
+  PeerName getName();
 
   /**
    * Connects this peer to an existing network of peers via the address of a peer in the network.
@@ -34,17 +34,17 @@ public interface LocalPeer {
    *
    * @return a public, network accessible, reference to the remote peer.
    */
-  RemotePeer findPeer(PeerIdentifier identifier) throws PeerNotFoundException,
-                                                        RemoteImportException;
+  RemotePeer findPeer(PeerName name) throws PeerNotFoundException,
+                                            RemoteImportException;
 
-  RemotePeer findPeer(String identifier) throws PeerNotFoundException, RemoteImportException;
+  RemotePeer findPeer(String name) throws PeerNotFoundException, RemoteImportException;
 
   /**
-   * Finds up to {@code count} peers near {@code identifier} and imports references to them. If any
+   * Finds up to {@code count} peers near {@code name} and imports references to them. If any
    * reference imports fail with {@link RemoteImportException}, they are quietly excluded from the
    * list.
    */
-  List<RemotePeer> findPeers(PeerIdentifier identifier, int count);
+  List<RemotePeer> findPeers(PeerName name, int count);
 
-  List<RemotePeer> findPeers(String identifier, int count);
+  List<RemotePeer> findPeers(String name, int count);
 }

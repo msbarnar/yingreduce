@@ -52,7 +52,7 @@ public final class Daemon {
     try {
       peer.join(bootstrap);
       // TODO: Logging
-      System.out.println(String.format("%s <-> %s", peer.getIdentifier(),
+      System.out.println(String.format("%s <-> %s", peer.getName(),
                                        bootstrap.toString()));
     } catch (final IOException e) {
       e.printStackTrace();

@@ -11,7 +11,6 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.JobServiceExporter;
-import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
@@ -24,14 +23,14 @@ public final class JobScheduler implements JobService {
 
   private final RemoteJobService proxy;
 
-  private final Provider<NodeIdentifier> localNodeIDProvider;
+  private final Provider<String> localNodeIDProvider;
   private final NodeLocator nodeLocator;
 
   private final QueueExecutor<Job> jobDelegator;
 
   @Inject
   private JobScheduler(JobServiceExporter exporter,
-                       @Local Provider<NodeIdentifier> localNodeIDProvider,
+                       @Local Provider<String> localNodeIDProvider,
                        NodeLocator nodeLocator,
                        @Jobs QueueExecutor<Job> jobDelegator) {
 
@@ -103,7 +102,7 @@ public final class JobScheduler implements JobService {
     try {
       RemoteNode responsibleNode = job.getResponsibleNode();
       return responsibleNode != null
-             && localNodeIDProvider.get().equals(responsibleNode.getIdentifier());
+             && localNodeIDProvider.get().equals(responsibleNode.getName());
     } catch (RemoteException e) {
       throw new RuntimeException("Remote node is unreachable", e);
     }

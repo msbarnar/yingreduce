@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.PeerName;
 
 /**
  *
@@ -19,7 +19,7 @@ public class ResponseMessage extends MessageBase {
     return new ResponseMessage(request.getId(), request.getTag(), request.getSender());
   }
 
-  private ResponseMessage(final String id, final String tag, final PeerIdentifier destination) {
+  private ResponseMessage(final String id, final String tag, final PeerName destination) {
     super(id, tag, destination);
   }
 

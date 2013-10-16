@@ -10,7 +10,7 @@ import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
  */
 public interface RemoteNode extends Activatable {
 
-  NodeIdentifier getIdentifier() throws RemoteException;
+  String getName() throws RemoteException;
 
   RemoteJobService getJobService() throws RemoteException;
 

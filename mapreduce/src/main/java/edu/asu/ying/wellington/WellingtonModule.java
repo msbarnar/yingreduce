@@ -25,7 +25,6 @@ import edu.asu.ying.wellington.mapreduce.job.JobScheduler;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
 import edu.asu.ying.wellington.mapreduce.job.Jobs;
 import edu.asu.ying.wellington.mapreduce.server.LocalNode;
-import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeImpl;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
@@ -146,8 +145,8 @@ public final class WellingtonModule extends AbstractModule {
 
   @Provides
   @Local
-  private NodeIdentifier provideLocalNodeID(LocalNode localNode) {
-    return localNode.getID();
+  private String provideLocalNodeID(LocalNode localNode) {
+    return localNode.getName();
   }
 
   private Properties getDefaultProperties() {

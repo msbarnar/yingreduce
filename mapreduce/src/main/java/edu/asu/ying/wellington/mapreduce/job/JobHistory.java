@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
-
 /**
  *
  */
@@ -13,8 +11,8 @@ public final class JobHistory implements Serializable {
 
   private final List<Entry> history = new LinkedList<>();
 
-  public void visitedBy(NodeIdentifier nodeID) {
-    this.history.add(new Entry(nodeID));
+  public void visitedBy(String nodeName) {
+    this.history.add(new Entry(nodeName));
   }
 
   public Entry getCurrent() {
@@ -25,15 +23,15 @@ public final class JobHistory implements Serializable {
 
     private static final long SerialVersionUID = 1L;
 
-    private final NodeIdentifier nodeID;
+    private final String nodeName;
     private Action nodeAction;
 
-    private Entry(NodeIdentifier nodeID) {
-      this.nodeID = nodeID;
+    private Entry(String nodeName) {
+      this.nodeName = nodeName;
     }
 
-    public NodeIdentifier getNodeID() {
-      return this.nodeID;
+    public String getNodeID() {
+      return this.nodeName;
     }
 
     public void setAction(Action action) {

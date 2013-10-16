@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import edu.asu.ying.common.filter.Filter;
 import edu.asu.ying.common.filter.FilterBase;
 import edu.asu.ying.common.filter.FilterString;
-import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.PeerName;
 
 
 /**
@@ -123,7 +123,7 @@ public abstract class FilterMessage
 
       @Override
       protected boolean match(final Message message) {
-        final PeerIdentifier uri;
+        final PeerName uri;
         if (this.which == WhichUri.Destination) {
           uri = message.getDestination();
         } else if (this.which == WhichUri.Source) {

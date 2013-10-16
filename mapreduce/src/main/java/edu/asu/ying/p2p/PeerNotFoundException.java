@@ -8,12 +8,12 @@ import java.rmi.RemoteException;
  */
 public class PeerNotFoundException extends RemoteException {
 
-  public PeerNotFoundException(String identifier) {
-    super(identifier);
+  public PeerNotFoundException(String name) {
+    super(name);
   }
 
-  public PeerNotFoundException(PeerIdentifier identifier) {
-    this(identifier.toString());
+  public PeerNotFoundException(PeerName name) {
+    this(name.toString());
   }
 
   public PeerNotFoundException(URI uri) {

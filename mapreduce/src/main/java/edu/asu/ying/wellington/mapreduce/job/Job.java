@@ -59,8 +59,8 @@ public final class Job implements Serializable {
     return this.tableID;
   }
 
-  public void setResponsibleNode(RemoteNode nodeID) {
-    this.responsibleNode = nodeID;
+  public void setResponsibleNode(RemoteNode node) {
+    this.responsibleNode = node;
   }
 
   public RemoteNode getResponsibleNode() {

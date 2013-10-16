@@ -8,9 +8,9 @@ import java.util.List;
  */
 public interface NodeLocator {
 
-  RemoteNode find(String searchKey) throws IOException;
+  RemoteNode find(String name) throws IOException;
 
-  List<RemoteNode> find(String searchKey, int count) throws IOException;
+  List<RemoteNode> find(String name, int count) throws IOException;
 
   List<RemoteNode> neighbors();
 }

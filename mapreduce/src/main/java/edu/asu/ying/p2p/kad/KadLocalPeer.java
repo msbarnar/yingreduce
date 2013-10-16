@@ -21,7 +21,7 @@ import edu.asu.ying.common.remoting.RemoteImportException;
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.InvalidContentException;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.PeerIdentifier;
+import edu.asu.ying.p2p.PeerName;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.RemotePeerRequestHandler;
@@ -41,7 +41,7 @@ public final class KadLocalPeer implements LocalPeer {
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
-  private final PeerIdentifier localIdentifier;
+  private final PeerName localIdentifier;
 
   // Pipe to the kad network
   private final Channel networkChannel;
@@ -61,7 +61,7 @@ public final class KadLocalPeer implements LocalPeer {
     // Identify this peer on the network
     // FIXME: SEVERE: The key is chosen using the local interface address which is always localhost
     this.localIdentifier =
-        new KadPeerIdentifier(this.kbrNode.getLocalNode().getKey());
+        new KadPeerName(this.kbrNode.getLocalNode().getKey());
     // Connect the P2P messaging system to the Kademlia node
     this.networkChannel = channel;
   }
@@ -119,20 +119,20 @@ public final class KadLocalPeer implements LocalPeer {
    * {@inheritDoc}
    */
   @Override
-  public RemotePeer findPeer(PeerIdentifier identifier)
+  public RemotePeer findPeer(PeerName name)
       throws PeerNotFoundException, RemoteImportException {
 
-    return this.findPeer(identifier.toString());
+    return this.findPeer(name.toString());
   }
 
   @Override
-  public RemotePeer findPeer(String identifier)
+  public RemotePeer findPeer(String name)
       throws PeerNotFoundException, RemoteImportException {
 
-    Key key = this.kbrNode.getKeyFactory().create(identifier);
+    Key key = this.kbrNode.getKeyFactory().create(name);
     List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
-      throw new PeerNotFoundException(identifier);
+      throw new PeerNotFoundException(name);
     }
     return this.importProxyTo(kadNodes.get(0));
   }
@@ -141,13 +141,13 @@ public final class KadLocalPeer implements LocalPeer {
    * {@inheritDoc}
    */
   @Override
-  public List<RemotePeer> findPeers(PeerIdentifier identifier, int count) {
-    return this.findPeers(identifier.toString(), count);
+  public List<RemotePeer> findPeers(PeerName name, int count) {
+    return this.findPeers(name.toString(), count);
   }
 
   @Override
-  public List<RemotePeer> findPeers(String identifier, int count) {
-    Key key = this.kbrNode.getKeyFactory().create(identifier);
+  public List<RemotePeer> findPeers(String name, int count) {
+    Key key = this.kbrNode.getKeyFactory().create(name);
     List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
       return Collections.emptyList();
@@ -171,7 +171,7 @@ public final class KadLocalPeer implements LocalPeer {
    * {@inheritDoc}
    */
   @Override
-  public PeerIdentifier getIdentifier() {
+  public PeerName getName() {
     return this.localIdentifier;
   }
 
