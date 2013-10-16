@@ -18,6 +18,7 @@ import java.nio.file.Path;
 
 import edu.asu.ying.wellington.AbstractIdentifier;
 import edu.asu.ying.wellington.dfs.NameProvider;
+import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 
 /**

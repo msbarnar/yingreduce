@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
 

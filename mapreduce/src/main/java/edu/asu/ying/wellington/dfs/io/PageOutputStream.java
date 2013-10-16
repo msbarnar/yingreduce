@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import edu.asu.ying.wellington.dfs.SerializedElement;
+import edu.asu.ying.wellington.dfs.SerializedPage;
 
 /**
  *
@@ -17,7 +18,7 @@ public class PageOutputStream extends OutputStream {
     this.stream = stream;
   }
 
-  public void write(Page p) throws IOException {
+  public void write(SerializedPage p) throws IOException {
     new PageHeader(p).writeTo(stream);
     writeIndex(p);
 
@@ -30,7 +31,7 @@ public class PageOutputStream extends OutputStream {
   /**
    * Writes the offset from the end of the index of each key after the first.
    */
-  private void writeIndex(Page p) throws IOException {
+  private void writeIndex(SerializedPage p) throws IOException {
     DataOutputStream output = new DataOutputStream(this);
     // Don't write index of first key, since that's always 0
     for (SerializedElement element : p) {
