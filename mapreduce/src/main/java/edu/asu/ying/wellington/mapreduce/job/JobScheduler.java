@@ -1,6 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -23,18 +24,18 @@ public final class JobScheduler implements JobService {
 
   private final RemoteJobService proxy;
 
-  private final NodeIdentifier localNodeID;
+  private final Provider<NodeIdentifier> localNodeIDProvider;
   private final NodeLocator nodeLocator;
 
   private final QueueExecutor<Job> jobDelegator;
 
   @Inject
   private JobScheduler(JobServiceExporter exporter,
-                       @Local NodeIdentifier localNodeID,
+                       @Local Provider<NodeIdentifier> localNodeIDProvider,
                        NodeLocator nodeLocator,
                        @Jobs QueueExecutor<Job> jobDelegator) {
 
-    this.localNodeID = localNodeID;
+    this.localNodeIDProvider = localNodeIDProvider;
     this.nodeLocator = nodeLocator;
     this.jobDelegator = jobDelegator;
 
@@ -43,6 +44,9 @@ public final class JobScheduler implements JobService {
     } catch (ExportException e) {
       throw new RuntimeException(e);
     }
+
+    // Starting threads in the constructor, but there's nowhere else to start them
+    start();
   }
 
   @Override
@@ -57,7 +61,7 @@ public final class JobScheduler implements JobService {
   @Override
   public void accept(Job job) throws JobException {
     // Add ourselves to the job's history
-    job.getHistory().visitedBy(localNodeID);
+    job.getHistory().visitedBy(localNodeIDProvider.get());
     // If we are the responsible node for the job then accept it
     if (isResponsibleFor(job)) {
       queue(job);
@@ -98,7 +102,8 @@ public final class JobScheduler implements JobService {
   private boolean isResponsibleFor(Job job) {
     try {
       RemoteNode responsibleNode = job.getResponsibleNode();
-      return responsibleNode != null && localNodeID.equals(responsibleNode.getIdentifier());
+      return responsibleNode != null
+             && localNodeIDProvider.get().equals(responsibleNode.getIdentifier());
     } catch (RemoteException e) {
       throw new RuntimeException("Remote node is unreachable", e);
     }

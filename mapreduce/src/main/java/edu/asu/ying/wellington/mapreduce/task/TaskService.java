@@ -10,4 +10,6 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 public interface TaskService extends Service, Exported<RemoteTaskService> {
 
   void accept(Task task) throws TaskException;
+
+  int getBackpressure();
 }

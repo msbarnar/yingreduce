@@ -18,6 +18,7 @@ import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.client.PageDistributionSink;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
+import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.job.JobDelegator;
 import edu.asu.ying.wellington.mapreduce.job.JobScheduler;
@@ -27,7 +28,9 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 import edu.asu.ying.wellington.mapreduce.server.NodeIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.NodeImpl;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
+import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
+import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.wellington.mapreduce.task.Forwarding;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskScheduler;
@@ -76,8 +79,9 @@ public final class WellingtonModule extends AbstractModule {
   }
 
   private void configureServiceNetwork() {
-    bind(LocalNode.class).to(NodeImpl.class).in(Scopes.SINGLETON);
-    bind(NodeLocator.class).to(NodeImpl.class).in(Scopes.SINGLETON);
+    bind(NodeImpl.class).in(Scopes.SINGLETON);
+    bind(LocalNode.class).to(NodeImpl.class);
+    bind(NodeLocator.class).to(NodeImpl.class);
   }
 
   private void configureJobService() {
@@ -120,6 +124,24 @@ public final class WellingtonModule extends AbstractModule {
   @Local
   private RemoteNode provideLoopbackProxy(Activator activator) throws ClassNotExportedException {
     return activator.getReference(RemoteNode.class);
+  }
+
+  @Provides
+  private RemoteJobService provideJobServiceProxy(Activator activator)
+      throws ClassNotExportedException {
+    return activator.getReference(RemoteJobService.class);
+  }
+
+  @Provides
+  private RemoteTaskService provideTaskServiceProxy(Activator activator)
+      throws ClassNotExportedException {
+    return activator.getReference(RemoteTaskService.class);
+  }
+
+  @Provides
+  private RemoteDFSService provideDFSServiceProxy(Activator activator)
+      throws ClassNotExportedException {
+    return activator.getReference(RemoteDFSService.class);
   }
 
   @Provides

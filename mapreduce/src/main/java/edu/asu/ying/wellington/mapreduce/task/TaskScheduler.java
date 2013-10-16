@@ -3,16 +3,15 @@ package edu.asu.ying.wellington.mapreduce.task;
 import com.google.inject.Inject;
 
 import java.rmi.server.ExportException;
+import java.util.Random;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.common.remoting.Local;
+import edu.asu.ying.common.remoting.Remote;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
-import edu.asu.ying.wellington.dfs.TableNotFoundException;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.wellington.mapreduce.server.TaskServiceExporter;
-import edu.asu.ying.wellington.mapreduce.task.execution.ForwardingQueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.execution.LocalQueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.execution.RemoteQueueExecutor;
 
 /**
  *
@@ -32,9 +31,9 @@ public class TaskScheduler implements TaskService {
   @Inject
   private TaskScheduler(TaskServiceExporter exporter,
                         DFSService dfsService,
-                        ForwardingQueueExecutor forwardingQueue,
-                        LocalQueueExecutor localQueue,
-                        RemoteQueueExecutor remoteQueue) {
+                        @Forwarding QueueExecutor<Task> forwardingQueue,
+                        @Local QueueExecutor<Task> localQueue,
+                        @Remote QueueExecutor<Task> remoteQueue) {
 
     this.dfsService = dfsService;
 
@@ -47,6 +46,9 @@ public class TaskScheduler implements TaskService {
     } catch (ExportException e) {
       throw new RuntimeException(e);
     }
+
+    // Starting threads in the constructor, but there's nowhere else to start them
+    start();
   }
 
   /**
@@ -68,6 +70,16 @@ public class TaskScheduler implements TaskService {
     } else {
       queueForward(task);
     }
+  }
+
+  @Override
+  public int getBackpressure() {
+    return forwardingQueue.size();
+  }
+
+  @Override
+  public RemoteTaskService asRemote() {
+    return proxy;
   }
 
   private void queueLocal(Task task) throws TaskSchedulingException {
@@ -93,15 +105,11 @@ public class TaskScheduler implements TaskService {
    */
   private boolean isInitialNodeFor(Task task) {
     PageIdentifier pageId = task.getTargetPageID();
-    try {
+    /*try {
       return dfsService.getTable(pageId.getTableID()).hasPage(pageId.getIndex());
     } catch (TableNotFoundException e) {
       return false;
-    }
-  }
-
-  @Override
-  public RemoteTaskService asRemote() {
-    return proxy;
+    }*/
+    return (new Random()).nextDouble() > 0.5;
   }
 }

@@ -8,6 +8,7 @@ import java.net.URI;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.wellington.daemon.web.RestInterface;
+import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**
  *
@@ -15,13 +16,18 @@ import edu.asu.ying.wellington.daemon.web.RestInterface;
 public final class Daemon {
 
   private final LocalPeer peer;
+  private final LocalNode node;
   private final int port;
 
   private final DaemonInterface iface;
 
   @Inject
-  private Daemon(LocalPeer peer, @Named("p2p.port") int port) {
+  private Daemon(LocalPeer peer,
+                 LocalNode node,
+                 @Named("p2p.port") int port) {
+
     this.peer = peer;
+    this.node = node;
     this.port = port;
 
     this.iface = new RestInterface(port + 3000);

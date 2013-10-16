@@ -19,14 +19,15 @@ public final class RemoteQueueExecutor extends QueueExecutor<Task> {
 
   @Override
   protected void process(Task task) {
+    // TODO: Fetch data from peer
     try {
-      Thread.sleep(100 + (new Random()).nextInt(100));
+      Thread.sleep(500 + (new Random()).nextInt(500));
     } catch (InterruptedException e) {
     }
     Serializable result = null;
     try {
       //result = task.run();
-      System.out.println(String.format("[%s] Remote: %s", task.getId().toString()));
+      System.out.println("Remote");
     } catch (final Exception e) {
       e.printStackTrace();
       result = e;

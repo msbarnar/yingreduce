@@ -34,7 +34,7 @@ public final class TaskServiceExporter
 
   @Override
   public int getBackpressure() throws RemoteException {
-    return 0;
+    return service.getBackpressure();
   }
 
   @Override

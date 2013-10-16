@@ -1,6 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -20,16 +21,16 @@ import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 public final class JobDelegator extends QueueExecutor<Job> {
 
-  private final RemoteNode localRemoteProxy;
+  private final Provider<RemoteNode> loopbackProxyProvider;
   private final NodeLocator nodeLocator;
   private final TaskService taskService;
 
   @Inject
-  private JobDelegator(@Local RemoteNode loopbackProxy,
+  private JobDelegator(@Local Provider<RemoteNode> loopbackProxyProvider,
                        NodeLocator nodeLocator,
                        TaskService taskService) {
 
-    this.localRemoteProxy = loopbackProxy;
+    this.loopbackProxyProvider = loopbackProxyProvider;
     this.nodeLocator = nodeLocator;
     this.taskService = taskService;
   }
@@ -43,12 +44,13 @@ public final class JobDelegator extends QueueExecutor<Job> {
     // Since we're at the responsible node, this is also the initial node for task 0.
     // We'll forward this separately, skipping RMI
     Task loopbackTask = null;
+    RemoteNode loopbackProxy = loopbackProxyProvider.get();
 
     // TODO: split job based on number of pages in table
     final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
     for (int i = 0; i < 40; i++) {
       // Pass the responsible node as a remote proxy so other peers can access it
-      final LetterFreqTask task = new LetterFreqTask(job, localRemoteProxy, i);
+      final LetterFreqTask task = new LetterFreqTask(job, loopbackProxy, i);
       // Jobs are delegated at the responsible node, defined as the node bearing the first page of
       // data. We know we are already at T0's initial node, then.
       // Save a little overhead by routing the first task locally instead of through RMI
@@ -64,7 +66,7 @@ public final class JobDelegator extends QueueExecutor<Job> {
 
     // Now that the number of tasks is known for the job, start with the loopback task
     if (loopbackTask != null) {
-      loopbackTask.setInitialNode(localRemoteProxy);
+      loopbackTask.setInitialNode(loopbackProxy);
       try {
         taskService.accept(loopbackTask);
       } catch (TaskException e) {

@@ -10,6 +10,9 @@ import java.util.List;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.RemotePeer;
+import edu.asu.ying.wellington.dfs.DFSService;
+import edu.asu.ying.wellington.mapreduce.job.JobService;
+import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  * {@code NodeImpl} forms a network of mapreduce services overlayed on the P2P network. The network
@@ -28,7 +31,10 @@ public final class NodeImpl implements LocalNode, NodeLocator {
 
   @Inject
   private NodeImpl(LocalPeer localPeer,
-                   NodeExporter exporter) {
+                   NodeExporter exporter,
+                   JobService jobService,
+                   TaskService taskService,
+                   DFSService dfsService) {
 
     this.localPeer = localPeer;
     // Use the same node identifier as the underlying P2P node
@@ -39,6 +45,10 @@ public final class NodeImpl implements LocalNode, NodeLocator {
     } catch (ExportException e) {
       throw new RuntimeException(e);
     }
+
+    jobService.start();
+    taskService.start();
+    dfsService.start();
   }
 
   @Override

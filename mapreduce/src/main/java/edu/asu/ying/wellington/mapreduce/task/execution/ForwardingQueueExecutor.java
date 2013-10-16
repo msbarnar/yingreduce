@@ -6,11 +6,11 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.common.remoting.Remote;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.wellington.mapreduce.task.Task;
-import edu.asu.ying.wellington.mapreduce.task.TaskException;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
@@ -28,7 +28,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
   @Inject
   private ForwardingQueueExecutor(NodeLocator locator,
                                   TaskService taskService,
-                                  RemoteQueueExecutor remoteQueue) {
+                                  @Remote QueueExecutor<Task> remoteQueue) {
     this.locator = locator;
     this.taskService = taskService;
     this.remoteQueue = remoteQueue;
@@ -46,7 +46,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
     // Default to forwarding to the local remote queue
     // QFn -> QRn
     // If still null, then ours is the best scheduler to forward to
-    RemoteTaskService bestScheduler = null;
+    RemoteTaskService bestNeighbor = null;
     int maximumBackpressure = size() - remoteQueue.size();
 
     // Unless one of our neighbors has a lower backpressure
@@ -58,7 +58,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
         int remoteBackpressure = size() - remoteScheduler.getBackpressure();
         if (remoteBackpressure > maximumBackpressure) {
           maximumBackpressure = remoteBackpressure;
-          bestScheduler = remoteScheduler;
+          bestNeighbor = remoteScheduler;
         }
       } catch (RemoteException e) {
         // TODO: Logging
@@ -66,31 +66,26 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
       }
     }
 
-    if (bestScheduler == null) {
+    // We are the best queue to be in
+    if (bestNeighbor == null) {
+      // If this forwarding queue is the shortest, put the task back on the queue.
+      // QFn -> QFn
+      if (maximumBackpressure < 0) {
+        offer(task);
+      } else {
+        // Put the task in the remote queue
+        if (!remoteQueue.offer(task)) {
+          offer(task);
+        }
+      }
+    } else {
+      // Forward the task to the remote node
       try {
-        System.out.println("-> self");
-        taskService.accept(task);
-      } catch (TaskException e) {
+        bestNeighbor.accept(task);
+      } catch (RemoteException e) {
         // TODO: Logging
         e.printStackTrace();
       }
-      return;
-    }
-
-    // If this forwarding queue is the shortest, put the task back on the queue.
-    // QFn -> QFn
-    if (maximumBackpressure < 0) {
-      offer(task);
-      return;
-    }
-
-    try {
-      // Forward the task to the remote node
-      System.out.println("->".concat(bestScheduler.toString()));
-      bestScheduler.accept(task);
-    } catch (RemoteException e) {
-      // TODO: Logging
-      e.printStackTrace();
     }
   }
 }

@@ -1,40 +1,35 @@
 package edu.asu.ying.wellington.mapreduce.server;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
-import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
-import edu.asu.ying.wellington.mapreduce.job.JobService;
-import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 public final class NodeExporter implements RemoteNode, Exporter<LocalNode, RemoteNode> {
 
   private final Activator activator;
   private LocalNode node;
-  private final JobService jobService;
-  private final TaskService taskService;
-  private final DFSService dfsService;
+  private final Provider<RemoteJobService> jobServiceProvider;
+  private final Provider<RemoteTaskService> taskServiceProvider;
+  private final Provider<RemoteDFSService> dfsServiceProvider;
 
   @Inject
   private NodeExporter(Activator activator,
-                       JobService jobService,
-                       TaskService taskService,
-                       DFSService dfsService) {
-
-    this.activator = activator;
-
+                       Provider<RemoteJobService> jobServiceProvider,
+                       Provider<RemoteTaskService> taskServiceProvider,
+                       Provider<RemoteDFSService> dfsServiceProvider) {
     // Don't just depend on the Remote* types, because they won't have been exported
     // by the time we get here so we won't have any way of getting the exported proxies.
-    // Instead get them lazily from the services themselves, whose creation guarantees that the
-    // proxies are exported.
-    this.jobService = jobService;
-    this.taskService = taskService;
-    this.dfsService = dfsService;
+    // Instead get them lazily from the activator.
+    this.activator = activator;
+    this.jobServiceProvider = jobServiceProvider;
+    this.taskServiceProvider = taskServiceProvider;
+    this.dfsServiceProvider = dfsServiceProvider;
   }
 
   @Override
@@ -44,17 +39,17 @@ public final class NodeExporter implements RemoteNode, Exporter<LocalNode, Remot
 
   @Override
   public RemoteJobService getJobService() throws RemoteException {
-    return jobService.asRemote();
+    return jobServiceProvider.get();
   }
 
   @Override
   public RemoteTaskService getTaskService() throws RemoteException {
-    return taskService.asRemote();
+    return taskServiceProvider.get();
   }
 
   @Override
   public RemoteDFSService getDFSService() throws RemoteException {
-    return dfsService.asRemote();
+    return dfsServiceProvider.get();
   }
 
   @Override
