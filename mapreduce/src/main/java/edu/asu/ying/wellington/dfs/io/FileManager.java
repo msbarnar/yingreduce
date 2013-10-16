@@ -1,10 +1,10 @@
 package edu.asu.ying.wellington.dfs.io;
 
 import com.google.common.base.Charsets;
-import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -15,9 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import edu.asu.ying.wellington.AbstractIdentifier;
-import edu.asu.ying.wellington.dfs.NameProvider;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 
@@ -31,8 +31,8 @@ public final class FileManager {
   private final Path root;
 
   @Inject
-  private FileManager(NameProvider names) {
-    this.root = names.getRootPath();
+  private FileManager(@Named("dfs.store.path") String rootPath) {
+    this.root = Paths.get(rootPath);
   }
 
   public PageOutputStream createNew(Page page) throws IOException {
@@ -65,8 +65,7 @@ public final class FileManager {
   }*/
 
   private String makePathString(AbstractIdentifier identifier) {
-    HashCode hash = hasher.hashString(identifier.toString(), Charsets.UTF_8);
-    return hash.toString();
+    return hasher.hashString(identifier.toString(), Charsets.UTF_8).toString();
   }
 
   private void checkMkdir(Path path) throws IOException {
