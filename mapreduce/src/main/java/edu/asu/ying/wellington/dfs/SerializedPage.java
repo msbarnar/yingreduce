@@ -1,15 +1,14 @@
 package edu.asu.ying.wellington.dfs;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
  * would exceed that capacity.
  */
-public final class BoundedPage implements Page {
+public final class SerializedPage implements Page, Iterable<SerializedElement> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -21,7 +20,7 @@ public final class BoundedPage implements Page {
   // Keep track of the sum length of the contents.
   private int curSizeBytes = 0;
 
-  public BoundedPage(TableIdentifier parentTableId, int index, int capacityBytes) {
+  public SerializedPage(TableIdentifier parentTableId, int index, int capacityBytes) {
 
     this.pageId = PageIdentifier.create(parentTableId, index);
 
@@ -29,13 +28,19 @@ public final class BoundedPage implements Page {
   }
 
   @Override
-  public boolean offer(SerializedElement element) {
-    if (element.length > (capacityBytes - curSizeBytes)) {
+  public boolean offer(Element element) throws ElementsExceedPageCapacityException {
+    // Serialize element value
+    SerializedElement serializedElement = new SerializedElement(element);
+
+    if (serializedElement.length > capacityBytes) {
+      throw new ElementsExceedPageCapacityException(element.getKey());
+    }
+    if (serializedElement.length > getRemainingCapacityBytes()) {
       return false;
     }
 
-    contents.add(element);
-    curSizeBytes += element.length;
+    contents.add(serializedElement);
+    curSizeBytes += serializedElement.length;
 
     return true;
   }
@@ -48,9 +53,9 @@ public final class BoundedPage implements Page {
    * @return the number of entries added.
    */
   @Override
-  public int offer(Iterable<SerializedElement> elements) {
+  public int offer(Iterable<Element> elements) throws ElementsExceedPageCapacityException {
     int i = 0;
-    for (SerializedElement element : elements) {
+    for (Element element : elements) {
       if (offer(element)) {
         i++;
       }
@@ -64,34 +69,28 @@ public final class BoundedPage implements Page {
   }
 
   @Override
-  public List<SerializedElement> asList() {
-    synchronized (contents) {
-      return ImmutableList.copyOf(contents);
-    }
+  public int getNumKeys() {
+    return contents.size();
   }
 
-  @Override
   public int getCapacityBytes() {
     return capacityBytes;
   }
 
-  @Override
   public int getRemainingCapacityBytes() {
     return capacityBytes - curSizeBytes;
   }
 
-  @Override
   public int getSizeBytes() {
     return curSizeBytes;
   }
 
-  @Override
-  public int getNumEntries() {
-    return contents.size();
+  public boolean isEmpty() {
+    return contents.isEmpty();
   }
 
   @Override
-  public boolean isEmpty() {
-    return contents.isEmpty();
+  public Iterator<SerializedElement> iterator() {
+    return null;
   }
 }

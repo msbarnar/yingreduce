@@ -13,7 +13,8 @@ import java.util.Arrays;
  */
 public final class WritableBytes implements WritableComparable<WritableBytes> {
 
-  public static final int SIZE = 4;
+  // The number of bytes prepended to the byte array
+  private static final int SIZE = 4;
 
   private byte[] value = null;
 
@@ -35,6 +36,13 @@ public final class WritableBytes implements WritableComparable<WritableBytes> {
 
   public byte[] toByteArray() {
     return this.value;
+  }
+
+  /**
+   * Gets the number of bytes of the serialized byte array including prepended array length.
+   */
+  public int size() {
+    return SIZE + value.length;
   }
 
   @Override

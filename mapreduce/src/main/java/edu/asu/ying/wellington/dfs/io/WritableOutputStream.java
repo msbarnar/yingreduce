@@ -1,39 +1,35 @@
 package edu.asu.ying.wellington.dfs.io;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import edu.asu.ying.wellington.dfs.Element;
+import edu.asu.ying.wellington.io.Writable;
 
 /**
  *
  */
-public class ElementOutputStream extends OutputStream {
+public class WritableOutputStream extends OutputStream {
 
-  protected final WritableOutputStream stream;
+  protected final DataOutputStream stream;
 
-  public ElementOutputStream(OutputStream stream) {
-    this(new WritableOutputStream(stream));
+  public WritableOutputStream(OutputStream stream) {
+    this.stream = new DataOutputStream(stream);
   }
 
-  public ElementOutputStream(WritableOutputStream stream) {
-    this.stream = stream;
+  public void write(Writable o) throws IOException {
+    o.write(stream);
   }
 
-  public void write(Element element) throws IOException {
-    stream.write(element.getKey());
-    stream.write(element.getValue());
-  }
-
-  public int write(Iterable<Element> elements) {
+  public int write(Iterable<Writable> os) {
     int i = 0;
-    for (Element element : elements) {
+    for (Writable o : os) {
       try {
-        write(element);
+        write(o);
+        i++;
       } catch (IOException e) {
-        return i;
+        break;
       }
-      i++;
     }
     return i;
   }
@@ -63,7 +59,7 @@ public class ElementOutputStream extends OutputStream {
     stream.flush();
   }
 
-  public WritableOutputStream getStream() {
+  public DataOutputStream getStream() {
     return stream;
   }
 }

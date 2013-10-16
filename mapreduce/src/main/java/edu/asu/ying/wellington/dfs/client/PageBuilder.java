@@ -1,17 +1,12 @@
 package edu.asu.ying.wellington.dfs.client;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.BoundedPage;
 import edu.asu.ying.wellington.dfs.Element;
-import edu.asu.ying.wellington.dfs.ElementsExceedPageCapacityException;
 import edu.asu.ying.wellington.dfs.Page;
-import edu.asu.ying.wellington.dfs.SerializedElement;
+import edu.asu.ying.wellington.dfs.SerializedPage;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
-import edu.asu.ying.wellington.dfs.io.ElementOutputStream;
 
 /**
  * {@code LocalWriteTable} accepts elements locally, places them on pages, and sends full pages to a
@@ -19,7 +14,7 @@ import edu.asu.ying.wellington.dfs.io.ElementOutputStream;
  * PageDistributionSink}, which sends the pages to their associated nodes.
  */
 //FIXME: use bin packing
-public final class PageBuilder implements ElementOutputStream {
+public final class PageBuilder {
 
   // TODO: Set page capacity with configuration
   private static final int DEFAULT_PAGE_CAPACITY_BYTES = 200;
@@ -46,65 +41,18 @@ public final class PageBuilder implements ElementOutputStream {
    * Adds the element to the table, committing the current page and starting a new one if
    * necessary.
    */
-  public void write(Element element) throws IOException {
-    // Serialize element value
-    SerializedElement serializedElement = new SerializedElement(element);
-
-    if (serializedElement.length > maxPageCapacityBytes) {
-      throw new ElementsExceedPageCapacityException(element.getKey());
-    }
-    if (serializedElement.length > currentPage.getRemainingCapacityBytes()) {
+  public void add(Element element) throws IOException {
+    if (!currentPage.offer(element)) {
       newPage();
+      add(element);
     }
-
-    if (!currentPage.offer(serializedElement)) {
-      throw new IOException("Page rejected element");
-    }
-  }
-
-  /**
-   * Adds the entries to the table, sorting by size to improve packing efficiency and creating new
-   * pages when necessary until all entries are added.
-   */
-  @Override
-  public int write(Iterable<Element> elements) throws IOException {
-    // Serialize and sort the entries for packing
-    int i = 0;
-    for (SerializedElement element : serializeEntries(elements)) {
-      if (element.length > maxPageCapacityBytes) {
-        continue;
-      }
-      if (element.length > currentPage.getRemainingCapacityBytes()) {
-        newPage();
-      }
-      if (currentPage.offer(element)) {
-        i++;
-      }
-    }
-    return i;
   }
 
   /**
    * Commits the current page and starts a new one.
    */
-  @Override
   public void flush() throws IOException {
     newPage();
-  }
-
-  /**
-   * Serializes the entries' values for sorting and storage.
-   */
-  private List<SerializedElement> serializeEntries(Iterable<Element> entries)
-      throws IOException {
-
-    List<SerializedElement> serializedEntries = new LinkedList<>();
-
-    for (Element element : entries) {
-      serializedEntries.add(new SerializedElement(element));
-    }
-
-    return serializedEntries;
   }
 
   /**
@@ -129,7 +77,7 @@ public final class PageBuilder implements ElementOutputStream {
     }
   }
 
-  private BoundedPage createPage() {
-    return new BoundedPage(id, currentPageIndex, maxPageCapacityBytes);
+  private SerializedPage createPage() {
+    return new SerializedPage(id, currentPageIndex, maxPageCapacityBytes);
   }
 }
