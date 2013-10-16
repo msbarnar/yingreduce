@@ -1,6 +1,7 @@
 package edu.asu.ying.wellington.dfs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
  * would exceed that capacity.
  */
-public final class SerializedPage implements Page, Iterable<SerializedElement> {
+public final class SerializedBoundedPage implements Page, Iterable<SerializedElement> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -20,7 +21,7 @@ public final class SerializedPage implements Page, Iterable<SerializedElement> {
   // Keep track of the sum length of the contents.
   private int curSizeBytes = 0;
 
-  public SerializedPage(TableIdentifier parentTableId, int index, int capacityBytes) {
+  public SerializedBoundedPage(TableIdentifier parentTableId, int index, int capacityBytes) {
 
     this.pageId = PageIdentifier.create(parentTableId, index);
 
@@ -91,6 +92,6 @@ public final class SerializedPage implements Page, Iterable<SerializedElement> {
 
   @Override
   public Iterator<SerializedElement> iterator() {
-    return null;
+    return Collections.unmodifiableList(contents).iterator();
   }
 }

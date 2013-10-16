@@ -5,7 +5,7 @@ import java.io.IOException;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.Page;
-import edu.asu.ying.wellington.dfs.SerializedPage;
+import edu.asu.ying.wellington.dfs.SerializedBoundedPage;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
 
 /**
@@ -25,7 +25,6 @@ public final class PageBuilder {
   // Sinks full pages
   private final Sink<Page> pageSink;
 
-  private final int maxPageCapacityBytes = DEFAULT_PAGE_CAPACITY_BYTES;
   // Stores table elements not yet committed to the network.
   private Page currentPage = null;
   private int currentPageIndex = 0;
@@ -77,7 +76,7 @@ public final class PageBuilder {
     }
   }
 
-  private SerializedPage createPage() {
-    return new SerializedPage(id, currentPageIndex, maxPageCapacityBytes);
+  private SerializedBoundedPage createPage() {
+    return new SerializedBoundedPage(id, currentPageIndex, DEFAULT_PAGE_CAPACITY_BYTES);
   }
 }
