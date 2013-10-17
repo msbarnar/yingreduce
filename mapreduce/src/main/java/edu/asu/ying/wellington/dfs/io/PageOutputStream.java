@@ -19,9 +19,11 @@ public class PageOutputStream extends OutputStream {
   }
 
   /**
-   * Writes the page to the underlying stream in the following sequence: <ol> <li>The header (see:
-   * {@link PageHeader})</li> <li>An index of the offset from the end of the index of the beginning
-   * of each key (except the first)</li> <li>Serialized key->value pairs</li> </ol>
+   * Writes the page to the underlying stream in the following sequence:
+   *
+   * <ol> <li>The header (see: {@link PageHeader})</li> <li>An index of the offset from the end of
+   * the index of the beginning of each key (except the first)</li> <li>Serialized key->value
+   * pairs</li> </ol>
    */
   public void write(SerializedPage p) throws IOException {
     new PageHeader(p).writeTo(stream);
