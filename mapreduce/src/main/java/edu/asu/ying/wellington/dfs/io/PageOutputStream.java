@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.dfs.io;
 
+import com.google.common.base.Preconditions;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,7 +17,7 @@ public class PageOutputStream extends OutputStream {
   protected final OutputStream stream;
 
   public PageOutputStream(OutputStream stream) {
-    this.stream = stream;
+    this.stream = Preconditions.checkNotNull(stream);
   }
 
   /**
