@@ -15,6 +15,9 @@ public final class SerializedElement implements Serializable {
 
   private static final long SerialVersionUID = 1L;
 
+  private final Class<? extends WritableComparable> keyClass;
+  private final Class<? extends Writable> valueClass;
+
   private final byte[] key;
   private final byte[] value;
   public final int length;
@@ -23,13 +26,21 @@ public final class SerializedElement implements Serializable {
     this(element.getKey(), element.getValue());
   }
 
-  public SerializedElement(byte[] key, byte[] value) {
+  public SerializedElement(Class<? extends WritableComparable> keyClass,
+                           Class<? extends Writable> valueClass,
+                           byte[] key, byte[] value) {
+    this.keyClass = keyClass;
+    this.valueClass = valueClass;
     this.key = key;
     this.value = value;
     this.length = key.length + value.length;
   }
 
   public <V extends Writable> SerializedElement(WritableComparable key, Writable value) {
+
+    this.keyClass = key.getClass();
+    this.valueClass = value.getClass();
+
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     DataOutputStream writer = new DataOutputStream(buffer);
 

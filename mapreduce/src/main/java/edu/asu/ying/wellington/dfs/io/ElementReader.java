@@ -9,7 +9,7 @@ import edu.asu.ying.wellington.dfs.Page;
 /**
  *
  */
-public interface PageReader extends Page, Closeable {
+public interface ElementReader extends Page, Closeable {
 
   /**
    * Returns the next element from the page, or {@code null} if no elements are remaining.

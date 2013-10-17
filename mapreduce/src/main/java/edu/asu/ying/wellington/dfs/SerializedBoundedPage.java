@@ -6,18 +6,22 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
  * would exceed that capacity.
  */
-public final class SerializedBoundedPage implements Page, Sink<Element>,
-                                                    Iterable<SerializedElement> {
+public final class SerializedBoundedPage<K extends WritableComparable, V extends Writable>
+    implements SerializedPage<K, V>, Sink<Element<K, V>> {
 
   private static final long SerialVersionUID = 1L;
 
   private final PageIdentifier pageId;
+
+  private final Class<K> keyClass;
+  private final Class<V> valueClass;
 
   private final List<SerializedElement> contents = new ArrayList<>();
   // Don't accept any entries that would cause the page to exceed this size in bytes.
@@ -25,9 +29,14 @@ public final class SerializedBoundedPage implements Page, Sink<Element>,
   // Keep track of the sum length of the contents.
   private int curSizeBytes = 0;
 
-  public SerializedBoundedPage(TableIdentifier parentTableId, int index, int capacityBytes) {
+  public SerializedBoundedPage(TableIdentifier parentTableId, int index, int capacityBytes,
+                               Class<K> keyClass,
+                               Class<V> valueClass) {
 
     this.pageId = PageIdentifier.create(parentTableId, index);
+
+    this.keyClass = keyClass;
+    this.valueClass = valueClass;
 
     this.capacityBytes = capacityBytes;
   }
@@ -47,7 +56,7 @@ public final class SerializedBoundedPage implements Page, Sink<Element>,
   }
 
   @Override
-  public boolean offer(Element element) throws ElementsExceedPageCapacityException {
+  public boolean offer(Element<K, V> element) throws ElementsExceedPageCapacityException {
     // Serialize element value
     return offer(new SerializedElement(element));
   }
@@ -60,10 +69,10 @@ public final class SerializedBoundedPage implements Page, Sink<Element>,
    * @return the number of entries added.
    */
   @Override
-  public int offer(Iterable<Element> elements) throws ElementsExceedPageCapacityException {
+  public int offer(Iterable<Element<K, V>> elements) throws ElementsExceedPageCapacityException {
     List<WritableComparable> oversizedElements = null;
     int numAdded = 0;
-    for (Element element : elements) {
+    for (Element<K, V> element : elements) {
       try {
         if (offer(element)) {
           numAdded++;
@@ -87,7 +96,17 @@ public final class SerializedBoundedPage implements Page, Sink<Element>,
   }
 
   @Override
-  public int getNumKeys() {
+  public Class<K> getKeyClass() {
+    return keyClass;
+  }
+
+  @Override
+  public Class<V> getValueClass() {
+    return valueClass;
+  }
+
+  @Override
+  public int size() {
     return contents.size();
   }
 
@@ -99,7 +118,7 @@ public final class SerializedBoundedPage implements Page, Sink<Element>,
     return capacityBytes - curSizeBytes;
   }
 
-  public int getSizeBytes() {
+  public int sizeBytes() {
     return curSizeBytes;
   }
 

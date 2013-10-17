@@ -1,6 +1,6 @@
 package edu.asu.ying.wellington.dfs;
 
-import edu.asu.ying.wellington.dfs.io.PageReader;
+import edu.asu.ying.wellington.dfs.io.ElementReader;
 
 /**
  * {@code PageProvider} is the interface for page retrieval and storage on the DFS server.
@@ -10,7 +10,7 @@ import edu.asu.ying.wellington.dfs.io.PageReader;
  */
 public interface PageProvider {
 
-  PageReader getReader(PageIdentifier identifier);
+  ElementReader getReader(PageIdentifier identifier);
 
   void storeLocally(SerializedPage page);
 }

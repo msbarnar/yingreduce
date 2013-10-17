@@ -1,5 +1,8 @@
 package edu.asu.ying.wellington.dfs;
 
+import edu.asu.ying.wellington.io.Writable;
+import edu.asu.ying.wellington.io.WritableComparable;
+
 /**
  */
 public interface Page {
@@ -12,5 +15,15 @@ public interface Page {
   /**
    * Returns the number of entries in the page.
    */
-  int getNumKeys();
+  int size();
+
+  /**
+   * Returns the class of keys stored in this page.
+   */
+  Class<? extends WritableComparable> getKeyClass();
+
+  /**
+   * Returns the class of values stored in this page.
+   */
+  Class<? extends Writable> getValueClass();
 }

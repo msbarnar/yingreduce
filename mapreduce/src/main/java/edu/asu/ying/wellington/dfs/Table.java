@@ -10,4 +10,6 @@ public interface Table {
   int getNumPages();
 
   boolean hasPage(int index);
+
+  boolean hasPage(PageIdentifier id);
 }
