@@ -5,13 +5,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
  * would exceed that capacity.
  */
-public final class SerializedBoundedPage implements Page, Iterable<SerializedElement> {
+public final class SerializedBoundedPage implements Page, Sink<Element>,
+                                                    Iterable<SerializedElement> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -80,7 +82,7 @@ public final class SerializedBoundedPage implements Page, Iterable<SerializedEle
   }
 
   @Override
-  public PageIdentifier getPageID() {
+  public PageIdentifier getID() {
     return pageId;
   }
 

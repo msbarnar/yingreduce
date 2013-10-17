@@ -36,7 +36,7 @@ public final class FileManager {
   }
 
   public PageOutputStream createNew(Page page) throws IOException {
-    PageIdentifier pageID = page.getPageID();
+    PageIdentifier pageID = page.getID();
     String tableFolder = makePathString(pageID.getTableID());
     Path path = root.resolve(tableFolder);
     checkMkdir(path);

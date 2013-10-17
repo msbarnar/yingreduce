@@ -35,7 +35,7 @@ public class DFSServer implements DFSService {
     pageDepository.onIncomingPage.attach(new EventHandler<Page>() {
       @Override
       public boolean onEvent(Object sender, @Nullable Page args) {
-        System.out.println("Got page! ".concat(args != null ? args.getPageID().toString() : ""));
+        System.out.println("Got page! ".concat(args != null ? args.getID().toString() : ""));
         return true;
       }
     });

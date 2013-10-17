@@ -1,15 +1,13 @@
 package edu.asu.ying.wellington.dfs;
 
-import edu.asu.ying.common.event.Sink;
-
 /**
  */
-public interface Page extends Sink<Element> {
+public interface Page {
 
   /**
    * Gets the ID of the page, including its parent table and index on that table.
    */
-  PageIdentifier getPageID();
+  PageIdentifier getID();
 
   /**
    * Returns the number of entries in the page.
