@@ -18,12 +18,18 @@ public class PageOutputStream extends OutputStream {
     this.stream = stream;
   }
 
+  /**
+   * Writes the page to the underlying stream in the following sequence: <ol> <li>The header (see:
+   * {@link PageHeader})</li> <li>An index of the offset from the end of the index of the beginning
+   * of each key (except the first)</li> <li>Serialized key->value pairs</li> </ol>
+   */
   public void write(SerializedPage p) throws IOException {
     new PageHeader(p).writeTo(stream);
     writeIndex(p);
 
     for (SerializedElement element : p) {
       write(element.getKey());
+      write(element.getValue());
     }
     flush();
   }
@@ -35,6 +41,7 @@ public class PageOutputStream extends OutputStream {
     DataOutputStream output = new DataOutputStream(this);
     // Don't write index of first key, since that's always 0
     for (SerializedElement element : p) {
+      // The
       output.writeInt(element.length);
     }
     output.flush();
