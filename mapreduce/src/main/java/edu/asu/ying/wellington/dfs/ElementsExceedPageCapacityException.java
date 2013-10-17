@@ -14,6 +14,9 @@ public final class ElementsExceedPageCapacityException extends IOException {
 
   private final List<WritableComparable> keys = new ArrayList<>();
 
+  public ElementsExceedPageCapacityException() {
+  }
+
   public ElementsExceedPageCapacityException(final WritableComparable key) {
     this.keys.add(key);
   }

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.asu.ying.wellington.io.WritableComparable;
+
 /**
  * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
  * would exceed that capacity.
@@ -28,22 +30,24 @@ public final class SerializedBoundedPage implements Page, Iterable<SerializedEle
     this.capacityBytes = capacityBytes;
   }
 
-  @Override
-  public boolean offer(Element element) throws ElementsExceedPageCapacityException {
-    // Serialize element value
-    SerializedElement serializedElement = new SerializedElement(element);
-
-    if (serializedElement.length > capacityBytes) {
-      throw new ElementsExceedPageCapacityException(element.getKey());
+  public boolean offer(SerializedElement element) throws ElementsExceedPageCapacityException {
+    if (element.length > capacityBytes) {
+      throw new ElementsExceedPageCapacityException();
     }
-    if (serializedElement.length > getRemainingCapacityBytes()) {
+    if (element.length > getRemainingCapacityBytes()) {
       return false;
     }
 
-    contents.add(serializedElement);
-    curSizeBytes += serializedElement.length;
+    contents.add(element);
+    curSizeBytes += element.length;
 
     return true;
+  }
+
+  @Override
+  public boolean offer(Element element) throws ElementsExceedPageCapacityException {
+    // Serialize element value
+    return offer(new SerializedElement(element));
   }
 
   /**
@@ -55,13 +59,24 @@ public final class SerializedBoundedPage implements Page, Iterable<SerializedEle
    */
   @Override
   public int offer(Iterable<Element> elements) throws ElementsExceedPageCapacityException {
-    int i = 0;
+    List<WritableComparable> oversizedElements = null;
+    int numAdded = 0;
     for (Element element : elements) {
-      if (offer(element)) {
-        i++;
+      try {
+        if (offer(element)) {
+          numAdded++;
+        }
+      } catch (ElementsExceedPageCapacityException e) {
+        if (oversizedElements == null) {
+          oversizedElements = new ArrayList<>();
+        }
+        oversizedElements.add(element.getKey());
       }
     }
-    return i;
+    if (oversizedElements != null) {
+      throw new ElementsExceedPageCapacityException(oversizedElements);
+    }
+    return numAdded;
   }
 
   @Override
