@@ -7,6 +7,8 @@ import java.io.OutputStream;
 
 import edu.asu.ying.wellington.dfs.SerializedElement;
 import edu.asu.ying.wellington.dfs.SerializedPage;
+import edu.asu.ying.wellington.io.Writable;
+import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  * {@code PageOutputStream} serializes entire pages to an output stream.
@@ -27,10 +29,12 @@ public class PageOutputStream extends OutputStream {
    * <li>Serialized key->value pairs</li>
    * </ol>
    */
-  public void write(SerializedPage p) throws IOException {
+  public <K extends WritableComparable, V extends Writable>
+  void write(SerializedPage<K, V> p) throws IOException {
+
     new PageHeader(p).writeTo(stream);
 
-    for (SerializedElement element : p) {
+    for (SerializedElement<K, V> element : p) {
       write(element.getKey());
       write(element.getValue());
     }

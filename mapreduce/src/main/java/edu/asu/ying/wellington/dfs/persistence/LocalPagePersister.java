@@ -10,9 +10,9 @@ import edu.asu.ying.wellington.dfs.io.PageWriter;
  */
 public final class LocalPagePersister implements PageWriter {
 
-  private final PersistenceConnector connector;
+  private final PersistenceProvider connector;
 
-  public LocalPagePersister(PersistenceConnector connector) {
+  public LocalPagePersister(PersistenceProvider connector) {
     this.connector = connector;
   }
 

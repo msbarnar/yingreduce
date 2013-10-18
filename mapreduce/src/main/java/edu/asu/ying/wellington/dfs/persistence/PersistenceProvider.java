@@ -6,10 +6,10 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.io.PageOutputStream;
 
 /**
- * A {@code PersistenceConnector} provides uniform access to an underlying persistence engine
+ * A {@code PersistenceProvider} provides uniform access to an underlying persistence engine
  * be it a file, relational database, or memory cache.
  */
-public interface PersistenceConnector {
+public interface PersistenceProvider {
 
   PageOutputStream getOutputStream(PageIdentifier id) throws IOException;
 }

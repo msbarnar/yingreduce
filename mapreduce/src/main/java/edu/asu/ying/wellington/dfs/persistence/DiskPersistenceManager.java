@@ -14,7 +14,7 @@ import edu.asu.ying.wellington.dfs.io.PageOutputStream;
 /**
  *
  */
-public class DiskPersistenceManager implements Persistence, PersistenceConnector {
+public class DiskPersistenceManager implements Persistence, PersistenceProvider {
 
   private final StreamProvider streamProvider;
   private final HashFunction hasher = Hashing.md5();
@@ -25,7 +25,7 @@ public class DiskPersistenceManager implements Persistence, PersistenceConnector
   }
 
   @Override
-  public PersistenceConnector getConnector() {
+  public PersistenceProvider getProvider() {
     return this;
   }
 

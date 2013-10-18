@@ -7,6 +7,6 @@ import edu.asu.ying.wellington.io.WritableComparable;
  *
  */
 public interface SerializedPage<K extends WritableComparable, V extends Writable>
-    extends Page<K, V>, Iterable<SerializedElement> {
+    extends Page<K, V>, Iterable<SerializedElement<K, V>> {
 
 }

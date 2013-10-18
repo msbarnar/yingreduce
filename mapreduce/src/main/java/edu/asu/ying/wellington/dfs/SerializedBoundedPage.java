@@ -23,7 +23,7 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
   private final Class<K> keyClass;
   private final Class<V> valueClass;
 
-  private final List<SerializedElement> contents = new ArrayList<>();
+  private final List<SerializedElement<K, V>> contents = new ArrayList<>();
   // Don't accept any entries that would cause the page to exceed this size in bytes.
   private final int capacityBytes;
   // Keep track of the sum length of the contents.
@@ -57,7 +57,7 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
   @Override
   public boolean offer(Element<K, V> element) throws ElementsExceedPageCapacityException {
     // Serialize element value
-    return offer(new SerializedElement(element));
+    return offer(new SerializedElement<>(element));
   }
 
   /**
@@ -126,7 +126,7 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
   }
 
   @Override
-  public Iterator<SerializedElement> iterator() {
+  public Iterator<SerializedElement<K, V>> iterator() {
     return Collections.unmodifiableList(contents).iterator();
   }
 }

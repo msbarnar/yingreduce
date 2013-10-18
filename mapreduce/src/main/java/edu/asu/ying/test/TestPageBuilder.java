@@ -44,11 +44,14 @@ public class TestPageBuilder {
   public void ItPagesOut() throws IOException {
 
     MockPageSink mockSink = new MockPageSink();
-    PageBuilder pageBuilder = new PageBuilder(TableIdentifier.random(), mockSink);
+    Class<WritableInt> keyClass = WritableInt.class;
+    Class<WritableBytes> valueClass = WritableBytes.class;
+    PageBuilder<WritableInt, WritableBytes> pageBuilder =
+        new PageBuilder<>(TableIdentifier.random(), mockSink, keyClass, valueClass);
 
     for (int i = 0; i < PageBuilder.DEFAULT_PAGE_CAPACITY_BYTES; i++) {
-      pageBuilder.offer(new Element(new WritableInt(0xBFFE),
-                                    new WritableBytes(new byte[1])));
+      pageBuilder.offer(new Element<>(new WritableInt(0xBFFE),
+                                      new WritableBytes(new byte[1])));
     }
 
     Assert.assertTrue(mockSink.pass());
