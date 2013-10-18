@@ -1,12 +1,10 @@
-package edu.asu.ying.wellington.dfs.io;
+package edu.asu.ying.wellington.dfs.persistence;
 
-import com.google.common.base.Charsets;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,37 +15,36 @@ import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import edu.asu.ying.wellington.AbstractIdentifier;
-import edu.asu.ying.wellington.dfs.Page;
-import edu.asu.ying.wellington.dfs.PageIdentifier;
-
 /**
  *
  */
-public final class FileManager {
-
-  private final HashFunction hasher = Hashing.md5();
+public final class FileStreamProvider implements StreamProvider {
 
   private final Path root;
 
   @Inject
-  private FileManager(@Named("dfs.store.path") String rootPath) {
+  private FileStreamProvider(@Named("dfs.store.path") String rootPath) throws IOException {
     this.root = Paths.get(rootPath);
+    if (!Files.exists(root)) {
+      Files.createDirectory(root);
+    } else {
+      if (!Files.isDirectory(root)) {
+        throw new NotDirectoryException(rootPath);
+      }
+    }
+    if (!Files.isWritable(root)) {
+      throw new AccessDeniedException(rootPath, null,
+                                      "Root path for file persistence is not writable");
+    }
   }
 
-  public PageOutputStream createNew(Page page) throws IOException {
-    PageIdentifier pageID = page.getID();
-    String tableFolder = makePathString(pageID.getTableID());
-    Path path = root.resolve(tableFolder);
-    checkMkdir(path);
-
-    String pageFile = makePathString(pageID);
-    path = path.resolve(pageFile);
-
-    Files.deleteIfExists(path);
+  public OutputStream getOutputStream(String path) throws IOException {
+    Path fullPath = root.resolve(path);
+    Files.deleteIfExists(fullPath);
+    File file = fullPath.toFile();
+    com.google.common.io.Files.createParentDirs(file);
     // Overwrite existing file
-    OutputStream stream = new BufferedOutputStream(new FileOutputStream(path.toFile(), false));
-    return new PageOutputStream(stream);
+    return new BufferedOutputStream(new FileOutputStream(file));
   }
 
   /*public IndexSeekingInputStream openExisting(PageIdentifier identifier) throws IOException {
@@ -63,10 +60,6 @@ public final class FileManager {
     InputStream stream = new BufferedInputStream(new FileInputStream(path.toFile()));
     return new IndexSeekingInputStream(stream);
   }*/
-
-  private String makePathString(AbstractIdentifier identifier) {
-    return hasher.hashString(identifier.toString(), Charsets.UTF_8).toString();
-  }
 
   private void checkMkdir(Path path) throws IOException {
     if (!Files.exists(path)) {

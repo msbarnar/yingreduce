@@ -36,7 +36,7 @@ public final class PageHeader {
 
   public PageHeader(Page page) throws IOException {
     this.pageID = page.getID();
-    this.numKeys = page.getNumKeys();
+    this.numKeys = page.size();
     this.header = makeHeader();
   }
 

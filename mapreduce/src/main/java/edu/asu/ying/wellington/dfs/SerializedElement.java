@@ -11,23 +11,24 @@ import edu.asu.ying.wellington.io.WritableComparable;
 /**
  *
  */
-public final class SerializedElement implements Serializable {
+public final class SerializedElement<K extends WritableComparable, V extends Writable>
+    implements Serializable {
 
   private static final long SerialVersionUID = 1L;
 
-  private final Class<? extends WritableComparable> keyClass;
-  private final Class<? extends Writable> valueClass;
+  private final Class<K> keyClass;
+  private final Class<V> valueClass;
 
   private final byte[] key;
   private final byte[] value;
   public final int length;
 
-  public SerializedElement(Element element) {
+  public SerializedElement(Element<K, V> element) {
     this(element.getKey(), element.getValue());
   }
 
-  public SerializedElement(Class<? extends WritableComparable> keyClass,
-                           Class<? extends Writable> valueClass,
+  public SerializedElement(Class<K> keyClass,
+                           Class<V> valueClass,
                            byte[] key, byte[] value) {
     this.keyClass = keyClass;
     this.valueClass = valueClass;
@@ -36,10 +37,11 @@ public final class SerializedElement implements Serializable {
     this.length = key.length + value.length;
   }
 
-  public <V extends Writable> SerializedElement(WritableComparable key, Writable value) {
+  @SuppressWarnings("unchecked")
+  public SerializedElement(K key, V value) {
 
-    this.keyClass = key.getClass();
-    this.valueClass = value.getClass();
+    this.keyClass = (Class<K>) key.getClass();
+    this.valueClass = (Class<V>) value.getClass();
 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     DataOutputStream writer = new DataOutputStream(buffer);

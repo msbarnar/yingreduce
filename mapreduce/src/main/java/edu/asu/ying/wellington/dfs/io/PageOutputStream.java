@@ -9,7 +9,7 @@ import edu.asu.ying.wellington.dfs.SerializedElement;
 import edu.asu.ying.wellington.dfs.SerializedPage;
 
 /**
- *
+ * {@code PageOutputStream} serializes entire pages to an output stream.
  */
 public class PageOutputStream extends OutputStream {
 

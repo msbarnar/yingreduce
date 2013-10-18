@@ -5,7 +5,7 @@ import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  */
-public interface Page {
+public interface Page<K extends WritableComparable, V extends Writable> {
 
   /**
    * Gets the ID of the page, including its parent table and index on that table.
@@ -20,10 +20,10 @@ public interface Page {
   /**
    * Returns the class of keys stored in this page.
    */
-  Class<? extends WritableComparable> getKeyClass();
+  Class<K> getKeyClass();
 
   /**
    * Returns the class of values stored in this page.
    */
-  Class<? extends Writable> getValueClass();
+  Class<V> getValueClass();
 }

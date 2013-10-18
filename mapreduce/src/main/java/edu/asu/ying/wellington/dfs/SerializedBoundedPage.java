@@ -30,8 +30,7 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
   private int curSizeBytes = 0;
 
   public SerializedBoundedPage(TableIdentifier parentTableId, int index, int capacityBytes,
-                               Class<K> keyClass,
-                               Class<V> valueClass) {
+                               Class<K> keyClass, Class<V> valueClass) {
 
     this.pageId = PageIdentifier.create(parentTableId, index);
 
@@ -41,7 +40,7 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
     this.capacityBytes = capacityBytes;
   }
 
-  public boolean offer(SerializedElement element) throws ElementsExceedPageCapacityException {
+  public boolean offer(SerializedElement<K, V> element) throws ElementsExceedPageCapacityException {
     if (element.length > capacityBytes) {
       throw new ElementsExceedPageCapacityException();
     }
