@@ -10,7 +10,6 @@ import java.io.IOException;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.PageMetadata;
-import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.dfs.client.PageBuilder;
 import edu.asu.ying.wellington.io.WritableBytes;
 import edu.asu.ying.wellington.io.WritableInt;
@@ -47,7 +46,7 @@ public class TestPageBuilder {
     Class<WritableInt> keyClass = WritableInt.class;
     Class<WritableBytes> valueClass = WritableBytes.class;
     PageBuilder<WritableInt, WritableBytes> pageBuilder =
-        new PageBuilder<>(TableIdentifier.random(), mockSink, keyClass, valueClass);
+        new PageBuilder<>("hello", mockSink, keyClass, valueClass);
 
     for (int i = 0; i < PageBuilder.DEFAULT_PAGE_CAPACITY_BYTES; i++) {
       pageBuilder.offer(new Element<>(new WritableInt(0xBFFE),

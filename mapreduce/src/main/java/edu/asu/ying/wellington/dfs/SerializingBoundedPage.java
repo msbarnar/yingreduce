@@ -29,10 +29,10 @@ public final class SerializingBoundedPage<K extends WritableComparable, V extend
   // Keep track of the sum length of the contents.
   private int curSizeBytes = 0;
 
-  public SerializingBoundedPage(TableIdentifier parentTableId, int index, int capacityBytes,
+  public SerializingBoundedPage(String tableName, int index, int capacityBytes,
                                 Class<K> keyClass, Class<V> valueClass) {
 
-    this.pageId = PageIdentifier.create(parentTableId, index);
+    this.pageId = PageIdentifier.create(tableName, index);
 
     this.keyClass = keyClass;
     this.valueClass = valueClass;
@@ -90,7 +90,7 @@ public final class SerializingBoundedPage<K extends WritableComparable, V extend
   }
 
   @Override
-  public PageIdentifier getID() {
+  public PageIdentifier getId() {
     return pageId;
   }
 

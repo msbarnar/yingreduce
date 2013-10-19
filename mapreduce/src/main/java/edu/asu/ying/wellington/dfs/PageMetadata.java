@@ -10,7 +10,7 @@ public interface PageMetadata<K extends WritableComparable, V extends Writable> 
   /**
    * Gets the ID of the page, including its parent table and index on that table.
    */
-  PageIdentifier getID();
+  PageIdentifier getId();
 
   /**
    * Returns the number of entries in the page.

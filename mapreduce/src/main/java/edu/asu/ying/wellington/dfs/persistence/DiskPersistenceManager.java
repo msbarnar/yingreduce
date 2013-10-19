@@ -47,7 +47,7 @@ public final class DiskPersistenceManager implements Persistence, PageOutputStre
    * and the page identifier is the file name. Both values are normalized to avoid invalid names.
    */
   private String getPath(PageIdentifier id) {
-    String tableDirectory = makePathString(id.getTableID().toString());
+    String tableDirectory = makePathString(id.getTableName().toString());
     String pageFile = makePathString(id.toString());
     return Paths.get(tableDirectory, pageFile).toString();
   }

@@ -25,7 +25,7 @@ public final class PageMetadataImpl<K extends WritableComparable, V extends Writ
   }
 
   @Override
-  public PageIdentifier getID() {
+  public PageIdentifier getId() {
     return id;
   }
 

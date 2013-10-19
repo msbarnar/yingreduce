@@ -93,12 +93,12 @@ public final class JobDelegator extends QueueExecutor<Job> {
   // FIXME: Potentially very slow
   private Set<RemoteNode> findReducers(Job job) {
     int numReducers = job.getReducerCount();
-    String jobID = job.getID().toString();
+    String jobName = job.getName();
 
     Set<RemoteNode> reducers = new HashSet<>(numReducers);
     for (int i = 0; i < numReducers; i++) {
       try {
-        reducers.add(nodeLocator.find(jobID.concat(Integer.toString(i))));
+        reducers.add(nodeLocator.find(jobName.concat(Integer.toString(i))));
       } catch (IOException e) {
         // TODO: Logging
         e.printStackTrace();

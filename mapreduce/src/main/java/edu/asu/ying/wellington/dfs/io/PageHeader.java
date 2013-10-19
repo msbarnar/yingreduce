@@ -14,7 +14,6 @@ import java.nio.ByteBuffer;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.PageMetadata;
-import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -67,7 +66,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
   private int numKeys;
 
   public PageHeader(PageMetadata<K, V> pageMetadata) throws IOException {
-    this.pageID = pageMetadata.getID();
+    this.pageID = pageMetadata.getId();
     this.keyClass = pageMetadata.getKeyClass();
     this.valueClass = pageMetadata.getValueClass();
     this.numKeys = pageMetadata.size();
@@ -89,7 +88,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
 
     output.writeInt(MAGIC);
     output.writeShort(VERSION);
-    output.writeUTF(pageID.getTableID().toString());
+    output.writeUTF(pageID.getTableName());
     output.writeInt(pageID.getIndex());
     output.writeUTF(keyClass.getCanonicalName());
     output.writeUTF(valueClass.getCanonicalName());
@@ -117,9 +116,9 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
       throw new WrongPageVersionException(VERSION, version);
     }
 
-    TableIdentifier tableID = TableIdentifier.forString(input.readUTF());
+    String tableName = input.readUTF();
     int pageIndex = input.readInt();
-    pageID = PageIdentifier.create(tableID, pageIndex);
+    pageID = PageIdentifier.create(tableName, pageIndex);
     String keyClassName = input.readUTF();
     String valueClassName = input.readUTF();
     try {

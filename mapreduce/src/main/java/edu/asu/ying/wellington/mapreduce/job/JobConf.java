@@ -2,7 +2,6 @@ package edu.asu.ying.wellington.mapreduce.job;
 
 import java.io.Serializable;
 
-import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 import edu.asu.ying.wellington.mapreduce.Mappable;
@@ -15,15 +14,15 @@ public final class JobConf implements Serializable {
 
   private static final long SerialVersionUID = 1L;
 
-  private final TableIdentifier tableID;
+  private final String tableName;
 
   private Class<? extends WritableComparable> outputKeyClass;
   private Class<? extends Writable> outputValueClass;
   private Class<? extends Mappable> mapperClass;
   private Class<? extends Reducer> reducerClass;
 
-  public JobConf(TableIdentifier tableID) {
-    this.tableID = tableID;
+  public JobConf(String tableName) {
+    this.tableName = tableName;
   }
 
   public <T extends WritableComparable> JobConf setOutputKeyClass(final Class<T> keyClass) {
@@ -46,7 +45,7 @@ public final class JobConf implements Serializable {
     return this;
   }
 
-  public TableIdentifier getTableID() {
-    return tableID;
+  public String getTableName() {
+    return tableName;
   }
 }

@@ -3,7 +3,6 @@ package edu.asu.ying.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.io.WritableChar;
 import edu.asu.ying.wellington.io.WritableInt;
 import edu.asu.ying.wellington.io.WritableString;
@@ -19,7 +18,7 @@ import edu.asu.ying.wellington.mapreduce.job.JobConf;
 public class ExampleMapReduceJob {
 
   public static JobConf createJob() {
-    JobConf job = new JobConf(TableIdentifier.forString("lipsum"));
+    JobConf job = new JobConf("lipsum");
     job.setOutputKeyClass(WritableChar.class);
     job.setOutputValueClass(WritableInt.class);
     job.setMapperClass(LetterCounter.class);

@@ -24,7 +24,8 @@ public final class LetterFreqTask extends Task {
 
   public LetterFreqTask(Job parentJob, RemoteNode reductionNode, int index) {
     // Task ID = table name + page index
-    super(parentJob, TaskIdentifier.random(), PageIdentifier.create(parentJob.getTableID(), index));
+    super(parentJob, TaskIdentifier.random(),
+          PageIdentifier.create(parentJob.getTableName(), index));
     this.reductionNode = reductionNode;
     this.index = index;
     this.file = new File(System.getProperty("user.home").concat("/mapreduce/data/lipsum.txt"));

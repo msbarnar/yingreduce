@@ -103,6 +103,6 @@ public final class PageDistributionSink implements Sink<PageMetadata> {
   }
 
   private List<RemoteNode> findRecipientsFor(PageMetadata pageMetadata) throws IOException {
-    return locator.find(pageMetadata.getID().toString(), pageDuplicationFactor);
+    return locator.find(pageMetadata.getId().toString(), pageDuplicationFactor);
   }
 }

@@ -19,7 +19,7 @@ public final class JobClient {
    * Creates a new {@link Job} from a {@link JobConf} and sends it to the job service.
    */
   public void runJob(JobConf jobConf) throws JobException {
-    Job job = new Job(jobConf.getTableID());
+    Job job = new Job(jobConf.getTableName());
     service.accept(job);
   }
 }

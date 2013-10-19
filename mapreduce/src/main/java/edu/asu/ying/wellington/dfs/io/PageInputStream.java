@@ -30,7 +30,7 @@ public class PageInputStream extends InputStream {
     Class<? extends WritableComparable> keyClass = header.getKeyClass();
     Class<? extends Writable> valueClass = header.getValueClass();
 
-    UnboundedPage<?, ?> page = new UnboundedPage<>(header.getPageID().getTableID(),
+    UnboundedPage<?, ?> page = new UnboundedPage<>(header.getPageID().getTableName(),
                                                    header.getPageID().getIndex(),
                                                    keyClass, valueClass);
 

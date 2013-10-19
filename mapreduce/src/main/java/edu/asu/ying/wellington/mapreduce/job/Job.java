@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
-import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
@@ -26,10 +26,10 @@ public final class Job implements Serializable {
 
   private static final long SerialVersionUID = 1L;
 
-  private final JobIdentifier jobID;
+  private final String name;
   private Status status;
 
-  private final TableIdentifier tableID;
+  private final String tableName;
 
   private RemoteNode responsibleNode;
   private List<RemoteNode> reducerNodes;
@@ -41,9 +41,9 @@ public final class Job implements Serializable {
   // Keep track of what has been done with the job
   private final JobHistory history = new JobHistory();
 
-  public Job(TableIdentifier tableID) {
-    this.jobID = JobIdentifier.random();
-    this.tableID = tableID;
+  public Job(String tableName) {
+    this.name = UUID.randomUUID().toString();
+    this.tableName = tableName;
     this.status = Status.Created;
   }
 
@@ -51,12 +51,12 @@ public final class Job implements Serializable {
     return this.history;
   }
 
-  public JobIdentifier getID() {
-    return this.jobID;
+  public String getName() {
+    return name;
   }
 
-  public TableIdentifier getTableID() {
-    return this.tableID;
+  public String getTableName() {
+    return tableName;
   }
 
   public void setResponsibleNode(RemoteNode node) {

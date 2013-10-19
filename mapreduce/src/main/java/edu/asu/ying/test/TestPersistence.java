@@ -21,7 +21,6 @@ import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.SerializingBoundedPage;
 import edu.asu.ying.wellington.dfs.SerializingPage;
-import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
 import edu.asu.ying.wellington.dfs.io.PageWriter;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
@@ -56,15 +55,14 @@ public class TestPersistence {
                                                        MemoryPersistence.class));
 
     SerializingPage<WritableString, WritableInt> page
-        = new SerializingBoundedPage<>(TableIdentifier.forString(tableName),
-                                       0, 200, WritableString.class, WritableInt.class);
+        = new SerializingBoundedPage<>(tableName, 0, 200, WritableString.class, WritableInt.class);
     Assert.assertEquals(page.offer(elements), elements.size());
 
     // Write
     persist.getWriter().write(page);
 
     // Read
-    PageInputStream input = persist.getInputStream(page.getID());
+    PageInputStream input = persist.getInputStream(page.getId());
     Page<WritableString, WritableInt> deserialized = input.readPage();
     Iterator<Element<WritableString, WritableInt>> iter = deserialized.iterator();
     Iterator<Element<WritableString, WritableInt>> iter2 = elements.iterator();
@@ -92,8 +90,7 @@ public class TestPersistence {
                                                        DiskPersistence.class));
 
     SerializingPage<WritableString, WritableInt> page
-        = new SerializingBoundedPage<>(TableIdentifier.forString(tableName),
-                                       0, 200, WritableString.class, WritableInt.class);
+        = new SerializingBoundedPage<>(tableName, 0, 200, WritableString.class, WritableInt.class);
     Assert.assertEquals(page.offer(elements), elements.size());
 
     // Write
@@ -101,7 +98,7 @@ public class TestPersistence {
     output.write(page);
 
     // Read
-    PageInputStream input = persist.getInputStream(page.getID());
+    PageInputStream input = persist.getInputStream(page.getId());
     Page<WritableString, WritableInt> deserialized = input.readPage();
     Iterator<Element<WritableString, WritableInt>> iter = deserialized.iterator();
     Iterator<Element<WritableString, WritableInt>> iter2 = elements.iterator();

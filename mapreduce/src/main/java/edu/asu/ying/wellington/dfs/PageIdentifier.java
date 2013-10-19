@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import edu.asu.ying.wellington.AbstractIdentifier;
 import edu.asu.ying.wellington.InvalidIdentifierException;
+import edu.asu.ying.wellington.io.WritableString;
 
 /**
  *
@@ -14,12 +15,12 @@ public final class PageIdentifier extends AbstractIdentifier {
 
   private static final long SerialVersionUID = 1L;
 
-  public static PageIdentifier create(TableIdentifier parentTable, int index) {
-    return new PageIdentifier(parentTable, index);
+  public static PageIdentifier create(String tableName, int index) {
+    return new PageIdentifier(tableName, index);
   }
 
-  public static PageIdentifier firstPageOf(TableIdentifier table) {
-    return new PageIdentifier(table, 0);
+  public static PageIdentifier firstPageOf(String tableName) {
+    return new PageIdentifier(tableName, 0);
   }
 
   public static PageIdentifier forString(String id) {
@@ -34,8 +35,7 @@ public final class PageIdentifier extends AbstractIdentifier {
       } catch (NumberFormatException e) {
         throw new InvalidIdentifierException("PageMetadata index is not an integer", id);
       }
-      return new PageIdentifier(TableIdentifier.forString(id.substring(0, lastDelimiter)),
-                                pageIndex);
+      return new PageIdentifier(id.substring(0, lastDelimiter), pageIndex);
     } else {
       throw new InvalidIdentifierException("PageMetadata index not specified", id);
     }
@@ -43,19 +43,19 @@ public final class PageIdentifier extends AbstractIdentifier {
 
   private static final char PAGE_DELIMITER = '~';
 
-  private final TableIdentifier table;
+  private String tableName;
   private int index;
 
-  private PageIdentifier(TableIdentifier table, int index) {
-    super(table.toString()
+  private PageIdentifier(String tableName, int index) {
+    super(tableName
               .concat(Character.toString(PAGE_DELIMITER))
               .concat(Integer.toString(index)));
-    this.table = table;
+    this.tableName = tableName;
     this.index = index;
   }
 
-  public TableIdentifier getTableID() {
-    return table;
+  public String getTableName() {
+    return tableName;
   }
 
   public int getIndex() {
@@ -64,18 +64,20 @@ public final class PageIdentifier extends AbstractIdentifier {
 
   @Override
   public void readFields(DataInput in) throws IOException {
+    WritableString table = new WritableString();
     table.readFields(in);
+    this.tableName = table.toString();
     index = in.readInt();
   }
 
   @Override
   public void write(DataOutput out) throws IOException {
-    table.write(out);
+    (new WritableString(tableName)).write(out);
     out.writeInt(index);
   }
 
   public int compareTo(PageIdentifier o) {
-    int tableComp = table.compareTo(o.getTableID());
+    int tableComp = tableName.compareTo(o.getTableName());
     if (tableComp != 0) {
       return tableComp;
     }

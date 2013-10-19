@@ -1,12 +1,14 @@
 package edu.asu.ying.wellington.dfs.client;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
 import java.io.IOException;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.dfs.SerializingBoundedPage;
-import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -26,7 +28,7 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
   public static final int DEFAULT_PAGE_CAPACITY_BYTES = 200;
 
   // Uniquely identifies the table in the data store
-  private final TableIdentifier id;
+  private final String tableName;
 
   // Sinks full pages
   private final Sink<PageMetadata> pageSink;
@@ -40,9 +42,10 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
   private int currentPageIndex = 0;
   private final Object currentPageLock = new Object();
 
-  public PageBuilder(TableIdentifier id, Sink<PageMetadata> pageSink,
+  public PageBuilder(String tableName, Sink<PageMetadata> pageSink,
                      Class<K> keyClass, Class<V> valueClass) {
-    this.id = id;
+
+    this.tableName = Preconditions.checkNotNull(Strings.emptyToNull(tableName));
     this.pageSink = pageSink;
     this.keyClass = keyClass;
     this.valueClass = valueClass;
@@ -103,7 +106,7 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
   }
 
   private SerializingBoundedPage<K, V> createPage() {
-    return new SerializingBoundedPage<>(id, currentPageIndex, DEFAULT_PAGE_CAPACITY_BYTES,
+    return new SerializingBoundedPage<>(tableName, currentPageIndex, DEFAULT_PAGE_CAPACITY_BYTES,
                                         keyClass, valueClass);
   }
 }
