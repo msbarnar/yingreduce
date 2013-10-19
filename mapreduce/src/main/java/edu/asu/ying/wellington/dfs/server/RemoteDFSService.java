@@ -7,5 +7,5 @@ import edu.asu.ying.common.remoting.Activatable;
  */
 public interface RemoteDFSService extends Activatable {
 
-  
+
 }

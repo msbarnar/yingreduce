@@ -51,7 +51,8 @@ public final class PageDistributionSink implements Sink<PageMetadata> {
       results.add(workersByNode.submit(new Callable<Boolean>() {
         @Override
         public Boolean call() throws Exception {
-          return node.getDFSService().getPageDepository().offer(pageMetadata);
+          //return node.getDFSService().getPageDepository().offer(pageMetadata);
+          return false;
         }
       }));
     }
