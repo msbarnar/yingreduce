@@ -13,7 +13,7 @@ import edu.asu.ying.wellington.io.WritableComparable;
  * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
  * would exceed that capacity.
  */
-public final class SerializedBoundedPage<K extends WritableComparable, V extends Writable>
+public final class SerializedUnboundedPage<K extends WritableComparable, V extends Writable>
     implements SerializedPage<K, V>, Sink<Element<K, V>> {
 
   private static final long SerialVersionUID = 1L;
@@ -24,30 +24,25 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
   private final Class<V> valueClass;
 
   private final List<SerializedElement<K, V>> contents = new ArrayList<>();
-  // Don't accept any entries that would cause the page to exceed this size in bytes.
-  private final int capacityBytes;
-  // Keep track of the sum length of the contents.
-  private int curSizeBytes = 0;
 
-  public SerializedBoundedPage(TableIdentifier parentTableId, int index, int capacityBytes,
-                               Class<K> keyClass, Class<V> valueClass) {
+  private int curSizeBytes;
+
+  public SerializedUnboundedPage(Page<K, V> metadata) {
+    this.pageId = metadata.getID();
+    this.keyClass = metadata.getKeyClass();
+    this.valueClass = metadata.getValueClass();
+  }
+
+  public SerializedUnboundedPage(TableIdentifier parentTableId, int index,
+                                 Class<K> keyClass, Class<V> valueClass) {
 
     this.pageId = PageIdentifier.create(parentTableId, index);
 
     this.keyClass = keyClass;
     this.valueClass = valueClass;
-
-    this.capacityBytes = capacityBytes;
   }
 
-  public boolean offer(SerializedElement<K, V> element) throws ElementsExceedPageCapacityException {
-    if (element.length > capacityBytes) {
-      throw new ElementsExceedPageCapacityException();
-    }
-    if (element.length > getRemainingCapacityBytes()) {
-      return false;
-    }
-
+  public boolean offer(SerializedElement<K, V> element) {
     contents.add(element);
     curSizeBytes += element.length;
 
@@ -55,8 +50,7 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
   }
 
   @Override
-  public boolean offer(Element<K, V> element) throws ElementsExceedPageCapacityException {
-    // Serialize element value
+  public boolean offer(Element<K, V> element) {
     return offer(new SerializedElement<>(element));
   }
 
@@ -68,23 +62,12 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
    * @return the number of entries added.
    */
   @Override
-  public int offer(Iterable<Element<K, V>> elements) throws ElementsExceedPageCapacityException {
-    List<WritableComparable> oversizedElements = null;
+  public int offer(Iterable<Element<K, V>> elements) {
     int numAdded = 0;
     for (Element<K, V> element : elements) {
-      try {
-        if (offer(element)) {
-          numAdded++;
-        }
-      } catch (ElementsExceedPageCapacityException e) {
-        if (oversizedElements == null) {
-          oversizedElements = new ArrayList<>();
-        }
-        oversizedElements.add(element.getKey());
+      if (offer(element)) {
+        numAdded++;
       }
-    }
-    if (oversizedElements != null) {
-      throw new ElementsExceedPageCapacityException(oversizedElements);
     }
     return numAdded;
   }
@@ -109,15 +92,7 @@ public final class SerializedBoundedPage<K extends WritableComparable, V extends
     return contents.size();
   }
 
-  public int getCapacityBytes() {
-    return capacityBytes;
-  }
-
-  public int getRemainingCapacityBytes() {
-    return capacityBytes - curSizeBytes;
-  }
-
-  public int sizeBytes() {
+  public int getSizeBytes() {
     return curSizeBytes;
   }
 

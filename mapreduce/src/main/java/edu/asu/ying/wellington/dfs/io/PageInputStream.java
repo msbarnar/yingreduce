@@ -1,9 +1,13 @@
 package edu.asu.ying.wellington.dfs.io;
 
+import com.google.common.base.Preconditions;
+
 import java.io.IOException;
 import java.io.InputStream;
 
+import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.SerializedPage;
+import edu.asu.ying.wellington.dfs.SerializedUnboundedPage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -15,12 +19,28 @@ public class PageInputStream extends InputStream {
   protected final InputStream stream;
 
   public PageInputStream(InputStream stream) {
-    this.stream = stream;
+    this.stream = Preconditions.checkNotNull(stream);
   }
 
-  public <K extends WritableComparable, V extends Writable>
-  SerializedPage<K, V> read() throws IOException {
+  @SuppressWarnings("unchecked")
+  SerializedPage<?, ?> readPage() throws IOException {
 
+    PageHeader<?, ?> header = PageHeader.readFrom(stream);
+    Class<? extends WritableComparable> keyClass = header.getKeyClass();
+    Class<? extends Writable> valueClass = header.getValueClass();
+
+    SerializedUnboundedPage<?, ?> page
+        = new SerializedUnboundedPage<>(header.getPageID().getTableID(),
+                                        header.getPageID().getIndex(),
+                                        keyClass, valueClass);
+
+    WritableDeserializerStream deserializer = new WritableDeserializerStream(stream);
+    for (int i = 0; i < header.getNumKeys(); i++) {
+      page.offer(new Element(deserializer.read(keyClass), deserializer.read(valueClass)));
+    }
+
+    close();
+    return page;
   }
 
   @Override

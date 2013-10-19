@@ -32,7 +32,7 @@ public class PageOutputStream extends OutputStream {
   public <K extends WritableComparable, V extends Writable>
   void write(SerializedPage<K, V> p) throws IOException {
 
-    new PageHeader(p).writeTo(stream);
+    new PageHeader<>(p).writeTo(stream);
 
     for (SerializedElement<K, V> element : p) {
       write(element.getKey());

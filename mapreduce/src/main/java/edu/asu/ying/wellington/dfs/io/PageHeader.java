@@ -111,6 +111,14 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     return pageID;
   }
 
+  public Class<K> getKeyClass() {
+    return keyClass;
+  }
+
+  public Class<V> getValueClass() {
+    return valueClass;
+  }
+
   public int getNumKeys() {
     return numKeys;
   }
