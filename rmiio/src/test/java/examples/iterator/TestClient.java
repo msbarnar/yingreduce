@@ -27,13 +27,13 @@ King of Prussia, PA 19406
 
 package examples.iterator;
 
+import com.healthmarketscience.rmiio.SerialRemoteIteratorClient;
+import com.healthmarketscience.rmiio.SerialRemoteIteratorServer;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.List;
-
-import com.healthmarketscience.rmiio.SerialRemoteIteratorClient;
-import com.healthmarketscience.rmiio.SerialRemoteIteratorServer;
 
 /**
  * Example client which sends a bunch of strings (given on the command line)
@@ -43,9 +43,8 @@ import com.healthmarketscience.rmiio.SerialRemoteIteratorServer;
  */
 public class TestClient {
 
-  public static void main(String[] args) throws Exception
-  {
-    if(args.length < 1) {
+  public static void main(String[] args) throws Exception {
+    if (args.length < 1) {
       System.err.println("Usage: <string1> [<string2> ...]");
       System.exit(1);
     }
@@ -56,9 +55,9 @@ public class TestClient {
     // get a handle to the remote service to which we want to send the strings
     Registry registry = LocateRegistry.getRegistry(TestServer.REGISTRY_PORT);
     RemoteStringServer stub = (RemoteStringServer)
-      registry.lookup("RemoteStringServer");
+        registry.lookup("RemoteStringServer");
 
-    System.out.println("Sending " + strings.size()  + " strings");
+    System.out.println("Sending " + strings.size() + " strings");
 
     SerialRemoteIteratorServer<String> server = null;
     try {
@@ -68,22 +67,22 @@ public class TestClient {
       // with to get the String data.
       server = new SerialRemoteIteratorServer<String>(strings.iterator());
       SerialRemoteIteratorClient<String> client =
-        new SerialRemoteIteratorClient<String>(server); 
+          new SerialRemoteIteratorClient<>(server);
 
       // call the remote method on the server.  the server will actually
       // interact with the RMI "server" we started above to retrieve the
       // String data
       stub.sendStrings(client);
-      
+
     } finally {
       // always make a best attempt to shutdown RemoteIterator
-      if(server != null) {
+      if (server != null) {
         server.close();
       }
     }
 
-    System.out.println("Finished sending " + strings.size()  + " strings");
-    
+    System.out.println("Finished sending " + strings.size() + " strings");
+
   }
 
 }

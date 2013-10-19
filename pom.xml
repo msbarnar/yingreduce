@@ -13,6 +13,7 @@
         <module>openkad</module>
         <module>mapreduce</module>
         <module>deployment</module>
+        <module>rmiio</module>
     </modules>
 
     <repositories>
