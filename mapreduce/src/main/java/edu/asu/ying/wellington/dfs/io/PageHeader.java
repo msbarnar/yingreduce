@@ -12,18 +12,20 @@ import java.nio.ByteBuffer;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
+import edu.asu.ying.wellington.io.Writable;
+import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  *
  */
-public final class PageHeader {
+public final class PageHeader<K extends WritableComparable, V extends Writable> {
 
-  public static PageHeader readFrom(InputStream stream) throws IOException {
+  public static PageHeader<?, ?> readFrom(InputStream stream) throws IOException {
     DataInputStream input = new DataInputStream(stream);
     byte[] header = new byte[input.readInt()];
     input.readFully(header);
 
-    return new PageHeader(header);
+    return new PageHeader<>(header);
   }
 
   private static final int MAGIC = 0x4B494D53;
@@ -32,10 +34,14 @@ public final class PageHeader {
   private final byte[] header;
 
   private PageIdentifier pageID;
+  private Class<K> keyClass;
+  private Class<V> valueClass;
   private int numKeys;
 
-  public PageHeader(Page page) throws IOException {
+  public PageHeader(Page<K, V> page) throws IOException {
     this.pageID = page.getID();
+    this.keyClass = page.getKeyClass();
+    this.valueClass = page.getValueClass();
     this.numKeys = page.size();
     this.header = makeHeader();
   }
@@ -57,6 +63,8 @@ public final class PageHeader {
     output.writeInt(VERSION);
     output.writeUTF(pageID.getTableID().toString());
     output.writeInt(pageID.getIndex());
+    output.writeUTF(keyClass.getCanonicalName());
+    output.writeUTF(valueClass.getCanonicalName());
     output.writeInt(numKeys);
 
     byte[] header = buffer.toByteArray();
@@ -69,6 +77,7 @@ public final class PageHeader {
     return buf.array();
   }
 
+  @SuppressWarnings("unchecked")
   private void readFields() throws IOException {
     DataInputStream input = new DataInputStream(new ByteArrayInputStream(header));
 
@@ -83,6 +92,18 @@ public final class PageHeader {
     TableIdentifier tableID = TableIdentifier.forString(input.readUTF());
     int pageIndex = input.readInt();
     pageID = PageIdentifier.create(tableID, pageIndex);
+    String keyClassName = input.readUTF();
+    String valueClassName = input.readUTF();
+    try {
+      keyClass = (Class<K>) Class.forName(keyClassName);
+    } catch (ClassNotFoundException | ClassCastException e) {
+      throw new IOException("Key class not supported: ".concat(keyClassName), e);
+    }
+    try {
+      valueClass = (Class<V>) Class.forName(valueClassName);
+    } catch (ClassNotFoundException | ClassCastException e) {
+      throw new IOException("Value class not supported: ".concat(valueClassName), e);
+    }
     numKeys = input.readInt();
   }
 
@@ -96,6 +117,9 @@ public final class PageHeader {
 
   public static final class NotPageDataException extends IOException {
 
+    public NotPageDataException() {
+      super("The serialized data are not a page");
+    }
   }
 
   public static final class WrongPageVersionException extends IOException {

@@ -11,7 +11,7 @@ import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
- * {@code PageOutputStream} serializes entire pages to an output stream.
+ * Serializes an entire page to an output stream.
  */
 public class PageOutputStream extends OutputStream {
 

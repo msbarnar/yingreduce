@@ -2,7 +2,6 @@ package edu.asu.ying.wellington.dfs.io;
 
 import com.google.common.base.Preconditions;
 
-import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,9 +9,9 @@ import java.io.InputStream;
 import edu.asu.ying.wellington.io.Writable;
 
 /**
- *
+ * Reads {@link Writable} objects from a stream of serialized data.
  */
-public class WritableDeserializerStream implements Closeable {
+public class WritableDeserializerStream extends InputStream {
 
   protected final DataInputStream stream;
 
@@ -37,7 +36,47 @@ public class WritableDeserializerStream implements Closeable {
   }
 
   @Override
+  public int read() throws IOException {
+    return stream.read();
+  }
+
+  @Override
+  public int read(byte[] b) throws IOException {
+    return stream.read(b);
+  }
+
+  @Override
+  public int read(byte[] b, int off, int len) throws IOException {
+    return stream.read(b, off, len);
+  }
+
+  @Override
+  public long skip(long n) throws IOException {
+    return stream.skip(n);
+  }
+
+  @Override
+  public int available() throws IOException {
+    return stream.available();
+  }
+
+  @Override
   public void close() throws IOException {
     stream.close();
+  }
+
+  @Override
+  public synchronized void mark(int readlimit) {
+    stream.mark(readlimit);
+  }
+
+  @Override
+  public synchronized void reset() throws IOException {
+    stream.reset();
+  }
+
+  @Override
+  public boolean markSupported() {
+    return stream.markSupported();
   }
 }

@@ -29,7 +29,7 @@ public class TestMemoryPersistence {
     Persistence persist = injector.getInstance(Key.get(Persistence.class, MemoryPersistence.class));
     try {
       PageOutputStream
-          stream = persist.getProvider().getOutputStream(PageIdentifier.forString("mytable~0"));
+          stream = persist.getProvider().getPageWriter(PageIdentifier.forString("mytable~0"));
       stream.write("My name is matt!".getBytes());
       stream.close();
     } catch (IOException e) {

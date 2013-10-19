@@ -1,5 +1,6 @@
 package edu.asu.ying.wellington.dfs;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -15,6 +16,11 @@ import edu.asu.ying.wellington.io.WritableComparable;
  */
 public final class SerializedBoundedPage<K extends WritableComparable, V extends Writable>
     implements SerializedPage<K, V>, Sink<Element<K, V>> {
+
+  public static <K extends WritableComparable, V extends Writable>
+  SerializedBoundedPage<K, V> readFrom(InputStream stream) {
+
+  }
 
   private static final long SerialVersionUID = 1L;
 

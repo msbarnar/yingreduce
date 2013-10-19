@@ -30,7 +30,7 @@ public class DiskPersistenceManager implements Persistence, PersistenceProvider 
   }
 
   @Override
-  public PageOutputStream getOutputStream(PageIdentifier id) throws IOException {
+  public PageOutputStream getPageWriter(PageIdentifier id) throws IOException {
     return new PageOutputStream(streamProvider.getOutputStream(getPath(id)));
   }
 

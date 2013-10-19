@@ -11,5 +11,5 @@ import edu.asu.ying.wellington.dfs.io.PageOutputStream;
  */
 public interface PersistenceProvider {
 
-  PageOutputStream getOutputStream(PageIdentifier id) throws IOException;
+  PageOutputStream getWriter(PageIdentifier id) throws IOException;
 }
