@@ -66,10 +66,10 @@ public class TestMemoryPersistence {
   public void itReadsAndWritesPages() throws IOException {
     String tableName = "mytable!";
     List<Element<WritableString, WritableInt>> elements = new ArrayList<>();
-    elements.add(new Element<WritableString, WritableInt>(new WritableString("hi!"),
-                                                          new WritableInt(1)));
-    elements.add(new Element<WritableString, WritableInt>(new WritableString("bye!"),
-                                                          new WritableInt(9)));
+    elements.add(new Element<>(new WritableString("hi!"),
+                               new WritableInt(1)));
+    elements.add(new Element<>(new WritableString("bye!"),
+                               new WritableInt(9)));
 
     Injector injector
         = Guice.createInjector(new KadP2PModule())

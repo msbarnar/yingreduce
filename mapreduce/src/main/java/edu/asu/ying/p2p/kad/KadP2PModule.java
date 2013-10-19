@@ -26,6 +26,9 @@ public class KadP2PModule extends AbstractModule {
 
   private final Properties properties;
 
+  private KeybasedRouting kbr;
+  private final Object kbrLock = new Object();
+
   public KadP2PModule() {
     this(new Properties());
   }
@@ -44,18 +47,26 @@ public class KadP2PModule extends AbstractModule {
   protected void configure() {
     Names.bindProperties(binder(), properties);
 
-    KeybasedRouting keybasedRouting;
-    try {
-      keybasedRouting = createKeybasedRouting(Integer.parseInt(properties.getProperty("p2p.port")));
-    } catch (InstantiationException e) {
-      throw new RuntimeException(e);
-    }
-
     // P2P Network
-    bind(KeybasedRouting.class).toInstance(keybasedRouting);
     bind(Activator.class).to(RMIActivator.class).in(Scopes.SINGLETON);
     bind(Channel.class).to(KadChannel.class).in(Scopes.SINGLETON);
     bind(LocalPeer.class).to(KadLocalPeer.class).in(Scopes.SINGLETON);
+  }
+
+  @Provides
+  private KeybasedRouting provideKeybasedRouting() {
+    if (kbr == null) {
+      synchronized (kbrLock) {
+        if (kbr == null) {
+          try {
+            kbr = createKeybasedRouting(Integer.parseInt(properties.getProperty("p2p.port")));
+          } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      }
+    }
+    return kbr;
   }
 
   private static KeybasedRouting createKeybasedRouting(final int port)
