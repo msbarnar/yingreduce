@@ -16,31 +16,34 @@ public final class WritableString implements WritableComparable<WritableString>,
 
   private String value = null;
 
-  public WritableString(final String value) {
+  public WritableString() {
+  }
+
+  public WritableString(String value) {
     this.value = Preconditions.checkNotNull(value);
   }
 
   @Override
-  public void readFields(final DataInput in) throws IOException {
+  public void readFields(DataInput in) throws IOException {
     this.value = in.readUTF();
   }
 
   @Override
-  public void write(final DataOutput out) throws IOException {
-    out.writeUTF(this.value);
+  public void write(DataOutput out) throws IOException {
+    out.writeUTF(value);
   }
 
   @Override
-  public int compareTo(final WritableString o) {
-    return this.compareTo(o.value);
+  public int compareTo(WritableString o) {
+    return compareTo(o.value);
   }
 
-  public int compareTo(final String s) {
-    return this.value.compareTo(s);
+  public int compareTo(String s) {
+    return value.compareTo(s);
   }
 
   @Override
-  public boolean equals(final Object o) {
+  public boolean equals(Object o) {
     return this == o || !(o == null || getClass() != o.getClass()) && value
         .equals(((WritableString) o).value);
   }
@@ -52,11 +55,11 @@ public final class WritableString implements WritableComparable<WritableString>,
 
   @Override
   public String toString() {
-    return this.value;
+    return value;
   }
 
   @Override
   public Iterator<Character> iterator() {
-    return Lists.charactersOf(this.value).iterator();
+    return Lists.charactersOf(value).iterator();
   }
 }

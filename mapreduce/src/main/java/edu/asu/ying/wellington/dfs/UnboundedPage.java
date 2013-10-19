@@ -30,13 +30,17 @@ public final class UnboundedPage<K extends WritableComparable, V extends Writabl
     this.valueClass = metadata.getValueClass();
   }
 
-  public UnboundedPage(TableIdentifier parentTableId, int index,
-                       Class<K> keyClass, Class<V> valueClass) {
-
-    this.pageId = PageIdentifier.create(parentTableId, index);
+  public UnboundedPage(PageIdentifier id, Class<K> keyClass, Class<V> valueClass) {
+    this.pageId = id;
 
     this.keyClass = keyClass;
     this.valueClass = valueClass;
+  }
+
+  public UnboundedPage(TableIdentifier parentTableId, int index,
+                       Class<K> keyClass, Class<V> valueClass) {
+
+    this(PageIdentifier.create(parentTableId, index), keyClass, valueClass);
   }
 
   public boolean offer(SerializedElement<K, V> element) {

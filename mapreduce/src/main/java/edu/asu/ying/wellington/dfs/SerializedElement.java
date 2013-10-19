@@ -56,7 +56,6 @@ public final class SerializedElement<K extends WritableComparable, V extends Wri
       writer.write(value);
       this.value = buffer.toByteArray();
 
-      buffer.close();
     } catch (IOException e) {
       throw new ExceptionInInitializerError(e);
     }

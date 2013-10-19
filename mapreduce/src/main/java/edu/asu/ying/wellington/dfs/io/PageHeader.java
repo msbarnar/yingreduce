@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.dfs.io;
 
+import com.google.common.base.Preconditions;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -21,7 +23,13 @@ import edu.asu.ying.wellington.io.WritableComparable;
 public final class PageHeader<K extends WritableComparable, V extends Writable> {
 
   public static PageHeader<?, ?> readFrom(InputStream stream) throws IOException {
-    DataInputStream input = new DataInputStream(stream);
+    Preconditions.checkNotNull(stream);
+    DataInputStream input;
+    if (stream instanceof DataInputStream) {
+      input = (DataInputStream) stream;
+    } else {
+      input = new DataInputStream(stream);
+    }
     byte[] header = new byte[input.readInt()];
     input.readFully(header);
 

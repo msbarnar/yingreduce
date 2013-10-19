@@ -20,7 +20,7 @@ import edu.asu.ying.wellington.dfs.io.PageOutputStream;
 /**
  * {@code MemoryPersistenceCache} is an in-memory cache for persisting pages.
  */
-public class MemoryPersistenceCache implements Persistence, PersistenceProvider, Runnable {
+public class MemoryPersistenceCache implements Persistence, Runnable {
 
   public static final long CACHE_LIFETIME_SECONDS = 60 * 60;  // 1 hour
   private static final long CACHE_CLEAN_FREQUENCY_SECONDS = 60;  // seconds
@@ -75,11 +75,6 @@ public class MemoryPersistenceCache implements Persistence, PersistenceProvider,
       record.touch();
       return record.get();
     }
-  }
-
-  @Override
-  public PersistenceProvider getProvider() {
-    return this;
   }
 
   /**

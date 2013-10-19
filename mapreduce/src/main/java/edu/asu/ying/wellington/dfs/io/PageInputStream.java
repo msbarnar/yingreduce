@@ -23,7 +23,8 @@ public class PageInputStream extends InputStream {
   }
 
   @SuppressWarnings("unchecked")
-  Page<?, ?> readPage() throws IOException {
+  public <K extends WritableComparable, V extends Writable>
+  Page<K, V> readPage() throws IOException {
 
     PageHeader<?, ?> header = PageHeader.readFrom(stream);
     Class<? extends WritableComparable> keyClass = header.getKeyClass();
@@ -38,7 +39,7 @@ public class PageInputStream extends InputStream {
       page.offer(new Element(deserializer.read(keyClass), deserializer.read(valueClass)));
     }
 
-    return page;
+    return (Page<K, V>) page;
   }
 
   @Override

@@ -9,12 +9,13 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.io.PageInputStream;
 import edu.asu.ying.wellington.dfs.io.PageOutputStream;
 
 /**
  *
  */
-public class DiskPersistenceManager implements Persistence, PersistenceProvider {
+public class DiskPersistenceManager implements Persistence {
 
   private final StreamProvider streamProvider;
   private final HashFunction hasher = Hashing.md5();
@@ -25,13 +26,13 @@ public class DiskPersistenceManager implements Persistence, PersistenceProvider 
   }
 
   @Override
-  public PersistenceProvider getProvider() {
-    return this;
+  public PageOutputStream getOutputStream(PageIdentifier id) throws IOException {
+    return new PageOutputStream(streamProvider.getOutputStream(getPath(id)));
   }
 
   @Override
-  public PageOutputStream getPageWriter(PageIdentifier id) throws IOException {
-    return new PageOutputStream(streamProvider.getOutputStream(getPath(id)));
+  public PageInputStream getInputStream(PageIdentifier id) throws IOException {
+    return null;
   }
 
   /**
@@ -50,4 +51,6 @@ public class DiskPersistenceManager implements Persistence, PersistenceProvider 
     String pageFile = makePathString(id.toString());
     return Paths.get(tableDirectory, pageFile).toString();
   }
+
+
 }
