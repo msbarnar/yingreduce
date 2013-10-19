@@ -4,39 +4,26 @@ import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
- *
  */
-public class PageMetadata<K extends WritableComparable, V extends Writable> implements Page<K, V> {
+public interface PageMetadata<K extends WritableComparable, V extends Writable> {
 
-  private final PageIdentifier id;
-  private final int numElements;
-  private final Class<K> keyClass;
-  private final Class<V> valueClass;
+  /**
+   * Gets the ID of the page, including its parent table and index on that table.
+   */
+  PageIdentifier getID();
 
-  public PageMetadata(PageIdentifier id, int numElements, Class<K> keyClass, Class<V> valueClass) {
-    this.id = id;
-    this.numElements = numElements;
-    this.keyClass = keyClass;
-    this.valueClass = value;
-  }
+  /**
+   * Returns the number of entries in the page.
+   */
+  int size();
 
-  @Override
-  public PageIdentifier getID() {
-    return id;
-  }
+  /**
+   * Returns the class of keys stored in this page.
+   */
+  Class<K> getKeyClass();
 
-  @Override
-  public int size() {
-    return numElements;
-  }
-
-  @Override
-  public Class<K> getKeyClass() {
-    return keyClass;
-  }
-
-  @Override
-  public Class<V> getValueClass() {
-    return valueClass;
-  }
+  /**
+   * Returns the class of values stored in this page.
+   */
+  Class<V> getValueClass();
 }

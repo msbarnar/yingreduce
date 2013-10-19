@@ -5,8 +5,8 @@ import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.io.InputStream;
 
-import edu.asu.ying.wellington.dfs.DeserializedPage;
 import edu.asu.ying.wellington.dfs.Element;
+import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.UnboundedPage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
@@ -23,7 +23,7 @@ public class PageInputStream extends InputStream {
   }
 
   @SuppressWarnings("unchecked")
-  DeserializedPage<?, ?> readPage() throws IOException {
+  Page<?, ?> readPage() throws IOException {
 
     PageHeader<?, ?> header = PageHeader.readFrom(stream);
     Class<? extends WritableComparable> keyClass = header.getKeyClass();

@@ -13,9 +13,9 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import edu.asu.ying.wellington.dfs.Element;
-import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
-import edu.asu.ying.wellington.dfs.SerializedBoundedPage;
+import edu.asu.ying.wellington.dfs.PageMetadata;
+import edu.asu.ying.wellington.dfs.SerializingBoundedPage;
 import edu.asu.ying.wellington.dfs.io.PageOutputStream;
 import edu.asu.ying.wellington.dfs.io.PageReader;
 import edu.asu.ying.wellington.io.Writable;
@@ -126,20 +126,20 @@ public class MemoryPersistenceCache implements Persistence, PersistenceProvider,
   private final class CachePageReader<K extends WritableComparable, V extends Writable>
       implements PageReader<K, V> {
 
-    private final Page<K, V> metadata;
+    private final PageMetadata<K, V> metadata;
 
     CachePageReader() {
 
     }
 
     @Override
-    public Page<K, V> getMetadata() {
+    public PageMetadata<K, V> getMetadata() {
       return metadata;
     }
 
     @Override
     public Iterator<Element<K, V>> iterator() {
-      return SerializedBoundedPage.
+      return SerializingBoundedPage.
     }
   }
 

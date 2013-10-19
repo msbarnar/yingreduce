@@ -10,7 +10,7 @@ import edu.asu.ying.common.event.RemoteSink;
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.dfs.Page;
+import edu.asu.ying.wellington.dfs.PageMetadata;
 
 /**
  *
@@ -27,7 +27,7 @@ public final class DFSServiceExporter
   }
 
   @Override
-  public RemoteSink<Page> getPageDepository() throws RemoteException {
+  public RemoteSink<PageMetadata> getPageDepository() throws RemoteException {
     return Pipe.toSink(service.getPageDepository());
   }
 

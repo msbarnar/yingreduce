@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import edu.asu.ying.wellington.dfs.SerializedElement;
-import edu.asu.ying.wellington.dfs.SerializedPage;
+import edu.asu.ying.wellington.dfs.SerializingPage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -30,7 +30,7 @@ public class PageOutputStream extends OutputStream {
    * </ol>
    */
   public <K extends WritableComparable, V extends Writable>
-  void write(SerializedPage<K, V> p) throws IOException {
+  void write(SerializingPage<K, V> p) throws IOException {
 
     new PageHeader<>(p).writeTo(stream);
 

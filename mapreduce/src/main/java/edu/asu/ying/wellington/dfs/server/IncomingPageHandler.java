@@ -5,29 +5,32 @@ import java.io.IOException;
 import edu.asu.ying.common.event.EventBase;
 import edu.asu.ying.common.event.EventHandler;
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.Page;
+import edu.asu.ying.wellington.dfs.PageMetadata;
 
 /**
  *
  */
-public final class IncomingPageHandler implements Sink<Page> {
+public final class IncomingPageHandler implements Sink<PageMetadata> {
 
-  public final EventBase<EventHandler<Page>, Page> onIncomingPage = new EventBase<>();
+  public final
+  EventBase<EventHandler<PageMetadata>, PageMetadata>
+      onIncomingPage =
+      new EventBase<>();
 
   public IncomingPageHandler() {
   }
 
   @Override
-  public boolean offer(final Page page) throws IOException {
-    this.onIncomingPage.fire(this, page);
+  public boolean offer(final PageMetadata pageMetadata) throws IOException {
+    this.onIncomingPage.fire(this, pageMetadata);
     return true;
   }
 
   @Override
-  public int offer(final Iterable<Page> pages) throws IOException {
+  public int offer(final Iterable<PageMetadata> pages) throws IOException {
     int count = 0;
-    for (final Page page : pages) {
-      this.onIncomingPage.fire(this, page);
+    for (final PageMetadata pageMetadata : pages) {
+      this.onIncomingPage.fire(this, pageMetadata);
       count++;
     }
     return count;

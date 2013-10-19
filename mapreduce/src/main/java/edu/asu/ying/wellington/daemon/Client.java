@@ -114,9 +114,9 @@ public class Client {
     }
 
     for (final Daemon instance : instances) {
-      /*instance.getLocalPeer().getPageInSink().onIncomingPage.attach(new EventHandler<Page>() {
+      /*instance.getLocalPeer().getPageInSink().onIncomingPage.attach(new EventHandler<PageMetadata>() {
         @Override
-        public boolean onEvent(Object sender, Page args) {
+        public boolean onEvent(Object sender, PageMetadata args) {
           System.out.println(
               String.format("[%d] PAGE! %s %d", instance.getPort(), args.getTableId().toString(),
                             args.getIndex()));

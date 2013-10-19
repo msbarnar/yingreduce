@@ -32,12 +32,12 @@ public final class PageIdentifier extends AbstractIdentifier {
       try {
         pageIndex = Math.max(Integer.parseInt(id.substring(lastDelimiter + 1)), -1);
       } catch (NumberFormatException e) {
-        throw new InvalidIdentifierException("Page index is not an integer", id);
+        throw new InvalidIdentifierException("PageMetadata index is not an integer", id);
       }
       return new PageIdentifier(TableIdentifier.forString(id.substring(0, lastDelimiter)),
                                 pageIndex);
     } else {
-      throw new InvalidIdentifierException("Page index not specified", id);
+      throw new InvalidIdentifierException("PageMetadata index not specified", id);
     }
   }
 

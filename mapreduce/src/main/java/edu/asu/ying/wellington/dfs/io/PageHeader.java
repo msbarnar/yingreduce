@@ -9,8 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
-import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
@@ -38,11 +38,11 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
   private Class<V> valueClass;
   private int numKeys;
 
-  public PageHeader(Page<K, V> page) throws IOException {
-    this.pageID = page.getID();
-    this.keyClass = page.getKeyClass();
-    this.valueClass = page.getValueClass();
-    this.numKeys = page.size();
+  public PageHeader(PageMetadata<K, V> pageMetadata) throws IOException {
+    this.pageID = pageMetadata.getID();
+    this.keyClass = pageMetadata.getKeyClass();
+    this.valueClass = pageMetadata.getValueClass();
+    this.numKeys = pageMetadata.size();
     this.header = makeHeader();
   }
 
@@ -133,7 +133,8 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
   public static final class WrongPageVersionException extends IOException {
 
     public WrongPageVersionException(int expected, int got) {
-      super(String.format("Page data is wrong version: expected %d, got %d", expected, got));
+      super(
+          String.format("PageMetadata data is wrong version: expected %d, got %d", expected, got));
     }
   }
 }

@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import edu.asu.ying.common.event.EventHandler;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.dfs.Page;
+import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.dfs.Table;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.dfs.TableNotFoundException;
@@ -32,9 +32,9 @@ public class DFSServer implements DFSService {
     }
 
     // TODO: testing
-    pageDepository.onIncomingPage.attach(new EventHandler<Page>() {
+    pageDepository.onIncomingPage.attach(new EventHandler<PageMetadata>() {
       @Override
-      public boolean onEvent(Object sender, @Nullable Page args) {
+      public boolean onEvent(Object sender, @Nullable PageMetadata args) {
         System.out.println("Got page! ".concat(args != null ? args.getID().toString() : ""));
         return true;
       }
@@ -51,7 +51,7 @@ public class DFSServer implements DFSService {
   }
 
   @Override
-  public Sink<Page> getPageDepository() {
+  public Sink<PageMetadata> getPageDepository() {
     return pageDepository;
   }
 

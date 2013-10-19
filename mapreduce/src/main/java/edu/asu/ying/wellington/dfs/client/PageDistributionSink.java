@@ -12,14 +12,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.Page;
+import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
  * {@code PageDistributionSink} distributes accepted pages to appropriate peers on the network.
  */
-public final class PageDistributionSink implements Sink<Page> {
+public final class PageDistributionSink implements Sink<PageMetadata> {
 
   private static final int DEFAULT_DUPLICATION_FACTOR = 3;
 
@@ -39,19 +39,19 @@ public final class PageDistributionSink implements Sink<Page> {
   }
 
   /**
-   * Finds k peers near the page's key and concurrently offers them the page.
+   * Finds k peers near the pageMetadata's key and concurrently offers them the pageMetadata.
    */
   @Override
-  public boolean offer(final Page page) throws IOException {
-    List<RemoteNode> nodes = findRecipientsFor(page);
+  public boolean offer(final PageMetadata pageMetadata) throws IOException {
+    List<RemoteNode> nodes = findRecipientsFor(pageMetadata);
     List<Future<Boolean>> results = new ArrayList<>(nodes.size());
 
-    // Concurrently offer the page to all of the peers
+    // Concurrently offer the pageMetadata to all of the peers
     for (final RemoteNode node : nodes) {
       results.add(workersByNode.submit(new Callable<Boolean>() {
         @Override
         public Boolean call() throws Exception {
-          return node.getDFSService().getPageDepository().offer(page);
+          return node.getDFSService().getPageDepository().offer(pageMetadata);
         }
       }));
     }
@@ -71,19 +71,20 @@ public final class PageDistributionSink implements Sink<Page> {
   }
 
   /**
-   * For each {@link Page} in {@code pages}, finds k peers near the page's key and concurrently
+   * For each {@link edu.asu.ying.wellington.dfs.PageMetadata} in {@code pages}, finds k peers near
+   * the page's key and concurrently
    * offers them the page.
    *
    * @return the number of pages successfully sent.
    */
   @Override
-  public int offer(Iterable<Page> pages) throws IOException {
+  public int offer(Iterable<PageMetadata> pages) throws IOException {
     List<Future<Boolean>> results = new ArrayList<>();
-    for (final Page page : pages) {
+    for (final PageMetadata pageMetadata : pages) {
       results.add(workersByPage.submit(new Callable<Boolean>() {
         @Override
         public Boolean call() throws Exception {
-          return PageDistributionSink.this.offer(page);
+          return PageDistributionSink.this.offer(pageMetadata);
         }
       }));
     }
@@ -100,7 +101,7 @@ public final class PageDistributionSink implements Sink<Page> {
     return count;
   }
 
-  private List<RemoteNode> findRecipientsFor(Page page) throws IOException {
-    return locator.find(page.getID().toString(), pageDuplicationFactor);
+  private List<RemoteNode> findRecipientsFor(PageMetadata pageMetadata) throws IOException {
+    return locator.find(pageMetadata.getID().toString(), pageDuplicationFactor);
   }
 }

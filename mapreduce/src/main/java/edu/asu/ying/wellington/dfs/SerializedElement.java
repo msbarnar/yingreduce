@@ -2,11 +2,11 @@ package edu.asu.ying.wellington.dfs;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
 import edu.asu.ying.wellington.dfs.io.WritableDeserializerStream;
+import edu.asu.ying.wellington.dfs.io.WritableSerializerStream;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -46,14 +46,14 @@ public final class SerializedElement<K extends WritableComparable, V extends Wri
     this.valueClass = (Class<V>) value.getClass();
 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    DataOutputStream writer = new DataOutputStream(buffer);
+    WritableSerializerStream writer = new WritableSerializerStream(buffer);
 
     try {
-      key.write(writer);
+      writer.write(key);
       this.key = buffer.toByteArray();
 
       buffer.reset();
-      value.write(writer);
+      writer.write(value);
       this.value = buffer.toByteArray();
 
       buffer.close();

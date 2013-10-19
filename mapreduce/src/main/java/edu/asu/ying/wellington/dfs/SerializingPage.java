@@ -7,7 +7,7 @@ import edu.asu.ying.wellington.io.WritableComparable;
 /**
  *
  */
-public interface DeserializedPage<K extends WritableComparable, V extends Writable>
-    extends Page<K, V>, Iterable<Element<K, V>>, Sink<Element<K, V>> {
+public interface SerializingPage<K extends WritableComparable, V extends Writable>
+    extends PageMetadata<K, V>, Iterable<SerializedElement<K, V>>, Sink<Element<K, V>> {
 
 }

@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Element;
-import edu.asu.ying.wellington.dfs.Page;
-import edu.asu.ying.wellington.dfs.SerializedBoundedPage;
+import edu.asu.ying.wellington.dfs.PageMetadata;
+import edu.asu.ying.wellington.dfs.SerializingBoundedPage;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
@@ -29,18 +29,18 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
   private final TableIdentifier id;
 
   // Sinks full pages
-  private final Sink<Page> pageSink;
+  private final Sink<PageMetadata> pageSink;
 
   // For creating the page
   private final Class<K> keyClass;
   private final Class<V> valueClass;
 
   // Stores table elements not yet committed to the network.
-  private SerializedBoundedPage<K, V> currentPage = null;
+  private SerializingBoundedPage<K, V> currentPage = null;
   private int currentPageIndex = 0;
   private final Object currentPageLock = new Object();
 
-  public PageBuilder(TableIdentifier id, Sink<Page> pageSink,
+  public PageBuilder(TableIdentifier id, Sink<PageMetadata> pageSink,
                      Class<K> keyClass, Class<V> valueClass) {
     this.id = id;
     this.pageSink = pageSink;
@@ -89,7 +89,7 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
         try {
           // TODO: Logging
           if (!pageSink.offer(currentPage)) {
-            throw new IOException("Page sink rejected page");
+            throw new IOException("PageMetadata sink rejected page");
           }
         } catch (IOException e) {
           // TODO: Logging
@@ -102,8 +102,8 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
     }
   }
 
-  private SerializedBoundedPage<K, V> createPage() {
-    return new SerializedBoundedPage<>(id, currentPageIndex, DEFAULT_PAGE_CAPACITY_BYTES,
-                                       keyClass, valueClass);
+  private SerializingBoundedPage<K, V> createPage() {
+    return new SerializingBoundedPage<>(id, currentPageIndex, DEFAULT_PAGE_CAPACITY_BYTES,
+                                        keyClass, valueClass);
   }
 }

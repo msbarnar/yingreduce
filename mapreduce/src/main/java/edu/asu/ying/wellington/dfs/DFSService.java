@@ -12,5 +12,5 @@ public interface DFSService extends Service, Exported<RemoteDFSService> {
 
   Table getTable(TableIdentifier id) throws TableNotFoundException;
 
-  Sink<Page> getPageDepository();
+  Sink<PageMetadata> getPageDepository();
 }

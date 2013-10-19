@@ -10,11 +10,10 @@ import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
- * {@code BoundedPage} is limited to a specific capacity in bytes, and will not accept entries that
- * would exceed that capacity.
+ *
  */
 public final class UnboundedPage<K extends WritableComparable, V extends Writable>
-    implements DeserializedPage<K, V> {
+    implements Page<K, V> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -25,7 +24,7 @@ public final class UnboundedPage<K extends WritableComparable, V extends Writabl
 
   private final List<Element<K, V>> contents = new ArrayList<>();
 
-  public UnboundedPage(Page<K, V> metadata) {
+  public UnboundedPage(PageMetadata<K, V> metadata) {
     this.pageId = metadata.getID();
     this.keyClass = metadata.getKeyClass();
     this.valueClass = metadata.getValueClass();
