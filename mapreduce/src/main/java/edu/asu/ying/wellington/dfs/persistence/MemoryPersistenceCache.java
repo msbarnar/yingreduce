@@ -3,6 +3,7 @@ package edu.asu.ying.wellington.dfs.persistence;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,12 +16,14 @@ import javax.inject.Inject;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
-import edu.asu.ying.wellington.dfs.io.PageOutputStream;
+import edu.asu.ying.wellington.dfs.io.PageOutputStreamProvider;
+import edu.asu.ying.wellington.dfs.io.PageWriter;
 
 /**
  * {@code MemoryPersistenceCache} is an in-memory cache for persisting pages.
  */
-public class MemoryPersistenceCache implements Persistence, Runnable {
+public final class MemoryPersistenceCache
+    implements Persistence, PageOutputStreamProvider, Runnable {
 
   public static final long CACHE_LIFETIME_SECONDS = 60 * 60;  // 1 hour
   private static final long CACHE_CLEAN_FREQUENCY_SECONDS = 60;  // seconds
@@ -83,7 +86,12 @@ public class MemoryPersistenceCache implements Persistence, Runnable {
    * The stream <b>must</b> be closed for the written data to be persisted.
    */
   @Override
-  public PageOutputStream getOutputStream(PageIdentifier id) throws IOException {
+  public PageWriter getWriter() throws IOException {
+    return new PageWriter(this);
+  }
+
+  @Override
+  public OutputStream getPageOutputStream(PageIdentifier id) throws IOException {
     return new CacheOutputStream(id, this);
   }
 
@@ -124,15 +132,36 @@ public class MemoryPersistenceCache implements Persistence, Runnable {
   /**
    * An output stream that commits the stream to the memory cache when closed.
    */
-  private final class CacheOutputStream extends PageOutputStream {
+  private final class CacheOutputStream extends OutputStream {
 
     private final PageIdentifier id;
     private final MemoryPersistenceCache cache;
+    private final OutputStream stream;
 
     CacheOutputStream(PageIdentifier id, MemoryPersistenceCache cache) {
-      super(new ByteArrayOutputStream());
       this.id = id;
       this.cache = cache;
+      stream = new ByteArrayOutputStream();
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+      stream.write(b);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+      stream.write(b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      stream.write(b, off, len);
+    }
+
+    @Override
+    public void flush() throws IOException {
+      stream.flush();
     }
 
     @Override

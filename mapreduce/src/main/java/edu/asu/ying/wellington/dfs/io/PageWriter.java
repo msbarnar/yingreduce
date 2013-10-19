@@ -13,12 +13,12 @@ import edu.asu.ying.wellington.io.WritableComparable;
 /**
  * Serializes an entire page to an output stream.
  */
-public class PageOutputStream extends OutputStream {
+public class PageWriter {
 
-  protected final OutputStream stream;
+  protected final PageOutputStreamProvider provider;
 
-  public PageOutputStream(OutputStream stream) {
-    this.stream = Preconditions.checkNotNull(stream);
+  public PageWriter(PageOutputStreamProvider provider) {
+    this.provider = Preconditions.checkNotNull(provider);
   }
 
   /**
@@ -32,37 +32,15 @@ public class PageOutputStream extends OutputStream {
   public <K extends WritableComparable, V extends Writable>
   void write(SerializingPage<K, V> p) throws IOException {
 
+    OutputStream stream = provider.getPageOutputStream(p.getID());
+
     new PageHeader<>(p).writeTo(stream);
 
     for (SerializedElement<K, V> element : p) {
-      write(element.getKey());
-      write(element.getValue());
+      stream.write(element.getKey());
+      stream.write(element.getValue());
     }
-    flush();
-  }
 
-  @Override
-  public void write(int b) throws IOException {
-    stream.write(b);
-  }
-
-  @Override
-  public void write(byte[] b) throws IOException {
-    stream.write(b);
-  }
-
-  @Override
-  public void write(byte[] b, int off, int len) throws IOException {
-    stream.write(b, off, len);
-  }
-
-  @Override
-  public void close() throws IOException {
     stream.close();
-  }
-
-  @Override
-  public void flush() throws IOException {
-    stream.flush();
   }
 }

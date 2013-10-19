@@ -6,16 +6,18 @@ import com.google.common.hash.Hashing;
 import com.google.inject.Inject;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
-import edu.asu.ying.wellington.dfs.io.PageOutputStream;
+import edu.asu.ying.wellington.dfs.io.PageOutputStreamProvider;
+import edu.asu.ying.wellington.dfs.io.PageWriter;
 
 /**
  *
  */
-public class DiskPersistenceManager implements Persistence {
+public final class DiskPersistenceManager implements Persistence, PageOutputStreamProvider {
 
   private final StreamProvider streamProvider;
   private final HashFunction hasher = Hashing.md5();
@@ -26,20 +28,18 @@ public class DiskPersistenceManager implements Persistence {
   }
 
   @Override
-  public PageOutputStream getOutputStream(PageIdentifier id) throws IOException {
-    return new PageOutputStream(streamProvider.getOutputStream(getPath(id)));
+  public PageWriter getWriter() throws IOException {
+    return new PageWriter(this);
+  }
+
+  @Override
+  public OutputStream getPageOutputStream(PageIdentifier id) throws IOException {
+    return streamProvider.getOutputStream(getPath(id));
   }
 
   @Override
   public PageInputStream getInputStream(PageIdentifier id) throws IOException {
-    return null;
-  }
-
-  /**
-   * Returns a normalized version of a string safe for filesystem paths.
-   */
-  private String makePathString(String s) {
-    return hasher.hashString(s, Charsets.UTF_8).toString();
+    return new PageInputStream(streamProvider.getInputStream(getPath(id)));
   }
 
   /**
@@ -52,5 +52,10 @@ public class DiskPersistenceManager implements Persistence {
     return Paths.get(tableDirectory, pageFile).toString();
   }
 
-
+  /**
+   * Returns a normalized version of a string safe for filesystem paths.
+   */
+  private String makePathString(String s) {
+    return hasher.hashString(s, Charsets.UTF_8).toString();
+  }
 }

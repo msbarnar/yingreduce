@@ -20,7 +20,8 @@ import edu.asu.ying.wellington.dfs.SerializingBoundedPage;
 import edu.asu.ying.wellington.dfs.SerializingPage;
 import edu.asu.ying.wellington.dfs.TableIdentifier;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
-import edu.asu.ying.wellington.dfs.persistence.MemoryPersistence;
+import edu.asu.ying.wellington.dfs.io.PageWriter;
+import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
 import edu.asu.ying.wellington.io.WritableInt;
 import edu.asu.ying.wellington.io.WritableString;
@@ -28,10 +29,10 @@ import edu.asu.ying.wellington.io.WritableString;
 /**
  *
  */
-public class TestMemoryPersistence {
+public class TestDiskPersistence {
 
   @Test
-  public void itWritesAndReads() throws IOException {
+  public void itReadsAndWritesPages() throws IOException {
     String tableName = "mytable!";
     List<Element<WritableString, WritableInt>> elements = new ArrayList<>();
     elements.add(new Element<>(new WritableString("hi!"),
@@ -45,7 +46,7 @@ public class TestMemoryPersistence {
                                                                 "/Users/matthew/Desktop/dfs"));
 
     Persistence persist = injector.getInstance(Key.get(Persistence.class,
-                                                       MemoryPersistence.class));
+                                                       DiskPersistence.class));
 
     SerializingPage<WritableString, WritableInt> page
         = new SerializingBoundedPage<>(TableIdentifier.forString(tableName),
@@ -53,7 +54,8 @@ public class TestMemoryPersistence {
     Assert.assertEquals(page.offer(elements), elements.size());
 
     // Write
-    persist.getWriter().write(page);
+    PageWriter output = persist.getWriter();
+    output.write(page);
 
     // Read
     PageInputStream input = persist.getInputStream(page.getID());
