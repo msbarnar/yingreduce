@@ -37,7 +37,7 @@
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
-\suppress_date false
+\suppress_date true
 \use_refstyle 1
 \boxbgcolor #faf0e6
 \index Index
@@ -164,22 +164,148 @@ The following process may occur concurrently some number of times according
 \begin_layout Standard
 As pages arrive in the 
 \emph on
-distribution queue, 
+distribution queue 
+\emph default
+on the 
+\emph on
+distributing node 
+\emph default
+
+\begin_inset Formula $N_{D}$
+\end_inset
+
+
+\emph on
+, 
 \emph default
 their destination is determined by hashing their table name concatenated
- with their integral index.
- The underlying peer-to-peer network is queried using this hash and returns
- several of the nodes most closely matching that hash, in ascending order
+ with their integral index, generating the page 
+\emph on
+key
+\emph default
+ 
+\begin_inset Formula $K$
+\end_inset
+
+.
+ The underlying peer-to-peer network is queried using this key and returns
+ several of the nodes most closely matching that key, in ascending order
  of distance.
  The first of these is selected as the 
 \emph on
 initial node
 \emph default
+ 
+\begin_inset Formula $N_{0}$
+\end_inset
+
 .
 \end_layout
 
 \begin_layout Standard
-The initial node is contacted 
+The initial node is contacted requesting that it accept a page.
+ The inital node currently has no option and must receive the page; there
+ is no recourse in place if that node's capacity is exceeded.
+\end_layout
+
+\begin_layout Standard
+A binary reader is attached to the page in the distributing node's memory
+ and is connected to a TCP stream to the initial node.
+ The initial node creates a file on disk corresponding to the page's key
+ and attaches an output stream to it.
+ The initial node then connects the incoming TCP stream to the file output
+ stream so that the page's contents are streamed directly from the distributing
+ node's memory to the inital node's disk, minimizing the possibility for
+ denial of memory availability when numerous large pages are sent.
+\end_layout
+
+\begin_layout Section
+Replication
+\end_layout
+
+\begin_layout Standard
+When the initial node has fully received the page the distributing node
+ is free to dispose of it unless the distributing node is one of the top
+ three closest nodes to that page's key.
+ If this is the case, the node commits the page to disk so that it can be
+ referenced by its key.
+\end_layout
+
+\begin_layout Standard
+The initial node performs its own network query for the page's key, finding
+ the top three closest nodes.
+ It selects the first closest node 
+\begin_inset Formula $N_{1}$
+\end_inset
+
+ besides itself and copies the page to it in the same manner as in 
+\emph on
+Distribution
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $N_{1}$
+\end_inset
+
+ repeats this process with 
+\begin_inset Formula $N_{2}$
+\end_inset
+
+ so that the three nodes most closely associated with the page's key carry
+ copies of it: these nodes 
+\begin_inset Formula $\{N_{0},N_{1},N_{2}\}$
+\end_inset
+
+ are the page's 
+\emph on
+container nodes
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+Each of the container nodes remains in periodic contact with each of the
+ other nodes.
+ As soon as one node is determined to be unreachable, the remaining two
+ nodes decide between themselves randomly as to who will redistribute the
+ page.
+ Whichever node is chosen repeats the process of finding the next nearest
+ node that is not one of the two container nodes and sends the page to it;
+ that new node then becomes a member of the container nodes.
+\end_layout
+
+\begin_layout Section
+Precision Maintenance
+\end_layout
+
+\begin_layout Standard
+As nodes enter and leave the network the distribution of node keys changes.
+ To ensure that a page's container nodes are always the nodes with the nearest
+ keys to its key, newly joined nodes must broadcast their key and request
+ and pages which more closely match the new nodes than their previous containers.
+\end_layout
+
+\begin_layout Standard
+When a new node joins it queries the network for the nodes with keys nearest
+ its own.
+ It contacts all of these simultaneously, informing them of its key.
+ Each of those nodes examines their page stores and calculates the nearness
+ of each of their pages to themselves as well as the new node.
+ Any pages which are closer to the new node are retrieved and queued for
+ distribution to that node.
+ As distirbution may take some time to complete, the new node is immediately
+ informed that these nodes have those pages.
+ Because the new node is close to those pages, it may receive requests for
+ them despite not yet actually carrying them.
+ If this happens, the node should respond to those requests with a 
+\emph on
+forward
+\emph default
+ message containing the address of the node actually carrying the page.
+ As soon as the new node begins carrying a page it will cease forwarding
+ requests.
 \end_layout
 
 \end_body
