@@ -114,6 +114,9 @@ public final class KadLocalPeer implements LocalPeer {
     return ImmutableList.copyOf(neighborsCache.values());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RemotePeer findPeer(String name)
       throws PeerNotFoundException, RemoteImportException {
@@ -126,6 +129,9 @@ public final class KadLocalPeer implements LocalPeer {
     return this.importProxyTo(kadNodes.get(0));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<RemotePeer> findPeers(String name, int count) {
     Key key = kbrNode.getKeyFactory().create(name);

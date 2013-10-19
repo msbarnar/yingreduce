@@ -18,7 +18,9 @@ import edu.asu.ying.wellington.mapreduce.job.JobConf;
 import edu.asu.ying.wellington.mapreduce.job.JobException;
 
 /**
- * The com.healthmarketscience.rmiio.main entry point for the node daemon. {@code Server} starts the table, scheduling, and
+ * The com.healthmarketscience.rmiio.main entry point for the node daemon. {@code Server} starts
+ * the
+ * table, scheduling, and
  * interface services before attaching the local node to an existing Kademlia network.
  */
 public class Client {
@@ -52,8 +54,8 @@ public class Client {
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
           new KadP2PModule().setProperty("p2p.port", Integer.toString(5000 + i)))
-          .createChildInjector(
-              new WellingtonModule());
+          .createChildInjector(new WellingtonModule().setProperty("dfs.store.path",
+                                                                  "/Users/Matthew/Desktop/dfs"));
 
       instances[i] = injector.getInstance(Daemon.class);
       if (i > 0) {

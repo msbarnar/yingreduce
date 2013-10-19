@@ -2,6 +2,7 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
+import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.remoting.Activator;
@@ -26,5 +27,10 @@ public final class DFSServiceExporter
   public RemoteDFSService export(DFSService target) throws ExportException {
     this.service = target;
     return activator.bind(RemoteDFSService.class, this);
+  }
+
+  @Override
+  public PageTransferResult offer(PageTransfer transfer) throws RemoteException {
+    return null;
   }
 }

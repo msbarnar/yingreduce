@@ -39,7 +39,7 @@ public final class NodeImpl implements LocalNode, NodeLocator {
 
     this.localPeer = localPeer;
     // Use the same node name as the underlying P2P node
-    this.name = localPeer.getName().toString();
+    this.name = localPeer.getName();
 
     try {
       this.proxy = exporter.export(this);
