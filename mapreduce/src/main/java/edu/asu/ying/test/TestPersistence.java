@@ -83,8 +83,7 @@ public class TestPersistence {
 
     Injector injector
         = Guice.createInjector(new KadP2PModule())
-        .createChildInjector(new WellingtonModule().setProperty("dfs.store.path",
-                                                                tmpPath));
+        .createChildInjector(new WellingtonModule().setProperty("dfs.store.path", tmpPath));
 
     Persistence persist = injector.getInstance(Key.get(Persistence.class,
                                                        DiskPersistence.class));

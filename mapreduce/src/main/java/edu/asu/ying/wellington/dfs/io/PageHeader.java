@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import edu.asu.ying.wellington.VersionMismatchException;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.io.Writable;
@@ -24,8 +25,8 @@ import edu.asu.ying.wellington.io.WritableComparable;
  *   Field           Length
  *   ----------------------
  *   Header length        2
- *   Magic value          4
- *   Version number       2
+ *   Magic value          3
+ *   Version number       1
  *   Table name           n
  *   Page index           4
  *   Key class name       n
@@ -55,8 +56,8 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     return new PageHeader<>(header);
   }
 
-  private static final int MAGIC = 0x4B494D53;
-  private static final short VERSION = 1;
+  private static final int MAGIC = 0x4B494D;
+  private static final byte VERSION = 1;
 
   private final byte[] header;
 
@@ -86,8 +87,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     DataOutputStream output = new DataOutputStream(buffer);
 
-    output.writeInt(MAGIC);
-    output.writeShort(VERSION);
+    output.writeInt((MAGIC << 8) | VERSION);
     output.writeUTF(pageID.getTableName());
     output.writeInt(pageID.getIndex());
     output.writeUTF(keyClass.getCanonicalName());
@@ -108,12 +108,13 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
   private void readFields() throws IOException {
     DataInputStream input = new DataInputStream(new ByteArrayInputStream(header));
 
-    if (input.readInt() != MAGIC) {
+    int magicVersion = input.readInt();
+    if ((magicVersion >> 8) != MAGIC) {
       throw new NotPageDataException();
     }
-    int version = input.readShort();
+    int version = magicVersion & 0xFF;
     if (version != VERSION) {
-      throw new WrongPageVersionException(VERSION, version);
+      throw new VersionMismatchException(VERSION, version);
     }
 
     String tableName = input.readUTF();
@@ -154,14 +155,6 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
 
     public NotPageDataException() {
       super("The serialized data are not a page");
-    }
-  }
-
-  public static final class WrongPageVersionException extends IOException {
-
-    public WrongPageVersionException(int expected, int got) {
-      super(
-          String.format("PageMetadata data is wrong version: expected %d, got %d", expected, got));
     }
   }
 }
