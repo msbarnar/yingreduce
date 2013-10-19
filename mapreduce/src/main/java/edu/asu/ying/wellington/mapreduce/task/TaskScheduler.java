@@ -3,7 +3,6 @@ package edu.asu.ying.wellington.mapreduce.task;
 import com.google.inject.Inject;
 
 import java.rmi.server.ExportException;
-import java.util.Random;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
@@ -105,11 +104,6 @@ public class TaskScheduler implements TaskService {
    */
   private boolean isInitialNodeFor(Task task) {
     PageIdentifier pageId = task.getTargetPageID();
-    /*try {
-      return dfsService.getTable(pageId.getTableID()).hasPage(pageId.getIndex());
-    } catch (TableNotFoundException e) {
-      return false;
-    }*/
-    return (new Random()).nextDouble() > 0.5;
+    return dfsService.hasPage(pageId);
   }
 }

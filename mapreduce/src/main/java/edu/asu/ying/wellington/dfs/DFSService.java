@@ -9,4 +9,5 @@ import edu.asu.ying.wellington.mapreduce.Service;
  */
 public interface DFSService extends Service, Exported<RemoteDFSService> {
 
+  boolean hasPage(PageIdentifier id);
 }
