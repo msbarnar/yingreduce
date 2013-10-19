@@ -2,6 +2,7 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
@@ -31,6 +32,10 @@ public final class DFSServiceExporter
 
   @Override
   public PageTransferResult offer(PageTransfer transfer) throws RemoteException {
-    return null;
+    try {
+      return service.offer(transfer);
+    } catch (IOException e) {
+      throw new RemoteException("The DFS server threw an exception accepting the page transfer", e);
+    }
   }
 }

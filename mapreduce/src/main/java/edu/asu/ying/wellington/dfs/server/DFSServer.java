@@ -2,9 +2,11 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
+import java.io.IOException;
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.wellington.dfs.DFSService;
+import edu.asu.ying.wellington.dfs.PageIdentifier;
 
 /**
  *
@@ -24,6 +26,16 @@ public class DFSServer implements DFSService {
 
   @Override
   public void start() {
+  }
+
+  @Override
+  public PageTransferResult offer(PageTransfer transfer) throws IOException {
+    return null;
+  }
+
+  @Override
+  public boolean hasPage(PageIdentifier id) {
+    return false;
   }
 
   @Override
