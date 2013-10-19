@@ -19,7 +19,23 @@ import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
- *
+ * Header format:
+ * <pre>
+ *   {@code
+ *   Field           Length
+ *   ----------------------
+ *   Header length        2
+ *   Magic value          4
+ *   Version number       2
+ *   Table name           n
+ *   Page index           4
+ *   Key class name       n
+ *   Value class name     n
+ *   Number of keys       4
+ *   ----------------------
+ *   page contents ...
+ *   }
+ * </pre>
  */
 public final class PageHeader<K extends WritableComparable, V extends Writable> {
 
@@ -31,7 +47,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     } else {
       input = new DataInputStream(stream);
     }
-    byte[] header = new byte[input.readInt()];
+    byte[] header = new byte[input.readShort()];
     int count = input.read(header, 0, header.length);
     if (count < header.length) {
       throw new EOFException("Incomplete page header");
@@ -41,7 +57,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
   }
 
   private static final int MAGIC = 0x4B494D53;
-  private static final int VERSION = 1;
+  private static final short VERSION = 1;
 
   private final byte[] header;
 
@@ -72,7 +88,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     DataOutputStream output = new DataOutputStream(buffer);
 
     output.writeInt(MAGIC);
-    output.writeInt(VERSION);
+    output.writeShort(VERSION);
     output.writeUTF(pageID.getTableID().toString());
     output.writeInt(pageID.getIndex());
     output.writeUTF(keyClass.getCanonicalName());
@@ -82,8 +98,8 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     byte[] header = buffer.toByteArray();
     buffer.close();
 
-    ByteBuffer buf = ByteBuffer.allocate(4 + header.length);
-    buf.putInt(header.length);
+    ByteBuffer buf = ByteBuffer.allocate(2 + header.length);
+    buf.putShort((short) header.length);
     buf.put(header);
 
     return buf.array();
@@ -96,7 +112,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     if (input.readInt() != MAGIC) {
       throw new NotPageDataException();
     }
-    int version = input.readInt();
+    int version = input.readShort();
     if (version != VERSION) {
       throw new WrongPageVersionException(VERSION, version);
     }
