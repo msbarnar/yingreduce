@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.dfs.server;
 
+import java.rmi.RemoteException;
+
 import edu.asu.ying.common.remoting.Activatable;
 
 /**
@@ -7,5 +9,5 @@ import edu.asu.ying.common.remoting.Activatable;
  */
 public interface RemoteDFSService extends Activatable {
 
-
+  PageTransferResult offer(PageTransfer transfer) throws RemoteException;
 }
