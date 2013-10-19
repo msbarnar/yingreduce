@@ -3,6 +3,7 @@ package edu.asu.ying.wellington.dfs.persistence;
 import java.io.IOException;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.io.PageInputStream;
 import edu.asu.ying.wellington.dfs.io.PageOutputStream;
 
 /**
@@ -11,5 +12,7 @@ import edu.asu.ying.wellington.dfs.io.PageOutputStream;
  */
 public interface PersistenceProvider {
 
-  PageOutputStream getWriter(PageIdentifier id) throws IOException;
+  PageOutputStream getOutputStream(PageIdentifier id) throws IOException;
+
+  PageInputStream getInputStream(PageIdentifier id) throws IOException;
 }

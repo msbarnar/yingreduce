@@ -1,5 +1,6 @@
 package edu.asu.ying.wellington.dfs.persistence;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,14 +13,9 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
-import edu.asu.ying.wellington.dfs.PageMetadata;
-import edu.asu.ying.wellington.dfs.SerializingBoundedPage;
+import edu.asu.ying.wellington.dfs.io.PageInputStream;
 import edu.asu.ying.wellington.dfs.io.PageOutputStream;
-import edu.asu.ying.wellington.dfs.io.PageReader;
-import edu.asu.ying.wellington.io.Writable;
-import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  * {@code MemoryPersistenceCache} is an in-memory cache for persisting pages.
@@ -70,13 +66,15 @@ public class MemoryPersistenceCache implements Persistence, PersistenceProvider,
 
   @Nullable
   private byte[] get(PageIdentifier id) {
-    CacheRecord record = cache.get(id);
-    if (record == null) {
-      return null;
+    synchronized (cache) {
+      CacheRecord record = cache.get(id);
+      if (record == null) {
+        return null;
+      }
+      // Refresh the record so it stays in cache longer (LRU deletion)
+      record.touch();
+      return record.get();
     }
-    // Refresh the record so it stays in cache longer (LRU deletion)
-    record.touch();
-    return record.get();
   }
 
   @Override
@@ -90,12 +88,17 @@ public class MemoryPersistenceCache implements Persistence, PersistenceProvider,
    * The stream <b>must</b> be closed for the written data to be persisted.
    */
   @Override
-  public PageOutputStream getWriter(PageIdentifier id) throws IOException {
+  public PageOutputStream getOutputStream(PageIdentifier id) throws IOException {
     return new CacheOutputStream(id, this);
   }
 
-  public PageReader getPageReader(PageIdentifier id) throws IOException {
-    return new CachePageReader(id, this);
+  @Override
+  public PageInputStream getInputStream(PageIdentifier id) throws IOException {
+    byte[] page = get(id);
+    if (page == null) {
+      throw new PageNotInCacheException();
+    }
+    return new PageInputStream(new ByteArrayInputStream(page));
   }
 
   private final class CacheRecord {
@@ -123,26 +126,6 @@ public class MemoryPersistenceCache implements Persistence, PersistenceProvider,
     }
   }
 
-  private final class CachePageReader<K extends WritableComparable, V extends Writable>
-      implements PageReader<K, V> {
-
-    private final PageMetadata<K, V> metadata;
-
-    CachePageReader() {
-
-    }
-
-    @Override
-    public PageMetadata<K, V> getMetadata() {
-      return metadata;
-    }
-
-    @Override
-    public Iterator<Element<K, V>> iterator() {
-      return SerializingBoundedPage.
-    }
-  }
-
   /**
    * An output stream that commits the stream to the memory cache when closed.
    */
@@ -162,5 +145,9 @@ public class MemoryPersistenceCache implements Persistence, PersistenceProvider,
       cache.put(id, new CacheRecord(((ByteArrayOutputStream) stream).toByteArray(),
                                     MemoryPersistenceCache.CACHE_LIFETIME_SECONDS));
     }
+  }
+
+  public final class PageNotInCacheException extends IOException {
+
   }
 }
