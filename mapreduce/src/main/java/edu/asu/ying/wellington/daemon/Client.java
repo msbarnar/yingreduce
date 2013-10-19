@@ -18,7 +18,7 @@ import edu.asu.ying.wellington.mapreduce.job.JobConf;
 import edu.asu.ying.wellington.mapreduce.job.JobException;
 
 /**
- * The main entry point for the node daemon. {@code Server} starts the table, scheduling, and
+ * The com.healthmarketscience.rmiio.main entry point for the node daemon. {@code Server} starts the table, scheduling, and
  * interface services before attaching the local node to an existing Kademlia network.
  */
 public class Client {

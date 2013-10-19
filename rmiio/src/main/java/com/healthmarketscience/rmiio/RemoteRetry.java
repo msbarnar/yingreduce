@@ -358,7 +358,7 @@ public abstract class RemoteRetry
    * Utility type implemented by those atttempting to make remote method calls
    * using this retry mechanism.  The call() method should implement the
    * desired remote call.  Easiest implementation is using an anonymous inner
-   * class instantiated on the fly, per call (see main example above).
+   * class instantiated on the fly, per call (see com.healthmarketscience.rmiio.main example above).
    */
   public static abstract class Caller<RetType>
   {

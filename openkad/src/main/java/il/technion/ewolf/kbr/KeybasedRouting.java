@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * This is the main class of openkad
+ * This is the com.healthmarketscience.rmiio.main class of openkad
  * It defines the api of any Keybased Routing network.
  * 
  * @author eyal kibbar (eyal.kibbar@gmail.com)
