@@ -11,5 +11,6 @@ import edu.asu.ying.wellington.dfs.PageMetadata;
  */
 public interface RemoteDFSService extends Activatable {
 
+
   RemoteSink<PageMetadata> getPageDepository() throws RemoteException;
 }
