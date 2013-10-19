@@ -13,6 +13,9 @@ public final class WritableLong implements WritableComparable<WritableLong> {
 
   private long value;
 
+  public WritableLong() {
+  }
+
   public WritableLong(final long l) {
     this.value = l;
   }

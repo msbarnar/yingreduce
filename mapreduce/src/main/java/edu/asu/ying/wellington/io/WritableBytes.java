@@ -18,6 +18,9 @@ public final class WritableBytes implements WritableComparable<WritableBytes> {
 
   private byte[] value = null;
 
+  public WritableBytes() {
+  }
+
   public WritableBytes(byte[] value) {
     this.value = Preconditions.checkNotNull(value);
   }
@@ -25,7 +28,7 @@ public final class WritableBytes implements WritableComparable<WritableBytes> {
   @Override
   public void readFields(DataInput in) throws IOException {
     this.value = new byte[in.readInt()];
-    in.readFully(this.value);
+    in.readFully(value, 0, value.length);
   }
 
   @Override

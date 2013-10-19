@@ -13,6 +13,9 @@ public final class WritableDouble implements WritableComparable<WritableDouble> 
 
   private double value;
 
+  public WritableDouble() {
+  }
+
   public WritableDouble(final double d) {
     this.value = d;
   }

@@ -33,7 +33,8 @@ public class WritableDeserializerStream extends InputStream {
     try {
       obj = cls.newInstance();
     } catch (InstantiationException | IllegalAccessException e) {
-      throw new IOException("Writable type could not be instantiated for deserialization.", e);
+      throw new IOException("Writable type could not be instantiated for deserialization: "
+                                .concat(cls.getName()), e);
     }
     obj.readFields(stream);
     return obj;

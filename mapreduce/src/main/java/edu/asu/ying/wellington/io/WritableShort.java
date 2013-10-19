@@ -11,6 +11,9 @@ public final class WritableShort implements WritableComparable<WritableShort> {
 
   private short value;
 
+  public WritableShort() {
+  }
+
   public WritableShort(final short s) {
     this.value = s;
   }

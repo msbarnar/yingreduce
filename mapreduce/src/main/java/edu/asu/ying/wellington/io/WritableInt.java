@@ -13,6 +13,9 @@ public final class WritableInt implements WritableComparable<WritableInt> {
 
   private int value;
 
+  public WritableInt() {
+  }
+
   public WritableInt(final int i) {
     this.value = i;
   }

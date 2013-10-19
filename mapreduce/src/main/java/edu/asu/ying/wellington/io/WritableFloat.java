@@ -13,6 +13,9 @@ public final class WritableFloat implements WritableComparable<WritableFloat> {
 
   private float value;
 
+  public WritableFloat() {
+  }
+
   public WritableFloat(final float f) {
     this.value = f;
   }

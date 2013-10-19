@@ -11,6 +11,9 @@ public final class WritableChar implements WritableComparable<WritableChar> {
 
   private char value;
 
+  public WritableChar() {
+  }
+
   public WritableChar(final char c) {
     this.value = c;
   }

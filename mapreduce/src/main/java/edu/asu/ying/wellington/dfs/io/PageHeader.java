@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,7 +32,10 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
       input = new DataInputStream(stream);
     }
     byte[] header = new byte[input.readInt()];
-    input.readFully(header);
+    int count = input.read(header, 0, header.length);
+    if (count < header.length) {
+      throw new EOFException("Incomplete page header");
+    }
 
     return new PageHeader<>(header);
   }
@@ -79,7 +83,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     buffer.close();
 
     ByteBuffer buf = ByteBuffer.allocate(4 + header.length);
-    buf.putInt(4 + header.length);
+    buf.putInt(header.length);
     buf.put(header);
 
     return buf.array();
