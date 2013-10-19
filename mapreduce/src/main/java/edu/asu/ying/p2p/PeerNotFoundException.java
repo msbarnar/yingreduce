@@ -12,10 +12,6 @@ public class PeerNotFoundException extends RemoteException {
     super(name);
   }
 
-  public PeerNotFoundException(PeerName name) {
-    this(name.toString());
-  }
-
   public PeerNotFoundException(URI uri) {
     this(uri.toString());
   }

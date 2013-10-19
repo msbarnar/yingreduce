@@ -21,7 +21,6 @@ import edu.asu.ying.common.remoting.RemoteImportException;
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.InvalidContentException;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.p2p.PeerName;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.RemotePeerRequestHandler;
@@ -33,22 +32,23 @@ import il.technion.ewolf.kbr.Node;
 
 
 /**
- * {@code KadLocalPeer} implements the local high-level peer-to-peer behavior on top of the Kademlia
- * routing system. </p> The local peer maintains the Kademlia node, the local job scheduler, and the
+ * {@code KadLocalPeer} implements the local high-level peer-to-peer behavior on top of the
+ * Kademlia
+ * routing system. </p> The local peer maintains the Kademlia node, the local job scheduler, and
+ * the
  * local database interface.
  */
 public final class KadLocalPeer implements LocalPeer {
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
-  private final PeerName localIdentifier;
+  private final String name;
 
   // Pipe to the kad network
   private final Channel networkChannel;
 
   // Getting RMI references to neighbors is expensive, so cache the reference every time we get one
   private Map<Node, RemotePeer> neighborsCache = new HashMap<>();
-
 
   @Inject
   private KadLocalPeer(KeybasedRouting kbrNode,
@@ -60,8 +60,7 @@ public final class KadLocalPeer implements LocalPeer {
     this.kbrNode = kbrNode;
     // Identify this peer on the network
     // FIXME: SEVERE: The key is chosen using the local interface address which is always localhost
-    this.localIdentifier =
-        new KadPeerName(this.kbrNode.getLocalNode().getKey());
+    this.name = kbrNode.getLocalNode().getKey().toString();
     // Connect the P2P messaging system to the Kademlia node
     this.networkChannel = channel;
   }
@@ -73,7 +72,7 @@ public final class KadLocalPeer implements LocalPeer {
   public void join(URI bootstrap) throws IOException {
     try {
       List<URI> bootstrapUris = Arrays.asList(URI.create(bootstrap.toString()));
-      this.kbrNode.join(bootstrapUris);
+      kbrNode.join(bootstrapUris);
 
     } catch (IllegalStateException e) {
       throw new PeerNotFoundException(bootstrap);
@@ -88,16 +87,16 @@ public final class KadLocalPeer implements LocalPeer {
   // TODO: I don't know what the above comment means anymore, but it looks important
   @Override
   public synchronized List<RemotePeer> getNeighbors() {
-    List<Node> kadNodes = this.kbrNode.getNeighbours();
+    List<Node> kadNodes = kbrNode.getNeighbours();
 
     // To prune old nodes in one pass, update the whole cache every time keeping old values.
     Map<Node, RemotePeer> newCache = new HashMap<>();
     for (Node kadNode : kadNodes) {
-      RemotePeer rmiRef = this.neighborsCache.get(kadNode);
+      RemotePeer rmiRef = neighborsCache.get(kadNode);
       // Update missing refs
       if (rmiRef == null) {
         try {
-          rmiRef = this.importProxyTo(kadNode);
+          rmiRef = importProxyTo(kadNode);
         } catch (RemoteException e) {
           // TODO: Logging
           e.printStackTrace();
@@ -110,45 +109,27 @@ public final class KadLocalPeer implements LocalPeer {
     }
 
     // Keep the cache up to date
-    this.neighborsCache = newCache;
+    neighborsCache = newCache;
 
-    return ImmutableList.copyOf(this.neighborsCache.values());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public RemotePeer findPeer(PeerName name)
-      throws PeerNotFoundException, RemoteImportException {
-
-    return this.findPeer(name.toString());
+    return ImmutableList.copyOf(neighborsCache.values());
   }
 
   @Override
   public RemotePeer findPeer(String name)
       throws PeerNotFoundException, RemoteImportException {
 
-    Key key = this.kbrNode.getKeyFactory().create(name);
-    List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
+    Key key = kbrNode.getKeyFactory().create(name);
+    List<il.technion.ewolf.kbr.Node> kadNodes = kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
       throw new PeerNotFoundException(name);
     }
     return this.importProxyTo(kadNodes.get(0));
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<RemotePeer> findPeers(PeerName name, int count) {
-    return this.findPeers(name.toString(), count);
-  }
-
   @Override
   public List<RemotePeer> findPeers(String name, int count) {
-    Key key = this.kbrNode.getKeyFactory().create(name);
-    List<il.technion.ewolf.kbr.Node> kadNodes = this.kbrNode.findNode(key);
+    Key key = kbrNode.getKeyFactory().create(name);
+    List<il.technion.ewolf.kbr.Node> kadNodes = kbrNode.findNode(key);
     if (kadNodes.isEmpty()) {
       return Collections.emptyList();
     }
@@ -171,12 +152,13 @@ public final class KadLocalPeer implements LocalPeer {
    * {@inheritDoc}
    */
   @Override
-  public PeerName getName() {
-    return this.localIdentifier;
+  public String getName() {
+    return name;
   }
 
   /**
-   * Given a Kademlia node, sends a request to the remote {@link RemotePeerRequestHandler} and waits
+   * Given a Kademlia node, sends a request to the remote {@link RemotePeerRequestHandler} and
+   * waits
    * for a response containing a {@link RemotePeer} proxy to that peer.
    */
   // TODO: Target for cleanup
@@ -187,8 +169,7 @@ public final class KadLocalPeer implements LocalPeer {
     RequestMessage request = RemotePeerRequestHandler.createRequest();
     Future<Serializable> response;
     try {
-      response =
-          this.networkChannel.getMessageOutputStream().writeAsyncRequest(node, request);
+      response = networkChannel.getMessageOutputStream().writeAsyncRequest(node, request);
 
     } catch (IOException e) {
       // TODO: Logging

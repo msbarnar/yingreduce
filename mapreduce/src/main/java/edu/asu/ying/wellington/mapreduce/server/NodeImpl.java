@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
@@ -58,7 +59,11 @@ public final class NodeImpl implements LocalNode, NodeLocator {
 
   @Override
   public RemoteNode find(String name) throws IOException {
-    return localPeer.findPeer(name).getReference(RemoteNode.class);
+    try {
+      return localPeer.findPeer(name).getReference(RemoteNode.class);
+    } catch (PeerNotFoundException e) {
+      throw new NodeNotFoundException(name);
+    }
   }
 
   @Override

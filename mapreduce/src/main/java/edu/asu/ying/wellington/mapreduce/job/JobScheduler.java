@@ -43,9 +43,6 @@ public final class JobScheduler implements JobService {
     } catch (ExportException e) {
       throw new RuntimeException(e);
     }
-
-    // Starting threads in the constructor, but there's nowhere else to start them
-    start();
   }
 
   @Override

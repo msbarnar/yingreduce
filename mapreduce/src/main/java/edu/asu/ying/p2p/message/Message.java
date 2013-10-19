@@ -2,8 +2,6 @@ package edu.asu.ying.p2p.message;
 
 import java.io.Serializable;
 
-import edu.asu.ying.p2p.PeerName;
-
 
 /**
  * {@link Message} objects carry state information and requests for resource or connection
@@ -20,9 +18,9 @@ public interface Message
 
   String getTag();
 
-  PeerName getSender();
+  String getSender();
 
-  void setSender(PeerName peerId);
+  void setSender(String peerId);
 
-  PeerName getDestination();
+  String getDestination();
 }

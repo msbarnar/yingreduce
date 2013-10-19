@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.p2p.PeerName;
-
 /**
  *
  */
@@ -13,22 +11,22 @@ public class ResponseMessage extends MessageBase {
 
   private static final long SerialVersionUID = 1L;
 
-  private Serializable content;
+  protected Serializable content;
 
-  public static ResponseMessage inResponseTo(final Message request) {
+  public static ResponseMessage inResponseTo(Message request) {
     return new ResponseMessage(request.getId(), request.getTag(), request.getSender());
   }
 
-  private ResponseMessage(final String id, final String tag, final PeerName destination) {
+  protected ResponseMessage(String id, String tag, String destination) {
     super(id, tag, destination);
   }
 
-  public final void setContent(final @Nullable Serializable content) {
+  public void setContent(@Nullable Serializable content) {
     this.content = content;
   }
 
   @Nullable
-  public final Serializable getContent() {
+  public Serializable getContent() {
     return this.content;
   }
 }

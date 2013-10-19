@@ -1,30 +1,15 @@
 package edu.asu.ying.wellington.dfs.server;
 
-import java.io.Serializable;
-
 /**
  * {@code PageTransferResult} is the response of one node to another following the completed
- * transmission of a {@link PageTransfer}. Completion in this context does not mean the page was
+ * transmission of a {@link PageTransfer}; completion in this context does not mean the page was
  * transferred, only that the transfer metadata was transferred.
  */
-public final class PageTransferResult implements Serializable {
-
-  private static final long SerialVersionUID = 1L;
-
-  private final PageTransferStatus status;
-
-  public PageTransferResult(PageTransferStatus status) {
-    this.status = status;
-  }
-
-  public PageTransferStatus getStatus() {
-    return status;
-  }
-
-  private static enum PageTransferStatus {
-    Accepted,
-    Incomplete,
-    OutOfCapacity,
-    Duplicate
-  }
+public enum PageTransferResult {
+  Accepted,       // The remote node accepted the transfer completely and should be added to the
+  // list of container nodes for that page.
+  Duplicate,      // The remote node already has the page and should also be added to the list of
+  // container nodes for that page.
+  TryAgain,       // The transfer was interrupted or the remote node lost the page.
+  OutOfCapacity,  // The remote node can't accept any more pages.
 }

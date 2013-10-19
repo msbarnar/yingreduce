@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import edu.asu.ying.common.filter.Filter;
 import edu.asu.ying.common.filter.FilterBase;
 import edu.asu.ying.common.filter.FilterString;
-import edu.asu.ying.p2p.PeerName;
 
 
 /**
@@ -44,11 +43,7 @@ public abstract class FilterMessage
    */
   @Override
   public <V> boolean match(final V value) {
-    if (!(value instanceof Message)) {
-      return false;
-    } else {
-      return this.match((Message) value);
-    }
+    return value instanceof Message && this.match((Message) value);
   }
 
   /**
@@ -105,7 +100,8 @@ public abstract class FilterMessage
     }
 
     /**
-     * {@code FilterOnUriPart} does the actual URI filtering based on the composition of the URI and
+     * {@code FilterOnUriPart} does the actual URI filtering based on the composition of the URI
+     * and
      * Part selectors.
      */
     private final class FilterOnUriPart extends FilterMessage {
@@ -123,7 +119,7 @@ public abstract class FilterMessage
 
       @Override
       protected boolean match(final Message message) {
-        final PeerName uri;
+        final String uri;
         if (this.which == WhichUri.Destination) {
           uri = message.getDestination();
         } else if (this.which == WhichUri.Source) {
@@ -133,7 +129,7 @@ public abstract class FilterMessage
         }
         switch (this.part) {
           case Key:
-            return this.filter.match(uri.getKey());
+            return this.filter.match(uri);
           default:
             return false;
         }

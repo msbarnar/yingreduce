@@ -15,7 +15,7 @@ public interface LocalPeer {
   /**
    * Gets the unique network name for this peer.
    */
-  PeerName getName();
+  String getName();
 
   /**
    * Connects this peer to an existing network of peers via the address of a peer in the network.
@@ -34,9 +34,6 @@ public interface LocalPeer {
    *
    * @return a public, network accessible, reference to the remote peer.
    */
-  RemotePeer findPeer(PeerName name) throws PeerNotFoundException,
-                                            RemoteImportException;
-
   RemotePeer findPeer(String name) throws PeerNotFoundException, RemoteImportException;
 
   /**
@@ -44,7 +41,5 @@ public interface LocalPeer {
    * reference imports fail with {@link RemoteImportException}, they are quietly excluded from the
    * list.
    */
-  List<RemotePeer> findPeers(PeerName name, int count);
-
   List<RemotePeer> findPeers(String name, int count);
 }

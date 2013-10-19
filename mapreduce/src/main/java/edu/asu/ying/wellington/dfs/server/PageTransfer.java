@@ -12,7 +12,11 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
  * {@code PageTransfer} wraps a page's metadata along with a {@link RemoteInputStream} by which
- * that page can be downloaded.
+ * that page can be downloaded. Sending a {@code PageTransfer} to remote node allows that node to
+ * download the page from the local node.
+ * <p/>
+ * The {@code PageTransfer} also keeps track of which nodes have accepted the page so that
+ * replication nodes can find each other.
  */
 public final class PageTransfer implements Serializable {
 
@@ -21,17 +25,17 @@ public final class PageTransfer implements Serializable {
   private final PageMetadata metadata;
   private final RemoteInputStream stream;
   // Keep track of the nodes responsible for this page
-  private final Collection<RemoteNode> carryingNodes;
+  private final Collection<RemoteNode> containerNodes;
 
   public PageTransfer(PageMetadata metadata, InputStream stream,
-                      Collection<RemoteNode> carryingNodes) {
+                      Collection<RemoteNode> containerNodes) {
     this.metadata = metadata;
     if (stream instanceof RemoteInputStream) {
       this.stream = (RemoteInputStream) stream;
     } else {
       this.stream = new SimpleRemoteInputStream(stream);
     }
-    this.carryingNodes = carryingNodes;
+    this.containerNodes = containerNodes;
   }
 
   public PageMetadata getMetadata() {
@@ -42,7 +46,7 @@ public final class PageTransfer implements Serializable {
     return stream;
   }
 
-  public Collection<RemoteNode> getCarryingNodes() {
-    return carryingNodes;
+  public Collection<RemoteNode> getContainerNodes() {
+    return containerNodes;
   }
 }
