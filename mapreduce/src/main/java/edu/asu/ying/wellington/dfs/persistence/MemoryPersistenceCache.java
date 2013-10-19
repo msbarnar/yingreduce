@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
-import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.dfs.SerializedBoundedPage;
 import edu.asu.ying.wellington.dfs.io.PageOutputStream;
 import edu.asu.ying.wellington.dfs.io.PageReader;
@@ -130,7 +129,6 @@ public class MemoryPersistenceCache implements Persistence, PersistenceProvider,
     private final Page<K, V> metadata;
 
     CachePageReader() {
-      metadata = new PageMetadata<K, V>(null, 0, null, null);
 
     }
 

@@ -13,9 +13,13 @@ import edu.asu.ying.wellington.io.Writable;
  */
 public class WritableDeserializerStream extends InputStream {
 
-  protected final DataInputStream stream;
+  protected DataInputStream stream;
 
   public WritableDeserializerStream(InputStream stream) {
+    open(stream);
+  }
+
+  public void open(InputStream stream) {
     Preconditions.checkNotNull(stream);
     if (stream instanceof DataInputStream) {
       this.stream = (DataInputStream) stream;

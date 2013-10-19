@@ -1,10 +1,12 @@
 package edu.asu.ying.wellington.dfs;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
+import edu.asu.ying.wellington.dfs.io.WritableDeserializerStream;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -60,6 +62,19 @@ public final class SerializedElement<K extends WritableComparable, V extends Wri
     }
 
     this.length = this.key.length + this.value.length;
+  }
+
+  public Element<K, V> deserialize() throws IOException {
+    K key;
+    V value;
+    WritableDeserializerStream stream
+        = new WritableDeserializerStream(new ByteArrayInputStream(this.key));
+
+    key = stream.read(keyClass);
+    stream.open(new ByteArrayInputStream(this.value));
+    value = stream.read(valueClass);
+
+    return new Element<>(key, value);
   }
 
   public byte[] getKey() {
