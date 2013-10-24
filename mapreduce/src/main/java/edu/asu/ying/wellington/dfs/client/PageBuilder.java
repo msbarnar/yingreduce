@@ -6,7 +6,7 @@ import com.google.common.base.Strings;
 import java.io.IOException;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.BoundedPageSerializer;
+import edu.asu.ying.wellington.dfs.BoundedSerializedWritablePage;
 import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.HasPageMetadata;
 import edu.asu.ying.wellington.io.Writable;
@@ -38,7 +38,7 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
   private final Class<V> valueClass;
 
   // Stores table elements not yet committed to the network.
-  private BoundedPageSerializer<K, V> currentPage = null;
+  private BoundedSerializedWritablePage<K, V> currentPage = null;
   private int currentPageIndex = 0;
   private final Object currentPageLock = new Object();
 
@@ -105,8 +105,9 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
     }
   }
 
-  private BoundedPageSerializer<K, V> createPage() {
-    return new BoundedPageSerializer<>(tableName, currentPageIndex, DEFAULT_PAGE_CAPACITY_BYTES,
-                                       keyClass, valueClass);
+  private BoundedSerializedWritablePage<K, V> createPage() {
+    return new BoundedSerializedWritablePage<>(tableName, currentPageIndex,
+                                               DEFAULT_PAGE_CAPACITY_BYTES,
+                                               keyClass, valueClass);
   }
 }

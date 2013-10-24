@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import edu.asu.ying.p2p.kad.KadP2PModule;
 import edu.asu.ying.wellington.WellingtonModule;
-import edu.asu.ying.wellington.dfs.BoundedPageSerializer;
+import edu.asu.ying.wellington.dfs.BoundedSerializedWritablePage;
 import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
@@ -52,8 +52,11 @@ public class TestPersistence {
     Persistence persist = injector.getInstance(Key.get(Persistence.class,
                                                        MemoryPersistence.class));
 
-    PageSerializer<WritableString, WritableInt> page
-        = new BoundedPageSerializer<>(tableName, 0, 200, WritableString.class, WritableInt.class);
+    PageSerializer<WritableString, WritableInt>
+        page
+        =
+        new BoundedSerializedWritablePage<>(tableName, 0, 200, WritableString.class,
+                                            WritableInt.class);
     Assert.assertEquals(page.offer(elements), elements.size());
 
     // Write
@@ -86,8 +89,11 @@ public class TestPersistence {
     Persistence persist = injector.getInstance(Key.get(Persistence.class,
                                                        DiskPersistence.class));
 
-    PageSerializer<WritableString, WritableInt> page
-        = new BoundedPageSerializer<>(tableName, 0, 200, WritableString.class, WritableInt.class);
+    PageSerializer<WritableString, WritableInt>
+        page
+        =
+        new BoundedSerializedWritablePage<>(tableName, 0, 200, WritableString.class,
+                                            WritableInt.class);
     Assert.assertEquals(page.offer(elements), elements.size());
 
     // Write

@@ -18,11 +18,11 @@ import edu.asu.ying.wellington.dfs.persistence.MemoryPersistence;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
 
 /**
- * The {@code PageTransferReceiver} accepts offers for page transfers and returns an output stream
+ * The {@code PageTransferHandler} accepts offers for page transfers and returns an output stream
  * to which the remote node can write the page. The output stream is obtained from the
  * {@link Persistence} module designated by {@link DiskPersistence}.
  */
-public final class PageTransferReceiver implements QueueProcessor<PageTransfer> {
+public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
 
   private final Persistence memoryPersistence;
   private final Persistence diskPersistence;
@@ -32,8 +32,8 @@ public final class PageTransferReceiver implements QueueProcessor<PageTransfer> 
       = new DelegateQueueExecutor<>(this);
 
   @Inject
-  private PageTransferReceiver(@MemoryPersistence Persistence memoryPersistence,
-                               @DiskPersistence Persistence diskPersistence) {
+  private PageTransferHandler(@MemoryPersistence Persistence memoryPersistence,
+                              @DiskPersistence Persistence diskPersistence) {
 
     this.memoryPersistence = memoryPersistence;
     this.diskPersistence = diskPersistence;

@@ -16,11 +16,11 @@ public final class DFSServer implements DFSService {
   private final RemoteDFSService proxy;
 
   // Accepts pages from remote nodes and stores them before passing them to the replicator.
-  private final PageTransferReceiver pageReceiver;
+  private final PageTransferHandler pageReceiver;
 
   @Inject
   private DFSServer(DFSServiceExporter exporter,
-                    PageTransferReceiver pageReceiver) {
+                    PageTransferHandler pageReceiver) {
     try {
       this.proxy = exporter.export(this);
     } catch (ExportException e) {
@@ -34,9 +34,6 @@ public final class DFSServer implements DFSService {
   public void start() {
   }
 
-  /**
-   *
-   */
   @Override
   public PageTransferResponse offerIncoming(PageTransfer transfer) throws IOException {
     return pageReceiver.offer(transfer);

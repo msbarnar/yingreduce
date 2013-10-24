@@ -14,25 +14,21 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 public final class PageMetadata<K extends WritableComparable, V extends Writable>
     implements Serializable {
 
+  private static final long SerialVersionUID = 1L;
+
   private final PageIdentifier id;
-  private final int numElements;
+  private int numElements;
   private final Class<K> keyClass;
   private final Class<V> valueClass;
   private final Collection<RemoteNode> containerNodes = new ArrayList<>();
-  private final int checksum;
+  private int checksum;
 
   public PageMetadata(PageIdentifier id,
-                      int numElements,
                       Class<K> keyClass,
-                      Class<V> valueClass,
-                      Collection<RemoteNode> containerNodes,
-                      int checksum) {
+                      Class<V> valueClass) {
     this.id = id;
-    this.numElements = numElements;
     this.keyClass = keyClass;
     this.valueClass = valueClass;
-    this.containerNodes.addAll(containerNodes);
-    this.checksum = checksum;
   }
 
   public PageIdentifier getId() {
@@ -43,6 +39,10 @@ public final class PageMetadata<K extends WritableComparable, V extends Writable
     return numElements;
   }
 
+  public void setNumElements(int numElements) {
+    this.numElements = numElements;
+  }
+
   public Class<K> getKeyClass() {
     return keyClass;
   }
@@ -51,8 +51,16 @@ public final class PageMetadata<K extends WritableComparable, V extends Writable
     return valueClass;
   }
 
+  public void addContainerNodes(Collection<RemoteNode> containerNodes) {
+    this.containerNodes.addAll(containerNodes);
+  }
+
   public Collection<RemoteNode> getContainerNodes() {
     return containerNodes;
+  }
+
+  public void setChecksum(int checksum) {
+    this.checksum = checksum;
   }
 
   public int getChecksum() {
