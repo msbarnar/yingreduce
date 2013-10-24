@@ -9,6 +9,11 @@ import java.util.List;
 public interface NodeLocator {
 
   /**
+   * Returns this node as a remote proxy.
+   */
+  RemoteNode local();
+
+  /**
    * Returns the node whose name most closely matches {@code name}.
    */
   RemoteNode find(String name) throws IOException;

@@ -7,7 +7,5 @@ import java.io.IOException;
  */
 public interface Sink<E> {
 
-  boolean offer(E object) throws IOException;
-
-  int offer(Iterable<E> objects) throws IOException;
+  void accept(E object) throws IOException;
 }

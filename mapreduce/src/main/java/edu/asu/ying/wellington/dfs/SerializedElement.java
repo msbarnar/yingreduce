@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.dfs;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 
 import edu.asu.ying.wellington.io.Writable;
@@ -29,6 +31,11 @@ public final class SerializedElement<K extends WritableComparable, V extends Wri
     this.key = key;
     this.value = value;
     this.length = key.length + value.length;
+  }
+
+  public void writeTo(OutputStream stream) throws IOException {
+    stream.write(key);
+    stream.write(value);
   }
 
   public byte[] getKey() {

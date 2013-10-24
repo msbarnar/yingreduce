@@ -32,11 +32,7 @@ public final class PageTransfer implements HasPageMetadata, Serializable {
     this.id = UUID.randomUUID().toString();
     this.sendingNode = sendingNode;
     this.metadata = metadata;
-    if (stream instanceof RemoteInputStream) {
-      this.stream = (RemoteInputStream) stream;
-    } else {
-      this.stream = new SimpleRemoteInputStream(stream);
-    }
+    this.stream = new SimpleRemoteInputStream(stream);
   }
 
   public String getId() {

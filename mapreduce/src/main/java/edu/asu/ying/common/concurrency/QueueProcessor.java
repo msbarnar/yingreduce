@@ -5,5 +5,5 @@ package edu.asu.ying.common.concurrency;
  */
 public interface QueueProcessor<T> {
 
-  void process(T item);
+  void process(T item) throws Exception;
 }

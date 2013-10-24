@@ -28,12 +28,10 @@ public class ElementWriter implements Closeable {
     serializer.write(element.getValue());
   }
 
-  public void close() {
-    try {
-      if (ostream != null) {
-        ostream.close();
-      }
-    } catch (IOException ignored) {
+  @Override
+  public void close() throws IOException {
+    if (ostream != null) {
+      ostream.close();
     }
   }
 }
