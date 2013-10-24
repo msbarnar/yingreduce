@@ -85,13 +85,14 @@ public final class JobScheduler implements JobService {
    * Queues the job for reducer allocation and task delegation.
    */
   private void queue(Job job) throws JobException {
-    if (jobDelegator.offer(job)) {
+    try {
+      jobDelegator.put(job);
       job.getHistory().getCurrent().setAction(JobHistory.Action.AcceptedJob);
       job.setStatus(Job.Status.Accepted);
-    } else {
+    } catch (InterruptedException e) {
       job.getHistory().getCurrent().setAction(JobHistory.Action.RejectedJob);
       job.setStatus(Job.Status.Rejected);
-      throw new JobException("The job delegation queue rejected the job.");
+      throw new JobException("The job delegation queue was interrupted.");
     }
   }
 

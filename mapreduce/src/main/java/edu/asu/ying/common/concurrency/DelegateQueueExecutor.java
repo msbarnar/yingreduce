@@ -13,6 +13,6 @@ public final class DelegateQueueExecutor<T> extends QueueExecutor<T> {
 
   @Override
   protected void process(T item) {
-    processor.process(item);
+    processor.process(task);
   }
 }

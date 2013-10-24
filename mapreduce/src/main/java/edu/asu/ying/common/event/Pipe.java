@@ -28,13 +28,8 @@ public final class Pipe {
     }
 
     @Override
-    public boolean offer(E object) throws IOException {
-      return remoteSink.offer(object);
-    }
-
-    @Override
-    public int offer(Iterable<E> objects) throws IOException {
-      return remoteSink.offer(objects);
+    public void accept(E object) throws IOException {
+      remoteSink.accept(object);
     }
   }
 
@@ -47,18 +42,9 @@ public final class Pipe {
     }
 
     @Override
-    public boolean offer(E object) throws RemoteException {
+    public void accept(E object) throws RemoteException {
       try {
-        return sink.offer(object);
-      } catch (IOException e) {
-        throw new RemoteException("Remote sink threw an exception", e);
-      }
-    }
-
-    @Override
-    public int offer(Iterable<E> objects) throws RemoteException {
-      try {
-        return sink.offer(objects);
+        sink.accept(object);
       } catch (IOException e) {
         throw new RemoteException("Remote sink threw an exception", e);
       }

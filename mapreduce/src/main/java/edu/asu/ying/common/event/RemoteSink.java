@@ -9,7 +9,5 @@ import edu.asu.ying.common.remoting.Activatable;
  */
 public interface RemoteSink<E> extends Activatable {
 
-  boolean offer(E object) throws RemoteException;
-
-  int offer(Iterable<E> objects) throws RemoteException;
+  void accept(E object) throws RemoteException;
 }

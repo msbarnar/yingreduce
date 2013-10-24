@@ -85,7 +85,9 @@ public class TaskScheduler implements TaskService {
     // Forward to the shortest of {Ql, Qf}
     if (localQueue.size() <= forwardingQueue.size()) {
       // If the local queue won't take it, forward it
-      if (!localQueue.offer(task)) {
+      try {
+        localQueue.put(task);
+      } catch (InterruptedException e) {
         queueForward(task);
       }
     } else {
@@ -94,8 +96,10 @@ public class TaskScheduler implements TaskService {
   }
 
   private void queueForward(Task task) throws TaskSchedulingException {
-    if (!forwardingQueue.offer(task)) {
-      throw new TaskSchedulingException("Forwarding queue refused task; no recourse available.");
+    try {
+      forwardingQueue.put(task);
+    } catch (InterruptedException e) {
+      throw new TaskSchedulingException("Forwarding queue was interrupted; no recourse available.");
     }
   }
 

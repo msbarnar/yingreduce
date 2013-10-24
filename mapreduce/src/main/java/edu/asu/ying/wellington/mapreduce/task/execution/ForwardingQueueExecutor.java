@@ -11,31 +11,29 @@ import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.wellington.mapreduce.task.Task;
-import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  * {@code ForwardingQueueExecutor} removes tasks from the local {@code Forwarding} queue and places
- * them either in the local {@code Remote} queue (if the local node is <b>not</b> the initial node),
+ * them either in the local {@code Remote} queue (if the local node is <b>not</b> the initial
+ * node),
  * or in the {@code Forwarding} queue of one of the immediately connected child nodes.
  */
 public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
   private final NodeLocator locator;
-  private final TaskService taskService;
 
   private final QueueExecutor<Task> remoteQueue;
 
   @Inject
   private ForwardingQueueExecutor(NodeLocator locator,
-                                  TaskService taskService,
                                   @Remote QueueExecutor<Task> remoteQueue) {
     this.locator = locator;
-    this.taskService = taskService;
     this.remoteQueue = remoteQueue;
   }
 
   /**
-   * The queue to which the task is forwarded is chosen as the shortest of QFn, QRn, and QFk where k
+   * The queue to which the task is forwarded is chosen as the shortest of QFn, QRn, and QFk where
+   * k
    * is all of the neighbor nodes (directly connected peers). If the chosen queue is QFn, no action
    * is taken and the task remains on the forwarding queue.
    */
@@ -70,13 +68,19 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
     if (bestNeighbor == null) {
       // If this forwarding queue is the shortest, put the task back on the queue.
       // QFn -> QFn
-      if (maximumBackpressure < 0) {
-        offer(task);
-      } else {
-        // Put the task in the remote queue
-        if (!remoteQueue.offer(task)) {
-          offer(task);
+      try {
+        if (maximumBackpressure < 0) {
+          put(task);
+        } else {
+          // Put the task in the remote queue
+          try {
+            remoteQueue.put(task);
+          } catch (InterruptedException e) {
+            put(task);
+          }
         }
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
       }
     } else {
       // Forward the task to the remote node

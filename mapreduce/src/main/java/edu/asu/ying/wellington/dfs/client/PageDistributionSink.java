@@ -12,6 +12,7 @@ import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.SerializedReadablePage;
 import edu.asu.ying.wellington.dfs.server.PageTransfer;
 import edu.asu.ying.wellington.dfs.server.PageTransferResponse;
+import edu.asu.ying.wellington.dfs.server.PageTransferResult;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
@@ -29,7 +30,7 @@ public final class PageDistributionSink
 
   private final DelegateQueueExecutor<SerializedReadablePage> pageQueue
       = new DelegateQueueExecutor<>(this);
-  private final Map<String, PageTransfer> inProgressTransfers = new HashMap<>();
+  private final Map<String, SerializedReadablePage> inProgressTransfers = new HashMap<>();
 
   @Inject
   private PageDistributionSink(NodeLocator locator) {
@@ -38,8 +39,10 @@ public final class PageDistributionSink
 
   @Override
   public void accept(final SerializedReadablePage page) throws IOException {
-    if (!pageQueue.offer(page)) {
-      throw new IOException("Page distribution queue is full");
+    try {
+      pageQueue.put(page);
+    } catch (InterruptedException e) {
+      throw new IOException("Page queue interrupted");
     }
   }
 
@@ -55,8 +58,10 @@ public final class PageDistributionSink
 
     switch (response) {
       case Overloaded:
-        if (!pageQueue.offer(page)) {
-          throw new IOException("Page distribution queue is full");
+        try {
+          pageQueue.put(page);
+        } catch (InterruptedException e) {
+          throw new IOException("Page queue interrupted");
         }
         break;
 
@@ -64,7 +69,27 @@ public final class PageDistributionSink
         throw new IOException("Remote node is over capacity");
 
       case Accepting:
-        inProgressTransfers.put(transfer.getId(), transfer);
+        inProgressTransfers.put(transfer.getId(), page);
     }
+  }
+
+  public void notifyResult(String transferId, PageTransferResult result) {
+    switch (result) {
+      case ChecksumFailed:
+      case Invalid:
+      case OtherError:
+        SerializedReadablePage page = inProgressTransfers.get(transferId);
+        if (page == null) {
+          throw new IllegalStateException("Transfer not currently in progress: "
+                                              .concat(transferId));
+        }
+        // Put the page back on the queue
+        try {
+          pageQueue.put(page);
+        } catch (InterruptedException e) {
+          throw new RuntimeException("Page queue interrupted");
+        }
+    }
+    inProgressTransfers.remove(transferId);
   }
 }
