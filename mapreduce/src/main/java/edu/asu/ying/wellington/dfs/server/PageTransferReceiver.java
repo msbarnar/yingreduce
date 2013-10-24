@@ -27,8 +27,9 @@ public final class PageTransferReceiver implements QueueProcessor<PageTransfer> 
   private final Persistence memoryPersistence;
   private final Persistence diskPersistence;
 
+  // Asynchronously fetch pages
   private final DelegateQueueExecutor<PageTransfer> pendingTransfers
-      = new DelegateQueueExecutor<PageTransfer>(this);
+      = new DelegateQueueExecutor<>(this);
 
   @Inject
   private PageTransferReceiver(@MemoryPersistence Persistence memoryPersistence,
@@ -39,10 +40,7 @@ public final class PageTransferReceiver implements QueueProcessor<PageTransfer> 
   }
 
   /**
-   * Accepts the transfer into memory, then validates the page.
-   * <p/>
-   * If the page is valid, commits the page to disk and returns {@link
-   * PageTransferResponse.Accepted}.
+   * Queues the transfer to be downloaded.
    */
   public PageTransferResponse offer(PageTransfer transfer) {
     if (pendingTransfers.offer(transfer)) {
@@ -52,6 +50,11 @@ public final class PageTransferReceiver implements QueueProcessor<PageTransfer> 
     }
   }
 
+  /**
+   * Accepts the transfer into memory and, if the page is valid, commits the page to disk.
+   * <p/>
+   * When the page is committed, or if an error occurs, notifies the sending node of the result.
+   */
   @Override
   public void process(PageTransfer transfer) {
     PageIdentifier pageId = transfer.getMetadata().getId();
@@ -59,7 +62,7 @@ public final class PageTransferReceiver implements QueueProcessor<PageTransfer> 
              = memoryPersistence.getOutputStream(pageId)) {
       // Consume the remote stream
       try (InputStream stream = RemoteInputStreamClient.wrap(transfer.getInputStream())) {
-        // Read the stream fully
+        // Read the stream fully to memory
         byte[] buffer = new byte[1024];
         int read = 0;
         while ((read = stream.read(buffer)) > 0) {
@@ -72,6 +75,7 @@ public final class PageTransferReceiver implements QueueProcessor<PageTransfer> 
       return;
     }
 
+    // If the page validates, write it to disk
     PageTransferResult result = validateTransfer(transfer.getMetadata());
     if (result == PageTransferResult.Accepted) {
       result = commitToDisk(pageId);
@@ -86,12 +90,14 @@ public final class PageTransferReceiver implements QueueProcessor<PageTransfer> 
     }
   }
 
-  /**
-   * Reads back the
-   */
   private PageTransferResult validateTransfer(PageMetadata metadata) {
+    // FIXME: Validate the header and checksum
+    return PageTransferResult.Accepted;
   }
 
+  /**
+   * Reads the page from cache onto disk, leaving it in the cache for the replicator to access.
+   */
   private PageTransferResult commitToDisk(PageIdentifier id) {
     try (InputStream istream = memoryPersistence.getInputStream(id)) {
       try (OutputStream ostream = diskPersistence.getOutputStream(id)) {
