@@ -7,7 +7,7 @@ import edu.asu.ying.wellington.io.WritableComparable;
  *
  */
 public final class PageMetadataImpl<K extends WritableComparable, V extends Writable>
-    implements PageMetadata<K, V> {
+    implements HasPageMetadata<K, V> {
 
   private final PageIdentifier id;
   private final int numElements;

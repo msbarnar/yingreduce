@@ -24,7 +24,7 @@ public final class UnboundedPage<K extends WritableComparable, V extends Writabl
 
   private final List<Element<K, V>> contents = new ArrayList<>();
 
-  public UnboundedPage(PageMetadata<K, V> metadata) {
+  public UnboundedPage(HasPageMetadata<K, V> metadata) {
     this.pageId = metadata.getId();
     this.keyClass = metadata.getKeyClass();
     this.valueClass = metadata.getValueClass();

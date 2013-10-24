@@ -4,8 +4,8 @@ import javax.inject.Inject;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Element;
+import edu.asu.ying.wellington.dfs.HasPageMetadata;
 import edu.asu.ying.wellington.dfs.PageDistributor;
-import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -14,10 +14,10 @@ import edu.asu.ying.wellington.io.WritableComparable;
  */
 public final class DFSClient {
 
-  private final Sink<PageMetadata> pageOutSink;
+  private final Sink<HasPageMetadata> pageOutSink;
 
   @Inject
-  private DFSClient(@PageDistributor Sink<PageMetadata> pageOutSink) {
+  private DFSClient(@PageDistributor Sink<HasPageMetadata> pageOutSink) {
     this.pageOutSink = pageOutSink;
   }
 

@@ -6,7 +6,7 @@ import edu.asu.ying.wellington.io.WritableComparable;
 /**
  *
  */
-public interface Page<K extends WritableComparable, V extends Writable>
-    extends ReadablePage<K, V>, WritablePage<K, V> {
+public interface ReadablePage<K extends WritableComparable, V extends Writable>
+    extends HasPageMetadata<K, V>, Iterable<Element<K, V>> {
 
 }

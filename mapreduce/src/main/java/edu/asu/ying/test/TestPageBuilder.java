@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Element;
-import edu.asu.ying.wellington.dfs.PageMetadata;
+import edu.asu.ying.wellington.dfs.HasPageMetadata;
 import edu.asu.ying.wellington.dfs.client.PageBuilder;
 import edu.asu.ying.wellington.io.WritableBytes;
 import edu.asu.ying.wellington.io.WritableInt;
@@ -19,18 +19,18 @@ import edu.asu.ying.wellington.io.WritableInt;
  */
 public class TestPageBuilder {
 
-  private final class MockPageSink implements Sink<PageMetadata> {
+  private final class MockPageSink implements Sink<HasPageMetadata> {
 
     private boolean got;
 
     @Override
-    public boolean offer(PageMetadata pageMetadata) throws IOException {
+    public boolean offer(HasPageMetadata pageMetadata) throws IOException {
       got = true;
       return true;
     }
 
     @Override
-    public int offer(Iterable<PageMetadata> objects) throws IOException {
+    public int offer(Iterable<HasPageMetadata> objects) throws IOException {
       throw new NotImplementedException();
     }
 

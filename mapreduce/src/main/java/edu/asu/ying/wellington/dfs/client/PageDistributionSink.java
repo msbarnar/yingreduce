@@ -12,14 +12,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.PageMetadata;
+import edu.asu.ying.wellington.dfs.HasPageMetadata;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
  * {@code PageDistributionSink} distributes accepted pages to appropriate peers on the network.
  */
-public final class PageDistributionSink implements Sink<PageMetadata> {
+public final class PageDistributionSink implements Sink<HasPageMetadata> {
 
   private static final int DEFAULT_DUPLICATION_FACTOR = 3;
 
@@ -42,7 +42,7 @@ public final class PageDistributionSink implements Sink<PageMetadata> {
    * Finds k peers near the pageMetadata's key and concurrently offers them the pageMetadata.
    */
   @Override
-  public boolean offer(final PageMetadata pageMetadata) throws IOException {
+  public boolean offer(final HasPageMetadata pageMetadata) throws IOException {
     List<RemoteNode> nodes = findRecipientsFor(pageMetadata);
     List<Future<Boolean>> results = new ArrayList<>(nodes.size());
 
@@ -72,16 +72,17 @@ public final class PageDistributionSink implements Sink<PageMetadata> {
   }
 
   /**
-   * For each {@link edu.asu.ying.wellington.dfs.PageMetadata} in {@code pages}, finds k peers near
+   * For each {@link edu.asu.ying.wellington.dfs.HasPageMetadata} in {@code pages}, finds k peers
+   * near
    * the page's key and concurrently
    * offers them the page.
    *
    * @return the number of pages successfully sent.
    */
   @Override
-  public int offer(Iterable<PageMetadata> pages) throws IOException {
+  public int offer(Iterable<HasPageMetadata> pages) throws IOException {
     List<Future<Boolean>> results = new ArrayList<>();
-    for (final PageMetadata pageMetadata : pages) {
+    for (final HasPageMetadata pageMetadata : pages) {
       results.add(workersByPage.submit(new Callable<Boolean>() {
         @Override
         public Boolean call() throws Exception {
@@ -102,7 +103,7 @@ public final class PageDistributionSink implements Sink<PageMetadata> {
     return count;
   }
 
-  private List<RemoteNode> findRecipientsFor(PageMetadata pageMetadata) throws IOException {
+  private List<RemoteNode> findRecipientsFor(HasPageMetadata pageMetadata) throws IOException {
     return locator.find(pageMetadata.getId().toString(), pageDuplicationFactor);
   }
 }

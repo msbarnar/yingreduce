@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Element;
-import edu.asu.ying.wellington.dfs.PageMetadata;
+import edu.asu.ying.wellington.dfs.HasPageMetadata;
 import edu.asu.ying.wellington.dfs.SerializingBoundedPage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
@@ -31,7 +31,7 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
   private final String tableName;
 
   // Sinks full pages
-  private final Sink<PageMetadata> pageSink;
+  private final Sink<HasPageMetadata> pageSink;
 
   // For creating the page
   private final Class<K> keyClass;
@@ -42,7 +42,7 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
   private int currentPageIndex = 0;
   private final Object currentPageLock = new Object();
 
-  public PageBuilder(String tableName, Sink<PageMetadata> pageSink,
+  public PageBuilder(String tableName, Sink<HasPageMetadata> pageSink,
                      Class<K> keyClass, Class<V> valueClass) {
 
     this.tableName = Preconditions.checkNotNull(Strings.emptyToNull(tableName));

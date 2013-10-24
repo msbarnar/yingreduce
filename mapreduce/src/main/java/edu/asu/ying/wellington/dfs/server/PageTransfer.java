@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collection;
 
-import edu.asu.ying.wellington.dfs.PageMetadata;
+import edu.asu.ying.wellington.dfs.HasPageMetadata;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
@@ -22,12 +22,12 @@ public final class PageTransfer implements Serializable {
 
   private static final long SerialVersionUID = 1L;
 
-  private final PageMetadata metadata;
+  private final HasPageMetadata metadata;
   private final RemoteInputStream stream;
   // Keep track of the nodes responsible for this page
   private final Collection<RemoteNode> containerNodes;
 
-  public PageTransfer(PageMetadata metadata, InputStream stream,
+  public PageTransfer(HasPageMetadata metadata, InputStream stream,
                       Collection<RemoteNode> containerNodes) {
     this.metadata = metadata;
     if (stream instanceof RemoteInputStream) {
@@ -38,7 +38,7 @@ public final class PageTransfer implements Serializable {
     this.containerNodes = containerNodes;
   }
 
-  public PageMetadata getMetadata() {
+  public HasPageMetadata getMetadata() {
     return metadata;
   }
 

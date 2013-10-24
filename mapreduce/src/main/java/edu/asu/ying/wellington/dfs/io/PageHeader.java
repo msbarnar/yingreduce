@@ -13,8 +13,8 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import edu.asu.ying.wellington.VersionMismatchException;
+import edu.asu.ying.wellington.dfs.HasPageMetadata;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
-import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -66,7 +66,7 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
   private Class<V> valueClass;
   private int numKeys;
 
-  public PageHeader(PageMetadata<K, V> pageMetadata) throws IOException {
+  public PageHeader(HasPageMetadata<K, V> pageMetadata) throws IOException {
     this.pageID = pageMetadata.getId();
     this.keyClass = pageMetadata.getKeyClass();
     this.valueClass = pageMetadata.getValueClass();
