@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
 import edu.asu.ying.wellington.dfs.io.PageOutputStreamProvider;
-import edu.asu.ying.wellington.dfs.io.PageWriter;
 
 /**
  *
@@ -28,13 +27,13 @@ public final class DiskPersistenceManager implements Persistence, PageOutputStre
   }
 
   @Override
-  public PageWriter getWriter() throws IOException {
-    return new PageWriter(this);
+  public OutputStream getStream(PageIdentifier id) throws IOException {
+    return streamProvider.getOutputStream(getPath(id));
   }
 
   @Override
-  public OutputStream getPageOutputStream(PageIdentifier id) throws IOException {
-    return streamProvider.getOutputStream(getPath(id));
+  public OutputStream getOutputStream(PageIdentifier id) throws IOException {
+    return null;
   }
 
   @Override
@@ -47,7 +46,7 @@ public final class DiskPersistenceManager implements Persistence, PageOutputStre
    * and the page identifier is the file name. Both values are normalized to avoid invalid names.
    */
   private String getPath(PageIdentifier id) {
-    String tableDirectory = makePathString(id.getTableName().toString());
+    String tableDirectory = makePathString(id.getTableName());
     String pageFile = makePathString(id.toString());
     return Paths.get(tableDirectory, pageFile).toString();
   }

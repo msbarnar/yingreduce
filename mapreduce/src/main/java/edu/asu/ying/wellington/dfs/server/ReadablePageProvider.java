@@ -28,5 +28,4 @@ public interface ReadablePageProvider {
    */
   <K extends WritableComparable, V extends Writable> ReadablePage<K, V>
   getLocal(PageIdentifier id) throws PageNotAvailableLocallyException;
-
 }

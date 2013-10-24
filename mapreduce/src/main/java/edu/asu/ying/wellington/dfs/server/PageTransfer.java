@@ -5,10 +5,9 @@ import com.healthmarketscience.rmiio.SimpleRemoteInputStream;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Collection;
 
 import edu.asu.ying.wellington.dfs.HasPageMetadata;
-import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
+import edu.asu.ying.wellington.dfs.PageMetadata;
 
 /**
  * {@code PageTransfer} wraps a page's metadata along with a {@link RemoteInputStream} by which
@@ -18,35 +17,27 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
  * The {@code PageTransfer} also keeps track of which nodes have accepted the page so that
  * replication nodes can find each other.
  */
-public final class PageTransfer implements Serializable {
+public final class PageTransfer implements HasPageMetadata, Serializable {
 
   private static final long SerialVersionUID = 1L;
 
-  private final HasPageMetadata metadata;
+  private final PageMetadata metadata;
   private final RemoteInputStream stream;
-  // Keep track of the nodes responsible for this page
-  private final Collection<RemoteNode> containerNodes;
 
-  public PageTransfer(HasPageMetadata metadata, InputStream stream,
-                      Collection<RemoteNode> containerNodes) {
+  public PageTransfer(PageMetadata metadata, InputStream stream) {
     this.metadata = metadata;
     if (stream instanceof RemoteInputStream) {
       this.stream = (RemoteInputStream) stream;
     } else {
       this.stream = new SimpleRemoteInputStream(stream);
     }
-    this.containerNodes = containerNodes;
   }
 
-  public HasPageMetadata getMetadata() {
+  public PageMetadata getMetadata() {
     return metadata;
   }
 
-  public RemoteInputStream getStream() {
+  public RemoteInputStream getInputStream() {
     return stream;
-  }
-
-  public Collection<RemoteNode> getContainerNodes() {
-    return containerNodes;
   }
 }

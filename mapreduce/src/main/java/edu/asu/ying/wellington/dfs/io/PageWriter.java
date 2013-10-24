@@ -1,46 +1,26 @@
 package edu.asu.ying.wellington.dfs.io;
 
-import com.google.common.base.Preconditions;
-
 import java.io.IOException;
-import java.io.OutputStream;
 
-import edu.asu.ying.wellington.dfs.SerializedElement;
-import edu.asu.ying.wellington.dfs.SerializingPage;
+import edu.asu.ying.wellington.dfs.ReadablePage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
- * Serializes an entire page to an output stream.
+ * Serializes an entire page to an output stream provided by a {@link PageOutputStreamProvider}.
+ * <p/>
+ * The filesystem does not currently support multiple pages per file (or per memory cache record),
+ * so the stream provider should provide a unique stream for each unique page identifier.
  */
-public class PageWriter {
-
-  protected final PageOutputStreamProvider provider;
-
-  public PageWriter(PageOutputStreamProvider provider) {
-    this.provider = Preconditions.checkNotNull(provider);
-  }
+public interface PageWriter {
 
   /**
-   * Writes the page to the underlying stream in the following sequence:
-   * <p/>
+   * Serializes an entire page to the underlying stream in the following sequence:
    * <ol>
    * <li>The header (see: {@link PageHeader})</li>
    * <li>Serialized key->value pairs</li>
    * </ol>
    */
-  public <K extends WritableComparable, V extends Writable>
-  void write(SerializingPage<K, V> p) throws IOException {
-
-    OutputStream stream = provider.getPageOutputStream(p.getId());
-
-    new PageHeader<>(p).writeTo(stream);
-
-    for (SerializedElement<K, V> element : p) {
-      stream.write(element.getKey());
-      stream.write(element.getValue());
-    }
-
-    stream.close();
-  }
+  <K extends WritableComparable, V extends Writable>
+  void write(ReadablePage<K, V> p) throws IOException;
 }

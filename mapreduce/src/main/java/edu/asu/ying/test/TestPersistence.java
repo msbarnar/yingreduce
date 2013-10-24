@@ -17,12 +17,11 @@ import java.util.UUID;
 
 import edu.asu.ying.p2p.kad.KadP2PModule;
 import edu.asu.ying.wellington.WellingtonModule;
+import edu.asu.ying.wellington.dfs.BoundedPageSerializer;
 import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.Page;
-import edu.asu.ying.wellington.dfs.SerializingBoundedPage;
-import edu.asu.ying.wellington.dfs.SerializingPage;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
-import edu.asu.ying.wellington.dfs.io.PageWriter;
+import edu.asu.ying.wellington.dfs.io.PageWriterImpl;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
 import edu.asu.ying.wellington.dfs.persistence.MemoryPersistence;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
@@ -54,8 +53,8 @@ public class TestPersistence {
     Persistence persist = injector.getInstance(Key.get(Persistence.class,
                                                        MemoryPersistence.class));
 
-    SerializingPage<WritableString, WritableInt> page
-        = new SerializingBoundedPage<>(tableName, 0, 200, WritableString.class, WritableInt.class);
+    PageSerializer<WritableString, WritableInt> page
+        = new BoundedPageSerializer<>(tableName, 0, 200, WritableString.class, WritableInt.class);
     Assert.assertEquals(page.offer(elements), elements.size());
 
     // Write
@@ -88,12 +87,12 @@ public class TestPersistence {
     Persistence persist = injector.getInstance(Key.get(Persistence.class,
                                                        DiskPersistence.class));
 
-    SerializingPage<WritableString, WritableInt> page
-        = new SerializingBoundedPage<>(tableName, 0, 200, WritableString.class, WritableInt.class);
+    PageSerializer<WritableString, WritableInt> page
+        = new BoundedPageSerializer<>(tableName, 0, 200, WritableString.class, WritableInt.class);
     Assert.assertEquals(page.offer(elements), elements.size());
 
     // Write
-    PageWriter output = persist.getWriter();
+    PageWriterImpl output = persist.getWriter();
     output.write(page);
 
     // Read

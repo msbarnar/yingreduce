@@ -13,8 +13,8 @@ import edu.asu.ying.wellington.io.WritableComparable;
  * Serializes elements as they are added and restricts the maximum number of serialized bytes that
  * can be stored in the page.
  */
-public final class SerializingBoundedPage<K extends WritableComparable, V extends Writable>
-    implements SerializingPage<K, V>, Sink<Element<K, V>> {
+public final class BoundedPageSerializer<K extends WritableComparable, V extends Writable>
+    implements Sink<Element<K, V>>, WritablePage<K, V> {
 
   private static final long SerialVersionUID = 1L;
 
@@ -29,8 +29,8 @@ public final class SerializingBoundedPage<K extends WritableComparable, V extend
   // Keep track of the sum length of the contents.
   private int curSizeBytes = 0;
 
-  public SerializingBoundedPage(String tableName, int index, int capacityBytes,
-                                Class<K> keyClass, Class<V> valueClass) {
+  public BoundedPageSerializer(String tableName, int index, int capacityBytes,
+                               Class<K> keyClass, Class<V> valueClass) {
 
     this.pageId = PageIdentifier.create(tableName, index);
 

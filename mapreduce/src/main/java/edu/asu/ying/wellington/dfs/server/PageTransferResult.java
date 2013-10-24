@@ -12,4 +12,5 @@ public enum PageTransferResult {
   // container nodes for that page.
   TryAgain,       // The transfer was interrupted or the remote node lost the page.
   OutOfCapacity,  // The remote node can't accept any more pages.
+  ChecksumFailed, // The data were corrupted in the transfer
 }

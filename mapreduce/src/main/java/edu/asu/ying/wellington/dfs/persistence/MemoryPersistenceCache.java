@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
 import edu.asu.ying.wellington.dfs.io.PageOutputStreamProvider;
-import edu.asu.ying.wellington.dfs.io.PageWriter;
+import edu.asu.ying.wellington.dfs.io.PageWriterImpl;
 
 /**
  * {@code MemoryPersistenceCache} is an in-memory cache for persisting pages.
@@ -86,12 +86,12 @@ public final class MemoryPersistenceCache
    * The stream <b>must</b> be closed for the written data to be persisted.
    */
   @Override
-  public PageWriter getWriter() throws IOException {
-    return new PageWriter(this);
+  public PageWriterImpl getWriter() throws IOException {
+    return new PageWriterImpl(this);
   }
 
   @Override
-  public OutputStream getPageOutputStream(PageIdentifier id) throws IOException {
+  public OutputStream getStream(PageIdentifier id) throws IOException {
     return new CacheOutputStream(id, this);
   }
 
