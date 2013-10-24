@@ -50,9 +50,7 @@ public abstract class QueueExecutor<T> implements Runnable {
     try {
       // Blocks until available
       item = queue.take();
-    } catch (final InterruptedException e) {
-      // TODO: Logging
-      e.printStackTrace();
+    } catch (InterruptedException ignored) {
     }
 
     if (item == null) {
@@ -62,6 +60,7 @@ public abstract class QueueExecutor<T> implements Runnable {
     try {
       this.process(item);
     } catch (Throwable e) {
+      // TODO: Logging
       e.printStackTrace();
     }
   }

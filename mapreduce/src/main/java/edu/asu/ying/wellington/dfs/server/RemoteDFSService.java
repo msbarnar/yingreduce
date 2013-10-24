@@ -12,8 +12,11 @@ public interface RemoteDFSService extends Activatable {
   /**
    * Offers a remote node the opportunity to download a page from the offering node.
    * <p/>
-   * The remote node should respond with a {@link PageTransferResult} indicating the action taken
+   * The remote node should respond with a {@link PageTransferResponse} indicating the action taken
    * with the page.
    */
-  PageTransferResult offer(PageTransfer transfer) throws RemoteException;
+  PageTransferResponse offer(PageTransfer transfer) throws RemoteException;
+
+  void notifyPageTransferResult(String transferId, PageTransferResult result)
+      throws RemoteException;
 }

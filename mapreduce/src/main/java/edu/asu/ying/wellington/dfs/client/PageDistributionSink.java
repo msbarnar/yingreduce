@@ -46,12 +46,12 @@ public final class PageDistributionSink implements Sink<HasPageMetadata> {
     List<RemoteNode> nodes = findRecipientsFor(pageMetadata);
     List<Future<Boolean>> results = new ArrayList<>(nodes.size());
 
-    // Concurrently offer the pageMetadata to all of the peers
+    // Concurrently offerIncoming the pageMetadata to all of the peers
     for (final RemoteNode node : nodes) {
       results.add(workersByNode.submit(new Callable<Boolean>() {
         @Override
         public Boolean call() throws Exception {
-          //return node.getDFSService().getPageDepository().offer(pageMetadata);
+          //return node.getDFSService().getPageDepository().offerIncoming(pageMetadata);
           return false;
         }
       }));

@@ -31,9 +31,9 @@ public final class DFSServiceExporter
   }
 
   @Override
-  public PageTransferResult offer(PageTransfer transfer) throws RemoteException {
+  public PageTransferResponse offer(PageTransfer transfer) throws RemoteException {
     try {
-      return service.offer(transfer);
+      return service.offerIncoming(transfer);
     } catch (IOException e) {
       throw new RemoteException("The DFS server threw an exception accepting the page transfer", e);
     }

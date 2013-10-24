@@ -3,6 +3,7 @@ package edu.asu.ying.wellington.dfs.persistence;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,13 +16,11 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
-import edu.asu.ying.wellington.dfs.io.PageInputStream;
 
 /**
  * {@code MemoryPersistenceCache} is an in-memory cache for persisting pages.
  */
-public final class MemoryPersistenceCache
-    implements Persistence, PageOutputStreamProvider, Runnable {
+public final class MemoryPersistenceCache implements Persistence, Runnable {
 
   public static final long CACHE_LIFETIME_SECONDS = 60 * 60;  // 1 hour
   private static final long CACHE_CLEAN_FREQUENCY_SECONDS = 60;  // seconds
@@ -79,27 +78,25 @@ public final class MemoryPersistenceCache
   }
 
   /**
-   * Returns an output stream that commits its contents to the memory cache when closed.
+   * Gets an {@link OutputStream} that writes to the memory cache.
    * <p/>
-   * The stream <b>must</b> be closed for the written data to be persisted.
+   * The stream contents will not be committed to the cache until the stream is closed.
    */
   @Override
-  public PageWriterImpl getWriter() throws IOException {
-    return new PageWriterImpl(this);
-  }
-
-  @Override
-  public OutputStream getStream(PageIdentifier id) throws IOException {
+  public OutputStream getOutputStream(PageIdentifier id) throws IOException {
     return new CacheOutputStream(id, this);
   }
 
+  /**
+   * Gets an {@link InputStream} that reads from the memory cache.
+   */
   @Override
-  public PageInputStream getInputStream(PageIdentifier id) throws IOException {
+  public InputStream getInputStream(PageIdentifier id) throws PageNotInCacheException {
     byte[] page = get(id);
     if (page == null) {
       throw new PageNotInCacheException();
     }
-    return new PageInputStream(new ByteArrayInputStream(page));
+    return new ByteArrayInputStream(page);
   }
 
   private final class CacheRecord {

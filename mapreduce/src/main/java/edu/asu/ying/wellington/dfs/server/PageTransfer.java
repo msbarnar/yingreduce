@@ -5,9 +5,11 @@ import com.healthmarketscience.rmiio.SimpleRemoteInputStream;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.UUID;
 
 import edu.asu.ying.wellington.dfs.HasPageMetadata;
 import edu.asu.ying.wellington.dfs.PageMetadata;
+import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
  * {@code PageTransfer} wraps a page's metadata along with a {@link RemoteInputStream} by which
@@ -21,16 +23,28 @@ public final class PageTransfer implements HasPageMetadata, Serializable {
 
   private static final long SerialVersionUID = 1L;
 
+  private final String id;
+  private final RemoteNode sendingNode;
   private final PageMetadata metadata;
   private final RemoteInputStream stream;
 
-  public PageTransfer(PageMetadata metadata, InputStream stream) {
+  public PageTransfer(RemoteNode sendingNode, PageMetadata metadata, InputStream stream) {
+    this.id = UUID.randomUUID().toString();
+    this.sendingNode = sendingNode;
     this.metadata = metadata;
     if (stream instanceof RemoteInputStream) {
       this.stream = (RemoteInputStream) stream;
     } else {
       this.stream = new SimpleRemoteInputStream(stream);
     }
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public RemoteNode getSendingNode() {
+    return sendingNode;
   }
 
   public PageMetadata getMetadata() {

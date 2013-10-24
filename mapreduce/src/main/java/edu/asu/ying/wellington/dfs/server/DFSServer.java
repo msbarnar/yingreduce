@@ -34,9 +34,20 @@ public final class DFSServer implements DFSService {
   public void start() {
   }
 
+  /**
+   *
+   */
   @Override
-  public PageTransferResult offer(PageTransfer transfer) throws IOException {
+  public PageTransferResponse offerIncoming(PageTransfer transfer) throws IOException {
     return pageReceiver.offer(transfer);
+  }
+
+  /**
+   * Allows the receiver of a {@link PageTransfer} to notify this node (the sending node) of the
+   * result. If the transfer was unsuccessful, we should re-send the page.
+   */
+  public void notifyPageTransferResult(String transferId, PageTransferResult result) {
+    // TODO: Re-send the page if unsuccessful
   }
 
   @Override

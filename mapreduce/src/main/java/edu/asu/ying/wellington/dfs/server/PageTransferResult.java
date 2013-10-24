@@ -1,17 +1,11 @@
 package edu.asu.ying.wellington.dfs.server;
 
 /**
- * {@code PageTransferResult} is the response of one node to another following the completed
- * transmission of a {@link PageTransfer}; completion in this context does not mean the page was
- * transferred, only that the transfer metadata was transferred.
+ * Signals the end result of a completed {@link PageTransfer}.
  */
 public enum PageTransferResult {
-  Accepted,       // The remote node accepted the transfer completely and should be added to the
-  // list of container nodes for that page.
-  Duplicate,      // The remote node already has the page and should also be added to the list of
-  // container nodes for that page.
-  TryAgain,       // The transfer was interrupted or the remote node lost the page.
-  OutOfCapacity,  // The remote node can't accept any more pages.
-  ChecksumFailed, // The data were corrupted in the transfer
-  Invalid,        // Everything came through OK, but it's not valid page data
+  Accepted,       // The page was received and stored and the node can be considered to be carrying.
+  ChecksumFailed, // The page data were corrupt.
+  Invalid,        // The data were received, but were not a page.
+  OtherError,     // The transfer failed due to no fault of the sender
 }
