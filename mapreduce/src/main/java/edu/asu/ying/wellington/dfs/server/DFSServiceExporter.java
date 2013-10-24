@@ -38,4 +38,10 @@ public final class DFSServiceExporter
       throw new RemoteException("The DFS server threw an exception accepting the page transfer", e);
     }
   }
+
+  @Override
+  public void notifyPageTransferResult(String transferId, PageTransferResult result)
+      throws RemoteException {
+    service.notifyPageTransferResult(transferId, result);
+  }
 }
