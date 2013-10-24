@@ -16,8 +16,6 @@ import javax.inject.Inject;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.io.PageInputStream;
-import edu.asu.ying.wellington.dfs.io.PageOutputStreamProvider;
-import edu.asu.ying.wellington.dfs.io.PageWriterImpl;
 
 /**
  * {@code MemoryPersistenceCache} is an in-memory cache for persisting pages.

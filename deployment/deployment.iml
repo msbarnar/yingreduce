@@ -27,6 +27,7 @@
     <orderEntry type="module" module-name="mapreduce" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: org.restlet.jse:org.restlet:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.restlet.jse:org.restlet.ext.xml:2.0.0" level="project" />
