@@ -1,11 +1,11 @@
 package edu.asu.ying.wellington.dfs.client;
 
+import com.google.inject.Provider;
+
 import javax.inject.Inject;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.Element;
-import edu.asu.ying.wellington.dfs.PageDistributor;
-import edu.asu.ying.wellington.dfs.SerializedReadablePage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -14,11 +14,12 @@ import edu.asu.ying.wellington.io.WritableComparable;
  */
 public final class DFSClient {
 
-  private final Sink<SerializedReadablePage> pageOutSink;
+  private final Provider<PageBuilder> pageBuilderProvider;
 
   @Inject
-  private DFSClient(@PageDistributor Sink<SerializedReadablePage> pageOutSink) {
-    this.pageOutSink = pageOutSink;
+  private DFSClient(Provider<PageBuilder> pageBuilderProvider) {
+
+    this.pageBuilderProvider = pageBuilderProvider;
   }
 
   /**
@@ -31,6 +32,6 @@ public final class DFSClient {
   Sink<Element<K, V>> createTable(String tableName,
                                   Class<K> keyClass, Class<V> valueClass) {
 
-    return new PageBuilder<>(tableName, pageOutSink, keyClass, valueClass);
+    return pageBuilderProvider.get().open(tableName, pageOutSink, keyClass, valueClass);
   }
 }

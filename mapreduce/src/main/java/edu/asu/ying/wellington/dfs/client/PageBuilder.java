@@ -2,15 +2,21 @@ package edu.asu.ying.wellington.dfs.client;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
+import com.google.inject.internal.util.$Nullable;
+import com.google.inject.name.Named;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.BoundedSerializedPage;
 import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.ElementTooLargeException;
 import edu.asu.ying.wellington.dfs.PageCapacityReachedException;
+import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.SerializedReadablePage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
@@ -22,33 +28,61 @@ import edu.asu.ying.wellington.io.WritableComparable;
  * The default implementation of the page sink is the {@link PageDistributionSink}, which sends the
  * pages to their associated nodes.
  */
-//FIXME: use bin packing
+// FIXME: use bin packing
 public final class PageBuilder<K extends WritableComparable, V extends Writable>
     implements Sink<Element<K, V>>, Closeable {
 
-  // TODO: Set page capacity with configuration
-  public static final int DEFAULT_PAGE_CAPACITY_BYTES = 200;
+  private static final Logger log = Logger.getLogger(PageBuilder.class.getName());
+
+  // 1mb default
+  public static final int DEFAULT_PAGE_CAPACITY_BYTES = 1024 * 1024;
+  public static final String PAGE_CAPACITY_PARAMETER = "dfs.page.capacity";
 
   // Uniquely identifies the table in the data store
-  private final String tableName;
+  private String tableName;
 
   // Sinks full pages
   private final Sink<SerializedReadablePage> pageSink;
+  private final int pageCapacity;
 
   // For creating the page
-  private final Class<K> keyClass;
-  private final Class<V> valueClass;
+  private Class<K> keyClass;
+  private Class<V> valueClass;
 
   // Stores table elements not yet committed to the network.
   private BoundedSerializedPage<K, V> currentPage = null;
   private int currentPageIndex = 0;
   private final Object currentPageLock = new Object();
 
-  public PageBuilder(String tableName, Sink<SerializedReadablePage> pageSink,
-                     Class<K> keyClass, Class<V> valueClass) {
+  @Inject
+  private PageBuilder(@PageDistributor Sink<SerializedReadablePage> pageOutSink,
+                      @$Nullable @Named(PAGE_CAPACITY_PARAMETER) Integer pageCapacity) {
+
+    this.pageSink = pageOutSink;
+    if (pageCapacity == null) {
+      log.info(String.format("%s not set; using default page capacity: %d bytes",
+                             PAGE_CAPACITY_PARAMETER,
+                             DEFAULT_PAGE_CAPACITY_BYTES));
+      this.pageCapacity = DEFAULT_PAGE_CAPACITY_BYTES;
+    } else {
+      if (pageCapacity <= 0) {
+        log.info(String.format("%s should be > 0; using default page capacity: %d bytes",
+                               PAGE_CAPACITY_PARAMETER,
+                               DEFAULT_PAGE_CAPACITY_BYTES));
+      } else {
+        this.pageCapacity = pageCapacity;
+      }
+    }
+  }
+
+  /**
+   * Creates a page builder which accepts elements with key {@code keyClass} and value
+   * {@code valueClass} and places them in pages for table {@code tableName}.
+   * Full pages are sent to the injected {@link Sink}.
+   */
+  public void open(String tableName, Class<K> keyClass, Class<V> valueClass) {
 
     this.tableName = Preconditions.checkNotNull(Strings.emptyToNull(tableName));
-    this.pageSink = pageSink;
     this.keyClass = keyClass;
     this.valueClass = valueClass;
     this.currentPage = createPage();
@@ -88,20 +122,18 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
     synchronized (currentPageLock) {
       if (currentPage != null) {
         try {
-          // TODO: Logging
           pageSink.accept(currentPage);
         } catch (IOException e) {
-          // TODO: Logging
-          e.printStackTrace();
+          log.log(Level.WARNING, "Unhandled exception sending page from page builder", e);
         }
         currentPageIndex++;
       }
-      // TODO: Set page capacity with configuration
       currentPage = createPage();
     }
   }
 
   private BoundedSerializedPage<K, V> createPage() {
+    // TODO: Set page capacity from configuration
     return new BoundedSerializedPage<>(tableName, currentPageIndex,
                                        DEFAULT_PAGE_CAPACITY_BYTES,
                                        keyClass, valueClass);

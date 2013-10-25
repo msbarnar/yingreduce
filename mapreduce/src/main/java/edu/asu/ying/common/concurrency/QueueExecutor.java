@@ -4,11 +4,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  */
 public abstract class QueueExecutor<T> implements Runnable {
+
+  private static final Logger log = Logger.getLogger(QueueExecutor.class.getName());
 
   private final BlockingQueue<T> queue;
   private final ExecutorService threadPool;
@@ -60,8 +64,7 @@ public abstract class QueueExecutor<T> implements Runnable {
     try {
       this.process(item);
     } catch (Throwable e) {
-      // TODO: Logging
-      e.printStackTrace();
+      log.log(Level.WARNING, "Uncaught exception processing queue entry", e);
     }
   }
 

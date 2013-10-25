@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
 import edu.asu.ying.common.concurrency.QueueProcessor;
@@ -23,6 +25,8 @@ import edu.asu.ying.wellington.dfs.persistence.Persistence;
  * {@link Persistence} module designated by {@link DiskPersistence}.
  */
 public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
+
+  private static final Logger log = Logger.getLogger(PageTransferHandler.class.getName());
 
   private final Persistence memoryPersistence;
   private final Persistence diskPersistence;
@@ -47,8 +51,8 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
       pendingTransfers.put(transfer);
       return PageTransferResponse.Accepting;
     } catch (InterruptedException e) {
-      // TODO: Logging
-      e.printStackTrace();
+      log.log(Level.WARNING, "Queue interrupted while adding pending page transfer. Node will"
+                             + " respond as being overloaded.", e);
       return PageTransferResponse.Overloaded;
     }
   }
@@ -73,8 +77,8 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
         }
       }
     } catch (IOException e) {
-      // TODO: Logging
-      e.printStackTrace();
+      log.log(Level.WARNING, "Uncaught exception reading remote page stream or writing page data"
+                             + " locally. Remote node will be notified of failure.", e);
       return;
     }
 
@@ -83,13 +87,14 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
     if (result == PageTransferResult.Accepted) {
       result = commitToDisk(pageId);
     }
+    notifyResult(transfer, result);
+  }
+
+  private void notifyResult(PageTransfer transfer, PageTransferResult result) {
     try {
       transfer.getSendingNode().getDFSService().notifyPageTransferResult(transfer.getId(), result);
     } catch (RemoteException e) {
-      // TODO: Logging
-      e.printStackTrace();
-      // This isn't so bad; we can't reach the node to notify them of our results so we should
-      // expect them to re-send soon. If we did get it then we'll return Duplicate.
+      log.log(Level.WARNING, "Uncaught exception notifying remote node of transfer result.", e);
     }
   }
 

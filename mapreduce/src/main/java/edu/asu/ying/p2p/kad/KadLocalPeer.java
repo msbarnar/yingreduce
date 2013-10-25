@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.common.remoting.RemoteImportException;
 import edu.asu.ying.p2p.Channel;
@@ -39,6 +41,8 @@ import il.technion.ewolf.kbr.Node;
  * local database interface.
  */
 public final class KadLocalPeer implements LocalPeer {
+
+  private static Logger log = Logger.getLogger(KadLocalPeer.class.getName());
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
@@ -83,8 +87,6 @@ public final class KadLocalPeer implements LocalPeer {
   /**
    * {@inheritDoc}
    */
-  // TODO: 50/50 chance I'll need to be able to dirty this cache if the proxy fails
-  // TODO: I don't know what the above comment means anymore, but it looks important
   @Override
   public synchronized List<RemotePeer> getNeighbors() {
     List<Node> kadNodes = kbrNode.getNeighbours();
@@ -98,8 +100,7 @@ public final class KadLocalPeer implements LocalPeer {
         try {
           rmiRef = importProxyTo(kadNode);
         } catch (RemoteException e) {
-          // TODO: Logging
-          e.printStackTrace();
+          log.log(Level.WARNING, "Exception importing proxy to remote node", e);
         }
       }
       if (rmiRef != null) {
@@ -147,8 +148,7 @@ public final class KadLocalPeer implements LocalPeer {
           break;
         }
       } catch (RemoteImportException e) {
-        // TODO: Logging
-        e.printStackTrace();
+        log.log(Level.WARNING, "Exception importing proxy to remote node", e);
       }
     }
     return peers;
@@ -178,9 +178,7 @@ public final class KadLocalPeer implements LocalPeer {
       response = networkChannel.getMessageOutputStream().writeAsyncRequest(node, request);
 
     } catch (IOException e) {
-      // TODO: Logging
-      e.printStackTrace();
-      return null;
+      throw new RemoteImportException(e);
     }
 
     // Wait for the response and get the proxy
@@ -199,7 +197,6 @@ public final class KadLocalPeer implements LocalPeer {
     } catch (RemoteException | InvalidContentException | InterruptedException
         | ExecutionException e) {
 
-      // TODO: Logging
       throw new RemoteImportException(e);
     }
   }

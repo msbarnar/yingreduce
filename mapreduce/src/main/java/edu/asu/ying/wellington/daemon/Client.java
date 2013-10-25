@@ -29,10 +29,6 @@ public class Client {
    * Daemon entry point.
    */
   public static void main(final String[] args) {
-    // TODO: Logging
-    // System.out.println(
-    //    "YingReduce 0.2.1 Copyright \u00A9 2013 Ying Lab, Arizona State University");
-
     final Client app = new Client(args);
     app.start();
   }

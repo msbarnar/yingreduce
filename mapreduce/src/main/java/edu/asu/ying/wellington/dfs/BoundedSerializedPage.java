@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.dfs.io.ElementSerializer;
 import edu.asu.ying.wellington.dfs.io.PageHeader;
@@ -24,6 +26,8 @@ import edu.asu.ying.wellington.io.WritableComparable;
  */
 public final class BoundedSerializedPage<K extends WritableComparable, V extends Writable>
     implements SerializedReadablePage<K, V>, SerializedWritablePage<K, V> {
+
+  private static final Logger log = Logger.getLogger(BoundedSerializedPage.class.getName());
 
   private final PageMetadata<K, V> metadata;
 
@@ -122,8 +126,7 @@ public final class BoundedSerializedPage<K extends WritableComparable, V extends
           }
 
         } catch (IOException e) {
-          // TODO: Logging
-          e.printStackTrace();
+          log.log(Level.WARNING, "Uncaught exception serializing page to byte array", e);
           return null;
         }
 

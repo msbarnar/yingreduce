@@ -5,6 +5,8 @@ import com.google.inject.name.Named;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.wellington.daemon.web.RestInterface;
@@ -14,6 +16,8 @@ import edu.asu.ying.wellington.mapreduce.server.LocalNode;
  *
  */
 public final class Daemon {
+
+  private static final Logger log = Logger.getLogger(Daemon.class.getName());
 
   private final LocalPeer peer;
   private final LocalNode node;
@@ -34,7 +38,7 @@ public final class Daemon {
     try {
       iface.startInterface();
     } catch (final Exception e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, "Unhandled exception starting daemon UI", e);
     }
   }
 
@@ -42,7 +46,7 @@ public final class Daemon {
     try {
       peer.join(
           URI.create("//127.0.0.1:".concat(String.valueOf(instance.getPort()))));
-      System.out.println(String.format("[%d] -> [%d]", port, instance.getPort()));
+      log.finest(String.format("[%d] -> [%d]", port, instance.getPort()));
     } catch (final IOException e) {
       e.printStackTrace();
     }
@@ -51,9 +55,8 @@ public final class Daemon {
   public void join(URI bootstrap) {
     try {
       peer.join(bootstrap);
-      // TODO: Logging
-      System.out.println(String.format("%s <-> %s", peer.getName(),
-                                       bootstrap.toString()));
+      log.finest(String.format("%s <-> %s", peer.getName(),
+                               bootstrap.toString()));
     } catch (final IOException e) {
       e.printStackTrace();
     }

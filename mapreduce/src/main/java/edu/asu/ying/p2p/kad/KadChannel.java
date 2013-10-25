@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.InvalidContentException;
@@ -17,11 +18,14 @@ import il.technion.ewolf.kbr.KeybasedRouting;
 import il.technion.ewolf.kbr.Node;
 
 /**
- * {@code KadChannel} encompasses the {@link MessageHandler} and {@link MessageOutputStream} tied to
+ * {@code KadChannel} encompasses the {@link MessageHandler} and {@link MessageOutputStream} tied
+ * to
  * the underlying Kademlia network. The {@code KadChannel} provides a single point of access for
  * input from and output to the network.
  */
 public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageHandler {
+
+  private static final Logger log = Logger.getLogger(KadChannel.class.getName());
 
   // Send/Receive data to/from this Kademlia endpoint
   private final KeybasedRouting kbrNode;
@@ -64,8 +68,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
                                       final Serializable content) {
 
     if (!(content instanceof Message)) {
-      // TODO: Logging
-      System.out.println("Invalid content from the Kademlia network");
+      log.info("Invalid content from the Kademlia network");
       return;
     }
 
@@ -74,8 +77,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
     if (handler != null) {
       handler.onIncomingMessage((Message) content);
     } else {
-      // TODO: Logging
-      System.out.println("Unhandled message from Kademlia network");
+      log.info("Unhandled message from Kademlia network");
     }
   }
 
@@ -93,8 +95,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
                                               final Serializable content) {
 
     if (!(content instanceof Message)) {
-      // TODO: Logging
-      System.out.println("Invalid content from the Kademlia network");
+      log.info("Invalid content from the Kademlia network");
       return new ExceptionMessage(new InvalidContentException());
     }
 
@@ -102,8 +103,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
     if (handler != null) {
       return handler.onIncomingRequest((Message) content);
     } else {
-      // TODO: Logging
-      System.out.println("Unhandled message from Kademlia network");
+      log.info("Unhandled message from Kademlia network");
       return new ExceptionMessage(new UnhandledRequestException());
     }
   }
