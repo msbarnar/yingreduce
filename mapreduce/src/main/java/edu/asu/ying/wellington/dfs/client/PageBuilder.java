@@ -82,6 +82,9 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
    */
   @Override
   public void accept(Element<K, V> element) throws IOException {
+    if (currentPage == null) {
+      throw new IllegalStateException("Page builder must open a table before it accepts elements.");
+    }
     try {
       currentPage.accept(element);
     } catch (PageCapacityReachedException e) {
