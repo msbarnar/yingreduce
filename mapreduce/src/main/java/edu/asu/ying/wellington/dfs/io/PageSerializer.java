@@ -24,7 +24,7 @@ public class PageSerializer implements Closeable {
 
   public <K extends WritableComparable, V extends Writable>
   void serialize(ReadablePage<K, V> page) throws IOException {
-    (new PageHeader<>(page)).writeTo(ostream);
+    (new PageHeader<>(page.getMetadata())).writeTo(ostream);
 
     for (Element<K, V> element : page) {
       writer.write(element);

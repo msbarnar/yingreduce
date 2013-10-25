@@ -98,4 +98,9 @@ public final class NodeImpl implements LocalNode, NodeLocator {
   public RemoteNode asRemote() {
     return proxy;
   }
+
+  @Override
+  public RemoteNode local() {
+    return proxy;
+  }
 }

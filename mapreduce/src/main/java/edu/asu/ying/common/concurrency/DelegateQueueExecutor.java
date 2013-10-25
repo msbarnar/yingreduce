@@ -12,7 +12,12 @@ public final class DelegateQueueExecutor<T> extends QueueExecutor<T> {
   }
 
   @Override
-  protected void process(T item) {
-    processor.process(task);
+  protected void process(T task) {
+    try {
+      processor.process(task);
+    } catch (Exception e) {
+      // FIXME: Handle
+      throw new RuntimeException(e);
+    }
   }
 }

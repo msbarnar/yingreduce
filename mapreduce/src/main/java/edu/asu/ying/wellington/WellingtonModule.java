@@ -123,10 +123,6 @@ public final class WellingtonModule extends AbstractModule {
         .to(PageDistributionSink.class)
         .in(Scopes.SINGLETON);
 
-    bind(StreamProvider.class)
-        .annotatedWith(DiskPersistence.class)
-        .to(FileStreamProvider.class);
-
     bind(Persistence.class)
         .annotatedWith(DiskPersistence.class)
         .to(DiskPersistenceManager.class)

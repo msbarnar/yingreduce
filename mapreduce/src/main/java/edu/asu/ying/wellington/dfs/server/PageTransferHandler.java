@@ -43,9 +43,12 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
    * Queues the transfer to be downloaded.
    */
   public PageTransferResponse offer(PageTransfer transfer) {
-    if (pendingTransfers.offer(transfer)) {
+    try {
+      pendingTransfers.put(transfer);
       return PageTransferResponse.Accepting;
-    } else {
+    } catch (InterruptedException e) {
+      // TODO: Logging
+      e.printStackTrace();
       return PageTransferResponse.Overloaded;
     }
   }
