@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
@@ -20,6 +21,8 @@ import edu.asu.ying.wellington.mapreduce.task.TaskException;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 public final class JobDelegator extends QueueExecutor<Job> {
+
+  private static final Logger log = Logger.getLogger(JobDelegator.class.getName());
 
   private final Provider<RemoteNode> loopbackProxyProvider;
   private final NodeLocator nodeLocator;
@@ -71,7 +74,6 @@ public final class JobDelegator extends QueueExecutor<Job> {
         taskService.accept(loopbackTask);
       } catch (TaskException e) {
         // TODO: Logging
-        e.printStackTrace();
       }
     }
 

@@ -3,7 +3,6 @@ package edu.asu.ying.wellington.dfs.client;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.internal.util.$Nullable;
 import com.google.inject.name.Named;
 
 import java.io.Closeable;
@@ -34,8 +33,6 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
 
   private static final Logger log = Logger.getLogger(PageBuilder.class.getName());
 
-  // 1mb default
-  public static final int DEFAULT_PAGE_CAPACITY_BYTES = 1024 * 1024;
   public static final String PAGE_CAPACITY_PARAMETER = "dfs.page.capacity";
 
   // Uniquely identifies the table in the data store
@@ -56,22 +53,13 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
 
   @Inject
   private PageBuilder(@PageDistributor Sink<SerializedReadablePage> pageOutSink,
-                      @$Nullable @Named(PAGE_CAPACITY_PARAMETER) Integer pageCapacity) {
+                      @Named(PAGE_CAPACITY_PARAMETER) int pageCapacity) {
 
     this.pageSink = pageOutSink;
-    if (pageCapacity == null) {
-      log.info(String.format("%s not set; using default page capacity: %d bytes",
-                             PAGE_CAPACITY_PARAMETER,
-                             DEFAULT_PAGE_CAPACITY_BYTES));
-      this.pageCapacity = DEFAULT_PAGE_CAPACITY_BYTES;
+    if (pageCapacity <= 0) {
+      throw new IllegalArgumentException(PAGE_CAPACITY_PARAMETER.concat(" must be >0 bytes"));
     } else {
-      if (pageCapacity <= 0) {
-        log.info(String.format("%s should be > 0; using default page capacity: %d bytes",
-                               PAGE_CAPACITY_PARAMETER,
-                               DEFAULT_PAGE_CAPACITY_BYTES));
-      } else {
-        this.pageCapacity = pageCapacity;
-      }
+      this.pageCapacity = pageCapacity;
     }
   }
 
@@ -133,9 +121,8 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
   }
 
   private BoundedSerializedPage<K, V> createPage() {
-    // TODO: Set page capacity from configuration
     return new BoundedSerializedPage<>(tableName, currentPageIndex,
-                                       DEFAULT_PAGE_CAPACITY_BYTES,
+                                       pageCapacity,
                                        keyClass, valueClass);
   }
 }

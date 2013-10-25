@@ -28,10 +28,13 @@ public final class DFSClient {
   // FIXME: These aren't pulled from a registry,
   // so if someone gets one and writes three pages then gets another and writes four pages, the
   // first three will be overwritten.
+  @SuppressWarnings("unchecked")
   public <K extends WritableComparable, V extends Writable>
   Sink<Element<K, V>> createTable(String tableName,
                                   Class<K> keyClass, Class<V> valueClass) {
 
-    return pageBuilderProvider.get().open(tableName, pageOutSink, keyClass, valueClass);
+    PageBuilder<K, V> pb = (PageBuilder<K, V>) pageBuilderProvider.get();
+    pb.open(tableName, keyClass, valueClass);
+    return pb;
   }
 }
