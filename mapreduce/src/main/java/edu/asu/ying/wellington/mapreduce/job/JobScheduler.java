@@ -109,7 +109,7 @@ public final class JobScheduler implements JobService {
   /**
    * Finds the node with the first page of the job's table.
    */
-  // FIXME: page duplication means we have to pick a random one of the nodes that has this page
+  // FIXME: page replication means we have to pick a random one of the nodes that has this page
   private RemoteNode findResponsibleNode(Job job) throws IOException {
     return nodeLocator.find(PageIdentifier.firstPageOf(job.getTableName()).toString());
   }

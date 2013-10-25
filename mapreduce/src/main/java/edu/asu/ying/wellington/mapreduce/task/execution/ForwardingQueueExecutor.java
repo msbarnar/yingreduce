@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Remote;
@@ -19,6 +21,8 @@ import edu.asu.ying.wellington.mapreduce.task.Task;
  * or in the {@code Forwarding} queue of one of the immediately connected child nodes.
  */
 public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
+
+  private static final Logger log = Logger.getLogger(ForwardingQueueExecutor.class.getName());
 
   private final NodeLocator locator;
 
@@ -59,8 +63,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
           bestNeighbor = remoteScheduler;
         }
       } catch (RemoteException e) {
-        // TODO: Logging
-        e.printStackTrace();
+        log.log(Level.WARNING, "Remote exception getting backpressure from remote scheduler", e);
       }
     }
 
@@ -87,8 +90,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
       try {
         bestNeighbor.accept(task);
       } catch (RemoteException e) {
-        // TODO: Logging
-        e.printStackTrace();
+        log.log(Level.WARNING, "Remote exception forwarding task to remote node", e);
       }
     }
   }

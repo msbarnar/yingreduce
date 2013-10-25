@@ -7,6 +7,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;
@@ -20,6 +22,8 @@ import edu.asu.ying.wellington.mapreduce.task.TaskService;
  * supports finding other nodes and obtaining remote access to their services.
  */
 public final class NodeImpl implements LocalNode, NodeLocator {
+
+  private static final Logger log = Logger.getLogger(NodeImpl.class.getName());
 
   private final RemoteNode proxy;
 
@@ -73,8 +77,7 @@ public final class NodeImpl implements LocalNode, NodeLocator {
       try {
         nodes.add(peer.getReference(RemoteNode.class));
       } catch (RemoteException e) {
-        // TODO: Logging
-        e.printStackTrace();
+        log.log(Level.WARNING, "Remote exception getting proxy from remote node", e);
       }
     }
     return nodes;
@@ -87,8 +90,7 @@ public final class NodeImpl implements LocalNode, NodeLocator {
       try {
         neighbors.add(peer.getReference(RemoteNode.class));
       } catch (RemoteException e) {
-        // TODO: Logging
-        e.printStackTrace();
+        log.log(Level.WARNING, "Remote exception getting proxy from remote node", e);
       }
     }
     return neighbors;

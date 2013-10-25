@@ -11,6 +11,7 @@ import edu.asu.ying.wellington.mapreduce.task.Task;
 /**
  *
  */
+// FIXME: Abstract execution model away from queues; use unified page retrieval
 public final class RemoteQueueExecutor extends QueueExecutor<Task> {
 
   @Inject

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
@@ -50,6 +51,7 @@ public final class JobDelegator extends QueueExecutor<Job> {
     RemoteNode loopbackProxy = loopbackProxyProvider.get();
 
     // TODO: split job based on number of pages in table
+    // TODO: Abstract task class
     final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
     for (int i = 0; i < 40; i++) {
       // Pass the responsible node as a remote proxy so other peers can access it
@@ -73,7 +75,9 @@ public final class JobDelegator extends QueueExecutor<Job> {
       try {
         taskService.accept(loopbackTask);
       } catch (TaskException e) {
-        // TODO: Logging
+        log.log(Level.WARNING, "Exception scheduling task on the local scheduler. Failover is not"
+                               + " implemented; part of this job will not run.", e);
+        // TODO: Failover
       }
     }
 
@@ -86,8 +90,9 @@ public final class JobDelegator extends QueueExecutor<Job> {
         task.setInitialNode(initialNode);
         initialNode.getTaskService().accept(task);
       } catch (final IOException e) {
-        // TODO: Logging
-        e.printStackTrace();
+        log.log(Level.WARNING, "Exception scheduling task on remote scheduler. Failover is not"
+                               + " implemented; part of this job will not run.", e);
+        // TODO: Failover
       }
     }
   }
@@ -102,8 +107,10 @@ public final class JobDelegator extends QueueExecutor<Job> {
       try {
         reducers.add(nodeLocator.find(jobName.concat(Integer.toString(i))));
       } catch (IOException e) {
-        // TODO: Logging
-        e.printStackTrace();
+        log.log(Level.WARNING, "Exception getting reference to reducer node. Failover is not"
+                               + " implemented; this job will run with fewer reducers than"
+                               + " configured.", e);
+        // TODO: Failover
       }
     }
     return reducers;
