@@ -26,6 +26,7 @@ public final class DFSClient {
    * Returns a {@link Sink} which uploads the elements it receives to the distributed filesystem.
    */
   // FIXME: These aren't pulled from a registry,
+  // FIXME: Better table making interface
   // so if someone gets one and writes three pages then gets another and writes four pages, the
   // first three will be overwritten.
   @SuppressWarnings("unchecked")

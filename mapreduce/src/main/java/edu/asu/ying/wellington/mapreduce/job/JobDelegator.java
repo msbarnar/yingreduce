@@ -92,7 +92,7 @@ public final class JobDelegator extends QueueExecutor<Job> {
     }
   }
 
-  // FIXME: Potentially very slow
+  // FIXME: Optimize
   private Set<RemoteNode> findReducers(Job job) {
     int numReducers = job.getReducerCount();
     String jobName = job.getName();

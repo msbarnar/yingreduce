@@ -33,7 +33,7 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
 
   private static final Logger log = Logger.getLogger(PageBuilder.class.getName());
 
-  public static final String PAGE_CAPACITY_PARAMETER = "dfs.page.capacity";
+  public static final String PROPERTY_PAGE_CAPACITY = "dfs.page.capacity";
 
   // Uniquely identifies the table in the data store
   private String tableName;
@@ -53,11 +53,11 @@ public final class PageBuilder<K extends WritableComparable, V extends Writable>
 
   @Inject
   private PageBuilder(@PageDistributor Sink<SerializedReadablePage> pageOutSink,
-                      @Named(PAGE_CAPACITY_PARAMETER) int pageCapacity) {
+                      @Named(PROPERTY_PAGE_CAPACITY) int pageCapacity) {
 
     this.pageSink = pageOutSink;
-    if (pageCapacity <= 0) {
-      throw new IllegalArgumentException(PAGE_CAPACITY_PARAMETER.concat(" must be >0 bytes"));
+    if (pageCapacity < 1) {
+      throw new IllegalArgumentException(PROPERTY_PAGE_CAPACITY.concat(" must be >0 bytes"));
     } else {
       this.pageCapacity = pageCapacity;
     }

@@ -1,10 +1,12 @@
 package edu.asu.ying.wellington.dfs.client;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
 import edu.asu.ying.common.concurrency.QueueProcessor;
@@ -22,19 +24,27 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 public final class PageDistributionSink
     implements Sink<SerializedReadablePage>, QueueProcessor<SerializedReadablePage> {
 
-  private static final int DEFAULT_REPLICATION_FACTOR = 3;
+  private static final Logger log = Logger.getLogger(PageDistributionSink.class.getName());
+
+  public static final String PROPERTY_PAGE_REPLICATION = "dfs.page.replication";
 
   private final NodeLocator locator;
 
-  private final int pageReplicationFactor = DEFAULT_REPLICATION_FACTOR;
+  private int pageReplicationFactor;
 
   private final DelegateQueueExecutor<SerializedReadablePage> pageQueue
       = new DelegateQueueExecutor<>(this);
   private final Map<String, SerializedReadablePage> inProgressTransfers = new HashMap<>();
 
   @Inject
-  private PageDistributionSink(NodeLocator locator) {
+  private PageDistributionSink(NodeLocator locator,
+                               @Named(PROPERTY_PAGE_REPLICATION) int replicationFactor) {
+
     this.locator = locator;
+    if (replicationFactor < 1) {
+      throw new IllegalArgumentException(PROPERTY_PAGE_REPLICATION.concat(" must be >0"));
+    }
+    this.pageReplicationFactor = replicationFactor;
   }
 
   @Override
@@ -52,6 +62,7 @@ public final class PageDistributionSink
     RemoteNode initialNode = locator.find(page.getMetadata().getId().toString());
     // Send the transfer to the node
     PageTransfer transfer = new PageTransfer(locator.local(),
+                                             pageReplicationFactor,
                                              page.getMetadata(),
                                              page.getInputStream());
     PageTransferResponse response = initialNode.getDFSService().offer(transfer);

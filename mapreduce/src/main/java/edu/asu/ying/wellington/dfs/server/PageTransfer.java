@@ -25,12 +25,16 @@ public final class PageTransfer implements HasPageMetadata, Serializable {
 
   private final String id;
   private final RemoteNode sendingNode;
+  private final int replication;
   private final PageMetadata metadata;
   private final RemoteInputStream stream;
 
-  public PageTransfer(RemoteNode sendingNode, PageMetadata metadata, InputStream stream) {
+  public PageTransfer(RemoteNode sendingNode, int replication,
+                      PageMetadata metadata, InputStream stream) {
+
     this.id = UUID.randomUUID().toString();
     this.sendingNode = sendingNode;
+    this.replication = replication;
     this.metadata = metadata;
     this.stream = new SimpleRemoteInputStream(stream);
   }
