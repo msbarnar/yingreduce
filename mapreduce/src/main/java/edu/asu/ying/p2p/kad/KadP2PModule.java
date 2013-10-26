@@ -70,7 +70,6 @@ public class KadP2PModule extends AbstractModule {
         new KadNetModule()
             .setProperty("openkad.keyfactory.keysize", String.valueOf(20))
             .setProperty("openkad.bucket.kbuckets.maxsize", String.valueOf(20))
-            .setProperty("openkad.seed", String.valueOf(port))
             .setProperty("openkad.net.udp.port", String.valueOf(port))
             .setProperty("openkad.file.nodes.path",
                          System.getProperty("user.home").concat("/.kadhosts"))
