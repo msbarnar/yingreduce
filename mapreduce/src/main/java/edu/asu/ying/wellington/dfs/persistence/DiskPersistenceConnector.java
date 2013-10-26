@@ -13,12 +13,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -97,6 +98,10 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
 
   /**
    * Finds all of the table directories and all of the page files in the store path.
+   * </p>
+   * Does not expect that every directory in the root is a table directory, but does expect
+   * that every file in a table directory is a page. Deletes any files that are not named
+   * appropriately.
    */
   @Override
   public Set<PageIdentifier> getAllStoredPages() throws IOException {
@@ -104,34 +109,38 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
 
     File file = new File(root.toUri());
     // Get all directories
-    String[] tableDirs = file.list(new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return new File(dir, name).isDirectory();
-      }
-    });
-
-    for (String tableDir : tableDirs) {
-      Path tablePath = root.resolve(tableDir);
-      String tableName = readTableName(tablePath);
-      file = new File(tablePath.toUri());
-      // Get all files that aren't the table name file
-      String[] pageFiles = file.list(new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-          return !name.equals(TABLE_NAME_FILENAME);
+    try (DirectoryStream<Path> paths = Files.newDirectoryStream(root)) {
+      for (Path tablePath : paths) {
+        // Only look at directories
+        if (!Files.isDirectory(tablePath)) {
+          continue;
         }
-      });
-      // Add a page to the set for each file, where the page index is the filename
-      for (String pageFile : pageFiles) {
+        // Get the name of the table from the directory
+        String tableName;
         try {
-          int pageIndex = Integer.valueOf(pageFile);
-          storedPages.add(PageIdentifier.create(tableName, pageIndex));
-        } catch (NumberFormatException e) {
-          // Delete this errant file
-          Path pagePath = tablePath.resolve(pageFile);
-          Files.delete(pagePath);
-          log.info("Pruned misnamed file from page store: ".concat(pagePath.toString()));
+          tableName = readTableName(tablePath);
+        } catch (FileNotFoundException e) {
+          // Not a table directory
+          continue;
+        }
+        // Each file should be a page
+        try (DirectoryStream<Path> files = Files.newDirectoryStream(tablePath)) {
+          for (Path pageFile : files) {
+            String fileName = pageFile.getFileName().toString();
+            // Skip the table name file
+            if (fileName.equals(TABLE_NAME_FILENAME)) {
+              continue;
+            }
+            // Use the filename as the page index; delete any files that don't have integral names
+            try {
+              int pageIndex = Integer.valueOf(fileName);
+              storedPages.add(PageIdentifier.create(tableName, pageIndex));
+            } catch (NumberFormatException e) {
+              // Delete this errant file
+              Files.delete(pageFile);
+              log.info("Pruned misnamed file from page store: ".concat(pageFile.toString()));
+            }
+          }
         }
       }
     }
@@ -189,6 +198,13 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
         Paths.get(makePathString(id.getTableName()), makePathString(id.toString())));
   }
 
+  /**
+   * Normalizes the table name to a filesystem-friendly name and ensures that a directory exists
+   * by that name.
+   * </p>
+   * If one does not exist, also creates a file in that directory containing the name of the table
+   * for later retrieval.
+   */
   private Path createTableDirectory(String tableName) throws IOException {
     Path path = root.resolve(makePathString(tableName));
     // If the table directory exists but is not a directory, delete it
@@ -203,10 +219,12 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
 
     // Write a file with the name of the table in the directory so we can recover the name later
     Path tableNameFile = path.resolve(TABLE_NAME_FILENAME);
-    try (DataOutputStream ostream
-             = new DataOutputStream(
-        Files.newOutputStream(tableNameFile, StandardOpenOption.CREATE))) {
-      ostream.writeUTF(tableName);
+    if (!Files.exists(tableNameFile)) {
+      try (DataOutputStream ostream
+               = new DataOutputStream(
+          Files.newOutputStream(tableNameFile, StandardOpenOption.CREATE))) {
+        ostream.writeUTF(tableName);
+      }
     }
 
     return path;
