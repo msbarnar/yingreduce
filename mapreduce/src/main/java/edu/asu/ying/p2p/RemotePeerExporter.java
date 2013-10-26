@@ -12,20 +12,28 @@ import edu.asu.ying.common.remoting.Exporter;
 /**
  *
  */
-public final class RemotePeerExporter implements RemotePeer, Exporter<Activator, RemotePeer> {
+public final class RemotePeerExporter implements RemotePeer, Exporter<LocalPeer, RemotePeer> {
 
+  private LocalPeer localPeer;
   private Activator activator;
   private RemotePeer proxyInstance;
 
   @Inject
-  private RemotePeerExporter(Activator activator) {
+  private RemotePeerExporter(LocalPeer localPeer,
+                             Activator activator) {
+    this.localPeer = localPeer;
     this.activator = activator;
   }
 
   @Override
-  public RemotePeer export(Activator target) throws ExportException {
+  public RemotePeer export(LocalPeer target) throws ExportException {
     proxyInstance = activator.bind(RemotePeer.class, this);
     return proxyInstance;
+  }
+
+  @Override
+  public String getName() throws RemoteException {
+    return localPeer.getName();
   }
 
   @Override

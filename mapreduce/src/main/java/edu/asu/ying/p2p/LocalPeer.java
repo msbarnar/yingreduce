@@ -25,6 +25,11 @@ public interface LocalPeer {
   void join(URI bootstrap) throws IOException;
 
   /**
+   * Closes the peers connections and stops its threads.
+   */
+  void close();
+
+  /**
    * Gets the peers to which this peer is directly connected.
    */
   List<RemotePeer> getNeighbors();

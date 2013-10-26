@@ -46,7 +46,6 @@ public final class KadLocalPeer implements LocalPeer {
 
   // Local kademlia node
   private final KeybasedRouting kbrNode;
-  private final String name;
 
   // Pipe to the kad network
   private final Channel networkChannel;
@@ -62,11 +61,16 @@ public final class KadLocalPeer implements LocalPeer {
 
     // The local Kademlia node for peer discovery
     this.kbrNode = kbrNode;
-    // Identify this peer on the network
-    // FIXME: SEVERE: The key is chosen using the local interface address which is always localhost
-    this.name = kbrNode.getLocalNode().getKey().toString();
     // Connect the P2P messaging system to the Kademlia node
     this.networkChannel = channel;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getName() {
+    return kbrNode.getLocalNode().getKey().toString();
   }
 
   /**
@@ -83,6 +87,15 @@ public final class KadLocalPeer implements LocalPeer {
     }
   }
 
+  @Override
+  public void close() {
+    neighborsCache.clear();
+    try {
+      networkChannel.close();
+    } catch (IOException ignored) {
+    }
+    kbrNode.shutdown();
+  }
 
   /**
    * {@inheritDoc}
@@ -152,14 +165,6 @@ public final class KadLocalPeer implements LocalPeer {
       }
     }
     return peers;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getName() {
-    return name;
   }
 
   /**

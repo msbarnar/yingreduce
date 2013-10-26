@@ -10,6 +10,8 @@ import com.google.inject.name.Names;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.rmi.RMIActivator;
@@ -24,10 +26,9 @@ import il.technion.ewolf.kbr.openkad.KadNetModule;
  */
 public class KadP2PModule extends AbstractModule {
 
-  private final Properties properties;
+  private static final Logger log = Logger.getLogger(KadP2PModule.class.getName());
 
-  private KeybasedRouting kbr;
-  private final Object kbrLock = new Object();
+  private final Properties properties;
 
   public KadP2PModule() {
     this(new Properties());
@@ -47,26 +48,19 @@ public class KadP2PModule extends AbstractModule {
   protected void configure() {
     Names.bindProperties(binder(), properties);
 
+    KeybasedRouting kbr;
+    try {
+      kbr = createKeybasedRouting(Integer.parseInt(properties.getProperty("p2p.port")));
+    } catch (InstantiationException e) {
+      throw new RuntimeException(e);
+    }
+
+    bind(KeybasedRouting.class).toInstance(kbr);
+
     // P2P Network
     bind(Activator.class).to(RMIActivator.class).in(Scopes.SINGLETON);
     bind(Channel.class).to(KadChannel.class).in(Scopes.SINGLETON);
     bind(LocalPeer.class).to(KadLocalPeer.class).in(Scopes.SINGLETON);
-  }
-
-  @Provides
-  private KeybasedRouting provideKeybasedRouting() {
-    if (kbr == null) {
-      synchronized (kbrLock) {
-        if (kbr == null) {
-          try {
-            kbr = createKeybasedRouting(Integer.parseInt(properties.getProperty("p2p.port")));
-          } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-          }
-        }
-      }
-    }
-    return kbr;
   }
 
   private static KeybasedRouting createKeybasedRouting(final int port)
@@ -74,8 +68,8 @@ public class KadP2PModule extends AbstractModule {
 
     final Injector injector = Guice.createInjector(
         new KadNetModule()
-            .setProperty("openkad.keyfactory.keysize", String.valueOf(16))
-            .setProperty("openkad.bucket.kbuckets.maxsize", String.valueOf(16))
+            .setProperty("openkad.keyfactory.keysize", String.valueOf(20))
+            .setProperty("openkad.bucket.kbuckets.maxsize", String.valueOf(20))
             .setProperty("openkad.seed", String.valueOf(port))
             .setProperty("openkad.net.udp.port", String.valueOf(port))
             .setProperty("openkad.file.nodes.path",
@@ -86,7 +80,7 @@ public class KadP2PModule extends AbstractModule {
     try {
       kadNode.create();
     } catch (final IOException e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, "Failed to create local Kademlia node", e);
       throw new InstantiationException("Failed to create local Kademlia node");
     }
 

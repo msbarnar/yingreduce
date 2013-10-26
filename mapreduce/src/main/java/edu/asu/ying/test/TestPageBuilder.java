@@ -55,6 +55,7 @@ public class TestPageBuilder {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void itPagesOut() throws Exception {
 
     Injector injector = Guice.createInjector(new MockModule());

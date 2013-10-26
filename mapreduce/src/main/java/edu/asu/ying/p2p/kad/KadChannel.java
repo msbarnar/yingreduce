@@ -36,7 +36,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   private final Map<String, MessageHandler> messageHandlers = new HashMap<>();
 
   @Inject
-  private KadChannel(final KeybasedRouting kbrNode) {
+  private KadChannel(KeybasedRouting kbrNode) {
     this.kbrNode = kbrNode;
     this.sendStream = new KadSendMessageStream(kbrNode);
   }
@@ -44,16 +44,23 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
   /**
    * Binds a {@link MessageHandler} to messages signed with a particular {@code tag}.
    */
-  public final void registerMessageHandler(final MessageHandler handler, final String tag) {
-    this.kbrNode.register(tag, this);
-    this.messageHandlers.put(tag, handler);
+  @Override
+  public void registerMessageHandler(MessageHandler handler, String tag) {
+    kbrNode.register(tag, this);
+    messageHandlers.put(tag, handler);
+  }
+
+  @Override
+  public void close() {
+    messageHandlers.clear();
   }
 
   /**
    * Gets a {@link MessageOutputStream} capable of writing messages to the Kademlia network.
    */
-  public final MessageOutputStream getMessageOutputStream() {
-    return this.sendStream;
+  @Override
+  public MessageOutputStream getMessageOutputStream() {
+    return sendStream;
   }
 
   /**
@@ -64,8 +71,8 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
    * @param tag     the tag with which the message is signed.
    * @param content the message.
    */
-  public final void onIncomingMessage(final Node from, final String tag,
-                                      final Serializable content) {
+  @Override
+  public void onIncomingMessage(Node from, String tag, Serializable content) {
 
     if (!(content instanceof Message)) {
       log.info("Invalid content from the Kademlia network");
@@ -73,7 +80,7 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
     }
 
     // Look up the message handler associated with that tag and pass the message along.
-    final MessageHandler handler = this.messageHandlers.get(tag);
+    MessageHandler handler = messageHandlers.get(tag);
     if (handler != null) {
       handler.onIncomingMessage((Message) content);
     } else {
@@ -91,15 +98,15 @@ public final class KadChannel implements Channel, il.technion.ewolf.kbr.MessageH
    * @return the response from the {@link MessageHandler}, or an {@link ExceptionMessage} wrapping
    *         the exception if one is thrown.
    */
-  public final Serializable onIncomingRequest(final Node from, final String tag,
-                                              final Serializable content) {
+  @Override
+  public Serializable onIncomingRequest(Node from, String tag, Serializable content) {
 
     if (!(content instanceof Message)) {
       log.info("Invalid content from the Kademlia network");
       return new ExceptionMessage(new InvalidContentException());
     }
 
-    final MessageHandler handler = this.messageHandlers.get(tag);
+    MessageHandler handler = messageHandlers.get(tag);
     if (handler != null) {
       return handler.onIncomingRequest((Message) content);
     } else {
