@@ -4,18 +4,8 @@ import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -34,15 +24,12 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
   private static final Logger log = Logger.getLogger(PersistenceEngine.class.getName());
 
   public static final String PROPERTY_STORE_PATH = "dfs.store.path";
-  private static final String PAGE_INDEX_NAME = "pages.idx";
 
   private final PersistenceConnector cache;
   private final PersistenceConnector disk;
 
   // A record of all the pages stored on disk
   private final Set<PageIdentifier> pageIndex = new HashSet<>();
-  private final File pageIndexFile;
-  private final File pageIndexFileBak;
 
   DelegateQueueExecutor<PageIdentifier> cacheCommitQueue = new DelegateQueueExecutor<>(this);
 
@@ -53,16 +40,13 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
     this.cache = cache;
     this.disk = disk;
 
-    this.pageIndexFile = new File(Paths.get(storePath, PAGE_INDEX_NAME).toUri());
-    this.pageIndexFileBak = new File(Paths.get(storePath, "~" + PAGE_INDEX_NAME).toUri());
-
     try {
       loadPageIndex();
     } catch (IOException e) {
       log.log(Level.WARNING, "Exception reading page index; reindexing", e);
       try {
         pageIndex.clear();
-        pageIndex.addAll(disk.getAllStoredPages());
+        pageIndex.addAll(disk.rebuildPageIndex());
       } catch (IOException e1) {
         throw new RuntimeException("Exception indexing pages; either resolve the exception"
                                        .concat(" or trash the page store: ")
@@ -109,60 +93,17 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
     savePageIndex();
   }
 
-  /**
-   * Serializes the page index to a file.
-   */
   private void savePageIndex() throws IOException {
-    // Don't allow saving and loading to interleave
-    synchronized (pageIndexFile) {
-      // Back up the index
-      Files.copy(pageIndexFile.toPath(), pageIndexFileBak.toPath(),
-                 StandardCopyOption.REPLACE_EXISTING);
-
-      // Delete existing
-      Files.deleteIfExists(pageIndexFile.toPath());
-      // Write the index
-      try (DataOutputStream ostream
-               = new DataOutputStream(
-          new BufferedOutputStream(new FileOutputStream(pageIndexFile)))) {
-        // Don't allow the index to be modified while saving
-        synchronized (pageIndex) {
-          // Start with the number of entries in the index
-          ostream.writeInt(pageIndex.size());
-          for (PageIdentifier id : pageIndex) {
-            id.write(ostream);
-          }
-        }
-      } catch (Exception e) {
-        // Copy the backup back to the regular file
-        Files.copy(pageIndexFileBak.toPath(), pageIndexFile.toPath(),
-                   StandardCopyOption.REPLACE_EXISTING);
-        log.log(Level.WARNING, "Exception saving page index", e);
-      }
-    }
+    disk.savePageIndex(pageIndex);
   }
 
-  /**
-   * Deserializes the page index from a file.
-   */
   private void loadPageIndex() throws IOException {
-    Set<PageIdentifier> loadedIndex = new HashSet<>();
-    // Don't allow saving and loading to interleave
-    synchronized (pageIndexFile) {
-      try (DataInputStream istream
-               = new DataInputStream(new BufferedInputStream(new FileInputStream(pageIndexFile)))) {
-        // Read the number of entries from the file
-        for (int i = 0; i < istream.readInt(); i++) {
-          loadedIndex.add(PageIdentifier.readFrom(istream));
-        }
-      }
-    }
-
+    Set<PageIdentifier> loadedIndex = disk.loadPageIndex();
     // Add the loaded entries to the index
     pageIndex.addAll(loadedIndex);
     // If the index contained new entries not in the stored file, save it now
     if (pageIndex.size() > loadedIndex.size()) {
-      savePageIndex();
+      disk.savePageIndex(pageIndex);
     }
   }
 }

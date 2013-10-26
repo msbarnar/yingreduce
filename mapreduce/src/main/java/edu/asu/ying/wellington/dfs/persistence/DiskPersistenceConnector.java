@@ -9,6 +9,8 @@ import com.google.inject.name.Named;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,9 +26,11 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
@@ -43,11 +47,18 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   // Name of the file which stores the name of the table in the normalized table folder
   private static final String TABLE_NAME_FILENAME = ".table_name";
 
+  // For normalizing table names to make them filesystem friendly
   private final HashFunction pathNormalizer = Hashing.md5();
+  // For validating page contents
   private final HashFunction checksumFunc = Hashing.adler32();
 
   // The root path of the page store
   private final Path root;
+
+  // For loading and saving the page index
+  private static final String PAGE_INDEX_NAME = "pages.idx";
+  private final File pageIndexFile;
+  private final File pageIndexFileBak;
 
   /**
    * Creates the connector with a root path for all pages.
@@ -67,6 +78,9 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
     if (!Files.isWritable(root)) {
       throw new AccessDeniedException(rootPath, null, "Root path for persistence is not writable");
     }
+
+    this.pageIndexFile = new File(Paths.get(rootPath, PAGE_INDEX_NAME).toUri());
+    this.pageIndexFileBak = new File(Paths.get(rootPath, "~" + PAGE_INDEX_NAME).toUri());
   }
 
   @Override
@@ -95,6 +109,92 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   }
 
   /**
+   * @throws FileAlreadyExistsException if the page is already stored.
+   */
+  @Override
+  public OutputStream getOutputStream(PageIdentifier id) throws IOException {
+    Path tableDirectory = createTableDirectory(id.getTableName());
+
+    Path fullPath = tableDirectory.resolve(Integer.toString(id.getIndex()));
+    // Don't automatically overwrite files
+    if (Files.exists(fullPath)) {
+      throw new FileAlreadyExistsException(fullPath.toString());
+    }
+    File file = fullPath.toFile();
+    // Creates the necessary directory hierarchy if it doesn't exist
+    com.google.common.io.Files.createParentDirs(file);
+    return new BufferedOutputStream(new FileOutputStream(file));
+  }
+
+  /**
+   * @throws NoSuchFileException   if there's no file for the indicated page.
+   * @throws AccessDeniedException if the file is not readable.
+   */
+  @Override
+  public InputStream getInputStream(PageIdentifier id) throws IOException {
+    Path fullPath = makePath(id);
+    if (!Files.exists(fullPath)) {
+      throw new NoSuchFileException(fullPath.toString());
+    }
+    if (!Files.isReadable(fullPath)) {
+      throw new AccessDeniedException(fullPath.toString());
+    }
+
+    return new BufferedInputStream(new FileInputStream(fullPath.toFile()));
+  }
+
+  /**
+   * Serializes the page index to a file.
+   */
+  @Override
+  public void savePageIndex(Set<PageIdentifier> pageIndex) throws IOException {
+    // Don't allow saving and loading to interleave
+    synchronized (pageIndexFile) {
+      // Back up the index
+      Files.copy(pageIndexFile.toPath(), pageIndexFileBak.toPath(),
+                 StandardCopyOption.REPLACE_EXISTING);
+
+      // Delete existing
+      Files.deleteIfExists(pageIndexFile.toPath());
+      // Write the index
+      try (DataOutputStream ostream
+               = new DataOutputStream(
+          new BufferedOutputStream(new FileOutputStream(pageIndexFile)))) {
+        // Start with the number of entries in the index
+        ostream.writeInt(pageIndex.size());
+        for (PageIdentifier id : pageIndex) {
+          id.write(ostream);
+        }
+      } catch (Exception e) {
+        // Copy the backup back to the regular file
+        Files.copy(pageIndexFileBak.toPath(), pageIndexFile.toPath(),
+                   StandardCopyOption.REPLACE_EXISTING);
+        log.log(Level.WARNING, "Exception saving page index", e);
+      }
+    }
+  }
+
+  /**
+   * Deserializes the page index from a file.
+   */
+  @Override
+  public Set<PageIdentifier> loadPageIndex() throws IOException {
+    Set<PageIdentifier> loadedIndex = new HashSet<>();
+    // Don't allow saving and loading to interleave
+    synchronized (pageIndexFile) {
+      try (DataInputStream istream
+               = new DataInputStream(new BufferedInputStream(new FileInputStream(pageIndexFile)))) {
+        // Read the number of entries from the file
+        for (int i = 0; i < istream.readInt(); i++) {
+          loadedIndex.add(PageIdentifier.readFrom(istream));
+        }
+      }
+    }
+
+    return loadedIndex;
+  }
+
+  /**
    * Finds all of the table directories and all of the page files in the store path.
    * </p>
    * Does not expect that every directory in the root is a table directory, but does expect
@@ -102,7 +202,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * appropriately.
    */
   @Override
-  public Set<PageIdentifier> getAllStoredPages() throws IOException {
+  public Set<PageIdentifier> rebuildPageIndex() throws IOException {
     Set<PageIdentifier> storedPages = new HashSet<>();
 
     File file = new File(root.toUri());
@@ -144,41 +244,6 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
     }
 
     return storedPages;
-  }
-
-  /**
-   * @throws FileAlreadyExistsException if the page is already stored.
-   */
-  @Override
-  public OutputStream getOutputStream(PageIdentifier id) throws IOException {
-    Path tableDirectory = createTableDirectory(id.getTableName());
-
-    Path fullPath = tableDirectory.resolve(Integer.toString(id.getIndex()));
-    // Don't automatically overwrite files
-    if (Files.exists(fullPath)) {
-      throw new FileAlreadyExistsException(fullPath.toString());
-    }
-    File file = fullPath.toFile();
-    // Creates the necessary directory hierarchy if it doesn't exist
-    com.google.common.io.Files.createParentDirs(file);
-    return new BufferedOutputStream(new FileOutputStream(file));
-  }
-
-  /**
-   * @throws NoSuchFileException   if there's no file for the indicated page.
-   * @throws AccessDeniedException if the file is not readable.
-   */
-  @Override
-  public InputStream getInputStream(PageIdentifier id) throws IOException {
-    Path fullPath = makePath(id);
-    if (!Files.exists(fullPath)) {
-      throw new NoSuchFileException(fullPath.toString());
-    }
-    if (!Files.isReadable(fullPath)) {
-      throw new AccessDeniedException(fullPath.toString());
-    }
-
-    return new BufferedInputStream(new FileInputStream(fullPath.toFile()));
   }
 
   /**

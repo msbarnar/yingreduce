@@ -13,6 +13,12 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
  */
 public interface PersistenceConnector {
 
+  void savePageIndex(Set<PageIdentifier> index) throws IOException;
+
+  Set<PageIdentifier> loadPageIndex() throws IOException;
+
+  Set<PageIdentifier> rebuildPageIndex() throws IOException;
+
   /**
    * Returns {@code true} if a resource exists for page {@code id}.
    */
@@ -28,8 +34,6 @@ public interface PersistenceConnector {
    * Returns {@code true} if a 32-bit checksum of the file matches {@code checksum}.
    */
   boolean validate(PageIdentifier id, int checksum) throws IOException;
-
-  Set<PageIdentifier> getAllStoredPages() throws IOException;
 
   /**
    * Gets an output stream to a resource for page {@code id}, creating it if necessary.
