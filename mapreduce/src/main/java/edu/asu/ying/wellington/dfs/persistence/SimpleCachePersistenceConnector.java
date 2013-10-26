@@ -1,5 +1,8 @@
 package edu.asu.ying.wellington.dfs.persistence;
 
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,17 +21,19 @@ import javax.inject.Inject;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 
 /**
- * {@code MemoryPersistenceCache} is an in-memory cache for persisting pages.
+ * {@code SimpleCachePersistenceConnector} connects the persistence engine to an in-memory cache.
  */
-public final class MemoryPersistenceCache implements PersistenceConnector, Runnable {
+public final class SimpleCachePersistenceConnector implements PersistenceConnector, Runnable {
 
   public static final long CACHE_LIFETIME_SECONDS = 60 * 60;  // 1 hour
   private static final long CACHE_CLEAN_FREQUENCY_SECONDS = 60;  // seconds
 
+  private final HashFunction checksumFunc = Hashing.adler32();
+
   private final Map<PageIdentifier, CacheRecord> cache = new HashMap<>();
 
   @Inject
-  private MemoryPersistenceCache() {
+  private SimpleCachePersistenceConnector() {
     ScheduledExecutorService cacheCleaner = Executors.newScheduledThreadPool(1);
     // Wait until CACHE_LIFETIME_SECONDS has elapsed, then run periodically
     cacheCleaner.scheduleAtFixedRate(this, CACHE_LIFETIME_SECONDS, CACHE_CLEAN_FREQUENCY_SECONDS,
@@ -53,8 +58,27 @@ public final class MemoryPersistenceCache implements PersistenceConnector, Runna
   }
 
   @Override
+  public boolean doesResourceExist(PageIdentifier id) {
+    CacheRecord record = cache.get(id);
+    if (record == null) {
+      return false;
+    }
+    record.touch();
+    return true;
+  }
+
+  @Override
   public boolean deleteIfExists(PageIdentifier id) throws IOException {
     return cache.remove(id) != null;
+  }
+
+  @Override
+  public boolean validate(PageIdentifier id, int checksum) throws IOException {
+    byte[] bytes = cache.get(id).get();
+    if (bytes == null) {
+      throw new PageNotFoundException(id);
+    }
+    return checksumFunc.hashBytes(bytes).asInt() == checksum;
   }
 
   /**
@@ -71,10 +95,10 @@ public final class MemoryPersistenceCache implements PersistenceConnector, Runna
    * Gets an {@link java.io.InputStream} that reads from the memory cache.
    */
   @Override
-  public InputStream getInputStream(PageIdentifier id) throws PageNotInCacheException {
+  public InputStream getInputStream(PageIdentifier id) throws PageNotFoundException {
     byte[] page = get(id);
     if (page == null) {
-      throw new PageNotInCacheException();
+      throw new PageNotFoundException(id);
     }
     return new ByteArrayInputStream(page);
   }
@@ -116,15 +140,25 @@ public final class MemoryPersistenceCache implements PersistenceConnector, Runna
       touch();
     }
 
+    /**
+     * Returns {@code true} if the record has been cached for longer than its lifetime.
+     */
     boolean isTimedOut() {
       return System.currentTimeMillis() >= timeout;
     }
 
+    /**
+     * Refreshes the cache record, extending its lifetime.
+     */
     void touch() {
       this.timeout = System.currentTimeMillis() + lifetimeMs;
     }
 
+    /**
+     * Refreshes the cache record and returns the cached data.
+     */
     byte[] get() {
+      touch();
       return data;
     }
   }
@@ -135,10 +169,10 @@ public final class MemoryPersistenceCache implements PersistenceConnector, Runna
   private final class CacheOutputStream extends OutputStream {
 
     private final PageIdentifier id;
-    private final MemoryPersistenceCache cache;
+    private final SimpleCachePersistenceConnector cache;
     private final OutputStream stream;
 
-    CacheOutputStream(PageIdentifier id, MemoryPersistenceCache cache) {
+    CacheOutputStream(PageIdentifier id, SimpleCachePersistenceConnector cache) {
       this.id = id;
       this.cache = cache;
       stream = new ByteArrayOutputStream();
@@ -167,11 +201,7 @@ public final class MemoryPersistenceCache implements PersistenceConnector, Runna
     @Override
     public void close() {
       cache.put(id, new CacheRecord(((ByteArrayOutputStream) stream).toByteArray(),
-                                    MemoryPersistenceCache.CACHE_LIFETIME_SECONDS));
+                                    SimpleCachePersistenceConnector.CACHE_LIFETIME_SECONDS));
     }
-  }
-
-  public final class PageNotInCacheException extends IOException {
-
   }
 }

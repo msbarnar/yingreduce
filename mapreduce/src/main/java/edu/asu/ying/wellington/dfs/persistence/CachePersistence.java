@@ -11,11 +11,11 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * {@code MemoryPersistence} specifies the medium for persistence as being an in-memory cache.
+ * {@code CachePersistence} specifies the medium for persistence as being an in-memory cache.
  */
 @BindingAnnotation
 @Target({FIELD, PARAMETER, METHOD})
 @Retention(RUNTIME)
-public @interface MemoryPersistence {
+public @interface CachePersistence {
 
 }

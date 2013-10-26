@@ -13,10 +13,20 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
 public interface PersistenceConnector {
 
   /**
+   * Returns {@code true} if a resource exists for page {@code id}.
+   */
+  boolean doesResourceExist(PageIdentifier id);
+
+  /**
    * Deletes the resource for page {@code id}, returning {@code true} if the resource was deleted
    * or {@code false} if the resource does not exist.
    */
   boolean deleteIfExists(PageIdentifier id) throws IOException;
+
+  /**
+   * Returns {@code true} if a 32-bit checksum of the file matches {@code checksum}.
+   */
+  boolean validate(PageIdentifier id, int checksum) throws IOException;
 
   /**
    * Gets an output stream to a resource for page {@code id}, creating it if necessary.

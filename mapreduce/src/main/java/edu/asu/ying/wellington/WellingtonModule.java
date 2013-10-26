@@ -17,11 +17,11 @@ import edu.asu.ying.common.remoting.Remote;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.client.PageDistributionSink;
+import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
-import edu.asu.ying.wellington.dfs.persistence.DiskPersistenceManager;
-import edu.asu.ying.wellington.dfs.persistence.MemoryPersistence;
-import edu.asu.ying.wellington.dfs.persistence.MemoryPersistenceCache;
+import edu.asu.ying.wellington.dfs.persistence.DiskPersistenceConnector;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
+import edu.asu.ying.wellington.dfs.persistence.SimpleCachePersistenceConnector;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
 import edu.asu.ying.wellington.mapreduce.job.Job;
@@ -125,12 +125,12 @@ public final class WellingtonModule extends AbstractModule {
 
     bind(Persistence.class)
         .annotatedWith(DiskPersistence.class)
-        .to(DiskPersistenceManager.class)
+        .to(DiskPersistenceConnector.class)
         .in(Scopes.SINGLETON);
 
     bind(Persistence.class)
-        .annotatedWith(MemoryPersistence.class)
-        .to(MemoryPersistenceCache.class)
+        .annotatedWith(CachePersistence.class)
+        .to(SimpleCachePersistenceConnector.class)
         .in(Scopes.SINGLETON);
   }
 

@@ -15,8 +15,8 @@ import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
 import edu.asu.ying.common.concurrency.QueueProcessor;
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.PageMetadata;
+import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
-import edu.asu.ying.wellington.dfs.persistence.MemoryPersistence;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
 
 /**
@@ -36,7 +36,7 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
       = new DelegateQueueExecutor<>(this);
 
   @Inject
-  private PageTransferHandler(@MemoryPersistence Persistence memoryPersistence,
+  private PageTransferHandler(@CachePersistence Persistence memoryPersistence,
                               @DiskPersistence Persistence diskPersistence) {
 
     this.memoryPersistence = memoryPersistence;
