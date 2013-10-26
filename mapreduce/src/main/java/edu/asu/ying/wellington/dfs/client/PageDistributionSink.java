@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
 import edu.asu.ying.common.concurrency.QueueProcessor;
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.SerializedReadablePage;
 import edu.asu.ying.wellington.dfs.server.PageTransfer;
 import edu.asu.ying.wellington.dfs.server.PageTransferResponse;
 import edu.asu.ying.wellington.dfs.server.PageTransferResult;

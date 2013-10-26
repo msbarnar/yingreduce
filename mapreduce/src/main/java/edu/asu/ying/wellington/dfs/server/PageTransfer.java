@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.UUID;
 
-import edu.asu.ying.wellington.dfs.HasPageMetadata;
-import edu.asu.ying.wellington.dfs.PageMetadata;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**

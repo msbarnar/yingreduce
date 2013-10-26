@@ -1,7 +1,6 @@
 package edu.asu.ying.wellington.dfs.server;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
-import edu.asu.ying.wellington.dfs.ReadablePage;
 import edu.asu.ying.wellington.dfs.persistence.PageNotAvailableLocallyException;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
