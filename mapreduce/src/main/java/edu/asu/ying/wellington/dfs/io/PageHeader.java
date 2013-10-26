@@ -1,21 +1,21 @@
 package edu.asu.ying.wellington.dfs.io;
 
-import com.google.common.base.Preconditions;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.VersionMismatchException;
-import edu.asu.ying.wellington.dfs.PageName;
+import edu.asu.ying.wellington.dfs.ChecksumMismatchException;
+import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.io.Writable;
-import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  * Header format:
@@ -23,91 +23,62 @@ import edu.asu.ying.wellington.io.WritableComparable;
  *   {@code
  *   Field           Length
  *   ----------------------
- *   Header length        2
- *   Magic value          3
- *   Version number       1
- *   Table name           n
- *   Page index           4
- *   Key class name       n
- *   Value class name     n
- *   Number of keys       4
+ *   Magic            24
+ *   Version          8
+ *   Checksum of {    32
+ *   Page
+ *   Data
+ *   }
+ *   Page
  *   ----------------------
- *   page contents ...
+ *   - binary data -
  *   }
  * </pre>
  */
-public final class PageHeader<K extends WritableComparable, V extends Writable> {
+public final class PageHeader implements Writable {
 
-  public static PageHeader<?, ?> readFrom(InputStream stream) throws IOException {
-    Preconditions.checkNotNull(stream);
-    DataInputStream input;
-    if (stream instanceof DataInputStream) {
-      input = (DataInputStream) stream;
-    } else {
-      input = new DataInputStream(stream);
-    }
-    byte[] header = new byte[input.readShort()];
-    int count = input.read(header, 0, header.length);
-    if (count < header.length) {
-      throw new EOFException("Incomplete page header");
-    }
-
-    return new PageHeader<>(header);
+  public static PageHeader readFrom(DataInput in) throws IOException {
+    PageHeader pageHeader = new PageHeader();
+    pageHeader.readFields(in);
+    return pageHeader;
   }
+
+  private static final Logger log = Logger.getLogger(PageHeader.class.getName());
 
   private static final int MAGIC = 0x4B494D;
   private static final byte VERSION = 1;
 
-  private final byte[] header;
+  private Page page;
 
-  private PageName pageID;
-  private Class<K> keyClass;
-  private Class<V> valueClass;
-  private int numKeys;
+  private final HashFunction checksumFunc = Hashing.adler32();
+  private int checksum;
 
-  public PageHeader(PageMetadata<K, V> pageMetadata) throws IOException {
-    this.pageID = pageMetadata.getId();
-    this.keyClass = pageMetadata.getKeyClass();
-    this.valueClass = pageMetadata.getValueClass();
-    this.numKeys = pageMetadata.size();
-    this.header = makeHeader();
+  private PageHeader() {
   }
 
-  private PageHeader(byte[] header) throws IOException {
-    this.header = header;
-    readFields();
+  public PageHeader(Page page, byte[] data) {
+    if (page.size() != data.length) {
+      throw new IllegalArgumentException("Page size does not match data size: " + page.toString());
+    }
+    this.page = page;
+    // Compute checksum
+    this.checksum = computeChecksum(page, data);
   }
 
-  public void writeTo(OutputStream stream) throws IOException {
-    stream.write(header);
+  @Override
+  public void write(DataOutput out) throws IOException {
+    // Magic
+    out.writeInt((MAGIC << 8) | VERSION);
+    // Checksum
+    out.writeInt(checksum);
+    // Page (includes file)
+    page.write(out);
   }
 
-  private byte[] makeHeader() throws IOException {
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    DataOutputStream output = new DataOutputStream(buffer);
-
-    output.writeInt((MAGIC << 8) | VERSION);
-    output.writeUTF(pageID.getTableName());
-    output.writeInt(pageID.getIndex());
-    output.writeUTF(keyClass.getCanonicalName());
-    output.writeUTF(valueClass.getCanonicalName());
-    output.writeInt(numKeys);
-
-    byte[] header = buffer.toByteArray();
-    buffer.close();
-
-    ByteBuffer buf = ByteBuffer.allocate(2 + header.length);
-    buf.putShort((short) header.length);
-    buf.put(header);
-
-    return buf.array();
-  }
-
-  @SuppressWarnings("unchecked")
-  private void readFields() throws IOException {
-    DataInputStream input = new DataInputStream(new ByteArrayInputStream(header));
-
-    int magicVersion = input.readInt();
+  @Override
+  public void readFields(DataInput in) throws IOException {
+    // Magic
+    int magicVersion = in.readInt();
     if ((magicVersion >> 8) != MAGIC) {
       throw new NotPageDataException();
     }
@@ -115,39 +86,44 @@ public final class PageHeader<K extends WritableComparable, V extends Writable> 
     if (version != VERSION) {
       throw new VersionMismatchException(VERSION, version);
     }
+    // Checksum
+    checksum = in.readInt();
+    // Page
+    page = Page.readFrom(in);
+  }
 
-    String tableName = input.readUTF();
-    int pageIndex = input.readInt();
-    pageID = PageName.create(tableName, pageIndex);
-    String keyClassName = input.readUTF();
-    String valueClassName = input.readUTF();
-    try {
-      keyClass = (Class<K>) Class.forName(keyClassName);
-    } catch (ClassNotFoundException | ClassCastException e) {
-      throw new IOException("Key class not supported: ".concat(keyClassName), e);
+  public Page getPage() {
+    return page;
+  }
+
+  /**
+   * Validates the checksum of the current page metadata + {@code data}.
+   */
+  public void validate(byte[] data) throws IOException {
+    int actual = computeChecksum(page, data);
+    if (checksum != actual) {
+      throw new ChecksumMismatchException(checksum, actual);
     }
-    try {
-      valueClass = (Class<V>) Class.forName(valueClassName);
-    } catch (ClassNotFoundException | ClassCastException e) {
-      throw new IOException("Value class not supported: ".concat(valueClassName), e);
+  }
+
+  /**
+   * Serializes the page metadata computes the checksum of the {@code page} metadata + {@code
+   * data}.
+   */
+  private int computeChecksum(Page page, byte[] data) {
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    try (DataOutputStream out = new DataOutputStream(buffer)) {
+      page.write(out);
+    } catch (IOException e) {
+      // Should never happen
+      log.log(Level.WARNING, "Exception serializing page metadata for checksum", e);
+      return -1;
     }
-    numKeys = input.readInt();
-  }
+    Hasher checksummer = checksumFunc.newHasher();
+    checksummer.putBytes(buffer.toByteArray());
+    checksummer.putBytes(data);
 
-  public PageName getPageID() {
-    return pageID;
-  }
-
-  public Class<K> getKeyClass() {
-    return keyClass;
-  }
-
-  public Class<V> getValueClass() {
-    return valueClass;
-  }
-
-  public int getNumKeys() {
-    return numKeys;
+    return checksummer.hash().asInt();
   }
 
   public static final class NotPageDataException extends IOException {

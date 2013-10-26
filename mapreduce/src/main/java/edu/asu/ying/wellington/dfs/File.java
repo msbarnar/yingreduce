@@ -100,4 +100,10 @@ public final class File implements Writable {
   public String toString() {
     return "File{".concat(path.toString()).concat("}");
   }
+
+  public enum OutputMode {
+    CreateNew,
+    Overwrite,
+    Append
+  }
 }

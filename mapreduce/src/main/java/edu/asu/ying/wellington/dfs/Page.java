@@ -59,6 +59,10 @@ public class Page implements Writable {
     out.writeInt(size);
   }
 
+  public File getFile() {
+    return file;
+  }
+
   /**
    * Returns the number of bytes in this page.
    */
@@ -69,7 +73,7 @@ public class Page implements Writable {
   /**
    * Returns the maximum capacity in bytes of pages of this file, or -1 if not set.
    */
-  public int capacity() {
+  public int getCapacity() {
     return capacity;
   }
 
@@ -84,5 +88,35 @@ public class Page implements Writable {
     } catch (NullPointerException | ClassCastException e) {
       capacity = -1;
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Page page = (Page) o;
+
+    return capacity == page.capacity && size == page.size && file.equals(page.file) && name
+        .equals(page.name);
+
+  }
+
+  @Override
+  public int hashCode() {
+    int result = file.hashCode();
+    result = 31 * result + name.hashCode();
+    result = 31 * result + capacity;
+    result = 31 * result + size;
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "Page{".concat(name.toString()).concat("}");
   }
 }

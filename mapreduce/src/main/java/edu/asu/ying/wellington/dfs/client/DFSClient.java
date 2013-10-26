@@ -1,41 +1,67 @@
 package edu.asu.ying.wellington.dfs.client;
 
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.FileAlreadyExistsException;
 
-import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.io.Writable;
-import edu.asu.ying.wellington.io.WritableComparable;
-import edu.asu.ying.wellington.ybase.Element;
+import edu.asu.ying.wellington.dfs.File;
+import edu.asu.ying.wellington.dfs.File.OutputMode;
 
 /**
  *
  */
 public final class DFSClient {
 
-  private final Provider<PageBuilder> pageBuilderProvider;
+  private final Provider<OutputStream> pageOutputStreamProvider;
 
   @Inject
-  private DFSClient(Provider<PageBuilder> pageBuilderProvider) {
+  private DFSClient(Provider<OutputStream> pageOutputStreamProvider) {
 
-    this.pageBuilderProvider = pageBuilderProvider;
+    this.pageOutputStreamProvider = pageOutputStreamProvider;
   }
 
   /**
-   * Returns a {@link Sink} which uploads the elements it receives to the distributed filesystem.
+   * Gets an output stream writing to {@code file}.
+   *
+   * @throws FileAlreadyExistsException if {@code mode} is {@link OutputMode.CreateNew} and the
+   *                                    file
+   *                                    exists.
+   * @throws SecurityException          if the caller's privileges don't satisfy the file's
+   *                                    {@link edu.asu.ying.wellington.dfs.SecurityAttributes}.
    */
-  // FIXME: These aren't pulled from a registry,
-  // FIXME: Better table making interface
-  // so if someone gets one and writes three pages then gets another and writes four pages, the
-  // first three will be overwritten.
-  @SuppressWarnings("unchecked")
-  public <K extends WritableComparable, V extends Writable>
-  Sink<Element<K, V>> createTable(String tableName,
-                                  Class<K> keyClass, Class<V> valueClass) {
+  public OutputStream getOutputStream(File file, OutputMode mode)
+      throws IOException, SecurityException {
 
-    PageBuilder<K, V> pb = (PageBuilder<K, V>) pageBuilderProvider.get();
-    pb.open(tableName, keyClass, valueClass);
-    return pb;
+    // TODO: Check security
+
+    // TODO: Bind a BufferedPageOutputStream to file
+    switch (mode) {
+      case CreateNew:
+        // TODO: Fail if file exists
+        break;
+
+      case Overwrite:
+        // TODO: Delete existing pages
+        break;
+
+      case Append:
+        // TODO: Start at end of pages
+        break;
+    }
+  }
+
+  /**
+   * Gets an input stream reading from {@code file}.
+   *
+   * @throws java.io.FileNotFoundException if the file doesn't exist.
+   * @throws SecurityException             if the caller's privileges don't satisfy the file's
+   *                                       {@link edu.asu.ying.wellington.dfs.SecurityAttributes}.
+   */
+  public InputStream getInputStream(File file) throws IOException, SecurityException {
+    // TODO: Bind a BufferedPageInputStream to file
   }
 }
