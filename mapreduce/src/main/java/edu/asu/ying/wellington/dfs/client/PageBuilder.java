@@ -12,13 +12,13 @@ import java.util.logging.Logger;
 
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.BoundedSerializedPage;
-import edu.asu.ying.wellington.dfs.Element;
-import edu.asu.ying.wellington.dfs.ElementTooLargeException;
 import edu.asu.ying.wellington.dfs.PageCapacityReachedException;
 import edu.asu.ying.wellington.dfs.PageDistributor;
 import edu.asu.ying.wellington.dfs.SerializedReadablePage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
+import edu.asu.ying.wellington.ybase.Element;
+import edu.asu.ying.wellington.ybase.ElementTooLargeException;
 
 /**
  * (not thread-safe) {@code LocalWriteTable} accepts elements locally, places them on pages, and

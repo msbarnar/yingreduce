@@ -15,10 +15,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.asu.ying.wellington.dfs.io.ElementSerializer;
 import edu.asu.ying.wellington.dfs.io.PageHeader;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
+import edu.asu.ying.wellington.ybase.Element;
+import edu.asu.ying.wellington.ybase.ElementSerializer;
+import edu.asu.ying.wellington.ybase.ElementTooLargeException;
+import edu.asu.ying.wellington.ybase.SerializedElement;
 
 /**
  * Serializes elements as they are added and restricts the maximum number of serialized bytes that

@@ -4,10 +4,11 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import edu.asu.ying.wellington.dfs.Element;
 import edu.asu.ying.wellington.dfs.ReadablePage;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
+import edu.asu.ying.wellington.ybase.Element;
+import edu.asu.ying.wellington.ybase.ElementWriter;
 
 /**
  *

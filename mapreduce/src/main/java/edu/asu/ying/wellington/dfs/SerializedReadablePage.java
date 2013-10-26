@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
+import edu.asu.ying.wellington.ybase.SerializedElement;
 
 /**
  *

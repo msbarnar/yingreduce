@@ -1,10 +1,9 @@
-package edu.asu.ying.wellington.dfs.io;
+package edu.asu.ying.wellington.ybase;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import edu.asu.ying.wellington.dfs.Element;
-import edu.asu.ying.wellington.dfs.SerializedElement;
+import edu.asu.ying.wellington.dfs.io.WritableSerializerStream;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 

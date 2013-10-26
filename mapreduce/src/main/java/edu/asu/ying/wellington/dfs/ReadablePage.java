@@ -2,6 +2,7 @@ package edu.asu.ying.wellington.dfs;
 
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
+import edu.asu.ying.wellington.ybase.Element;
 
 /**
  * A page whose elements can be iterated. The source of the elements is undefined; they may be
