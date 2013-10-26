@@ -17,8 +17,17 @@ public final class File implements Writable {
     return new FileProperties();
   }
 
+  public static File readFrom(DataInput in) throws IOException {
+    File f = new File();
+    f.readFields(in);
+    return f;
+  }
+
   private Path path;
   private FileProperties properties;
+
+  private File() {
+  }
 
   public File(String path) throws InvalidPathException {
     this(new Path(path));

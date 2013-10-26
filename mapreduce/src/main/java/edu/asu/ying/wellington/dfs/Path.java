@@ -14,6 +14,12 @@ import edu.asu.ying.wellington.io.WritableComparable;
  */
 public final class Path implements WritableComparable<Path> {
 
+  public static Path readFrom(DataInput in) throws IOException {
+    Path path = new Path();
+    path.readFields(in);
+    return path;
+  }
+
   private static final char DELIMITER_C = '/';
   private static final String DELIMITER = Character.toString(DELIMITER_C);
   private static final String ILLEGAL_CHARS = "";
@@ -23,7 +29,7 @@ public final class Path implements WritableComparable<Path> {
   private List<String> directories;
 
 
-  public Path() {
+  private Path() {
   }
 
   /**

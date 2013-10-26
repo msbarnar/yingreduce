@@ -1,10 +1,8 @@
 package edu.asu.ying.wellington.dfs;
 
 import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.io.InputStream;
 
 import edu.asu.ying.wellington.AbstractIdentifier;
 import edu.asu.ying.wellington.InvalidIdentifierException;
@@ -20,8 +18,8 @@ public final class PageName extends AbstractIdentifier {
     return new PageName(filePath, index);
   }
 
-  public static PageName firstPageOf(File file) {
-    return new PageName(file.getPath(), 0);
+  public static PageName firstPageOf(Path path) {
+    return new PageName(path, 0);
   }
 
   public static PageName forString(String name) throws InvalidPathException {
@@ -38,23 +36,17 @@ public final class PageName extends AbstractIdentifier {
       }
       return new PageName(new Path(name.substring(0, lastDelimiter)), pageIndex);
     } else {
-      return firstPageOf(new File(name));
+      return firstPageOf(new Path(name));
     }
   }
 
   /**
    * Deserializes the identifier from {@code stream}.
    */
-  public static PageName readFrom(InputStream stream) throws IOException {
-    DataInputStream istream;
-    if (stream instanceof DataInputStream) {
-      istream = (DataInputStream) stream;
-    } else {
-      istream = new DataInputStream(stream);
-    }
-    PageName id = new PageName();
-    id.readFields(istream);
-    return id;
+  public static PageName readFrom(DataInput input) throws IOException {
+    PageName name = new PageName();
+    name.readFields(input);
+    return name;
   }
 
   private static final char PAGE_DELIMITER = '~';
@@ -83,8 +75,7 @@ public final class PageName extends AbstractIdentifier {
 
   @Override
   public void readFields(DataInput in) throws IOException {
-    this.filePath = new Path();
-    filePath.readFields(in);
+    this.filePath = Path.readFrom(in);
     this.index = in.readInt();
     this.id = filePath.toString()
         .concat(Character.toString(PAGE_DELIMITER))

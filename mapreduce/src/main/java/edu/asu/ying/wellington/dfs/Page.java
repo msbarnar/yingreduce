@@ -11,16 +11,32 @@ import edu.asu.ying.wellington.io.Writable;
  */
 public class Page implements Writable {
 
-  private final File file;
-  private final PageName id;
+  public static Page readFrom(DataInput in) throws IOException {
+    Page p = new Page();
+    p.readFields(in);
+    return p;
+  }
 
-  public Page(int index)
+  private File file;
+  private PageName name;
+
+  private Page() {
+  }
+
+  public Page(File file, int index) {
+    this.file = file;
+    this.name = PageName.create(file.getPath(), index);
+  }
 
   @Override
   public void readFields(DataInput in) throws IOException {
+    file = File.readFrom(in);
+    name = PageName.readFrom(in);
   }
 
   @Override
   public void write(DataOutput out) throws IOException {
+    file.write(out);
+    name.write(out);
   }
 }
