@@ -12,6 +12,7 @@ import edu.asu.ying.wellington.io.Writable;
 public class Page implements Writable {
 
   private final File file;
+  private final PageName id;
 
   public Page(int index)
 

@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 
 /**
  * {@code SimpleCachePersistenceConnector} connects the persistence engine to an in-memory cache.
@@ -30,7 +30,7 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
 
   private final HashFunction checksumFunc = Hashing.adler32();
 
-  private final Map<PageIdentifier, CacheRecord> cache = new HashMap<>();
+  private final Map<PageName, CacheRecord> cache = new HashMap<>();
 
   private int cacheLifetimeSeconds = DEFAULT_CACHE_LIFETIME_SECONDS;
 
@@ -48,10 +48,10 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
   @Override
   public void run() {
     synchronized (cache) {
-      for (Iterator<Map.Entry<PageIdentifier, CacheRecord>> iter = cache.entrySet().iterator();
+      for (Iterator<Map.Entry<PageName, CacheRecord>> iter = cache.entrySet().iterator();
            iter.hasNext(); ) {
 
-        Map.Entry<PageIdentifier, CacheRecord> entry = iter.next();
+        Map.Entry<PageName, CacheRecord> entry = iter.next();
         if (entry.getValue().isTimedOut()) {
           iter.remove();
         }
@@ -60,7 +60,7 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
   }
 
   @Override
-  public boolean exists(PageIdentifier id) {
+  public boolean exists(PageName id) {
     CacheRecord record = cache.get(id);
     if (record == null) {
       return false;
@@ -70,12 +70,12 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
   }
 
   @Override
-  public boolean deleteIfExists(PageIdentifier id) throws IOException {
+  public boolean deleteIfExists(PageName id) throws IOException {
     return cache.remove(id) != null;
   }
 
   @Override
-  public boolean validate(PageIdentifier id, int checksum) throws IOException {
+  public boolean validate(PageName id, int checksum) throws IOException {
     byte[] bytes = cache.get(id).get();
     if (bytes == null) {
       throw new PageNotFoundException(id);
@@ -89,7 +89,7 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
    * The stream contents will not be committed to the cache until the stream is closed.
    */
   @Override
-  public OutputStream getOutputStream(PageIdentifier id) throws IOException {
+  public OutputStream getOutputStream(PageName id) throws IOException {
     return new CacheOutputStream(id, this);
   }
 
@@ -97,7 +97,7 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
    * Gets an {@link java.io.InputStream} that reads from the memory cache.
    */
   @Override
-  public InputStream getInputStream(PageIdentifier id) throws PageNotFoundException {
+  public InputStream getInputStream(PageName id) throws PageNotFoundException {
     byte[] page = get(id);
     if (page == null) {
       throw new PageNotFoundException(id);
@@ -117,7 +117,7 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
   /**
    * (thread-safe) Puts a record in the cache.
    */
-  private void put(PageIdentifier id, CacheRecord record) {
+  private void put(PageName id, CacheRecord record) {
     if (record.get() == null || record.get().length == 0) {
       return;
     }
@@ -127,7 +127,7 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
   }
 
   @Nullable
-  private byte[] get(PageIdentifier id) {
+  private byte[] get(PageName id) {
     synchronized (cache) {
       CacheRecord record = cache.get(id);
       if (record == null) {
@@ -179,11 +179,11 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
    */
   private final class CacheOutputStream extends OutputStream {
 
-    private final PageIdentifier id;
+    private final PageName id;
     private final SimpleCachePersistenceConnector cache;
     private final OutputStream stream;
 
-    CacheOutputStream(PageIdentifier id, SimpleCachePersistenceConnector cache) {
+    CacheOutputStream(PageName id, SimpleCachePersistenceConnector cache) {
       this.id = id;
       this.cache = cache;
       stream = new ByteArrayOutputStream();

@@ -2,7 +2,7 @@ package edu.asu.ying.wellington.dfs.server;
 
 import javax.annotation.Nullable;
 
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
@@ -17,14 +17,14 @@ public final class PageResponsibilityRecord {
   @Nullable
   private RemoteNode node;
   // The page for which the node is responsible
-  private final PageIdentifier pageId;
+  private final PageName pageId;
 
-  public PageResponsibilityRecord(PageIdentifier pageId, String nodeName) {
+  public PageResponsibilityRecord(PageName pageId, String nodeName) {
     this.pageId = pageId;
     this.nodeName = nodeName;
   }
 
-  public PageResponsibilityRecord(PageIdentifier pageId, String nodeName,
+  public PageResponsibilityRecord(PageName pageId, String nodeName,
                                   @Nullable RemoteNode node) {
     this(pageId, nodeName);
     this.node = node;
@@ -43,7 +43,7 @@ public final class PageResponsibilityRecord {
     return node;
   }
 
-  public PageIdentifier getPageId() {
+  public PageName getPageId() {
     return pageId;
   }
 }

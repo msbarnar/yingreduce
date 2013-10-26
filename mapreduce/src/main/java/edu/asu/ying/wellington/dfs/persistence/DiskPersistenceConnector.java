@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 
 /**
  *
@@ -84,17 +84,17 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   }
 
   @Override
-  public boolean exists(PageIdentifier id) {
+  public boolean exists(PageName id) {
     return Files.exists(makePath(id));
   }
 
   @Override
-  public boolean deleteIfExists(PageIdentifier id) throws IOException {
+  public boolean deleteIfExists(PageName id) throws IOException {
     return Files.deleteIfExists(makePath(id));
   }
 
   @Override
-  public boolean validate(PageIdentifier id, int checksum) throws IOException {
+  public boolean validate(PageName id, int checksum) throws IOException {
     // We shouldn't cache these because we might not be the only ones touching the filesystem,
     // though we should be.
     try (InputStream istream = getInputStream(id)) {
@@ -112,7 +112,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * @throws FileAlreadyExistsException if the page is already stored.
    */
   @Override
-  public OutputStream getOutputStream(PageIdentifier id) throws IOException {
+  public OutputStream getOutputStream(PageName id) throws IOException {
     Path tableDirectory = createTableDirectory(id.getTableName());
 
     Path fullPath = tableDirectory.resolve(Integer.toString(id.getIndex()));
@@ -131,7 +131,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * @throws AccessDeniedException if the file is not readable.
    */
   @Override
-  public InputStream getInputStream(PageIdentifier id) throws IOException {
+  public InputStream getInputStream(PageName id) throws IOException {
     Path fullPath = makePath(id);
     if (!Files.exists(fullPath)) {
       throw new NoSuchFileException(fullPath.toString());
@@ -147,7 +147,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * Serializes the page index to a file.
    */
   @Override
-  public void savePageIndex(Set<PageIdentifier> pageIndex) throws IOException {
+  public void savePageIndex(Set<PageName> pageIndex) throws IOException {
     // Don't allow saving and loading to interleave
     synchronized (pageIndexFile) {
       // Back up the index
@@ -162,7 +162,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
           new BufferedOutputStream(new FileOutputStream(pageIndexFile)))) {
         // Start with the number of entries in the index
         ostream.writeInt(pageIndex.size());
-        for (PageIdentifier id : pageIndex) {
+        for (PageName id : pageIndex) {
           id.write(ostream);
         }
       } catch (Exception e) {
@@ -178,15 +178,15 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * Deserializes the page index from a file.
    */
   @Override
-  public Set<PageIdentifier> loadPageIndex() throws IOException {
-    Set<PageIdentifier> loadedIndex = new HashSet<>();
+  public Set<PageName> loadPageIndex() throws IOException {
+    Set<PageName> loadedIndex = new HashSet<>();
     // Don't allow saving and loading to interleave
     synchronized (pageIndexFile) {
       try (DataInputStream istream
                = new DataInputStream(new BufferedInputStream(new FileInputStream(pageIndexFile)))) {
         // Read the number of entries from the file
         for (int i = 0; i < istream.readInt(); i++) {
-          loadedIndex.add(PageIdentifier.readFrom(istream));
+          loadedIndex.add(PageName.readFrom(istream));
         }
       }
     }
@@ -202,8 +202,8 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * appropriately.
    */
   @Override
-  public Set<PageIdentifier> rebuildPageIndex() throws IOException {
-    Set<PageIdentifier> storedPages = new HashSet<>();
+  public Set<PageName> rebuildPageIndex() throws IOException {
+    Set<PageName> storedPages = new HashSet<>();
 
     File file = new File(root.toUri());
     // Get all directories
@@ -232,7 +232,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
             // Use the filename as the page index; delete any files that don't have integral names
             try {
               int pageIndex = Integer.valueOf(fileName);
-              storedPages.add(PageIdentifier.create(tableName, pageIndex));
+              storedPages.add(PageName.create(tableName, pageIndex));
             } catch (NumberFormatException e) {
               // Delete this errant file
               Files.delete(pageFile);
@@ -256,7 +256,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   /**
    * Returns a normalized path, prefixed with the root store path, for the given page.
    */
-  private Path makePath(PageIdentifier id) {
+  private Path makePath(PageName id) {
     return root.resolve(
         Paths.get(makePathString(id.getTableName()), makePathString(id.toString())));
   }

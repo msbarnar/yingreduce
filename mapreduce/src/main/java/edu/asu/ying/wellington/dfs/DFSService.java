@@ -18,5 +18,5 @@ public interface DFSService extends Service, Exported<RemoteDFSService> {
 
   void notifyPageTransferResult(String transferId, PageTransferResult result);
 
-  boolean hasPage(PageIdentifier id);
+  boolean hasPage(PageName id);
 }

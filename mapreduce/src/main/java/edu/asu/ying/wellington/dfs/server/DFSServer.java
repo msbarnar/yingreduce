@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 
 /**
  *
@@ -49,7 +49,7 @@ public final class DFSServer implements DFSService {
   }
 
   @Override
-  public boolean hasPage(PageIdentifier id) {
+  public boolean hasPage(PageName id) {
     return false;
   }
 

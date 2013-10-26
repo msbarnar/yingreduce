@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.asu.ying.wellington.io.Writable;
+import edu.asu.ying.wellington.io.WritableComparable;
 
 /**
  *
  */
-public final class Path implements Writable {
+public final class Path implements WritableComparable<Path> {
 
   private static final char DELIMITER_C = '/';
   private static final String DELIMITER = Character.toString(DELIMITER_C);
@@ -182,6 +182,11 @@ public final class Path implements Writable {
   @Override
   public void write(DataOutput out) throws IOException {
     out.writeUTF(path);
+  }
+
+  @Override
+  public int compareTo(Path o) {
+    return path.compareTo(o.path);
   }
 
   private static enum End {

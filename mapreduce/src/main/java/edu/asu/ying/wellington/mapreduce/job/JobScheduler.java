@@ -9,7 +9,7 @@ import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.mapreduce.server.JobServiceExporter;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
@@ -105,7 +105,7 @@ public final class JobScheduler implements JobService {
    */
   // FIXME: page replication means we have to pick a random one of the nodes that has this page
   private RemoteNode findResponsibleNode(Job job) throws IOException {
-    return nodeLocator.find(PageIdentifier.firstPageOf(job.getTableName()).toString());
+    return nodeLocator.find(PageName.firstPageOf(job.getTableName()).toString());
   }
 
   @Override

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Set;
 
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 
 /**
  * A {@code PersistenceConnector} connects the {@link PersistenceEngine} to some concrete local
@@ -13,39 +13,39 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
  */
 public interface PersistenceConnector {
 
-  void savePageIndex(Set<PageIdentifier> index) throws IOException;
+  void savePageIndex(Set<PageName> index) throws IOException;
 
-  Set<PageIdentifier> loadPageIndex() throws IOException;
+  Set<PageName> loadPageIndex() throws IOException;
 
-  Set<PageIdentifier> rebuildPageIndex() throws IOException;
+  Set<PageName> rebuildPageIndex() throws IOException;
 
   /**
    * Returns {@code true} if a resource exists for page {@code id}.
    */
-  boolean exists(PageIdentifier id);
+  boolean exists(PageName id);
 
   /**
    * Deletes the resource for page {@code id}, returning {@code true} if the resource was deleted
    * or {@code false} if the resource does not exist.
    */
-  boolean deleteIfExists(PageIdentifier id) throws IOException;
+  boolean deleteIfExists(PageName id) throws IOException;
 
   /**
    * Returns {@code true} if a 32-bit checksum of the file matches {@code checksum}.
    */
-  boolean validate(PageIdentifier id, int checksum) throws IOException;
+  boolean validate(PageName id, int checksum) throws IOException;
 
   /**
    * Gets an output stream to a resource for page {@code id}, creating it if necessary.
    *
    * @throws PageExistsException if the resource already exists.
    */
-  OutputStream getOutputStream(PageIdentifier id) throws IOException;
+  OutputStream getOutputStream(PageName id) throws IOException;
 
   /**
    * Gets an input stream from a resource.
    *
    * @throws PageNotFoundException if the page is not available from this connector.
    */
-  InputStream getInputStream(PageIdentifier id) throws IOException;
+  InputStream getInputStream(PageName id) throws IOException;
 }

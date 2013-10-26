@@ -8,74 +8,73 @@ import java.io.InputStream;
 
 import edu.asu.ying.wellington.AbstractIdentifier;
 import edu.asu.ying.wellington.InvalidIdentifierException;
-import edu.asu.ying.wellington.io.WritableString;
 
 /**
  *
  */
-public final class PageIdentifier extends AbstractIdentifier {
+public final class PageName extends AbstractIdentifier {
 
   private static final long SerialVersionUID = 1L;
 
-  public static PageIdentifier create(String tableName, int index) {
-    return new PageIdentifier(tableName, index);
+  public static PageName create(Path filePath, int index) {
+    return new PageName(filePath, index);
   }
 
-  public static PageIdentifier firstPageOf(String tableName) {
-    return new PageIdentifier(tableName, 0);
+  public static PageName firstPageOf(File file) {
+    return new PageName(file.getPath(), 0);
   }
 
-  public static PageIdentifier forString(String id) {
-    int lastDelimiter = id.lastIndexOf(PAGE_DELIMITER);
+  public static PageName forString(String name) throws InvalidPathException {
+    int lastDelimiter = name.lastIndexOf(PAGE_DELIMITER);
     if (lastDelimiter > -1) {
       if (lastDelimiter == 0) {
-        throw new InvalidIdentifierException("No table name in page identifier", id);
+        throw new InvalidIdentifierException("No file path in page identifier", name);
       }
       int pageIndex;
       try {
-        pageIndex = Math.max(Integer.parseInt(id.substring(lastDelimiter + 1)), -1);
+        pageIndex = Math.max(Integer.parseInt(name.substring(lastDelimiter + 1)), -1);
       } catch (NumberFormatException e) {
-        throw new InvalidIdentifierException("PageMetadata index is not an integer", id);
+        throw new InvalidIdentifierException("Page index is not an integer", name);
       }
-      return new PageIdentifier(id.substring(0, lastDelimiter), pageIndex);
+      return new PageName(new Path(name.substring(0, lastDelimiter)), pageIndex);
     } else {
-      throw new InvalidIdentifierException("PageMetadata index not specified", id);
+      return firstPageOf(new File(name));
     }
   }
 
   /**
    * Deserializes the identifier from {@code stream}.
    */
-  public static PageIdentifier readFrom(InputStream stream) throws IOException {
+  public static PageName readFrom(InputStream stream) throws IOException {
     DataInputStream istream;
     if (stream instanceof DataInputStream) {
       istream = (DataInputStream) stream;
     } else {
       istream = new DataInputStream(stream);
     }
-    PageIdentifier id = new PageIdentifier();
+    PageName id = new PageName();
     id.readFields(istream);
     return id;
   }
 
   private static final char PAGE_DELIMITER = '~';
 
-  private String tableName;
+  private Path filePath;
   private int index;
 
-  private PageIdentifier() {
+  private PageName() {
   }
 
-  private PageIdentifier(String tableName, int index) {
-    super(tableName
+  private PageName(Path filePath, int index) {
+    super(filePath.toString()
               .concat(Character.toString(PAGE_DELIMITER))
               .concat(Integer.toString(index)));
-    this.tableName = tableName;
+    this.filePath = filePath;
     this.index = index;
   }
 
-  public String getTableName() {
-    return tableName;
+  public Path getPath() {
+    return filePath;
   }
 
   public int getIndex() {
@@ -84,18 +83,17 @@ public final class PageIdentifier extends AbstractIdentifier {
 
   @Override
   public void readFields(DataInput in) throws IOException {
-    WritableString table = new WritableString();
-    table.readFields(in);
-    this.tableName = table.toString();
+    this.filePath = new Path();
+    filePath.readFields(in);
     this.index = in.readInt();
-    this.id = tableName
+    this.id = filePath.toString()
         .concat(Character.toString(PAGE_DELIMITER))
         .concat(Integer.toString(index));
   }
 
   @Override
   public void write(DataOutput out) throws IOException {
-    (new WritableString(tableName)).write(out);
+    filePath.write(out);
     out.writeInt(index);
   }
 
@@ -104,10 +102,10 @@ public final class PageIdentifier extends AbstractIdentifier {
    * </p>
    * i.e. mytable~2 > mytable~1 > my~2 > my~1
    */
-  public int compareTo(PageIdentifier o) {
-    int tableComp = tableName.compareTo(o.getTableName());
-    if (tableComp != 0) {
-      return tableComp;
+  public int compareTo(PageName o) {
+    int pathComp = filePath.compareTo(o.filePath);
+    if (pathComp != 0) {
+      return pathComp;
     }
 
     return Integer.compare(index, o.getIndex());

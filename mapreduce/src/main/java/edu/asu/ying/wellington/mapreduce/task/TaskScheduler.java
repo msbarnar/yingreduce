@@ -8,7 +8,7 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.common.remoting.Remote;
 import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.wellington.mapreduce.server.TaskServiceExporter;
 
@@ -99,7 +99,7 @@ public class TaskScheduler implements TaskService {
    * Returns true if the local DFS service has the correct page of the table specified by the task.
    */
   private boolean isInitialNodeFor(Task task) {
-    PageIdentifier pageId = task.getTargetPageID();
+    PageName pageId = task.getTargetPageID();
     return dfsService.hasPage(pageId);
   }
 }

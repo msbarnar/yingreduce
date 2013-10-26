@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
 import edu.asu.ying.common.concurrency.QueueProcessor;
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
@@ -57,7 +57,7 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
    */
   @Override
   public void process(PageTransfer transfer) {
-    PageIdentifier pageId = transfer.getMetadata().getId();
+    PageName pageId = transfer.getMetadata().getId();
     try (OutputStream ostream
              = memoryPersistence.getOutputStream(pageId)) {
       // Consume the remote stream
@@ -99,7 +99,7 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
   /**
    * Reads the page from cache onto disk, leaving it in the cache for the replicator to access.
    */
-  private PageTransferResult commitToDisk(PageIdentifier id) {
+  private PageTransferResult commitToDisk(PageName id) {
     try (InputStream istream = memoryPersistence.getInputStream(id)) {
       try (OutputStream ostream = diskPersistence.getOutputStream(id)) {
         byte[] buffer = new byte[1024];

@@ -1,6 +1,6 @@
 package edu.asu.ying.wellington.dfs.server;
 
-import edu.asu.ying.wellington.dfs.PageIdentifier;
+import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.dfs.persistence.PageNotAvailableLocallyException;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
@@ -17,15 +17,16 @@ import edu.asu.ying.wellington.io.WritableComparable;
 public interface ReadablePageProvider {
 
   /**
-   * Returns {@code true} if call to {@link getLocalPage(PageIdentifier)} would not throw a
+   * Returns {@code true} if call to {@link getLocalPage( edu.asu.ying.wellington.dfs.PageName )}
+   * would not throw a
    * {@link edu.asu.ying.wellington.dfs.persistence.PageNotAvailableLocallyException}.
    */
-  boolean isPageLocallyAvailable(PageIdentifier id);
+  boolean isPageLocallyAvailable(PageName id);
 
   /**
    * Finds the page associated with {@code id} in local memory or on disk and returns it as a
    * {@link ReadablePage}.
    */
   <K extends WritableComparable, V extends Writable> ReadablePage<K, V>
-  getLocal(PageIdentifier id) throws PageNotAvailableLocallyException;
+  getLocal(PageName id) throws PageNotAvailableLocallyException;
 }
