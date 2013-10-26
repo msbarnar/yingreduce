@@ -165,6 +165,11 @@ public final class WellingtonModule extends AbstractModule {
   }
 
   private Properties getDefaultProperties() {
-    return new Properties();
+    Properties defaults = new Properties();
+
+    defaults.put("dfs.store.path", System.getProperty("user.home").concat("/dfs"));
+    defaults.put("dfs.page.replication", "3");
+
+    return defaults;
   }
 }

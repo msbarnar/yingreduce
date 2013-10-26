@@ -8,14 +8,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.rmi.RemoteException;
 import java.util.logging.LogManager;
 
+import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadP2PModule;
-import edu.asu.ying.test.ExampleMapReduceJob;
 import edu.asu.ying.wellington.WellingtonModule;
-import edu.asu.ying.wellington.mapreduce.job.JobClient;
-import edu.asu.ying.wellington.mapreduce.job.JobConf;
-import edu.asu.ying.wellington.mapreduce.job.JobException;
 
 /**
  * The com.healthmarketscience.rmiio.main entry point for the node daemon. {@code Server} starts
@@ -44,16 +42,18 @@ public class Client {
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
   private void start() {
-    final Daemon[] instances = new Daemon[3];
+    final Daemon[] instances = new Daemon[5];
 
     Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
           new KadP2PModule().setProperty("p2p.port", Integer.toString(5000 + i)))
           .createChildInjector(new WellingtonModule().setProperty("dfs.store.path",
-                                                                  "/Users/Matthew/Desktop/dfs"));
+                                                                  System.getProperty("user.home")
+                                                                      .concat("/dfs")));
 
       instances[i] = injector.getInstance(Daemon.class);
+      System.out.println(instances[i].getPeer().getName());
       if (i > 0) {
         instances[i].join(instances[i - 1]);
       }
@@ -91,13 +91,23 @@ public class Client {
       }
     }
 
-    JobClient client = injector.getInstance(JobClient.class);
+    for (RemotePeer peer : instances[0].getPeer().findPeers("hello", 10)) {
+      try {
+        System.out.println(peer.getName());
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+    }
+
+    System.exit(0);
+
+    /*JobClient client = injector.getInstance(JobClient.class);
     JobConf job = ExampleMapReduceJob.createJob();
     try {
       client.runJob(job);
     } catch (JobException e) {
       throw new RuntimeException(e);
-    }
+    }*/
 
     if (!fullyConnected) {
       /*LocalScheduler sched = null;
