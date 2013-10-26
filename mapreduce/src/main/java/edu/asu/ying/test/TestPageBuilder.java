@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.dfs.PageDistributor;
+import edu.asu.ying.wellington.dfs.server.PageDistributor;
 import edu.asu.ying.wellington.io.WritableBytes;
 import edu.asu.ying.wellington.io.WritableString;
 import edu.asu.ying.wellington.ybase.Element;

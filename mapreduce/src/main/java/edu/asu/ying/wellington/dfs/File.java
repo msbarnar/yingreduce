@@ -54,5 +54,22 @@ public final class File implements Writable {
 
   @Override
   public void write(DataOutput out) throws IOException {
+    path.write(out);
+    properties.write(out);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return this == o || !(o == null || File.class != o.getClass()) && path.equals(((File) o).path);
+  }
+
+  @Override
+  public int hashCode() {
+    return path.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return "File{".concat(path.toString()).concat("}");
   }
 }

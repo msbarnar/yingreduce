@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs;
+package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.BindingAnnotation;
 

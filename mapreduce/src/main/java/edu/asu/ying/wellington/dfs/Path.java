@@ -161,7 +161,7 @@ public final class Path implements Writable {
 
   @Override
   public boolean equals(Object o) {
-    return this == o || !(o == null || getClass() != o.getClass()) && path.equals(((Path) o).path);
+    return this == o || !(o == null || Path.class != o.getClass()) && path.equals(((Path) o).path);
   }
 
   @Override
