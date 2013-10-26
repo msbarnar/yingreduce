@@ -63,4 +63,12 @@ public final class PageData implements Writable {
     header.write(out);
     out.write(data);
   }
+
+  public PageHeader header() {
+    return header;
+  }
+
+  public byte[] data() {
+    return data;
+  }
 }

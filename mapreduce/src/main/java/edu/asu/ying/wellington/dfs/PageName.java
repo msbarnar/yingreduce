@@ -65,14 +65,6 @@ public final class PageName extends AbstractIdentifier {
     this.index = index;
   }
 
-  public Path getPath() {
-    return filePath;
-  }
-
-  public int getIndex() {
-    return index;
-  }
-
   @Override
   public void readFields(DataInput in) throws IOException {
     this.filePath = Path.readFrom(in);
@@ -88,6 +80,14 @@ public final class PageName extends AbstractIdentifier {
     out.writeInt(index);
   }
 
+  public Path path() {
+    return filePath;
+  }
+
+  public int index() {
+    return index;
+  }
+
   /**
    * Naturally compares by table name and then by index.
    * </p>
@@ -99,7 +99,7 @@ public final class PageName extends AbstractIdentifier {
       return pathComp;
     }
 
-    return Integer.compare(index, o.getIndex());
+    return Integer.compare(index, o.index());
   }
 
   @Override

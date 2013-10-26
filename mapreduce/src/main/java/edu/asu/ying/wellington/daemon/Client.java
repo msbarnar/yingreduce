@@ -127,7 +127,7 @@ public class Client {
         public boolean onEvent(Object sender, HasPageMetadata args) {
           System.out.println(
               String.format("[%d] PAGE! %s %d", instance.getPort(), args.getTableId().toString(),
-                            args.getIndex()));
+                            args.index()));
           return true;
         }
       });*/

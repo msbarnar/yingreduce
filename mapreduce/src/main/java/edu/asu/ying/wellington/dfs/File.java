@@ -66,11 +66,11 @@ public final class File implements Writable {
     this.properties = new FileProperties(properties);
   }
 
-  public Path getPath() {
+  public Path path() {
     return path;
   }
 
-  public FileProperties getProperties() {
+  public FileProperties properties() {
     return properties;
   }
 

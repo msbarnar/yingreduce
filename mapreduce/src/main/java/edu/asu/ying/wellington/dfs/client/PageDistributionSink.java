@@ -4,16 +4,16 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
 import edu.asu.ying.common.concurrency.QueueProcessor;
 import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.server.PageTransfer;
 import edu.asu.ying.wellington.dfs.server.PageTransferResponse;
-import edu.asu.ying.wellington.dfs.server.PageTransferResult;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
@@ -21,19 +21,23 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
  * {@code PageDistributionSink} distributes accepted pages to their initial peers on the network.
  */
 public final class PageDistributionSink
-    implements Sink<SerializedReadablePage>, QueueProcessor<SerializedReadablePage> {
+    implements Sink<PageData>, QueueProcessor<PageData> {
 
   private static final Logger log = Logger.getLogger(PageDistributionSink.class.getName());
 
   public static final String PROPERTY_PAGE_REPLICATION = "dfs.page.replication";
 
+  // Finds nodes to which to distribute
   private final NodeLocator locator;
 
+  // Set in each transfer the number of nodes that the page should be forwarded to
   private int pageReplicationFactor;
 
-  private final DelegateQueueExecutor<SerializedReadablePage> pageQueue
+  // Queues pages to be sent
+  private final DelegateQueueExecutor<PageData> pageQueue
       = new DelegateQueueExecutor<>(this);
-  private final Map<String, SerializedReadablePage> inProgressTransfers = new HashMap<>();
+
+  private final ExecutorService transferThreadPool = Executors.newCachedThreadPool();
 
   /**
    * Creates the distribution sink.
@@ -45,10 +49,11 @@ public final class PageDistributionSink
   private PageDistributionSink(NodeLocator locator,
                                @Named(PROPERTY_PAGE_REPLICATION) int replicationFactor) {
 
-    this.locator = locator;
     if (replicationFactor < 1) {
       throw new IllegalArgumentException(PROPERTY_PAGE_REPLICATION.concat(" must be >0"));
     }
+
+    this.locator = locator;
     this.pageReplicationFactor = replicationFactor;
   }
 
@@ -56,41 +61,21 @@ public final class PageDistributionSink
    * Adds a page to the queue for distribution to its initial node.
    */
   @Override
-  public void accept(final SerializedReadablePage page) throws IOException {
-    pageQueue.add(page);
+  public void accept(final PageData data) throws IOException {
+    pageQueue.add(data);
   }
 
-  /**
-   * Distributes a page to its initial node in the following steps:
-   * <ol>
-   * <li>Locates the node closest to the page's ID</li>
-   * <li>Wraps the page's data in a {@link com.healthmarketscience.rmiio.RemoteInputStream}</li>
-   * <li>Constructs a {@link PageTransfer} wrapping the page's metadata and the input stream</li>
-   * <li>Offers the transfer to the remote node</li>
-   * </ol>
-   * <ul>
-   * <li>If the remote node accepts the transfer, the transfer is placed in the {@code in-progress}
-   * queue. The remote node should notify this node on completion of the transfer so it can be
-   * removed from the queue.</li>
-   * <li>If the remote node refuses the transfer because it is overloaded, the transfer is put back
-   * on the transfer queue to be started at a later time.</li>
-   * <li>If the remote node refuses the transfer because it is over capacity, the next closest node
-   * is selected and the process repeats. If that transfer succeeds, the previous node is notified
-   * that it should keep a forwarding reference to the node.
-   * </ul>
-   */
   @Override
-  public void process(SerializedReadablePage page) throws Exception {
+  public void process(PageData data) throws Exception {
     // Find the destination node for the page
-    RemoteNode initialNode = locator.find(page.getMetadata().getId().toString());
-    // Send the transfer to the node
+    RemoteNode initialNode = locator.find(data.header().getPage().name().toString());
+    // Offer the transfer to the node
     PageTransfer transfer = new PageTransfer(locator.local(),
                                              pageReplicationFactor,
-                                             page.getMetadata(),
-                                             page.getInputStream());
+                                             data.header().getPage());
     PageTransferResponse response = initialNode.getDFSService().offer(transfer);
 
-    switch (response) {
+    switch (response.getStatus()) {
       case Overloaded:
         pageQueue.add(page);
         break;
@@ -101,21 +86,5 @@ public final class PageDistributionSink
       case Accepting:
         inProgressTransfers.put(transfer.getId(), page);
     }
-  }
-
-  public void notifyResult(String transferId, PageTransferResult result) {
-    switch (result) {
-      case ChecksumFailed:
-      case Invalid:
-      case OtherError:
-        SerializedReadablePage page = inProgressTransfers.get(transferId);
-        if (page == null) {
-          throw new IllegalStateException("Transfer not currently in progress: "
-                                              .concat(transferId));
-        }
-        // Put the page back on the queue
-        pageQueue.add(page);
-    }
-    inProgressTransfers.remove(transferId);
   }
 }

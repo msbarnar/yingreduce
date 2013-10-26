@@ -10,9 +10,11 @@ import java.nio.file.FileAlreadyExistsException;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.dfs.File;
 import edu.asu.ying.wellington.dfs.File.OutputMode;
+import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.io.BufferedPageOutputStream;
 import edu.asu.ying.wellington.dfs.server.PageDistributor;
+import edu.asu.ying.wellington.io.WritableInt;
 
 /**
  *
@@ -53,8 +55,11 @@ public final class DFSClient {
     // TODO: Bind a BufferedPageOutputStream to file
     switch (mode) {
       case CreateNew:
-        // TODO: Fail if file exists
-        break;
+        // Set the page capacity
+        file.properties().put(File.Properties.PageCapacity.toString(),
+                              new WritableInt(pageCapacity));
+        // Create an output stream with a buffer of `capacity` starting from page 0
+        return new BufferedPageOutputStream(Page.firstPageOf(file), pageDistributor);
 
       case Overwrite:
         // TODO: Delete existing pages
@@ -65,7 +70,7 @@ public final class DFSClient {
         break;
     }
 
-    return new BufferedPageOutputStream(pageDistributor, pageCapacity);
+    throw new IllegalArgumentException("Unknown output mode: ".concat(mode.toString()));
   }
 
   /**
