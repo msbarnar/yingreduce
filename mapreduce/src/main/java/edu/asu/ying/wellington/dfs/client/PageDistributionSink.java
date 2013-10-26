@@ -61,6 +61,25 @@ public final class PageDistributionSink
     pageQueue.add(page);
   }
 
+  /**
+   * Distributes a page to its initial node in the following steps:
+   * <ol>
+   * <li>Locates the node closest to the page's ID</li>
+   * <li>Wraps the page's data in a {@link com.healthmarketscience.rmiio.RemoteInputStream}</li>
+   * <li>Constructs a {@link PageTransfer} wrapping the page's metadata and the input stream</li>
+   * <li>Offers the transfer to the remote node</li>
+   * </ol>
+   * <ul>
+   * <li>If the remote node accepts the transfer, the transfer is placed in the {@code in-progress}
+   * queue. The remote node should notify this node on completion of the transfer so it can be
+   * removed from the queue.</li>
+   * <li>If the remote node refuses the transfer because it is overloaded, the transfer is put back
+   * on the transfer queue to be started at a later time.</li>
+   * <li>If the remote node refuses the transfer because it is over capacity, the next closest node
+   * is selected and the process repeats. If that transfer succeeds, the previous node is notified
+   * that it should keep a forwarding reference to the node.
+   * </ul>
+   */
   @Override
   public void process(SerializedReadablePage page) throws Exception {
     // Find the destination node for the page

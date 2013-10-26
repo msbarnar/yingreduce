@@ -26,6 +26,13 @@ public interface NodeLocator {
   List<RemoteNode> find(String name, int count) throws IOException;
 
   /**
+   * Returns the node that is the {@code distance}th node from the search string, or if
+   * {@code distance} is greater than the number of nodes found, returns the most distant
+   * node found.
+   */
+  RemoteNode findByDistance(String name, int distance) throws IOException;
+
+  /**
    * Returns immediately connected nodes. The number of nodes returned is dependent on the
    * underlying network.
    */
