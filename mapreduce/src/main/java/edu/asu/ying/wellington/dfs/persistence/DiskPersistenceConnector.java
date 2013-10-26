@@ -9,9 +9,12 @@ import com.google.inject.name.Named;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,6 +25,10 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 
@@ -30,7 +37,12 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
  */
 public final class DiskPersistenceConnector implements PersistenceConnector {
 
+  private static final Logger log = Logger.getLogger(DiskPersistenceConnector.class.getName());
+
   public static final String PROPERTY_STORE_PATH = "dfs.store.path";
+
+  // Name of the file which stores the name of the table in the normalized table folder
+  private static final String TABLE_NAME_FILENAME = ".table_name";
 
   private final HashFunction pathNormalizer = Hashing.md5();
   private final HashFunction checksumFunc = Hashing.adler32();
@@ -59,7 +71,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   }
 
   @Override
-  public boolean doesResourceExist(PageIdentifier id) {
+  public boolean exists(PageIdentifier id) {
     return Files.exists(makePath(id));
   }
 
@@ -74,7 +86,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
     // though we should be.
     try (InputStream istream = getInputStream(id)) {
       Hasher checksummer = checksumFunc.newHasher();
-      byte[] buffer = new byte[1024];
+      byte[] buffer = new byte[8092];
       int read = 0;
       while ((read = istream.read(buffer)) > 0) {
         checksummer.putBytes(buffer, 0, read);
@@ -84,17 +96,57 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   }
 
   /**
+   * Finds all of the table directories and all of the page files in the store path.
+   */
+  @Override
+  public Set<PageIdentifier> getAllStoredPages() throws IOException {
+    Set<PageIdentifier> storedPages = new HashSet<>();
+
+    File file = new File(root.toUri());
+    // Get all directories
+    String[] tableDirs = file.list(new FilenameFilter() {
+      @Override
+      public boolean accept(File dir, String name) {
+        return new File(dir, name).isDirectory();
+      }
+    });
+
+    for (String tableDir : tableDirs) {
+      Path tablePath = root.resolve(tableDir);
+      String tableName = readTableName(tablePath);
+      file = new File(tablePath.toUri());
+      // Get all files that aren't the table name file
+      String[] pageFiles = file.list(new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+          return !name.equals(TABLE_NAME_FILENAME);
+        }
+      });
+      // Add a page to the set for each file, where the page index is the filename
+      for (String pageFile : pageFiles) {
+        try {
+          int pageIndex = Integer.valueOf(pageFile);
+          storedPages.add(PageIdentifier.create(tableName, pageIndex));
+        } catch (NumberFormatException e) {
+          // Delete this errant file
+          Path pagePath = tablePath.resolve(pageFile);
+          Files.delete(pagePath);
+          log.info("Pruned misnamed file from page store: ".concat(pagePath.toString()));
+        }
+      }
+    }
+
+    return storedPages;
+  }
+
+  /**
    * @throws FileAlreadyExistsException if the page is already stored.
    */
   @Override
   public OutputStream getOutputStream(PageIdentifier id) throws IOException {
-    Path tableDirectory = root.resolve(makePathString(id.getTableName()));
-    // If the table directory exists but is not a directory, delete it
-    if (!Files.isDirectory(tableDirectory)) {
-      Files.delete(tableDirectory);
-    }
+    Path tableDirectory = createTableDirectory(id.getTableName());
 
-    Path fullPath = tableDirectory.resolve(makePathString(id.toString()));
+    Path fullPath = tableDirectory.resolve(Integer.toString(id.getIndex()));
     // Don't automatically overwrite files
     if (Files.exists(fullPath)) {
       throw new FileAlreadyExistsException(fullPath.toString());
@@ -135,5 +187,36 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   private Path makePath(PageIdentifier id) {
     return root.resolve(
         Paths.get(makePathString(id.getTableName()), makePathString(id.toString())));
+  }
+
+  private Path createTableDirectory(String tableName) throws IOException {
+    Path path = root.resolve(makePathString(tableName));
+    // If the table directory exists but is not a directory, delete it
+    if (Files.exists(path)) {
+      if (!Files.isDirectory(path)) {
+        Files.delete(path);
+        Files.createDirectory(path);
+      }
+    } else {
+      Files.createDirectory(path);
+    }
+
+    // Write a file with the name of the table in the directory so we can recover the name later
+    Path tableNameFile = path.resolve(TABLE_NAME_FILENAME);
+    try (DataOutputStream ostream
+             = new DataOutputStream(
+        Files.newOutputStream(tableNameFile, StandardOpenOption.CREATE))) {
+      ostream.writeUTF(tableName);
+    }
+
+    return path;
+  }
+
+  private String readTableName(Path tableDirectory) throws IOException {
+    Path tableNameFile = tableDirectory.resolve(TABLE_NAME_FILENAME);
+    try (DataInputStream istream
+             = new DataInputStream(Files.newInputStream(tableNameFile, StandardOpenOption.READ))) {
+      return istream.readUTF();
+    }
   }
 }

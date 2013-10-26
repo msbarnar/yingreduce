@@ -25,18 +25,20 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
  */
 public final class SimpleCachePersistenceConnector implements PersistenceConnector, Runnable {
 
-  public static final long CACHE_LIFETIME_SECONDS = 60 * 60;  // 1 hour
+  public static final int DEFAULT_CACHE_LIFETIME_SECONDS = 15 * 60;  // 15 minutes
   private static final long CACHE_CLEAN_FREQUENCY_SECONDS = 60;  // seconds
 
   private final HashFunction checksumFunc = Hashing.adler32();
 
   private final Map<PageIdentifier, CacheRecord> cache = new HashMap<>();
 
+  private int cacheLifetimeSeconds = DEFAULT_CACHE_LIFETIME_SECONDS;
+
   @Inject
   private SimpleCachePersistenceConnector() {
     ScheduledExecutorService cacheCleaner = Executors.newScheduledThreadPool(1);
-    // Wait until CACHE_LIFETIME_SECONDS has elapsed, then run periodically
-    cacheCleaner.scheduleAtFixedRate(this, CACHE_LIFETIME_SECONDS, CACHE_CLEAN_FREQUENCY_SECONDS,
+    // Wait until DEFAULT_CACHE_LIFETIME_SECONDS has elapsed, then run periodically
+    cacheCleaner.scheduleAtFixedRate(this, cacheLifetimeSeconds, CACHE_CLEAN_FREQUENCY_SECONDS,
                                      TimeUnit.SECONDS);
   }
 
@@ -58,7 +60,7 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
   }
 
   @Override
-  public boolean doesResourceExist(PageIdentifier id) {
+  public boolean exists(PageIdentifier id) {
     CacheRecord record = cache.get(id);
     if (record == null) {
       return false;
@@ -101,6 +103,15 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
       throw new PageNotFoundException(id);
     }
     return new ByteArrayInputStream(page);
+  }
+
+  /**
+   * Sets the number of seconds for which new cache entries will live.
+   * </p>
+   * Entries already in the cache will not be affected by the new value.
+   */
+  void setCacheLifetime(int seconds) {
+    this.cacheLifetimeSeconds = seconds;
   }
 
   /**
@@ -201,7 +212,7 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
     @Override
     public void close() {
       cache.put(id, new CacheRecord(((ByteArrayOutputStream) stream).toByteArray(),
-                                    SimpleCachePersistenceConnector.CACHE_LIFETIME_SECONDS));
+                                    SimpleCachePersistenceConnector.this.cacheLifetimeSeconds));
     }
   }
 }

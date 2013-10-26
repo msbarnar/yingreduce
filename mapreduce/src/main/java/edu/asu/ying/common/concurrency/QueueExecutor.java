@@ -15,7 +15,7 @@ public abstract class QueueExecutor<T> implements Runnable {
   private static final Logger log = Logger.getLogger(QueueExecutor.class.getName());
 
   private final BlockingQueue<T> queue;
-  private final ExecutorService threadPool;
+  private ExecutorService threadPool;
 
   /**
    * Starts a single-threaded executor
@@ -31,6 +31,14 @@ public abstract class QueueExecutor<T> implements Runnable {
   protected QueueExecutor(ExecutorService executor, BlockingQueue<T> queue) {
     this.threadPool = executor;
     this.queue = queue;
+  }
+
+  public void setExecutor(ExecutorService executor) {
+    if (threadPool != null) {
+      threadPool.shutdown();
+    }
+    threadPool = executor;
+    threadPool.submit(this);
   }
 
   public void start() {
