@@ -37,8 +37,8 @@ public abstract class QueueExecutor<T> implements Runnable {
     threadPool.submit(this);
   }
 
-  public void put(T item) throws InterruptedException {
-    queue.put(item);
+  public void add(T item) {
+    queue.add(item);
   }
 
   public int size() {

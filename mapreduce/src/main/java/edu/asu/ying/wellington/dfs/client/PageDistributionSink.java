@@ -19,7 +19,7 @@ import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
- * {@code PageDistributionSink} distributes accepted pages to appropriate peers on the network.
+ * {@code PageDistributionSink} distributes accepted pages to their initial peers on the network.
  */
 public final class PageDistributionSink
     implements Sink<SerializedReadablePage>, QueueProcessor<SerializedReadablePage> {
@@ -36,6 +36,12 @@ public final class PageDistributionSink
       = new DelegateQueueExecutor<>(this);
   private final Map<String, SerializedReadablePage> inProgressTransfers = new HashMap<>();
 
+  /**
+   * Creates the distribution sink.
+   *
+   * @param locator           The class used for locating nodes by a search string.
+   * @param replicationFactor The number of nodes on which a copy of the page will be stored.
+   */
   @Inject
   private PageDistributionSink(NodeLocator locator,
                                @Named(PROPERTY_PAGE_REPLICATION) int replicationFactor) {
@@ -47,13 +53,12 @@ public final class PageDistributionSink
     this.pageReplicationFactor = replicationFactor;
   }
 
+  /**
+   * Adds a page to the queue for distribution to its initial node.
+   */
   @Override
   public void accept(final SerializedReadablePage page) throws IOException {
-    try {
-      pageQueue.put(page);
-    } catch (InterruptedException e) {
-      throw new IOException("Page queue interrupted");
-    }
+    pageQueue.add(page);
   }
 
   @Override
@@ -69,11 +74,7 @@ public final class PageDistributionSink
 
     switch (response) {
       case Overloaded:
-        try {
-          pageQueue.put(page);
-        } catch (InterruptedException e) {
-          throw new IOException("Page queue interrupted");
-        }
+        pageQueue.add(page);
         break;
 
       case OutOfCapacity:
@@ -95,11 +96,7 @@ public final class PageDistributionSink
                                               .concat(transferId));
         }
         // Put the page back on the queue
-        try {
-          pageQueue.put(page);
-        } catch (InterruptedException e) {
-          throw new RuntimeException("Page queue interrupted");
-        }
+        pageQueue.add(page);
     }
     inProgressTransfers.remove(transferId);
   }

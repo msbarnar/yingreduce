@@ -71,19 +71,11 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
     if (bestNeighbor == null) {
       // If this forwarding queue is the shortest, put the task back on the queue.
       // QFn -> QFn
-      try {
-        if (maximumBackpressure < 0) {
-          put(task);
-        } else {
-          // Put the task in the remote queue
-          try {
-            remoteQueue.put(task);
-          } catch (InterruptedException e) {
-            put(task);
-          }
-        }
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
+      if (maximumBackpressure < 0) {
+        add(task);
+      } else {
+        // Put the task in the remote queue
+        remoteQueue.add(task);
       }
     } else {
       // Forward the task to the remote node

@@ -47,14 +47,8 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
    * Queues the transfer to be downloaded.
    */
   public PageTransferResponse offer(PageTransfer transfer) {
-    try {
-      pendingTransfers.put(transfer);
-      return PageTransferResponse.Accepting;
-    } catch (InterruptedException e) {
-      log.log(Level.WARNING, "Queue interrupted while adding pending page transfer. Node will"
-                             + " respond as being overloaded.", e);
-      return PageTransferResponse.Overloaded;
-    }
+    pendingTransfers.add(transfer);
+    return PageTransferResponse.Accepting;
   }
 
   /**
