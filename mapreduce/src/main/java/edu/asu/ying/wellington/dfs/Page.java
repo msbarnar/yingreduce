@@ -12,6 +12,10 @@ import edu.asu.ying.wellington.io.WritableInt;
  */
 public class Page implements Writable {
 
+  public static Page firstPageOf(File file) {
+    return new Page(file, 0);
+  }
+
   public static Page readFrom(DataInput in) throws IOException {
     Page p = new Page();
     p.readFields(in);
@@ -35,12 +39,16 @@ public class Page implements Writable {
    */
   public Page(File file, int index) {
     this.file = file;
-    this.name = PageName.create(file.getPath(), index);
+    this.name = PageName.create(file.path(), index);
     // Read the capacity from the file properties
     readCapacity();
     if (capacity <= 0) {
       throw new IllegalArgumentException("Page capacity not set: ".concat(file.toString()));
     }
+  }
+
+  public Page next() {
+    return new Page(file, name.index() + 1);
   }
 
   @Override
@@ -59,7 +67,11 @@ public class Page implements Writable {
     out.writeInt(size);
   }
 
-  public File getFile() {
+  public PageName name() {
+    return name;
+  }
+
+  public File file() {
     return file;
   }
 
@@ -70,10 +82,14 @@ public class Page implements Writable {
     return size;
   }
 
+  public void setSize(int size) {
+    this.size = size;
+  }
+
   /**
    * Returns the maximum capacity in bytes of pages of this file, or -1 if not set.
    */
-  public int getCapacity() {
+  public int capacity() {
     return capacity;
   }
 
@@ -82,7 +98,7 @@ public class Page implements Writable {
    */
   private void readCapacity() {
     try {
-      capacity = ((WritableInt) file.getProperties()
+      capacity = ((WritableInt) file.properties()
           .get(File.Properties.PageCapacity.toString()))
           .get();
     } catch (NullPointerException | ClassCastException e) {

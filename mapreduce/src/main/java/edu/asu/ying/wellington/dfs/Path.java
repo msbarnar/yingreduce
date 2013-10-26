@@ -7,6 +7,8 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import edu.asu.ying.wellington.io.WritableComparable;
@@ -174,6 +176,14 @@ public final class Path implements WritableComparable<Path> {
         break;
     }
     return path;
+  }
+
+  public String fileName() {
+    return fileName;
+  }
+
+  public Collection<String> directories() {
+    return Collections.unmodifiableList(directories);
   }
 
   @Override

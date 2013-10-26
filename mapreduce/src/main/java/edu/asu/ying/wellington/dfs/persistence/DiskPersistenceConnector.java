@@ -115,7 +115,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   public OutputStream getOutputStream(PageName id) throws IOException {
     Path tableDirectory = createTableDirectory(id.getTableName());
 
-    Path fullPath = tableDirectory.resolve(Integer.toString(id.getIndex()));
+    Path fullPath = tableDirectory.resolve(Integer.toString(id.index()));
     // Don't automatically overwrite files
     if (Files.exists(fullPath)) {
       throw new FileAlreadyExistsException(fullPath.toString());
