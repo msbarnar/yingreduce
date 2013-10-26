@@ -26,7 +26,9 @@ public final class FileProperties
   }
 
   public FileProperties(FileProperties properties) {
-    putAll(properties);
+    if (properties != null) {
+      putAll(properties);
+    }
   }
 
   public void putAll(FileProperties properties) {

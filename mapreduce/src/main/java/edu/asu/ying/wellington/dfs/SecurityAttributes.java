@@ -14,7 +14,7 @@ public class SecurityAttributes implements Serializable, Writable {
 
   private static final long SerialVersionUID = 1L;
 
-  private static final String PROPERTIES_KEY = ".security-attrib";
+  private static final String PROPERTIES_KEY = ".security";
 
   public static SecurityAttributes get(FileProperties properties) {
     return new SecurityAttributes(properties.get(PROPERTIES_KEY));

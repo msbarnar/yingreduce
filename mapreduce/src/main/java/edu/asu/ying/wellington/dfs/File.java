@@ -1,8 +1,12 @@
 package edu.asu.ying.wellington.dfs;
 
+import com.google.common.base.Preconditions;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+
+import javax.annotation.Nullable;
 
 import edu.asu.ying.wellington.io.Writable;
 
@@ -10,6 +14,22 @@ import edu.asu.ying.wellington.io.Writable;
  * {@code File} is the base entry in the distributed filesystem.
  */
 public final class File implements Writable {
+
+  public static enum Properties {
+
+    PageCapacity(".page.capacity"),;
+
+    private final String key;
+
+    private Properties(String key) {
+      this.key = key;
+    }
+
+    @Override
+    public String toString() {
+      return key;
+    }
+  }
 
   private static final long SerialVersionUID = 1L;
 
@@ -33,7 +53,7 @@ public final class File implements Writable {
     this(new Path(path));
   }
 
-  public File(String path, FileProperties properties) throws InvalidPathException {
+  public File(String path, @Nullable FileProperties properties) throws InvalidPathException {
     this(new Path(path), properties);
   }
 
@@ -41,8 +61,8 @@ public final class File implements Writable {
     this(path, getDefaultProperties());
   }
 
-  public File(Path path, FileProperties properties) {
-    this.path = path;
+  public File(Path path, @Nullable FileProperties properties) {
+    this.path = Preconditions.checkNotNull(path);
     this.properties = new FileProperties(properties);
   }
 
@@ -56,8 +76,7 @@ public final class File implements Writable {
 
   @Override
   public void readFields(DataInput in) throws IOException {
-    this.path = new Path();
-    path.readFields(in);
+    path = Path.readFrom(in);
     properties.readFields(in);
   }
 

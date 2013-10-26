@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.dfs;
 
+import com.google.common.base.Strings;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -87,6 +89,9 @@ public final class Path implements WritableComparable<Path> {
    * e.g. {@code "  /my//cool path///   "} becomes {@code "my/cool path"}
    */
   private String normalize(String path) throws IllegalCharactersInPathException {
+    if (Strings.nullToEmpty(path).isEmpty()) {
+      throw new IllegalArgumentException("Path cannot be empty");
+    }
     path = stripDelimiters(path.trim(), End.BOTH);
     List<Character> illegalCharacters = new ArrayList<>();
     StringBuilder sb = new StringBuilder();
@@ -114,7 +119,13 @@ public final class Path implements WritableComparable<Path> {
     if (!illegalCharacters.isEmpty()) {
       throw new IllegalCharactersInPathException(path, illegalCharacters);
     }
-    return sb.toString();
+
+    // Stripping delimiters again makes "/" empty
+    path = stripDelimiters(sb.toString(), End.BOTH);
+    if (path.isEmpty()) {
+      throw new IllegalArgumentException("Path cannot be empty");
+    }
+    return path;
   }
 
   /**
