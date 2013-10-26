@@ -30,27 +30,27 @@ public abstract class AbstractIdentifier implements WritableComparable<AbstractI
 
   @Override
   public void write(DataOutput out) throws IOException {
-    out.writeUTF(this.id);
+    out.writeUTF(id);
   }
 
   @Override
   public int compareTo(AbstractIdentifier o) {
-    return this.id.compareTo(o.id);
+    return id.compareTo(o.id);
   }
 
   @Override
   public boolean equals(Object o) {
-    return this == o || !(o == null || getClass() != o.getClass()) && this.id
+    return this == o || !(o == null || getClass() != o.getClass()) && id
         .equals(((AbstractIdentifier) o).id);
   }
 
   @Override
   public int hashCode() {
-    return this.id.hashCode();
+    return id.hashCode();
   }
 
   @Override
   public String toString() {
-    return this.id;
+    return id;
   }
 }

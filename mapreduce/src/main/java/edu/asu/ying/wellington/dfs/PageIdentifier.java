@@ -67,7 +67,10 @@ public final class PageIdentifier extends AbstractIdentifier {
     WritableString table = new WritableString();
     table.readFields(in);
     this.tableName = table.toString();
-    index = in.readInt();
+    this.index = in.readInt();
+    this.id = tableName
+        .concat(Character.toString(PAGE_DELIMITER))
+        .concat(Integer.toString(index));
   }
 
   @Override
@@ -76,6 +79,11 @@ public final class PageIdentifier extends AbstractIdentifier {
     out.writeInt(index);
   }
 
+  /**
+   * Naturally compares by table name and then by index.
+   * </p>
+   * i.e. mytable~2 > mytable~1 > my~2 > my~1
+   */
   public int compareTo(PageIdentifier o) {
     int tableComp = tableName.compareTo(o.getTableName());
     if (tableComp != 0) {
@@ -83,5 +91,20 @@ public final class PageIdentifier extends AbstractIdentifier {
     }
 
     return Integer.compare(index, o.getIndex());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return super.toString();
   }
 }

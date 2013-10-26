@@ -2,6 +2,7 @@ package edu.asu.ying.wellington.dfs.server;
 
 import edu.asu.ying.wellington.dfs.PageIdentifier;
 import edu.asu.ying.wellington.dfs.ReadablePage;
+import edu.asu.ying.wellington.dfs.persistence.PageNotAvailableLocallyException;
 import edu.asu.ying.wellington.io.Writable;
 import edu.asu.ying.wellington.io.WritableComparable;
 
@@ -18,7 +19,7 @@ public interface ReadablePageProvider {
 
   /**
    * Returns {@code true} if call to {@link getLocalPage(PageIdentifier)} would not throw a
-   * {@link PageNotAvailableLocallyException}.
+   * {@link edu.asu.ying.wellington.dfs.persistence.PageNotAvailableLocallyException}.
    */
   boolean isPageLocallyAvailable(PageIdentifier id);
 

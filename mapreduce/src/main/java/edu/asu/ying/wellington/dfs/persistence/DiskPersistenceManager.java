@@ -28,7 +28,7 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
 /**
  *
  */
-public final class DiskPersistenceManager implements Persistence {
+public final class DiskPersistenceManager implements PersistenceConnector {
 
   private final HashFunction hasher = Hashing.md5();
 

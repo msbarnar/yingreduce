@@ -20,7 +20,7 @@ import edu.asu.ying.wellington.dfs.PageIdentifier;
 /**
  * {@code MemoryPersistenceCache} is an in-memory cache for persisting pages.
  */
-public final class MemoryPersistenceCache implements Persistence, Runnable {
+public final class MemoryPersistenceCache implements PersistenceConnector, Runnable {
 
   public static final long CACHE_LIFETIME_SECONDS = 60 * 60;  // 1 hour
   private static final long CACHE_CLEAN_FREQUENCY_SECONDS = 60;  // seconds
@@ -52,6 +52,33 @@ public final class MemoryPersistenceCache implements Persistence, Runnable {
     }
   }
 
+  @Override
+  public boolean deleteIfExists(PageIdentifier id) throws IOException {
+    return cache.remove(id) != null;
+  }
+
+  /**
+   * Gets an {@link OutputStream} that writes to the memory cache.
+   * <p/>
+   * The stream contents will not be committed to the cache until the stream is closed.
+   */
+  @Override
+  public OutputStream getOutputStream(PageIdentifier id) throws IOException {
+    return new CacheOutputStream(id, this);
+  }
+
+  /**
+   * Gets an {@link java.io.InputStream} that reads from the memory cache.
+   */
+  @Override
+  public InputStream getInputStream(PageIdentifier id) throws PageNotInCacheException {
+    byte[] page = get(id);
+    if (page == null) {
+      throw new PageNotInCacheException();
+    }
+    return new ByteArrayInputStream(page);
+  }
+
   /**
    * (thread-safe) Puts a record in the cache.
    */
@@ -75,28 +102,6 @@ public final class MemoryPersistenceCache implements Persistence, Runnable {
       record.touch();
       return record.get();
     }
-  }
-
-  /**
-   * Gets an {@link OutputStream} that writes to the memory cache.
-   * <p/>
-   * The stream contents will not be committed to the cache until the stream is closed.
-   */
-  @Override
-  public OutputStream getOutputStream(PageIdentifier id) throws IOException {
-    return new CacheOutputStream(id, this);
-  }
-
-  /**
-   * Gets an {@link InputStream} that reads from the memory cache.
-   */
-  @Override
-  public InputStream getInputStream(PageIdentifier id) throws PageNotInCacheException {
-    byte[] page = get(id);
-    if (page == null) {
-      throw new PageNotInCacheException();
-    }
-    return new ByteArrayInputStream(page);
   }
 
   private final class CacheRecord {
