@@ -1,8 +1,10 @@
 package edu.asu.ying.wellington.dfs;
 
 import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InputStream;
 
 import edu.asu.ying.wellington.AbstractIdentifier;
 import edu.asu.ying.wellington.InvalidIdentifierException;
@@ -41,10 +43,28 @@ public final class PageIdentifier extends AbstractIdentifier {
     }
   }
 
+  /**
+   * Deserializes the identifier from {@code stream}.
+   */
+  public static PageIdentifier readFrom(InputStream stream) throws IOException {
+    DataInputStream istream;
+    if (stream instanceof DataInputStream) {
+      istream = (DataInputStream) stream;
+    } else {
+      istream = new DataInputStream(stream);
+    }
+    PageIdentifier id = new PageIdentifier();
+    id.readFields(istream);
+    return id;
+  }
+
   private static final char PAGE_DELIMITER = '~';
 
   private String tableName;
   private int index;
+
+  private PageIdentifier() {
+  }
 
   private PageIdentifier(String tableName, int index) {
     super(tableName

@@ -9,8 +9,6 @@ import com.google.inject.name.Named;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -220,21 +218,18 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
     // Write a file with the name of the table in the directory so we can recover the name later
     Path tableNameFile = path.resolve(TABLE_NAME_FILENAME);
     if (!Files.exists(tableNameFile)) {
-      try (DataOutputStream ostream
-               = new DataOutputStream(
-          Files.newOutputStream(tableNameFile, StandardOpenOption.CREATE))) {
-        ostream.writeUTF(tableName);
-      }
+      Files.write(tableNameFile, tableName.getBytes(Charsets.UTF_8), StandardOpenOption.CREATE);
     }
 
     return path;
   }
 
+  /**
+   * Reads the name of the table from a special file in the table directory, whose name is
+   * normalized.
+   */
   private String readTableName(Path tableDirectory) throws IOException {
     Path tableNameFile = tableDirectory.resolve(TABLE_NAME_FILENAME);
-    try (DataInputStream istream
-             = new DataInputStream(Files.newInputStream(tableNameFile, StandardOpenOption.READ))) {
-      return istream.readUTF();
-    }
+    return Files.readAllLines(tableDirectory, Charsets.UTF_8).get(0);
   }
 }
