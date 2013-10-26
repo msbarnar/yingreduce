@@ -2,7 +2,6 @@ package edu.asu.ying.wellington.dfs.persistence;
 
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +22,6 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
 
   private static final Logger log = Logger.getLogger(PersistenceEngine.class.getName());
 
-  public static final String PROPERTY_STORE_PATH = "dfs.store.path";
-
   private final PersistenceConnector cache;
   private final PersistenceConnector disk;
 
@@ -35,8 +32,7 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
 
   @Inject
   private PersistenceEngine(@CachePersistence PersistenceConnector cache,
-                            @DiskPersistence PersistenceConnector disk,
-                            @Named(PROPERTY_STORE_PATH) String storePath) {
+                            @DiskPersistence PersistenceConnector disk) {
     this.cache = cache;
     this.disk = disk;
 
@@ -49,8 +45,7 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
         pageIndex.addAll(disk.rebuildPageIndex());
       } catch (IOException e1) {
         throw new RuntimeException("Exception indexing pages; either resolve the exception"
-                                       .concat(" or trash the page store: ")
-                                       .concat(storePath), e1);
+                                   + " or trash the page store", e1);
       }
     }
 
