@@ -1,44 +1,58 @@
 package edu.asu.ying.wellington.dfs;
 
-import java.io.Serializable;
-import java.nio.file.InvalidPathException;
-import java.util.Properties;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+import edu.asu.ying.wellington.io.Writable;
 
 /**
  * {@code File} is the base entry in the distributed filesystem.
  */
-public final class File implements Serializable {
+public final class File implements Writable {
 
   private static final long SerialVersionUID = 1L;
 
-  public static Properties getDefaultProperties() {
-    return new Properties();
+  public static FileProperties getDefaultProperties() {
+    return new FileProperties();
   }
 
-  private final String path;
-  private final String name;
-  private final Properties properties = getDefaultProperties();
+  private Path path;
+  private FileProperties properties;
 
-  public File(String path) {
-    parsePath(path);
+  public File(String path) throws InvalidPathException {
+    this(new Path(path));
   }
 
-  public File(String path, Properties properties) {
-    parsePath(path);
-    this.properties.putAll(properties);
+  public File(String path, FileProperties properties) throws InvalidPathException {
+    this(new Path(path), properties);
   }
 
-  public String getName() {
-    return name;
+  public File(Path path) {
+    this(path, getDefaultProperties());
   }
 
-  public String getPath() {
-
+  public File(Path path, FileProperties properties) {
+    this.path = path;
+    this.properties = new FileProperties(properties);
   }
 
-  private void parsePath(String path) throws InvalidPathException {
-    if (!path.startsWith(PATH_DELIMITER)) {
-      path = PATH_DELIMITER.concat(path);
-    }
+  public Path getPath() {
+    return path;
+  }
+
+  public FileProperties getProperties() {
+    return properties;
+  }
+
+  @Override
+  public void readFields(DataInput in) throws IOException {
+    this.path = new Path();
+    path.readFields(in);
+    properties.readFields(in);
+  }
+
+  @Override
+  public void write(DataOutput out) throws IOException {
   }
 }

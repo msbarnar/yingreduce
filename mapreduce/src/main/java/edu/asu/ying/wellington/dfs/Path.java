@@ -1,14 +1,18 @@
 package edu.asu.ying.wellington.dfs;
 
-import java.io.Serializable;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.asu.ying.wellington.io.Writable;
+
 /**
  *
  */
-public final class Path implements Serializable {
+public final class Path implements Writable {
 
   private static final char DELIMITER_C = '/';
   private static final String DELIMITER = Character.toString(DELIMITER_C);
@@ -17,6 +21,10 @@ public final class Path implements Serializable {
   private String path;
   private String fileName;
   private List<String> directories;
+
+
+  public Path() {
+  }
 
   /**
    * Parses the path
@@ -43,9 +51,9 @@ public final class Path implements Serializable {
 
   private void parse(String path) throws InvalidPathException {
     // Strip extra whitespace, delimiters, fail on bad characters
-    path = normalize(path);
+    this.path = normalize(path);
 
-    String[] components = path.split(DELIMITER);
+    String[] components = this.path.split(DELIMITER);
     // All components but the last are directories
     this.directories = new ArrayList<>(components.length - 1);
     directories.addAll(Arrays.asList(components).subList(0, components.length - 1));
@@ -60,9 +68,7 @@ public final class Path implements Serializable {
    * e.g. {@code "   /my///", "  //cool path//  "} becomes {@code "my/cool path"}
    */
   private String concat(String a, String b) throws InvalidPathException {
-    a = normalize(a);
-    b = stripDelimiters(normalize(b), End.LEADING);
-    return a.concat(DELIMITER).concat(b);
+    return normalize(a).concat(DELIMITER).concat(normalize(b));
   }
 
   /**
@@ -166,6 +172,16 @@ public final class Path implements Serializable {
   @Override
   public String toString() {
     return path;
+  }
+
+  @Override
+  public void readFields(DataInput in) throws IOException {
+    parse(in.readUTF());
+  }
+
+  @Override
+  public void write(DataOutput out) throws IOException {
+    out.writeUTF(path);
   }
 
   private static enum End {
