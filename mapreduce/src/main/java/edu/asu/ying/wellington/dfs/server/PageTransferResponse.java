@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public final class PageTransferResponse implements Serializable {
 
+  private static final long SerialVersionUID = 1L;
+
   public final Status status;
   public final RemoteOutputStream outputStream;
 

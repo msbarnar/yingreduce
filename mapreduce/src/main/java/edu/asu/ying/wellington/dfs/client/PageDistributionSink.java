@@ -1,11 +1,17 @@
 package edu.asu.ying.wellington.dfs.client;
 
+import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+import com.healthmarketscience.rmiio.RemoteOutputStreamClient;
+import com.healthmarketscience.rmiio.RemoteRetry;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.io.OutputStream;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
@@ -37,8 +43,6 @@ public final class PageDistributionSink
   private final DelegateQueueExecutor<PageData> pageQueue
       = new DelegateQueueExecutor<>(this);
 
-  private final ExecutorService transferThreadPool = Executors.newCachedThreadPool();
-
   /**
    * Creates the distribution sink.
    *
@@ -66,26 +70,46 @@ public final class PageDistributionSink
   }
 
   @Override
-  public void process(PageData data) throws Exception {
+  public void process(PageData data) throws IOException {
+    String pageName = data.header().getPage().name().toString();
     // Find the destination node for the page
-    RemoteNode initialNode = locator.find(data.header().getPage().name().toString());
+    RemoteNode initialNode = locator.find(pageName);
+    String nodeName = initialNode.getName();
+
     // Offer the transfer to the node
-    PageTransfer transfer = new PageTransfer(locator.local(),
-                                             pageReplicationFactor,
+    PageTransfer transfer = new PageTransfer(locator.local(), pageReplicationFactor,
                                              data.header().getPage());
-    PageTransferResponse response = initialNode.getDFSService().offer(transfer);
+    final PageTransferResponse response;
+    try {
+      response = initialNode.getDFSService().offer(transfer);
+    } catch (RemoteException e) {
+      log.log(Level.WARNING, "Exception offering transfer to remote node", e);
+      return;
+    }
 
     switch (response.status) {
       case Overloaded:
         // Requeue the transfer to try again later
         pageQueue.add(data);
+        log.finest(String.format("[send] %s: %s is overloaded; requeued", pageName, nodeName));
         break;
 
       case OutOfCapacity:
+        log.finest(String.format("[send] %s: %s is over capacity", pageName, nodeName));
         throw new IOException("Remote node is over capacity");
 
       case Accepting:
-        inProgressTransfers.put(transfer.getId(), page);
+        ByteArrayInputStream istream = new ByteArrayInputStream(data.data());
+        OutputStream ostream = RemoteOutputStreamClient.wrap(response.outputStream,
+                                                             RemoteRetry.SIMPLE);
+        ByteStreams.copy(istream, ostream);
+        ostream.close();
+        log.finest(String.format("[send] %s -> %s", pageName, nodeName));
+        break;
+
+      case Duplicate:
+        log.finest(String.format("[send] %s: %s already has page", pageName, nodeName));
+        break;
     }
   }
 }

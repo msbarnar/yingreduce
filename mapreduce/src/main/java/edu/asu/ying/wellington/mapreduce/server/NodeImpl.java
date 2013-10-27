@@ -43,7 +43,7 @@ public final class NodeImpl implements LocalNode, NodeLocator {
 
     this.localPeer = localPeer;
     // Use the same node name as the underlying P2P node
-    this.name = localPeer.getName();
+    this.name = "node{".concat(localPeer.getName()).concat("}");
 
     try {
       this.proxy = exporter.export(this);
@@ -81,6 +81,12 @@ public final class NodeImpl implements LocalNode, NodeLocator {
       }
     }
     return nodes;
+  }
+
+  @Override
+  public RemoteNode findByDistance(String name, int distance) throws IOException {
+    List<RemoteNode> nodes = find(name, distance);
+    return nodes.get(nodes.size() - 1);
   }
 
   @Override
