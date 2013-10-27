@@ -33,7 +33,7 @@ public final class PageDistributionStream extends OutputStream {
     this.buffer = new ByteArrayOutputStream(capacity);
   }
 
-  public int getRemainingCapacity() {
+  public int remainingCapacity() {
     return capacity - buffer.size();
   }
 
