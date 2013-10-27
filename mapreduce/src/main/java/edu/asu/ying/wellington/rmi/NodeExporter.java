@@ -8,9 +8,9 @@ import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
-import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
-import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
-import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
+import edu.asu.ying.dfs.server.RemoteDFSService;
+import edu.asu.ying.mapreduce.server.RemoteJobService;
+import edu.asu.ying.mapreduce.server.RemoteTaskService;
 
 public final class NodeExporter implements RemoteNode, Exporter<LocalNode, RemoteNode> {
 

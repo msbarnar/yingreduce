@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.asu.ying.dfs.DFSService;
+import edu.asu.ying.mapreduce.job.JobService;
+import edu.asu.ying.mapreduce.task.TaskService;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
-import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.mapreduce.job.JobService;
-import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
  * {@code NodeImpl} forms a network of mapreduce services overlayed on the P2P network. The network

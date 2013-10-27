@@ -3,14 +3,14 @@ package edu.asu.ying.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.asu.ying.wellington.io.WritableChar;
-import edu.asu.ying.wellington.io.WritableInt;
-import edu.asu.ying.wellington.io.WritableString;
-import edu.asu.ying.wellington.mapreduce.Mappable;
-import edu.asu.ying.wellington.mapreduce.OutputCollector;
-import edu.asu.ying.wellington.mapreduce.Reducer;
-import edu.asu.ying.wellington.mapreduce.Reporter;
-import edu.asu.ying.wellington.mapreduce.job.JobConf;
+import edu.asu.ying.io.WritableChar;
+import edu.asu.ying.io.WritableInt;
+import edu.asu.ying.io.WritableString;
+import edu.asu.ying.mapreduce.Mappable;
+import edu.asu.ying.mapreduce.OutputCollector;
+import edu.asu.ying.mapreduce.Reducer;
+import edu.asu.ying.mapreduce.Reporter;
+import edu.asu.ying.mapreduce.job.JobConf;
 
 /**
  *

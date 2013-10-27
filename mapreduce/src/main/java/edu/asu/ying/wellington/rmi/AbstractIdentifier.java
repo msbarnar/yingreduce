@@ -7,7 +7,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import edu.asu.ying.wellington.io.WritableComparable;
+import edu.asu.ying.io.WritableComparable;
 
 /**
  *
