@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
+import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.common.remoting.Exported;
 import edu.asu.ying.wellington.Service;
 import edu.asu.ying.wellington.dfs.server.PageTransfer;
@@ -35,4 +36,9 @@ public interface DFSService extends Service, Exported<RemoteDFSService> {
    * If this happens too many times, we should pick a different node.
    */
   void notifyTransferResult(String transferId, @Nullable Throwable exception);
+
+  /**
+   * Returns a sink that distributes {@link PageData} sent to it.
+   */
+  Sink<PageData> getDistributionSink();
 }

@@ -1,21 +1,15 @@
 package edu.asu.ying.wellington.dfs.server;
 
-import com.google.inject.BindingAnnotation;
+import javax.annotation.Nullable;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.wellington.dfs.PageData;
 
 /**
- *
+ * A {@code PageDistributor} is a sink for {@link PageData} that distributes the pages received to
+ * the network by way of the local {@link edu.asu.ying.wellington.dfs.DFSService}.
  */
-@BindingAnnotation
-@Target({FIELD, PARAMETER, METHOD})
-@Retention(RUNTIME)
-public @interface PageDistributor {
+public interface PageDistributor extends Sink<PageData> {
 
+  void notifyResult(String transferId, @Nullable Throwable exception);
 }
