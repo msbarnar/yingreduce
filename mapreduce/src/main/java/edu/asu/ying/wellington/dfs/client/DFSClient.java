@@ -50,11 +50,10 @@ public final class DFSClient {
   public OutputStream getOutputStream(File file, OutputMode mode)
       throws IOException, SecurityException {
 
-    // TODO: Check security
-
     // TODO: Bind a PageDistributionStream to file
     switch (mode) {
       case CreateNew:
+        // TODO: Check security
         // Set the page capacity
         file.properties().put(File.Properties.PageCapacity.toString(),
                               new WritableInt(pageCapacity));
@@ -62,10 +61,12 @@ public final class DFSClient {
         return new PageDistributionStream(Page.firstPageOf(file), pageDistributor);
 
       case Overwrite:
+        // TODO: Check security
         // TODO: Delete existing pages
         break;
 
       case Append:
+        // TODO: Check security
         // TODO: Start at end of pages
         break;
     }

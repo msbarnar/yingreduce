@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +58,21 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
         }
       }
     }
+  }
+
+  // FIXME: Implement page index
+  @Override
+  public void savePageIndex(Set<PageName> index) throws IOException {
+  }
+
+  @Override
+  public Set<PageName> loadPageIndex() throws IOException {
+    return null;
+  }
+
+  @Override
+  public Set<PageName> rebuildPageIndex() throws IOException {
+    return null;
   }
 
   @Override
