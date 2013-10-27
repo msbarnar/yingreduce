@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington;
+package edu.asu.ying.wellington.rmi;
 
 /**
  *

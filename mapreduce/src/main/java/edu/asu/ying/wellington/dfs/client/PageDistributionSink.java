@@ -18,11 +18,11 @@ import java.util.logging.Logger;
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
 import edu.asu.ying.common.concurrency.QueueProcessor;
 import edu.asu.ying.common.event.Sink;
-import edu.asu.ying.wellington.NodeLocator;
-import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.server.PageTransfer;
 import edu.asu.ying.wellington.dfs.server.PageTransferResponse;
+import edu.asu.ying.wellington.rmi.NodeLocator;
+import edu.asu.ying.wellington.rmi.RemoteNode;
 
 /**
  * {@code PageDistributionSink} distributes accepted pages to their initial peers on the network.

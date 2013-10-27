@@ -2,9 +2,9 @@ package edu.asu.ying.wellington.mapreduce.task;
 
 import java.io.Serializable;
 
-import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.mapreduce.job.Job;
+import edu.asu.ying.wellington.rmi.RemoteNode;
 
 /**
  * {@code Task} is the base class of all distributable mapreduce. </p> Properties defined by this

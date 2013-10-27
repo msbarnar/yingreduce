@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.asu.ying.wellington.VersionMismatchException;
 import edu.asu.ying.wellington.dfs.ChecksumMismatchException;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.io.Writable;
+import edu.asu.ying.wellington.rmi.VersionMismatchException;
 
 /**
  * Header format:

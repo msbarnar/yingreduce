@@ -4,7 +4,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import edu.asu.ying.wellington.VersionMismatchException;
+import edu.asu.ying.wellington.rmi.VersionMismatchException;
 
 /**
  *

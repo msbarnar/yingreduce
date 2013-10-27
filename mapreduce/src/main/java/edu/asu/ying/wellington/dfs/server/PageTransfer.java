@@ -5,8 +5,8 @@ import com.healthmarketscience.rmiio.RemoteInputStream;
 import java.io.Serializable;
 import java.util.UUID;
 
-import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.Page;
+import edu.asu.ying.wellington.rmi.RemoteNode;
 
 /**
  * {@code PageTransfer} wraps a page's metadata along with a {@link RemoteInputStream} by which
