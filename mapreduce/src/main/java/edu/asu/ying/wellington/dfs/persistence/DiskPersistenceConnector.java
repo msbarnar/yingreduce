@@ -173,11 +173,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * Returns a normalized path, prefixed with the root store path, for the given file.
    */
   private Path getFilePath(edu.asu.ying.wellington.dfs.Path filePath) {
-    Path path = root;
-    for (String directory : filePath.directories()) {
-      path = path.resolve(getPathString(directory));
-    }
-    return path.resolve(getPathString(filePath.fileName()));
+    return root.resolve(getPathString(filePath.toString()));
   }
 
   private Path getPagePath(PageName page) {
@@ -198,7 +194,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
       }
     } else {
       // Create the directory tree
-      com.google.common.io.Files.createParentDirs(path.toFile());
+      Files.createDirectories(path);
     }
 
     // Write a file with the plaintext path of the file in the directory so we can recover the name

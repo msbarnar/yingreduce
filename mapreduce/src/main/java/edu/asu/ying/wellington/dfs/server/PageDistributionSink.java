@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.dfs.client;
+package edu.asu.ying.wellington.dfs.server;
 
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
@@ -25,9 +25,6 @@ import edu.asu.ying.common.concurrency.QueueProcessor;
 import edu.asu.ying.wellington.NodeLocator;
 import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.PageData;
-import edu.asu.ying.wellington.dfs.server.PageDistributor;
-import edu.asu.ying.wellington.dfs.server.PageTransfer;
-import edu.asu.ying.wellington.dfs.server.PageTransferResponse;
 
 /**
  * {@code PageDistributionSink} distributes accepted pages to their initial peers on the network.
@@ -47,7 +44,7 @@ public final class PageDistributionSink
 
   // Queues pages to be sent
   private final DelegateQueueExecutor<PageData> pageQueue
-      = new DelegateQueueExecutor<>(this, Executors.newCachedThreadPool());
+      = new DelegateQueueExecutor<>(this, Executors.newFixedThreadPool(3));
 
   // Keep track of what we're transferring so if a remote node throws an exception we can
   // put the transfer back on the queue.
