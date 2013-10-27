@@ -9,7 +9,6 @@ import com.google.inject.name.Names;
 import java.util.Properties;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.ClassNotExportedException;
 import edu.asu.ying.common.remoting.Local;
@@ -22,6 +21,7 @@ import edu.asu.ying.wellington.dfs.persistence.DiskPersistenceConnector;
 import edu.asu.ying.wellington.dfs.persistence.PersistenceConnector;
 import edu.asu.ying.wellington.dfs.persistence.SimpleCachePersistenceConnector;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
+import edu.asu.ying.wellington.dfs.server.PageDistributor;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.job.JobDelegator;
@@ -113,8 +113,7 @@ public final class WellingtonModule extends AbstractModule {
 
   private void configureDFSService() {
     bind(DFSService.class).to(DFSServer.class).in(Scopes.SINGLETON);
-    bind(Sink.class)
-        .annotatedWith(PageDistributor.class)
+    bind(PageDistributor.class)
         .to(PageDistributionSink.class)
         .in(Scopes.SINGLETON);
 

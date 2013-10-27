@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
+import javax.annotation.Nullable;
+
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.dfs.DFSService;
@@ -37,5 +39,12 @@ public final class DFSServiceExporter
     } catch (IOException e) {
       throw new RemoteException("Uncaught exception accepting page transfer", e);
     }
+  }
+
+  @Override
+  public void notifyTransferResult(String transferId, @Nullable Throwable exception)
+      throws RemoteException {
+
+    service.notifyTransferResult(transferId, exception);
   }
 }
