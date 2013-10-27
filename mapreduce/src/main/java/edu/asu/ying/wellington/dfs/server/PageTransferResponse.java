@@ -14,6 +14,7 @@ public final class PageTransferResponse implements Serializable {
   private static final long SerialVersionUID = 1L;
 
   public final Status status;
+  public final Throwable exception;
   public final RemoteOutputStream outputStream;
 
   /**
@@ -27,6 +28,7 @@ public final class PageTransferResponse implements Serializable {
     }
     this.status = status;
     this.outputStream = null;
+    this.exception = null;
   }
 
   /**
@@ -35,6 +37,16 @@ public final class PageTransferResponse implements Serializable {
   public PageTransferResponse(RemoteOutputStream outputStream) {
     status = Status.Accepting;
     this.outputStream = outputStream;
+    this.exception = null;
+  }
+
+  /**
+   * Returns an exception, setting the status to {@link Status.Exception}.
+   */
+  public PageTransferResponse(Throwable exception) {
+    this.status = Status.Exception;
+    this.exception = exception;
+    this.outputStream = null;
   }
 
   /**
@@ -60,6 +72,11 @@ public final class PageTransferResponse implements Serializable {
     /**
      * The load on the remote node is currently too high to respond; try again soon.
      */
-    Overloaded
+    Overloaded,
+    /**
+     * The page transfer was denied because of an exception. This is where security denials are
+     * returned.
+     */
+    Exception
   }
 }

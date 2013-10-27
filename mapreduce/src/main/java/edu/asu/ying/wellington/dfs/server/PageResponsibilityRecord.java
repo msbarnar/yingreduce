@@ -2,8 +2,8 @@ package edu.asu.ying.wellington.dfs.server;
 
 import javax.annotation.Nullable;
 
+import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.PageName;
-import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
  * {@code PageResponsibilityRecord} tracks a node which is responsible for (carries a copy of,

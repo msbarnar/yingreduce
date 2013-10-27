@@ -22,30 +22,30 @@ public interface PersistenceConnector {
   /**
    * Returns {@code true} if a resource exists for page {@code id}.
    */
-  boolean exists(PageName id);
+  boolean exists(PageName name);
 
   /**
    * Deletes the resource for page {@code id}, returning {@code true} if the resource was deleted
    * or {@code false} if the resource does not exist.
    */
-  boolean deleteIfExists(PageName id) throws IOException;
+  boolean deleteIfExists(PageName name) throws IOException;
 
   /**
    * Returns {@code true} if a 32-bit checksum of the file matches {@code checksum}.
    */
-  boolean validate(PageName id, int checksum) throws IOException;
+  boolean validate(PageName name, int checksum) throws IOException;
 
   /**
    * Gets an output stream to a resource for page {@code id}, creating it if necessary.
    *
    * @throws PageExistsException if the resource already exists.
    */
-  OutputStream getOutputStream(PageName id) throws IOException;
+  OutputStream getOutputStream(PageName name) throws IOException;
 
   /**
    * Gets an input stream from a resource.
    *
    * @throws PageNotFoundException if the page is not available from this connector.
    */
-  InputStream getInputStream(PageName id) throws IOException;
+  InputStream getInputStream(PageName name) throws IOException;
 }

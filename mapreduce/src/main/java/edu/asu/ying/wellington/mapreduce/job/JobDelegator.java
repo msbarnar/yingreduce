@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
-import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
-import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
+import edu.asu.ying.wellington.NodeLocator;
+import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskException;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;

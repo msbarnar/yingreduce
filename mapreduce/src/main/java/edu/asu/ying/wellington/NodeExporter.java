@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.mapreduce.server;
+package edu.asu.ying.wellington;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -9,6 +9,8 @@ import java.rmi.server.ExportException;
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
+import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
+import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 
 public final class NodeExporter implements RemoteNode, Exporter<LocalNode, RemoteNode> {
 

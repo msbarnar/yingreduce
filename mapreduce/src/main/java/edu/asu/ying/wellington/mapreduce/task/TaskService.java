@@ -1,7 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.task;
 
 import edu.asu.ying.common.remoting.Exported;
-import edu.asu.ying.wellington.mapreduce.Service;
+import edu.asu.ying.wellington.Service;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 
 /**

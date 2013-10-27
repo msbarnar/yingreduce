@@ -9,10 +9,10 @@ import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
+import edu.asu.ying.wellington.NodeLocator;
+import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.server.JobServiceExporter;
-import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
-import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
 
 /**
  * The {@code JobScheduler} hosts the job service, accepting jobs locally and remotely and managing

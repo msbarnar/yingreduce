@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.mapreduce;
+package edu.asu.ying.wellington;
 
 /**
  * Specifies a service which requires starting.
