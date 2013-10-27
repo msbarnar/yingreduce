@@ -7,13 +7,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.FileAlreadyExistsException;
 
-import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.File;
 import edu.asu.ying.wellington.dfs.File.OutputMode;
 import edu.asu.ying.wellington.dfs.Page;
-import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.io.PageDistributionStream;
-import edu.asu.ying.wellington.dfs.server.PageDistributor;
 import edu.asu.ying.wellington.io.WritableInt;
 
 /**
@@ -23,18 +21,18 @@ public final class DFSClient {
 
   private static final String PROPERTY_PAGE_CAPACITY = "dfs.page.capacity";
 
-  private final Sink<PageData> pageDistributor;
+  private final DFSService dfsService;
   private int pageCapacity;
 
   @Inject
-  private DFSClient(@PageDistributor Sink<PageData> pageDistributor,
+  private DFSClient(DFSService dfsService,
                     @Named(PROPERTY_PAGE_CAPACITY) int pageCapacity) {
 
     if (pageCapacity <= 0) {
       throw new IllegalArgumentException(PROPERTY_PAGE_CAPACITY.concat(" must be >0"));
     }
 
-    this.pageDistributor = pageDistributor;
+    this.dfsService = dfsService;
     this.pageCapacity = pageCapacity;
   }
 
@@ -58,7 +56,7 @@ public final class DFSClient {
         file.properties().put(File.Properties.PageCapacity.toString(),
                               new WritableInt(pageCapacity));
         // Create an output stream with a buffer of `capacity` starting from page 0
-        return new PageDistributionStream(Page.firstPageOf(file), pageDistributor);
+        return new PageDistributionStream(Page.firstPageOf(file), dfsService.getDistributor());
 
       case Overwrite:
         // TODO: Check security

@@ -5,6 +5,8 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.rmi.server.ExportException;
 
+import javax.annotation.Nullable;
+
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageName;
 
@@ -34,13 +36,27 @@ public final class DFSServer implements DFSService {
   public void start() {
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public PageTransferResponse offer(PageTransfer transfer) throws IOException {
     return pageTransferHandler.offer(transfer);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public boolean hasPage(PageName id) {
+  public void notifyTransferResult(String transferId, @Nullable Throwable exception) {
+    pageTransferHandler.notifyResult(transferId, exception);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasPage(PageName name) {
     return false;
   }
 
