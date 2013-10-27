@@ -8,11 +8,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.common.remoting.Remote;
+import edu.asu.ying.rmi.Remote;
 import edu.asu.ying.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.mapreduce.task.Task;
-import edu.asu.ying.wellington.rmi.NodeLocator;
-import edu.asu.ying.wellington.rmi.RemoteNode;
 
 /**
  * {@code ForwardingQueueExecutor} removes tasks from the local {@code Forwarding} queue and places

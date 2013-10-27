@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.common.remoting.Local;
-import edu.asu.ying.common.remoting.Remote;
+import edu.asu.ying.rmi.Local;
+import edu.asu.ying.rmi.Remote;
 import edu.asu.ying.dfs.DFSService;
 import edu.asu.ying.dfs.PageName;
 import edu.asu.ying.mapreduce.server.RemoteTaskService;

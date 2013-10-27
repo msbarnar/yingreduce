@@ -5,9 +5,9 @@ import com.google.inject.Inject;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
-import edu.asu.ying.common.remoting.Activatable;
-import edu.asu.ying.common.remoting.Activator;
-import edu.asu.ying.common.remoting.Exporter;
+import edu.asu.ying.rmi.Activatable;
+import edu.asu.ying.rmi.Activator;
+import edu.asu.ying.rmi.Exporter;
 
 /**
  *

@@ -2,7 +2,7 @@ package edu.asu.ying.dfs.server;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.common.remoting.Activatable;
+import edu.asu.ying.rmi.Activatable;
 
 /**
  * {@code RemoteDFSService} is the interface to the filesystem server on a remote peer.

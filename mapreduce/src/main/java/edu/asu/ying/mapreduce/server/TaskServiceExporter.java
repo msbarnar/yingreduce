@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
-import edu.asu.ying.common.remoting.Activator;
-import edu.asu.ying.common.remoting.Exporter;
+import edu.asu.ying.rmi.Activator;
+import edu.asu.ying.rmi.Exporter;
 import edu.asu.ying.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.task.TaskException;
 import edu.asu.ying.mapreduce.task.TaskService;

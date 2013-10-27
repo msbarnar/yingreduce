@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
-import edu.asu.ying.common.remoting.RemoteImportException;
+import edu.asu.ying.rmi.RemoteImportException;
 
 
 /**

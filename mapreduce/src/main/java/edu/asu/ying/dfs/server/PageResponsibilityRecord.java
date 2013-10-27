@@ -3,7 +3,6 @@ package edu.asu.ying.dfs.server;
 import javax.annotation.Nullable;
 
 import edu.asu.ying.dfs.PageName;
-import edu.asu.ying.wellington.rmi.RemoteNode;
 
 /**
  * {@code PageResponsibilityRecord} tracks a node which is responsible for (carries a copy of,

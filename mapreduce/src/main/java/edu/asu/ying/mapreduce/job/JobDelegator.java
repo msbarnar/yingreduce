@@ -11,12 +11,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.common.remoting.Local;
+import edu.asu.ying.rmi.Local;
 import edu.asu.ying.mapreduce.task.Task;
 import edu.asu.ying.mapreduce.task.TaskException;
 import edu.asu.ying.mapreduce.task.TaskService;
-import edu.asu.ying.wellington.rmi.NodeLocator;
-import edu.asu.ying.wellington.rmi.RemoteNode;
 
 public final class JobDelegator extends QueueExecutor<Job> {
 

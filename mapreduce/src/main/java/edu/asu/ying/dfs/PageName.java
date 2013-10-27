@@ -4,8 +4,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import edu.asu.ying.wellington.rmi.AbstractIdentifier;
-import edu.asu.ying.wellington.rmi.InvalidIdentifierException;
+import edu.asu.ying.rmi.AbstractIdentifier;
+import edu.asu.ying.rmi.InvalidIdentifierException;
 
 /**
  *

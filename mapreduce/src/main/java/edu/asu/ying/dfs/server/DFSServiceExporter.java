@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
-import edu.asu.ying.common.remoting.Activator;
-import edu.asu.ying.common.remoting.Exporter;
+import edu.asu.ying.rmi.Activator;
+import edu.asu.ying.rmi.Exporter;
 import edu.asu.ying.dfs.DFSService;
 
 /**

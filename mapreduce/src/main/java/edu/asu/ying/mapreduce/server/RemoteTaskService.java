@@ -2,7 +2,7 @@ package edu.asu.ying.mapreduce.server;
 
 import java.rmi.RemoteException;
 
-import edu.asu.ying.common.remoting.Activatable;
+import edu.asu.ying.rmi.Activatable;
 import edu.asu.ying.mapreduce.task.Task;
 
 /**

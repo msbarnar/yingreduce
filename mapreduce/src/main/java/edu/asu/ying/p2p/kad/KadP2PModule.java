@@ -13,9 +13,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.asu.ying.common.remoting.Activator;
-import edu.asu.ying.common.remoting.rmi.RMIActivator;
-import edu.asu.ying.common.remoting.rmi.RMIPort;
+import edu.asu.ying.rmi.Activator;
+import edu.asu.ying.rmi.RMIActivator;
+import edu.asu.ying.rmi.RMIPort;
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.LocalPeer;
 import il.technion.ewolf.kbr.KeybasedRouting;

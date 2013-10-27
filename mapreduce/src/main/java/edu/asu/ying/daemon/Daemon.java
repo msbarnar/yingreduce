@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import edu.asu.ying.daemon.web.RestInterface;
 import edu.asu.ying.p2p.LocalPeer;
-import edu.asu.ying.wellington.rmi.LocalNode;
 
 /**
  *

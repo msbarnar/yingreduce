@@ -1,5 +1,8 @@
 package edu.asu.ying.wellington;
 
+import edu.asu.ying.wellington.service.Service;
+import edu.asu.ying.wellington.service.ServiceException;
+
 /**
  * Thrown when an instance attempts to register with the service locator where that name is already
  * bound to an instance of that class.

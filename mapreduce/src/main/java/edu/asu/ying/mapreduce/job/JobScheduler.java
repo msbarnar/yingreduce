@@ -8,11 +8,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
-import edu.asu.ying.common.remoting.Local;
+import edu.asu.ying.rmi.Local;
 import edu.asu.ying.mapreduce.server.JobServiceExporter;
 import edu.asu.ying.mapreduce.server.RemoteJobService;
-import edu.asu.ying.wellington.rmi.NodeLocator;
-import edu.asu.ying.wellington.rmi.RemoteNode;
 
 /**
  * The {@code JobScheduler} hosts the job service, accepting jobs locally and remotely and managing

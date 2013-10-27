@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import edu.asu.ying.dfs.ChecksumMismatchException;
 import edu.asu.ying.dfs.Page;
 import edu.asu.ying.io.Writable;
-import edu.asu.ying.wellington.rmi.VersionMismatchException;
+import edu.asu.ying.common.VersionMismatchException;
 
 /**
  * Header format:

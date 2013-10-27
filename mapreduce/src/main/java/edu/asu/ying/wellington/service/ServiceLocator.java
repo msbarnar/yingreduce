@@ -1,4 +1,6 @@
-package edu.asu.ying.wellington;
+package edu.asu.ying.wellington.service;
+
+import edu.asu.ying.wellington.AlreadyRegisteredException;
 
 /**
  * The {@code ServiceLocator} is the core of the Wellington distributed service platform.
@@ -21,7 +23,7 @@ public interface ServiceLocator {
   /**
    * Gets the instance of {@code cls} bound to {@code name}.
    *
-   * @throws NotRegisteredException if no such binding exists.
+   * @throws edu.asu.ying.wellington.NotRegisteredException if no such binding exists.
    * @throws ServiceImportException if the instance is unreachable.
    */
   <T extends Service> T get(String name, Class<T> cls) throws ServiceException;

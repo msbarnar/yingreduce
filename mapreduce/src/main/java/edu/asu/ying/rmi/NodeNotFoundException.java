@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.rmi;
+package edu.asu.ying.rmi;
 
 import java.io.IOException;
 

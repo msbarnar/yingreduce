@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.asu.ying.common.remoting.RemoteImportException;
+import edu.asu.ying.rmi.RemoteImportException;
 import edu.asu.ying.p2p.Channel;
 import edu.asu.ying.p2p.InvalidContentException;
 import edu.asu.ying.p2p.LocalPeer;

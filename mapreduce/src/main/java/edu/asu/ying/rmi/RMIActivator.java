@@ -1,4 +1,4 @@
-package edu.asu.ying.common.remoting.rmi;
+package edu.asu.ying.rmi;
 
 import com.google.inject.Inject;
 
@@ -10,10 +10,6 @@ import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
-
-import edu.asu.ying.common.remoting.Activatable;
-import edu.asu.ying.common.remoting.Activator;
-import edu.asu.ying.common.remoting.ClassNotExportedException;
 
 
 /**

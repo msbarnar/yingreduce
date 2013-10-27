@@ -1,4 +1,4 @@
-package edu.asu.ying.common.remoting;
+package edu.asu.ying.rmi;
 
 import java.rmi.server.ExportException;
 

@@ -2,7 +2,7 @@ package edu.asu.ying.mapreduce.task;
 
 import java.util.UUID;
 
-import edu.asu.ying.wellington.rmi.AbstractIdentifier;
+import edu.asu.ying.rmi.AbstractIdentifier;
 
 /**
  *

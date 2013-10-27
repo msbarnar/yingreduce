@@ -1,5 +1,8 @@
 package edu.asu.ying.wellington;
 
+import edu.asu.ying.wellington.service.Service;
+import edu.asu.ying.wellington.service.ServiceException;
+
 /**
  * Thrown when an application requests an instance by an unbound name.
  */

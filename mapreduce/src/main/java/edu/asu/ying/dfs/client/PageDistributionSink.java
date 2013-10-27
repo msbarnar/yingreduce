@@ -21,8 +21,6 @@ import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.dfs.PageData;
 import edu.asu.ying.dfs.server.PageTransfer;
 import edu.asu.ying.dfs.server.PageTransferResponse;
-import edu.asu.ying.wellington.rmi.NodeLocator;
-import edu.asu.ying.wellington.rmi.RemoteNode;
 
 /**
  * {@code PageDistributionSink} distributes accepted pages to their initial peers on the network.

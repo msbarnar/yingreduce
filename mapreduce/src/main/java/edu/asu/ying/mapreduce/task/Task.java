@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import edu.asu.ying.dfs.PageName;
 import edu.asu.ying.mapreduce.job.Job;
-import edu.asu.ying.wellington.rmi.RemoteNode;
 
 /**
  * {@code Task} is the base class of all distributable mapreduce. </p> Properties defined by this

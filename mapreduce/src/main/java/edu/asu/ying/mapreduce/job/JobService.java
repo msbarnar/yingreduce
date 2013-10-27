@@ -1,8 +1,8 @@
 package edu.asu.ying.mapreduce.job;
 
-import edu.asu.ying.common.remoting.Exported;
+import edu.asu.ying.rmi.Exported;
 import edu.asu.ying.mapreduce.server.RemoteJobService;
-import edu.asu.ying.wellington.Service;
+import edu.asu.ying.wellington.service.Service;
 
 /**
  *

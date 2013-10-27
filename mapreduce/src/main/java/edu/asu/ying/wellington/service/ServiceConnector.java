@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington;
+package edu.asu.ying.wellington.service;
 
 /**
  * A {@code ServiceConnector} is the {@link ServiceLocator}'s point of access for service retrieval
