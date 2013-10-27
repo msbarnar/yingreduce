@@ -1,12 +1,9 @@
 package edu.asu.ying.wellington;
 
 /**
- * Specifies a service which requires starting.
+ * Specifies a service in the Wellington platform which can be registered at and obtained from a
+ * {@link ServiceLocator}.
  */
 public interface Service {
 
-  /**
-   * Starts the service with a reference to the node on which the service is running.
-   */
-  void start();
 }

@@ -18,5 +18,11 @@ public interface ServiceLocator {
    */
   <T extends Service> void register(String name, T instance) throws AlreadyRegisteredException;
 
-  <T extends Service> T get(String name, Class<T> cls) throws NotRegisteredException;
+  /**
+   * Gets the instance of {@code cls} bound to {@code name}.
+   *
+   * @throws NotRegisteredException if no such binding exists.
+   * @throws ServiceImportException if the instance is unreachable.
+   */
+  <T extends Service> T get(String name, Class<T> cls) throws ServiceException;
 }

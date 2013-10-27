@@ -1,13 +1,12 @@
 package edu.asu.ying.wellington;
 
 /**
- * Thrown when an instance attempts to register with the service locator where that name is already
- * bound to an instance of that class.
+ * Thrown when an application requests an instance by an unbound name.
  */
-public class NotRegisteredException extends Exception {
+public class NotRegisteredException extends ServiceException {
 
   public NotRegisteredException(String name, Class<? extends Service> cls) {
-    super(String.format("An instance of class %s named `%s` is already registered.",
+    super(String.format("No instance of class %s named `%s` is registered.",
                         cls.getName(), name));
   }
 }
