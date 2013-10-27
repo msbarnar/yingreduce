@@ -69,7 +69,7 @@ public final class Path implements WritableComparable<Path> {
     directories.addAll(Arrays.asList(components).subList(0, components.length - 1));
 
     // The last component is the filename
-    this.fileName = components[components.length];
+    this.fileName = components[components.length - 1];
   }
 
   /**
@@ -113,8 +113,9 @@ public final class Path implements WritableComparable<Path> {
         if (lastChar != DELIMITER_C) {
           sb.append(c);
         }
+      } else {
+        sb.append(c);
       }
-      sb.append(c);
       lastChar = c;
     }
 

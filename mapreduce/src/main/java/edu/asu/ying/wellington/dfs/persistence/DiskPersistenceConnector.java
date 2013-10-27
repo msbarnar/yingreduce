@@ -9,28 +9,22 @@ import com.google.inject.name.Named;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.AccessDeniedException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.dfs.PageName;
@@ -45,7 +39,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   public static final String PROPERTY_STORE_PATH = "dfs.store.path";
 
   // Name of the file which stores the name of the table in the normalized table folder
-  private static final String TABLE_NAME_FILENAME = ".table_name";
+  private static final String FILE_PATH_FILENAME = ".filepath";
 
   // For normalizing table names to make them filesystem friendly
   private final HashFunction pathNormalizer = Hashing.md5();
@@ -84,13 +78,13 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   }
 
   @Override
-  public boolean exists(PageName id) {
-    return Files.exists(makePath(id));
+  public boolean exists(PageName page) {
+    return Files.exists(getPagePath(page));
   }
 
   @Override
-  public boolean deleteIfExists(PageName id) throws IOException {
-    return Files.deleteIfExists(makePath(id));
+  public boolean deleteIfExists(PageName page) throws IOException {
+    return Files.deleteIfExists(getPagePath(page));
   }
 
   @Override
@@ -113,19 +107,13 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    */
   @Override
   public OutputStream getOutputStream(PageName name) throws IOException {
-   /* Path tableDirectory = createTableDirectory(id.getTableName());
-
-    Path fullPath = tableDirectory.resolve(Integer.toString(id.index()));
-    // Don't automatically overwrite files
-    if (Files.exists(fullPath)) {
-      throw new FileAlreadyExistsException(fullPath.toString());
+    // Get the path to the page file
+    Path path = createFileDirectory(name.path()).resolve(Integer.toString(name.index()));
+    // FIXME: Allow overwriting
+    if (Files.exists(path)) {
+      throw new FileAlreadyExistsException(path.toString());
     }
-    File file = fullPath.toFile();
-    // Creates the necessary directory hierarchy if it doesn't exist
-    com.google.common.io.Files.createParentDirs(file);
-    return new BufferedOutputStream(new FileOutputStream(file));*/
-    // FIXME: get output stream
-    return null;
+    return new BufferedOutputStream(new FileOutputStream(path.toFile()));
   }
 
   /**
@@ -133,16 +121,16 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * @throws AccessDeniedException if the file is not readable.
    */
   @Override
-  public InputStream getInputStream(PageName name) throws IOException {
-    Path fullPath = makePath(name);
-    if (!Files.exists(fullPath)) {
-      throw new NoSuchFileException(fullPath.toString());
+  public InputStream getInputStream(PageName page) throws IOException {
+    Path pagePath = getPagePath(page);
+    if (!Files.exists(pagePath)) {
+      throw new NoSuchFileException(pagePath.toString());
     }
-    if (!Files.isReadable(fullPath)) {
-      throw new AccessDeniedException(fullPath.toString());
+    if (!Files.isReadable(pagePath)) {
+      throw new AccessDeniedException(pagePath.toString());
     }
 
-    return new BufferedInputStream(new FileInputStream(fullPath.toFile()));
+    return new BufferedInputStream(new FileInputStream(pagePath.toFile()));
   }
 
   /**
@@ -150,30 +138,6 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    */
   @Override
   public void savePageIndex(Set<PageName> pageIndex) throws IOException {
-    // Don't allow saving and loading to interleave
-    synchronized (pageIndexFile) {
-      // Back up the index
-      Files.copy(pageIndexFile.toPath(), pageIndexFileBak.toPath(),
-                 StandardCopyOption.REPLACE_EXISTING);
-
-      // Delete existing
-      Files.deleteIfExists(pageIndexFile.toPath());
-      // Write the index
-      try (DataOutputStream ostream
-               = new DataOutputStream(
-          new BufferedOutputStream(new FileOutputStream(pageIndexFile)))) {
-        // Start with the number of entries in the index
-        ostream.writeInt(pageIndex.size());
-        for (PageName id : pageIndex) {
-          id.write(ostream);
-        }
-      } catch (Exception e) {
-        // Copy the backup back to the regular file
-        Files.copy(pageIndexFileBak.toPath(), pageIndexFile.toPath(),
-                   StandardCopyOption.REPLACE_EXISTING);
-        log.log(Level.WARNING, "Exception saving page index", e);
-      }
-    }
   }
 
   /**
@@ -182,17 +146,6 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   @Override
   public Set<PageName> loadPageIndex() throws IOException {
     Set<PageName> loadedIndex = new HashSet<>();
-    // Don't allow saving and loading to interleave
-    synchronized (pageIndexFile) {
-      try (DataInputStream istream
-               = new DataInputStream(new BufferedInputStream(new FileInputStream(pageIndexFile)))) {
-        // Read the number of entries from the file
-        for (int i = 0; i < istream.readInt(); i++) {
-          loadedIndex.add(PageName.readFrom(istream));
-        }
-      }
-    }
-
     return loadedIndex;
   }
 
@@ -206,98 +159,64 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   @Override
   public Set<PageName> rebuildPageIndex() throws IOException {
     Set<PageName> storedPages = new HashSet<>();
-
-    File file = new File(root.toUri());
-    // Get all directories
-    try (DirectoryStream<Path> paths = Files.newDirectoryStream(root)) {
-      for (Path tablePath : paths) {
-        // Only look at directories
-        if (!Files.isDirectory(tablePath)) {
-          continue;
-        }
-        // Get the name of the table from the directory
-        String tableName;
-        try {
-          tableName = readTableName(tablePath);
-        } catch (FileNotFoundException e) {
-          // Not a table directory
-          continue;
-        }
-        // Each file should be a page
-        try (DirectoryStream<Path> files = Files.newDirectoryStream(tablePath)) {
-          for (Path pageFile : files) {
-            String fileName = pageFile.getFileName().toString();
-            // Skip the table name file
-            if (fileName.equals(TABLE_NAME_FILENAME)) {
-              continue;
-            }
-            // Use the filename as the page index; delete any files that don't have integral names
-            try {
-              int pageIndex = Integer.valueOf(fileName);
-              // FIXME: PageName is different
-              //storedPages.add(PageName.create(tableName, pageIndex));
-            } catch (NumberFormatException e) {
-              // Delete this errant file
-              Files.delete(pageFile);
-              log.info("Pruned misnamed file from page store: ".concat(pageFile.toString()));
-            }
-          }
-        }
-      }
-    }
-
     return storedPages;
   }
 
   /**
    * Returns a normalized version of a string safe for filesystem paths.
    */
-  private String makePathString(String s) {
+  private String getPathString(String s) {
     return pathNormalizer.hashString(s, Charsets.UTF_8).toString();
   }
 
   /**
-   * Returns a normalized path, prefixed with the root store path, for the given page.
+   * Returns a normalized path, prefixed with the root store path, for the given file.
    */
-  private Path makePath(PageName id) {
-    // FIXME: make path from pagename
-    return null;
+  private Path getFilePath(edu.asu.ying.wellington.dfs.Path filePath) {
+    Path path = root;
+    for (String directory : filePath.directories()) {
+      path = path.resolve(getPathString(directory));
+    }
+    return path.resolve(getPathString(filePath.fileName()));
+  }
+
+  private Path getPagePath(PageName page) {
+    return getFilePath(page.path()).resolve(Integer.toString(page.index()));
   }
 
   /**
-   * Normalizes the table name to a filesystem-friendly name and ensures that a directory exists
-   * by that name.
-   * </p>
-   * If one does not exist, also creates a file in that directory containing the name of the table
-   * for later retrieval.
+   * Creates the directory hierarchy for the file and writes a special file to the leaf directory
+   * with the plaintext file path and name.
    */
-  private Path createTableDirectory(String tableName) throws IOException {
-    Path path = root.resolve(makePathString(tableName));
-    // If the table directory exists but is not a directory, delete it
+  private Path createFileDirectory(edu.asu.ying.wellington.dfs.Path filePath) throws IOException {
+    Path path = getFilePath(filePath);
+    // If the file directory exists but is not a directory, delete it
     if (Files.exists(path)) {
       if (!Files.isDirectory(path)) {
         Files.delete(path);
         Files.createDirectory(path);
       }
     } else {
-      Files.createDirectory(path);
+      // Create the directory tree
+      com.google.common.io.Files.createParentDirs(path.toFile());
     }
 
-    // Write a file with the name of the table in the directory so we can recover the name later
-    Path tableNameFile = path.resolve(TABLE_NAME_FILENAME);
-    if (!Files.exists(tableNameFile)) {
-      Files.write(tableNameFile, tableName.getBytes(Charsets.UTF_8), StandardOpenOption.CREATE);
+    // Write a file with the plaintext path of the file in the directory so we can recover the name
+    // later
+    Path pathFileName = path.resolve(FILE_PATH_FILENAME);
+    if (!Files.exists(pathFileName)) {
+      Files.write(pathFileName, filePath.toString().getBytes(Charsets.UTF_8),
+                  StandardOpenOption.CREATE);
     }
 
     return path;
   }
 
   /**
-   * Reads the name of the table from a special file in the table directory, whose name is
-   * normalized.
+   * Reads the plaintext file path and name from the special file left in the file directory.
    */
-  private String readTableName(Path tableDirectory) throws IOException {
-    Path tableNameFile = tableDirectory.resolve(TABLE_NAME_FILENAME);
-    return Files.readAllLines(tableDirectory, Charsets.UTF_8).get(0);
+  private String readPathFile(Path path) throws IOException {
+    Path tableNameFile = path.resolve(FILE_PATH_FILENAME);
+    return Files.readAllLines(tableNameFile, Charsets.UTF_8).get(0);
   }
 }

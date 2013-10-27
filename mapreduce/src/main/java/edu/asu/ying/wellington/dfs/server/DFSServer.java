@@ -44,6 +44,8 @@ public final class DFSServer implements DFSService {
 
     this.pageDistributor = pageDistributor;
     this.pageTransferHandler = pageTransferHandler;
+
+    pageDistributor.start();
   }
 
   @Override

@@ -11,5 +11,7 @@ import edu.asu.ying.wellington.dfs.PageData;
  */
 public interface PageDistributor extends Sink<PageData> {
 
+  void start();
+
   void notifyResult(String transferId, @Nullable Throwable exception);
 }

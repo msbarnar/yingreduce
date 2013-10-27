@@ -63,7 +63,7 @@ public class Page implements Writable {
   @Override
   public void write(DataOutput out) throws IOException {
     file.write(out);
-    name.write(out);
+    out.writeInt(name.index());
     out.writeInt(size);
   }
 

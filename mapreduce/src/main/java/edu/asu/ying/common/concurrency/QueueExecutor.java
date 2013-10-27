@@ -55,15 +55,15 @@ public abstract class QueueExecutor<T> implements Runnable {
 
   @Override
   public void run() {
-    // Run forever
-    threadPool.submit(this);
-
     T item = null;
     try {
       // Blocks until available
       item = queue.take();
     } catch (InterruptedException ignored) {
     }
+
+    // Start another worker
+    threadPool.submit(this);
 
     if (item == null) {
       return;
