@@ -2,6 +2,9 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
+import com.healthmarketscience.rmiio.GZIPRemoteOutputStream;
+
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
@@ -10,7 +13,6 @@ import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
 import edu.asu.ying.wellington.dfs.persistence.PersistenceConnector;
-import edu.asu.ying.wellington.dfs.server.PageTransferResponse.Status;
 
 /**
  * The {@code PageTransferHandler} accepts offers for page transfers and returns an output stream
@@ -36,8 +38,12 @@ public final class PageTransferHandler {
    * Attempts to get an {@link OutputStream} for the offered page.
    */
   public PageTransferResponse offer(PageTransfer transfer) {
-    OutputStream stream = memoryPersistence.getOutputStream(transfer.page.name());
-    return new PageTransferResponse(Status.OutOfCapacity);
+    try (OutputStream stream = memoryPersistence.getOutputStream(transfer.page.name())) {
+      // FIXME: add monitor
+      return new PageTransferResponse(new GZIPRemoteOutputStream(stream));
+    } catch (IOException e) {
+      return new PageTransferResponse(e);
+    }
   }
 
   /**
