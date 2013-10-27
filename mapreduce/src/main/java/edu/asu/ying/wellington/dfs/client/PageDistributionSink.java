@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,11 +38,11 @@ public final class PageDistributionSink
   private final NodeLocator locator;
 
   // Set in each transfer the number of nodes that the page should be forwarded to
-  private int pageReplicationFactor;
+  private final int pageReplicationFactor;
 
   // Queues pages to be sent
   private final DelegateQueueExecutor<PageData> pageQueue
-      = new DelegateQueueExecutor<>(this);
+      = new DelegateQueueExecutor<>(this, Executors.newCachedThreadPool());
 
   /**
    * Creates the distribution sink.
@@ -69,6 +70,9 @@ public final class PageDistributionSink
     pageQueue.add(data);
   }
 
+  /**
+   * (thread-safe)
+   */
   @Override
   public void process(PageData data) throws IOException {
     String pageName = data.header().getPage().name().toString();
@@ -99,11 +103,20 @@ public final class PageDistributionSink
         throw new IOException("Remote node is over capacity");
 
       case Accepting:
-        ByteArrayInputStream istream = new ByteArrayInputStream(data.data());
-        OutputStream ostream = RemoteOutputStreamClient.wrap(response.outputStream,
-                                                             RemoteRetry.SIMPLE);
-        ByteStreams.copy(istream, ostream);
-        ostream.close();
+        // Wrap the data in an input stream, create a remote connection, and copy the stream
+        // contents in chunks
+        OutputStream ostream = null;
+        try {
+          ByteArrayInputStream istream = new ByteArrayInputStream(data.data());
+          ostream = RemoteOutputStreamClient.wrap(response.outputStream,
+                                                  RemoteRetry.SIMPLE);
+          // Trust RMIIO to buffer the transfer properly
+          ByteStreams.copy(istream, ostream);
+        } finally {
+          if (ostream != null) {
+            ostream.close();
+          }
+        }
         log.finest(String.format("[send] %s -> %s", pageName, nodeName));
         break;
 
