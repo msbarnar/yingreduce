@@ -9,8 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.p2p.LocalPeer;
+import edu.asu.ying.wellington.LocalNode;
 import edu.asu.ying.wellington.daemon.web.RestInterface;
-import edu.asu.ying.wellington.mapreduce.server.LocalNode;
 
 /**
  *

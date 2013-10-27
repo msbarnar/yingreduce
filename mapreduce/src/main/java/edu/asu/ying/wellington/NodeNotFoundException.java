@@ -1,4 +1,4 @@
-package edu.asu.ying.wellington.mapreduce.server;
+package edu.asu.ying.wellington;
 
 import java.io.IOException;
 

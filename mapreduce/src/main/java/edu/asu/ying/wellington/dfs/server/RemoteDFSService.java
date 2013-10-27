@@ -16,7 +16,4 @@ public interface RemoteDFSService extends Activatable {
    * with the page.
    */
   PageTransferResponse offer(PageTransfer transfer) throws RemoteException;
-
-  void notifyPageTransferResult(String transferId, PageTransferResult result)
-      throws RemoteException;
 }
