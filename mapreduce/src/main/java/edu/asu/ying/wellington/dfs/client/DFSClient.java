@@ -56,7 +56,8 @@ public final class DFSClient {
         file.properties().put(File.Properties.PageCapacity.toString(),
                               new WritableInt(pageCapacity));
         // Create an output stream with a buffer of `capacity` starting from page 0
-        return new PageDistributionStream(Page.firstPageOf(file), dfsService.getDistributor());
+        // The stream will flush its full pages to the DFSService for distribution.
+        return new PageDistributionStream(Page.firstPageOf(file), dfsService.getDistributionSink());
 
       case Overwrite:
         // TODO: Check security

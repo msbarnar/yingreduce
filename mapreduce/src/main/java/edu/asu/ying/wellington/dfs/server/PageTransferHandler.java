@@ -62,31 +62,32 @@ public final class PageTransferHandler {
    * Called by the transfer monitor when a transfer completes; retrieves the ongoing transfer
    * from the map, commits the page to disk, and notifies the sender of any exceptions.
    */
-  private void closeTransfer(String transferId, Exception e) {
+  private void closeTransfer(String transferId, Throwable e) {
     PageTransfer transfer = inProgressTransfers.remove(transferId);
     if (transfer == null) {
-      // This should never happen
+      // If this happens, I don't know what I'm doing and should be fired.
       log.severe("Transfer completed but was not in progress; it's a mystery");
+      return;
+    }
+
+    if (e != null) {
+      // This will get sent to the sending node and they'll resend
+      log.log(Level.WARNING, "Exception receiving page transfer", e);
     } else {
-      if (e != null) {
-        // This will get sent to the sending node and they'll resend
-        log.log(Level.WARNING, "Exception receiving page transfer", e);
-      } else {
-        // Copy the transfer from cache to disk, leaving it in cache for the replicator
-        try {
-          commitToDisk(transfer.page.name());
-        } catch (IOException x) {
-          // Pass the exception along to the sending node so they can try again or pick a new node
-          e = new RemoteException("Receiving node threw an uncaught exception saving the sent"
-                                  + " page", x);
-        }
-      }
-      // Notify the sending node if we had any problems
+      // Copy the transfer from cache to disk, leaving it in cache for the replicator
       try {
-        transfer.sendingNode.getDFSService().notifyTransferResult(transferId, e);
-      } catch (RemoteException x) {
-        log.log(Level.WARNING, "Exception notifying sending node of transfer completion", x);
+        commitToDisk(transfer.page.name());
+      } catch (IOException x) {
+        // Pass the exception along to the sending node so they can try again or pick a new node
+        e = new RemoteException("Receiving node threw an uncaught exception saving the sent"
+                                + " page", x);
       }
+    }
+    // Notify the sending node if we had any problems
+    try {
+      transfer.sendingNode.getDFSService().notifyTransferResult(transferId, e);
+    } catch (RemoteException x) {
+      log.log(Level.WARNING, "Exception notifying sending node of transfer completion", x);
     }
   }
 
