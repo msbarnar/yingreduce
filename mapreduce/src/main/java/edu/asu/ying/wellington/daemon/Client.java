@@ -7,13 +7,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.rmi.RemoteException;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.logging.LogManager;
 
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadP2PModule;
 import edu.asu.ying.wellington.WellingtonModule;
+import edu.asu.ying.wellington.dfs.InvalidPathException;
+import edu.asu.ying.wellington.dfs.Path;
+import edu.asu.ying.wellington.dfs.client.DFSClient;
 
 /**
  * The com.healthmarketscience.rmiio.main entry point for the node daemon. {@code Server} starts
@@ -48,9 +54,10 @@ public class Client {
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
           new KadP2PModule().setProperty("p2p.port", Integer.toString(5000 + i)))
-          .createChildInjector(new WellingtonModule().setProperty("dfs.store.path",
-                                                                  System.getProperty("user.home")
-                                                                      .concat("/dfs")));
+          .createChildInjector(
+              new WellingtonModule()
+                  .setProperty("dfs.store.path", System.getProperty("user.home") + "/dfs")
+                  .setProperty("dfs.page.capacity", "10"));
 
       instances[i] = injector.getInstance(Daemon.class);
       System.out.println(instances[i].getPeer().getName());
@@ -99,8 +106,35 @@ public class Client {
       }
     }
 
-    System.exit(0);
+    DFSClient dfsClient = injector.getInstance(DFSClient.class);
+    Path path;
+    try {
+      path = new Path("tests/myfile");
+    } catch (InvalidPathException e) {
+      throw new RuntimeException(e);
+    }
+    Random rnd = new Random();
+    try (OutputStream ostream = dfsClient
+        .getOutputStream(new edu.asu.ying.wellington.dfs.File(path),
+                         edu.asu.ying.wellington.dfs.File.OutputMode.CreateNew)) {
 
+      byte[] buffer = new byte[10];
+      for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < buffer.length; j++) {
+          buffer[j] = (byte) i;
+        }
+        ostream.write(buffer);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    Scanner scanner = new Scanner(System.in);
+    scanner.nextLine();
+
+    for (Daemon instance : instances) {
+      instance.getPeer().close();
+    }
     /*JobClient client = injector.getInstance(JobClient.class);
     JobConf job = ExampleMapReduceJob.createJob();
     try {

@@ -71,6 +71,11 @@ public final class PageDistributionSink
     this.pageReplicationFactor = replicationFactor;
   }
 
+  @Override
+  public void start() {
+    pageQueue.start();
+  }
+
   /**
    * Adds a page to the queue for distribution to its initial node.
    */
