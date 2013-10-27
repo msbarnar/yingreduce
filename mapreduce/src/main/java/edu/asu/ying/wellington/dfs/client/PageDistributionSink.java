@@ -75,9 +75,10 @@ public final class PageDistributionSink
                                              data.header().getPage());
     PageTransferResponse response = initialNode.getDFSService().offer(transfer);
 
-    switch (response.getStatus()) {
+    switch (response.status) {
       case Overloaded:
-        pageQueue.add(page);
+        // Requeue the transfer to try again later
+        pageQueue.add(data);
         break;
 
       case OutOfCapacity:

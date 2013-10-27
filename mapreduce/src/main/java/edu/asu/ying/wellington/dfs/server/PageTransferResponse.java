@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.dfs.server;
 
+import com.healthmarketscience.rmiio.RemoteOutputStream;
+
 import java.io.Serializable;
 
 /**
@@ -10,18 +12,52 @@ import java.io.Serializable;
 public final class PageTransferResponse implements Serializable {
 
   public final Status status;
+  public final RemoteOutputStream outputStream;
 
+  /**
+   * Initializes the response with no output stream; {@code status} should be something other than
+   * {@link Status.Accepting}.
+   */
   public PageTransferResponse(Status status) {
+    if (status == Status.Accepting) {
+      throw new IllegalArgumentException("If the node is accepting the page it must provide a"
+                                         + " remote output stream for the page to be written to.");
+    }
     this.status = status;
+    this.outputStream = null;
   }
 
+  /**
+   * Sets the response status to {@link Status.Accepting}.
+   */
+  public PageTransferResponse(RemoteOutputStream outputStream) {
+    status = Status.Accepting;
+    this.outputStream = outputStream;
+  }
+
+  /**
+   * Indicates the remote node's response to an offered {@link PageTransfer}.
+   */
   public static enum Status {
-    Accepting,      // The remote node accepted the transfer completely and should be added to the
-    // list of container nodes for that page.
-    Duplicate,      // The remote node already has the page and should also be added to the list of
-    // container nodes for that page.
-    OutOfCapacity,  // The remote node can't accept any more pages.
-    Overloaded,     // The remote node currently has too many page fetches queued to accept more.
-    // Try again soon.
+    /**
+     * The remote node is accepting the page and has provided a remote output stream to which the
+     * page should be written.
+     */
+    Accepting,
+    /**
+     * The remote node already has the page and should also be added to the responsible node table
+     * for that page.
+     */
+    Duplicate,
+    /**
+     * The remote node can't accept any more pages, but should be given a reference to the node
+     * to which the page is distributed so that there are no missing links in the page's
+     * responsibility chain.
+     */
+    OutOfCapacity,
+    /**
+     * The load on the remote node is currently too high to respond; try again soon.
+     */
+    Overloaded
   }
 }
