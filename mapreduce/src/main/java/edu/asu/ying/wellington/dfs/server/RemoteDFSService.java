@@ -2,6 +2,8 @@ package edu.asu.ying.wellington.dfs.server;
 
 import java.rmi.RemoteException;
 
+import javax.annotation.Nullable;
+
 import edu.asu.ying.common.remoting.Activatable;
 
 /**
@@ -10,10 +12,13 @@ import edu.asu.ying.common.remoting.Activatable;
 public interface RemoteDFSService extends Activatable {
 
   /**
-   * Offers a remote node the opportunity to download a page from the offering node.
-   * <p/>
-   * The remote node should respond with a {@link PageTransferResponse} indicating the action taken
-   * with the page.
+   * @see edu.asu.ying.wellington.dfs.DFSService#offer(PageTransfer)
    */
   PageTransferResponse offer(PageTransfer transfer) throws RemoteException;
+
+  /**
+   * @see edu.asu.ying.wellington.dfs.DFSService#notifyTransferResult(String, Throwable)
+   */
+  void notifyTransferResult(String transferId, @Nullable Throwable exception)
+      throws RemoteException;
 }
