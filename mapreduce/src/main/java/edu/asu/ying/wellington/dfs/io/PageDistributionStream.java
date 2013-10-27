@@ -11,12 +11,12 @@ import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageData;
 
 /**
- * {@code BufferedPageOutputStream} buffers output up to a single page's capacity, then sends that
+ * {@code PageDistributionStream} buffers output up to a single page's capacity, then sends that
  * page to its responsible node.
  */
-public final class BufferedPageOutputStream extends OutputStream {
+public final class PageDistributionStream extends OutputStream {
 
-  private final Logger log = Logger.getLogger(BufferedPageOutputStream.class.getName());
+  private final Logger log = Logger.getLogger(PageDistributionStream.class.getName());
 
   private final Sink<PageData> pageDistributor;
 
@@ -25,7 +25,7 @@ public final class BufferedPageOutputStream extends OutputStream {
 
   private Page currentPage;
 
-  public BufferedPageOutputStream(Page firstPage, Sink<PageData> pageDistributor) {
+  public PageDistributionStream(Page firstPage, Sink<PageData> pageDistributor) {
 
     this.pageDistributor = pageDistributor;
     this.currentPage = firstPage;
