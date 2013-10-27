@@ -2,13 +2,6 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
-import com.healthmarketscience.rmiio.RemoteInputStreamClient;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.rmi.RemoteException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
@@ -17,6 +10,7 @@ import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
+import edu.asu.ying.wellington.dfs.server.PageTransferResponse.Status;
 
 /**
  * The {@code PageTransferHandler} accepts offers for page transfers and returns an output stream
@@ -47,60 +41,19 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
    */
   public PageTransferResponse offer(PageTransfer transfer) {
     pendingTransfers.add(transfer);
-    return PageTransferResponse.Accepting;
+    return new PageTransferResponse(Status.OutOfCapacity);
   }
 
-  /**
-   * Accepts the transfer into memory and, if the page is valid, commits the page to disk.
-   * <p/>
-   * When the page is committed, or if an error occurs, notifies the sending node of the result.
-   */
   @Override
   public void process(PageTransfer transfer) {
-    PageName pageId = transfer.getMetadata().getId();
-    try (OutputStream ostream
-             = memoryPersistence.getOutputStream(pageId)) {
-      // Consume the remote stream
-      try (InputStream stream = RemoteInputStreamClient.wrap(transfer.getInputStream())) {
-        // Read the stream fully to memory
-        byte[] buffer = new byte[1024];
-        int read = 0;
-        while ((read = stream.read(buffer)) > 0) {
-          ostream.write(buffer, 0, read);
-        }
-      }
-    } catch (IOException e) {
-      log.log(Level.WARNING, "Uncaught exception reading remote page stream or writing page data"
-                             + " locally. Remote node will be notified of failure.", e);
-      return;
-    }
-
-    // If the page validates, write it to disk
-    PageTransferResult result = validateTransfer(transfer.getMetadata());
-    if (result == PageTransferResult.Accepted) {
-      result = commitToDisk(pageId);
-    }
-    notifyResult(transfer, result);
-  }
-
-  private void notifyResult(PageTransfer transfer, PageTransferResult result) {
-    try {
-      transfer.getSendingNode().getDFSService().notifyPageTransferResult(transfer.getId(), result);
-    } catch (RemoteException e) {
-      log.log(Level.WARNING, "Uncaught exception notifying remote node of transfer result.", e);
-    }
-  }
-
-  private PageTransferResult validateTransfer(PageMetadata metadata) {
-    // FIXME: Validate the header and checksum
-    return PageTransferResult.Accepted;
+    // FIXME: Accept the transfer
   }
 
   /**
    * Reads the page from cache onto disk, leaving it in the cache for the replicator to access.
    */
   private PageTransferResult commitToDisk(PageName id) {
-    try (InputStream istream = memoryPersistence.getInputStream(id)) {
+    /*try (InputStream istream = memoryPersistence.getInputStream(id)) {
       try (OutputStream ostream = diskPersistence.getOutputStream(id)) {
         byte[] buffer = new byte[1024];
         int read = 0;
@@ -112,6 +65,8 @@ public final class PageTransferHandler implements QueueProcessor<PageTransfer> {
       return PageTransferResult.OtherError;
     }
 
-    return PageTransferResult.Accepted;
+    return PageTransferResult.Accepted;*/
+    //FIXME: Commit from cache to disk
+    return null;
   }
 }

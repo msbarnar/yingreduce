@@ -112,8 +112,8 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * @throws FileAlreadyExistsException if the page is already stored.
    */
   @Override
-  public OutputStream getOutputStream(PageName id) throws IOException {
-    Path tableDirectory = createTableDirectory(id.getTableName());
+  public OutputStream getOutputStream(PageName name) throws IOException {
+   /* Path tableDirectory = createTableDirectory(id.getTableName());
 
     Path fullPath = tableDirectory.resolve(Integer.toString(id.index()));
     // Don't automatically overwrite files
@@ -123,7 +123,9 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
     File file = fullPath.toFile();
     // Creates the necessary directory hierarchy if it doesn't exist
     com.google.common.io.Files.createParentDirs(file);
-    return new BufferedOutputStream(new FileOutputStream(file));
+    return new BufferedOutputStream(new FileOutputStream(file));*/
+    // FIXME: get output stream
+    return null;
   }
 
   /**
@@ -131,8 +133,8 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * @throws AccessDeniedException if the file is not readable.
    */
   @Override
-  public InputStream getInputStream(PageName id) throws IOException {
-    Path fullPath = makePath(id);
+  public InputStream getInputStream(PageName name) throws IOException {
+    Path fullPath = makePath(name);
     if (!Files.exists(fullPath)) {
       throw new NoSuchFileException(fullPath.toString());
     }
@@ -232,7 +234,8 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
             // Use the filename as the page index; delete any files that don't have integral names
             try {
               int pageIndex = Integer.valueOf(fileName);
-              storedPages.add(PageName.create(tableName, pageIndex));
+              // FIXME: PageName is different
+              //storedPages.add(PageName.create(tableName, pageIndex));
             } catch (NumberFormatException e) {
               // Delete this errant file
               Files.delete(pageFile);
@@ -257,8 +260,8 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    * Returns a normalized path, prefixed with the root store path, for the given page.
    */
   private Path makePath(PageName id) {
-    return root.resolve(
-        Paths.get(makePathString(id.getTableName()), makePathString(id.toString())));
+    // FIXME: make path from pagename
+    return null;
   }
 
   /**

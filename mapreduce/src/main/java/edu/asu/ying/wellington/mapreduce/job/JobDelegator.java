@@ -4,9 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -16,7 +14,6 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.wellington.mapreduce.server.NodeLocator;
 import edu.asu.ying.wellington.mapreduce.server.RemoteNode;
-import edu.asu.ying.wellington.mapreduce.task.LetterFreqTask;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskException;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
@@ -52,7 +49,8 @@ public final class JobDelegator extends QueueExecutor<Job> {
 
     // TODO: split job based on number of pages in table
     // TODO: Abstract task class
-    final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
+    // FIXME: Implement abstract task distribution
+    /*final Deque<LetterFreqTask> tasks = new ArrayDeque<>();
     for (int i = 0; i < 40; i++) {
       // Pass the responsible node as a remote proxy so other peers can access it
       final LetterFreqTask task = new LetterFreqTask(job, loopbackProxy, i);
@@ -68,6 +66,7 @@ public final class JobDelegator extends QueueExecutor<Job> {
     }
 
     job.setNumTasks(tasks.size() + 1);
+*/
 
     // Now that the number of tasks is known for the job, start with the loopback task
     if (loopbackTask != null) {
@@ -80,7 +79,7 @@ public final class JobDelegator extends QueueExecutor<Job> {
         // TODO: Failover
       }
     }
-
+/*
     // Attempt to distribute the tasks to their initial nodes
     while (!tasks.isEmpty()) {
       final Task task = tasks.pop();
@@ -95,6 +94,7 @@ public final class JobDelegator extends QueueExecutor<Job> {
         // TODO: Failover
       }
     }
+    */
   }
 
   // FIXME: Optimize
