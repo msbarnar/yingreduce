@@ -12,7 +12,7 @@ import edu.asu.ying.wellington.dfs.File;
 import edu.asu.ying.wellington.dfs.File.OutputMode;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageData;
-import edu.asu.ying.wellington.dfs.io.BufferedPageOutputStream;
+import edu.asu.ying.wellington.dfs.io.PageDistributionStream;
 import edu.asu.ying.wellington.dfs.server.PageDistributor;
 import edu.asu.ying.wellington.io.WritableInt;
 
@@ -52,14 +52,14 @@ public final class DFSClient {
 
     // TODO: Check security
 
-    // TODO: Bind a BufferedPageOutputStream to file
+    // TODO: Bind a PageDistributionStream to file
     switch (mode) {
       case CreateNew:
         // Set the page capacity
         file.properties().put(File.Properties.PageCapacity.toString(),
                               new WritableInt(pageCapacity));
         // Create an output stream with a buffer of `capacity` starting from page 0
-        return new BufferedPageOutputStream(Page.firstPageOf(file), pageDistributor);
+        return new PageDistributionStream(Page.firstPageOf(file), pageDistributor);
 
       case Overwrite:
         // TODO: Delete existing pages
