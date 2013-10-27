@@ -39,15 +39,6 @@ public final class DFSServer implements DFSService {
     return pageTransferHandler.offer(transfer);
   }
 
-  /**
-   * Allows the receiver of a {@link PageTransfer} to notify this node (the sending node) of the
-   * result. If the transfer was unsuccessful, we should re-send the page.
-   */
-  @Override
-  public void notifyPageTransferResult(String transferId, PageTransferResult result) {
-    // TODO: Re-send the page if unsuccessful
-  }
-
   @Override
   public boolean hasPage(PageName id) {
     return false;
