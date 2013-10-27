@@ -1,12 +1,16 @@
 package edu.asu.ying.wellington.daemon;
 
+import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.rmi.RemoteException;
@@ -57,7 +61,7 @@ public class Client {
           .createChildInjector(
               new WellingtonModule()
                   .setProperty("dfs.store.path", System.getProperty("user.home") + "/dfs")
-                  .setProperty("dfs.page.capacity", "10"));
+                  .setProperty("dfs.page.capacity", "32768"));
 
       instances[i] = injector.getInstance(Daemon.class);
       System.out.println(instances[i].getPeer().getName());
@@ -106,6 +110,8 @@ public class Client {
       }
     }
 
+    File inputFile = new File(System.getProperty("user.home") + "/mapreduce/data/lipsum.txt");
+
     DFSClient dfsClient = injector.getInstance(DFSClient.class);
     Path path;
     try {
@@ -118,12 +124,9 @@ public class Client {
         .getOutputStream(new edu.asu.ying.wellington.dfs.File(path),
                          edu.asu.ying.wellington.dfs.File.OutputMode.CreateNew)) {
 
-      byte[] buffer = new byte[10];
-      for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < buffer.length; j++) {
-          buffer[j] = (byte) i;
-        }
-        ostream.write(buffer);
+      try (InputStream istream = new BufferedInputStream(new FileInputStream(inputFile))) {
+        ByteStreams.copy(istream, ostream);
+        ostream.flush();
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -135,6 +138,7 @@ public class Client {
     for (Daemon instance : instances) {
       instance.getPeer().close();
     }
+    System.exit(0);
     /*JobClient client = injector.getInstance(JobClient.class);
     JobConf job = ExampleMapReduceJob.createJob();
     try {

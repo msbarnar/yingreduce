@@ -2,6 +2,8 @@ package edu.asu.ying.wellington.dfs;
 
 import com.google.common.base.Strings;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -31,6 +33,7 @@ public final class Path implements WritableComparable<Path> {
   private String path;
   private String fileName;
   private List<String> directories;
+  private String directory;
 
 
   private Path() {
@@ -50,6 +53,7 @@ public final class Path implements WritableComparable<Path> {
     this.path = path.path;
     this.fileName = path.fileName;
     this.directories = new ArrayList<>(path.directories);
+    this.directory = path.directory;
   }
 
   /**
@@ -65,11 +69,12 @@ public final class Path implements WritableComparable<Path> {
 
     String[] components = this.path.split(DELIMITER);
     // All components but the last are directories
-    this.directories = new ArrayList<>(components.length - 1);
+    directories = new ArrayList<>(components.length - 1);
     directories.addAll(Arrays.asList(components).subList(0, components.length - 1));
+    directory = StringUtils.join(directories, DELIMITER);
 
     // The last component is the filename
-    this.fileName = components[components.length - 1];
+    fileName = components[components.length - 1];
   }
 
   /**
@@ -181,6 +186,10 @@ public final class Path implements WritableComparable<Path> {
 
   public String fileName() {
     return fileName;
+  }
+
+  public String path() {
+    return directory;
   }
 
   public Collection<String> directories() {

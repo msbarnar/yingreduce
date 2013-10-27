@@ -40,7 +40,7 @@ public final class PageDistributionStream extends OutputStream {
   @Override
   public void write(int b) throws IOException {
     if (buffer.size() + 1 > capacity) {
-      throw new BufferFullException();
+      newPage();
     }
     buffer.write(b);
     checkFlush();
@@ -48,20 +48,27 @@ public final class PageDistributionStream extends OutputStream {
 
   @Override
   public void write(byte[] b) throws IOException {
-    if (buffer.size() + b.length > capacity) {
-      throw new BufferFullException();
+    // Write all of b, creating new pages as necessary
+    int written = 0;
+    while (written < b.length) {
+      // Fill the buffer
+      int toWrite = Math.min(b.length - written, capacity - buffer.size());
+      buffer.write(b, written, toWrite);
+      written += toWrite;
+      checkFlush();
     }
-    buffer.write(b);
-    checkFlush();
   }
 
   @Override
   public void write(byte[] b, int off, int len) throws IOException {
-    if (buffer.size() + len > capacity) {
-      throw new BufferFullException();
+    int written = 0;
+    while (written < len) {
+      int toWrite = Math.min(len - written, capacity - buffer.size());
+      buffer.write(b, off, toWrite);
+      off += toWrite;
+      written += toWrite;
+      checkFlush();
     }
-    buffer.write(b, off, len);
-    checkFlush();
   }
 
   @Override

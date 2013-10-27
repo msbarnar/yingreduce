@@ -206,7 +206,10 @@ public class KadServer implements Communicator {
             m.handle(msg);
           } catch (final Exception e) {
             // handle fail should not interrupt other handlers
-            e.printStackTrace();
+            // Ignored socket closed exceptions if we're shutting down
+            if (isActive.get()) {
+              e.printStackTrace();
+            }
           }
         }
       }
