@@ -53,38 +53,41 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
   }
 
   @Override
-  public void storePage(PageName id, InputStream stream) throws IOException {
-    cache.deleteIfExists(id);
-    ByteStreams.copy(stream, cache.getOutputStream(id));
-    cacheCommitQueue.add(id);
+  public void storePage(PageName name, InputStream stream) throws IOException {
+    cache.deleteIfExists(name);
+    ByteStreams.copy(stream, cache.getOutputStream(name));
+    cacheCommitQueue.add(name);
   }
 
+  /**
+   * Gets the page from cache, loading it from disk if necessary.
+   */
   @Override
-  public InputStream readPage(PageName id) throws IOException {
-    if (cache.exists(id)) {
-      return cache.getInputStream(id);
+  public InputStream readPage(PageName name) throws IOException {
+    if (cache.exists(name)) {
+      return cache.getInputStream(name);
     } else {
-      ByteStreams.copy(disk.getInputStream(id), cache.getOutputStream(id));
-      return cache.getInputStream(id);
+      ByteStreams.copy(disk.getInputStream(name), cache.getOutputStream(name));
+      return cache.getInputStream(name);
     }
   }
 
   @Override
-  public boolean hasPage(PageName id) {
-    return cache.exists(id) || disk.exists(id);
+  public boolean hasPage(PageName name) {
+    return cache.exists(name) || disk.exists(name);
   }
 
   /**
    * Commits the page {@code id} from memory to disk.
    */
   @Override
-  public void process(PageName id) throws Exception {
-    if (!cache.exists(id)) {
+  public void process(PageName name) throws Exception {
+    if (!cache.exists(name)) {
       return;
     }
-    ByteStreams.copy(cache.getInputStream(id), disk.getOutputStream(id));
+    ByteStreams.copy(cache.getInputStream(name), disk.getOutputStream(name));
     // Add the page to the index and save
-    pageIndex.add(id);
+    pageIndex.add(name);
     savePageIndex();
   }
 

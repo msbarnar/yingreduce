@@ -18,16 +18,16 @@ public interface Persistence {
    * @throws ChecksumMismatchException if the checksum in the stream header does not match the
    *                                   data.
    */
-  void storePage(PageName id, InputStream stream) throws IOException;
+  void storePage(PageName name, InputStream stream) throws IOException;
 
   /**
    * Gets an input stream from page {@code id} which reads the page's raw data, including the
    * header. A sensible page can be produced by reading this with a {@link PageDeserializer}.
    */
-  InputStream readPage(PageName id) throws IOException;
+  InputStream readPage(PageName name) throws IOException;
 
   /**
    * Returns {@code true} if page {@code id} is available locally.
    */
-  boolean hasPage(PageName id);
+  boolean hasPage(PageName name);
 }
