@@ -2,6 +2,8 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
+
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
@@ -11,6 +13,7 @@ import javax.annotation.Nullable;
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.dfs.DFSService;
+import edu.asu.ying.wellington.dfs.PageName;
 
 /**
  *
@@ -46,5 +49,10 @@ public final class DFSServiceExporter
       throws RemoteException {
 
     service.notifyTransferResult(transferId, exception);
+  }
+
+  @Override
+  public RemoteInputStream getRemoteInputStream(PageName name) throws RemoteException {
+    return service.provideRemoteInputStream(PageName name);
   }
 }

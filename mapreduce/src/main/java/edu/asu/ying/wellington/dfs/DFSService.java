@@ -1,5 +1,7 @@
 package edu.asu.ying.wellington.dfs;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -48,4 +50,11 @@ public interface DFSService extends Service, Exported<RemoteDFSService> {
    * metadata as well as an {@link InputStream} from which the page's contents can be read.
    */
   RemotePage fetchRemotePage(PageName name) throws IOException;
+
+  /**
+   * Wraps a local page in a {@link RemoteInputStream} for remote consumption.
+   * </p>
+   * {@link DFSService#fetchRemotePage(PageName)} consumes this input stream.
+   */
+  RemoteInputStream provideRemoteInputStream(PageName name) throws IOException;
 }
