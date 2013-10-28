@@ -2,6 +2,8 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
+import com.healthmarketscience.rmiio.GZIPRemoteInputStream;
+import com.healthmarketscience.rmiio.RemoteInputStream;
 import com.healthmarketscience.rmiio.RemoteInputStreamClient;
 
 import java.io.DataInputStream;
@@ -20,6 +22,7 @@ import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.dfs.RemotePage;
 import edu.asu.ying.wellington.dfs.RemotePageImpl;
 import edu.asu.ying.wellington.dfs.io.PageHeader;
+import edu.asu.ying.wellington.dfs.persistence.PageNotFoundException;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
 
 /**
@@ -110,6 +113,15 @@ public final class DFSServer implements DFSService {
         .wrap(node.getDFSService().getRemoteInputStream(name));
     PageHeader header = PageHeader.readFrom(new DataInputStream(istream));
     return new RemotePageImpl(header.getPage(), istream);
+  }
+
+  @Override
+  public RemoteInputStream provideRemoteInputStream(PageName name) throws IOException {
+    if (!hasPage(name)) {
+      throw new PageNotFoundException(name);
+    }
+    InputStream istream = persistence.readPage(name);
+    return new GZIPRemoteInputStream(istream);
   }
 
   /**

@@ -1,10 +1,13 @@
 package edu.asu.ying.wellington.dfs.server;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
+
 import java.rmi.RemoteException;
 
 import javax.annotation.Nullable;
 
 import edu.asu.ying.common.remoting.Activatable;
+import edu.asu.ying.wellington.dfs.PageName;
 
 /**
  * {@code RemoteDFSService} is the interface to the filesystem server on a remote peer.
@@ -21,4 +24,6 @@ public interface RemoteDFSService extends Activatable {
    */
   void notifyTransferResult(String transferId, @Nullable Throwable exception)
       throws RemoteException;
+
+  RemoteInputStream getRemoteInputStream(PageName name) throws RemoteException;
 }

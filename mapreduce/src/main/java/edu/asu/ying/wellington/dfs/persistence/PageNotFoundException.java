@@ -9,7 +9,7 @@ import edu.asu.ying.wellington.dfs.PageName;
  */
 public class PageNotFoundException extends IOException {
 
-  public PageNotFoundException(PageName id) {
-    super(id.toString());
+  public PageNotFoundException(PageName name) {
+    super(name.toString());
   }
 }
