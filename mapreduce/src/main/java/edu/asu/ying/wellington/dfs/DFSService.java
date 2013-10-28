@@ -1,6 +1,7 @@
 package edu.asu.ying.wellington.dfs;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.annotation.Nullable;
 
@@ -41,4 +42,10 @@ public interface DFSService extends Service, Exported<RemoteDFSService> {
    * Returns a sink that distributes {@link PageData} sent to it.
    */
   Sink<PageData> getDistributionSink();
+
+  /**
+   * Returns a proxy to a page stored on a remote node. The {@link RemotePage} wraps the file's
+   * metadata as well as an {@link InputStream} from which the page's contents can be read.
+   */
+  RemotePage fetchRemotePage(PageName name) throws IOException;
 }

@@ -2,15 +2,25 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.inject.Inject;
 
+import com.healthmarketscience.rmiio.RemoteInputStreamClient;
+
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.server.ExportException;
 
 import javax.annotation.Nullable;
 
 import edu.asu.ying.common.event.Sink;
+import edu.asu.ying.wellington.NodeLocator;
+import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.PageName;
+import edu.asu.ying.wellington.dfs.RemotePage;
+import edu.asu.ying.wellington.dfs.RemotePageImpl;
+import edu.asu.ying.wellington.dfs.io.PageHeader;
+import edu.asu.ying.wellington.dfs.persistence.Persistence;
 
 /**
  *
@@ -28,12 +38,18 @@ public final class DFSServer implements DFSService {
 
   private final RemoteDFSService proxy;
 
+  private final NodeLocator locator;
+
+  private final Persistence persistence;
+
   private final PageDistributor pageDistributor;
   // Accepts pages from remote nodes and stores them before passing them to the replicator.
   private final PageTransferHandler pageTransferHandler;
 
   @Inject
   private DFSServer(DFSServiceExporter exporter,
+                    NodeLocator locator,
+                    Persistence persistence,
                     PageDistributor pageDistributor,
                     PageTransferHandler pageTransferHandler) {
     try {
@@ -42,6 +58,8 @@ public final class DFSServer implements DFSService {
       throw new RuntimeException(e);
     }
 
+    this.locator = locator;
+    this.persistence = persistence;
     this.pageDistributor = pageDistributor;
     this.pageTransferHandler = pageTransferHandler;
 
@@ -76,11 +94,30 @@ public final class DFSServer implements DFSService {
   }
 
   /**
+   * Provides a proxy to a remote page in the following way:
+   * <ol>
+   * <li>Locates the remote node for a page</li>
+   * <li>Gets a remote input stream to the page</li>
+   * <li>Reads the header into a metadata object</li>
+   * <li>Returns the metadata and input stream, which contains the page's contents</li>
+   * </ol>
+   */
+  @Override
+  public RemotePage fetchRemotePage(PageName name) throws IOException {
+    // FIXME: the node should forward us to one of the replicated nodes
+    RemoteNode node = locator.find(name.toString());
+    InputStream istream = RemoteInputStreamClient
+        .wrap(node.getDFSService().getRemoteInputStream(name));
+    PageHeader header = PageHeader.readFrom(new DataInputStream(istream));
+    return new RemotePageImpl(header.getPage(), istream);
+  }
+
+  /**
    * {@inheritDoc}
    */
   @Override
   public boolean hasPage(PageName name) {
-    return false;
+    return persistence.hasPage(name);
   }
 
   @Override
