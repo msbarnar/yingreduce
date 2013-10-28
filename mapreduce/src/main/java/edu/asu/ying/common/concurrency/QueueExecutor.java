@@ -55,24 +55,18 @@ public abstract class QueueExecutor<T> implements Runnable {
 
   @Override
   public void run() {
-    T item = null;
-    try {
-      // Blocks until available
-      item = queue.take();
-    } catch (InterruptedException ignored) {
-    }
-
-    // Start another worker
-    threadPool.submit(this);
-
-    if (item == null) {
-      return;
-    }
-
-    try {
-      this.process(item);
-    } catch (Throwable e) {
-      log.log(Level.WARNING, "Uncaught exception processing queue entry", e);
+    while (true) {
+      T item;
+      try {
+        item = queue.take();
+      } catch (InterruptedException ignored) {
+        break;
+      }
+      try {
+        this.process(item);
+      } catch (Throwable e) {
+        log.log(Level.WARNING, "Uncaught exception processing queue entry", e);
+      }
     }
   }
 
