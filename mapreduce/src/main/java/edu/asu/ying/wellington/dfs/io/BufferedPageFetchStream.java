@@ -2,6 +2,7 @@ package edu.asu.ying.wellington.dfs.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -9,6 +10,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.File;
@@ -25,7 +28,9 @@ import edu.asu.ying.wellington.dfs.File;
  */
 public final class BufferedPageFetchStream extends InputStream {
 
-  // The number of concurrent page fetches
+  private static final Logger log = Logger.getLogger(BufferedPageFetchStream.class.getName());
+
+  // The maximum number of concurrent page fetches
   private static final int N_FETCH_THREADS = 5;
 
   // For getting individual page input streams
@@ -39,18 +44,26 @@ public final class BufferedPageFetchStream extends InputStream {
   private final BlockingDeque<byte[]> pages;
   // For every object put in here, a page will be fetched and cached
   private final BlockingQueue<Object> pageFetchQueue = new LinkedBlockingQueue<>();
-  // The index of the next page to get
-  private final AtomicInteger nextPageIndex = new AtomicInteger(-1);
-  // The index of the last page put in the cache
-  private final AtomicInteger lastPageCached = new AtomicInteger(-1);
+  // The index of the next page to fetch
+  // The constructor fetches page 0
+  private final AtomicInteger nextPageToFetch = new AtomicInteger(0);
+  // The index of the next page to go in the cache
+  // Fetching threads wait until this is equal to the index they fetched before putting it in
+  // the cache, so cached pages are in order.
+  private final AtomicInteger nextPageToCache = new AtomicInteger(0);
   // Added to the queue to signal EOF
   private final byte[] eof = new byte[0];
+  // Equal to the index at which the EOF is reached; stops cache fetch workers from being spawned
+  // This value presents a number of race conditions which result in workers fetching indices past
+  // the EOF, but I don't think it's possible to avoid that without keeping track of which indices
+  // are being fetched and interrupting the ones past the EOF. Fetching should fail fast anyway.
+  private volatile int eofIndex = -1;
 
   // Constantly keep the page cache full
-  private final ExecutorService pageDownloaders = Executors.newFixedThreadPool(N_FETCH_THREADS);
+  private final ExecutorService pageFetchWorkers = Executors.newCachedThreadPool();
 
   // True when there are no more data to be written
-  private boolean isClosed = false;
+  private volatile boolean isClosed = false;
 
   // Read operations read from here
   private byte[] buffer;
@@ -70,13 +83,21 @@ public final class BufferedPageFetchStream extends InputStream {
     this.dfsService = dfsService;
     this.file = file;
     // Get the first page and set the page cache size
-    nextPageIndex.set(0);
-    byte[] page = fetchPage(nextPageIndex.getAndIncrement());
+    byte[] page;
+    try {
+      page = fetchPage(nextPageToFetch.getAndIncrement());
+    } catch (IOException e) {
+      log.log(Level.WARNING, "Opening page stream failed: unable to retrieve first page", e);
+      isClosed = true;
+      pages = null;
+      return;
+    }
     // Keep at least one pages and as many as possible without exceeding bufferCapacity
     int pageCacheSize = (int) Math.max(1, (double) bufferCapacity / page.length);
     pages = new LinkedBlockingDeque<>(pageCacheSize);
     // Cache the page
     pages.addLast(page);
+    nextPageToCache.getAndIncrement();
     // Fill the rest of the page cache
     fillPageCache();
   }
@@ -97,7 +118,7 @@ public final class BufferedPageFetchStream extends InputStream {
 
   @Override
   public int read(byte[] b, int off, int len) throws IOException {
-    int read = 0;
+    int read = -1;
     // Keep filling the buffer and reading it until we read len bytes
     while (read < len) {
       // If EOF then return what we read
@@ -106,45 +127,63 @@ public final class BufferedPageFetchStream extends InputStream {
       } else {
         // Either read fully or read as much as is left in the buffer
         int limit = Math.min(len, buffer.length - pBuffer);
-        for (int i = off; i < limit; i++) {
-          b[i] = buffer[pBuffer++];
+        for (int i = 0; i < limit; i++) {
+          b[off++] = buffer[pBuffer++];
         }
+        read += limit;
       }
     }
     return read;
   }
 
   /**
-   * Returns {@code true} if the buffer is ready for reading; else fills the buffer with a page from
+   * Returns {@code true} if the buffer is ready for reading; else fills the buffer with a page
+   * from
    * the
    * cache, blocking until one is available.
    * </p>
    * Returns {@code false} if the end of the file is reached.
    */
   private boolean fillBuffer() {
-    if (pBuffer >= buffer.length) {
+    if (isClosed) {
+      return false;
+    }
+    if (buffer == null || pBuffer >= buffer.length) {
       while (!isClosed) {
         try {
           buffer = pages.takeFirst();
+          pBuffer = 0;
           // Placing the eof object in the queue closes the stream
           if (buffer == eof) {
             isClosed = true;
             return false;
           } else {
+            fillPageCache();
             return true;
           }
         } catch (InterruptedException ignored) {
         }
       }
     }
-    return false;
+    return true;
   }
 
   /**
    * Fetches the {@code index}th page for the file.
    */
-  private byte[] fetchPage(int index) {
-
+  // FIXME: Actually fetch a page from the DFSService
+  private byte[] fetchPage(int index) throws IOException {
+    try {
+      Thread.sleep((new Random()).nextInt(1000));
+    } catch (InterruptedException ignored) {
+    }
+    if (index == 94) {
+      return new byte[]{'\n'};
+    }
+    if (index > 94) {
+      return null;
+    }
+    return new byte[]{(byte) (index + 33)};
   }
 
   /**
@@ -152,8 +191,57 @@ public final class BufferedPageFetchStream extends InputStream {
    * The page fetch workers will concurrently fetch pages.
    */
   private void fillPageCache() {
-    int index = nextPageIndex.getAndIncrement();
-
+    // Don't spawn workers if we've already fetched up to the EOF
+    if (eofIndex > -1) {
+      return;
+    }
+    // Spawn a thread for each missing page, but at most N_FETCH_THREADS
+    for (int i = 0; i < Math.min(N_FETCH_THREADS, pages.remainingCapacity()); i++) {
+      pageFetchWorkers.submit(new Runnable() {
+        @Override
+        public void run() {
+          int index = nextPageToFetch.getAndIncrement();
+          // Don't try to fetch if someone before us found the EOF
+          // Race condition: another thread may find the EOF after we check this but before we fetch
+          if (eofIndex > -1 && eofIndex < index) {
+            return;
+          }
+          byte[] page = null;
+          try {
+            page = fetchPage(index);
+          } catch (IOException e) {
+            log.log(Level.WARNING, "Page stream interrupted by exception fetching page", e);
+          }
+          // TODO: How to signal EOF from fetchPage?
+          if (page == null) {
+            // Make sure we queue the EOF when it's our turn
+            page = eof;
+            // Let everyone know which index is EOF so nobody after us tries to carry on
+            if (eofIndex == -1 || eofIndex > index) {
+              eofIndex = index;
+            }
+          }
+          // Wait until it's our turn to put a page in the cache, ensuring that the cache is ordered
+          synchronized (nextPageToCache) {
+            while (nextPageToCache.get() < index) {
+              try {
+                // Wait until someone caches a page and notifies
+                nextPageToCache.wait();
+              } catch (InterruptedException ignored) {
+              }
+              // Give up if someone below us queued the EOF already
+              if (eofIndex != -1 && eofIndex < index) {
+                return;
+              }
+            }
+            // Every other fetch worker is waiting for us to add this; let them know we did
+            pages.add(page);
+            nextPageToCache.getAndIncrement();
+            nextPageToCache.notifyAll();
+          }
+        }
+      });
+    }
   }
 
   @Override
@@ -178,7 +266,8 @@ public final class BufferedPageFetchStream extends InputStream {
   @Override
   public void close() throws IOException {
     isClosed = true;
-    pageDownloaders.shutdownNow();
+    eofIndex = 0;
+    pageFetchWorkers.shutdownNow();
     pages.clear();
     pages.offer(eof);
     buffer = eof;
