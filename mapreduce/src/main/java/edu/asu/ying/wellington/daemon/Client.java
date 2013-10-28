@@ -5,23 +5,22 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.rmi.RemoteException;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.logging.LogManager;
 
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadP2PModule;
 import edu.asu.ying.wellington.WellingtonModule;
-import edu.asu.ying.wellington.dfs.InvalidPathException;
 import edu.asu.ying.wellington.dfs.Path;
 import edu.asu.ying.wellington.dfs.client.DFSClient;
 
@@ -38,20 +37,24 @@ public class Client {
    */
   public static void main(final String[] args) {
     final Client app = new Client(args);
-    app.start();
+    try {
+      app.start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
    * Initializes the appropriate services, but does not start them.
    */
   private Client(final String[] args) {
-    LogManager.getLogManager().reset();
+    //LogManager.getLogManager().reset();
   }
 
   /**
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
-  private void start() {
+  private void start() throws IOException {
     final Daemon[] instances = new Daemon[5];
 
     Injector injector = null;
@@ -74,51 +77,36 @@ public class Client {
 
     final File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
     BufferedReader reader = null;
+
+    reader = new BufferedReader(new FileReader(nodeList));
+
+    boolean fullyConnected = false;
+    String line = null;
     try {
-      reader = new BufferedReader(new FileReader(nodeList));
+      while (reader.ready()) {
+        line = reader.readLine();
+        if (line == null) {
+          break;
+        }
+
+        instances[0].join(URI.create(String.format("//%s:5000", line)));
+
+        if (line.equals("149.169.30.10")) {
+          fullyConnected = true;
+        }
+      }
     } catch (final IOException e) {
       e.printStackTrace();
     }
 
-    boolean fullyConnected = false;
-
-    if (reader != null) {
-      String line = null;
-      try {
-        while (reader.ready()) {
-          line = reader.readLine();
-          if (line == null) {
-            break;
-          }
-
-          instances[0].join(URI.create(String.format("//%s:5000", line)));
-
-          if (line.equals("149.169.30.10")) {
-            fullyConnected = true;
-          }
-        }
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
-    }
-
     for (RemotePeer peer : instances[0].getPeer().findPeers("hello", 10)) {
-      try {
-        System.out.println(peer.getName());
-      } catch (RemoteException e) {
-        e.printStackTrace();
-      }
+      System.out.println(peer.getName());
     }
 
     File inputFile = new File(System.getProperty("user.home") + "/mapreduce/data/lipsum.txt");
 
     DFSClient dfsClient = injector.getInstance(DFSClient.class);
-    Path path;
-    try {
-      path = new Path("tests/myfile");
-    } catch (InvalidPathException e) {
-      throw new RuntimeException(e);
-    }
+    Path path = new Path("tests/myfile");
     Random rnd = new Random();
     try (OutputStream ostream = dfsClient
         .getOutputStream(new edu.asu.ying.wellington.dfs.File(path),
@@ -126,10 +114,15 @@ public class Client {
 
       try (InputStream istream = new BufferedInputStream(new FileInputStream(inputFile))) {
         ByteStreams.copy(istream, ostream);
-        ostream.flush();
       }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    }
+
+    File outputFile = new File(System.getProperty("user.home") + "/dfs/downloaded-lipsum.txt");
+    try (OutputStream ostream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
+      try (InputStream istream
+               = dfsClient.getInputStream(new edu.asu.ying.wellington.dfs.File(path))) {
+        ByteStreams.copy(istream, ostream);
+      }
     }
 
     Scanner scanner = new Scanner(System.in);
@@ -139,6 +132,7 @@ public class Client {
       instance.getPeer().close();
     }
     System.exit(0);
+
     /*JobClient client = injector.getInstance(JobClient.class);
     JobConf job = ExampleMapReduceJob.createJob();
     try {

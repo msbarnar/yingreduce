@@ -134,7 +134,8 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
    * (thread-safe) Puts a record in the cache.
    */
   private void put(PageName id, CacheRecord record) {
-    if (record.get() == null || record.get().length == 0) {
+    byte[] data = record.get();
+    if (data == null || data.length == 0) {
       return;
     }
     synchronized (cache) {
@@ -150,7 +151,6 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
         return null;
       }
       // Refresh the record so it stays in cache longer (LRU deletion)
-      record.touch();
       return record.get();
     }
   }

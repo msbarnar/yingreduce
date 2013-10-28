@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.FileAlreadyExistsException;
 
@@ -11,6 +12,7 @@ import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.File;
 import edu.asu.ying.wellington.dfs.File.OutputMode;
 import edu.asu.ying.wellington.dfs.Page;
+import edu.asu.ying.wellington.dfs.io.BufferedPageFetchStream;
 import edu.asu.ying.wellington.dfs.io.PageDistributionStream;
 import edu.asu.ying.wellington.io.WritableInt;
 
@@ -20,6 +22,8 @@ import edu.asu.ying.wellington.io.WritableInt;
 public final class DFSClient {
 
   private static final String PROPERTY_PAGE_CAPACITY = "dfs.page.capacity";
+
+  private static final int SZ_INPUT_STREAM_BUFFER = 2 * 1024 * 1024;
 
   private final DFSService dfsService;
   private int pageCapacity;
@@ -80,7 +84,7 @@ public final class DFSClient {
    * @throws SecurityException             if the caller's privileges don't satisfy the file's
    *                                       {@link edu.asu.ying.wellington.dfs.SecurityAttributes}.
    */
-  /*public InputStream getInputStream(File file) throws IOException, SecurityException {
-    // TODO: Bind a BufferedPageInputStream to file
-  }*/
+  public InputStream getInputStream(File file) throws IOException, SecurityException {
+    return new BufferedPageFetchStream(file, SZ_INPUT_STREAM_BUFFER, dfsService);
+  }
 }

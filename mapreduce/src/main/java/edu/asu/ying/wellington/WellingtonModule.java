@@ -17,7 +17,9 @@ import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistenceConnector;
+import edu.asu.ying.wellington.dfs.persistence.Persistence;
 import edu.asu.ying.wellington.dfs.persistence.PersistenceConnector;
+import edu.asu.ying.wellington.dfs.persistence.PersistenceEngine;
 import edu.asu.ying.wellington.dfs.persistence.SimpleCachePersistenceConnector;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
 import edu.asu.ying.wellington.dfs.server.PageDistributionSink;
@@ -117,6 +119,9 @@ public final class WellingtonModule extends AbstractModule {
         .to(PageDistributionSink.class)
         .in(Scopes.SINGLETON);
 
+    bind(Persistence.class)
+        .to(PersistenceEngine.class)
+        .in(Scopes.SINGLETON);
     bind(PersistenceConnector.class)
         .annotatedWith(DiskPersistence.class)
         .to(DiskPersistenceConnector.class)

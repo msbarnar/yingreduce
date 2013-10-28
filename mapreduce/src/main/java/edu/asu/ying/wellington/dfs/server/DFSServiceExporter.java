@@ -53,6 +53,10 @@ public final class DFSServiceExporter
 
   @Override
   public RemoteInputStream getRemoteInputStream(PageName name) throws RemoteException {
-    return service.provideRemoteInputStream(PageName name);
+    try {
+      return service.provideRemoteInputStream(name);
+    } catch (IOException e) {
+      throw new RemoteException("Remote node threw an exception providing page input stream", e);
+    }
   }
 }

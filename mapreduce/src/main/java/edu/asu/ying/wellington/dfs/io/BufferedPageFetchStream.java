@@ -1,8 +1,11 @@
 package edu.asu.ying.wellington.dfs.io;
 
+import com.google.common.io.ByteStreams;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Random;
+import java.rmi.RemoteException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +18,9 @@ import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.File;
+import edu.asu.ying.wellington.dfs.PageName;
+import edu.asu.ying.wellington.dfs.RemotePage;
+import edu.asu.ying.wellington.dfs.persistence.PageNotFoundException;
 
 /**
  * {@code BufferedPageFetchStream} is the {@link InputStream} implementation for distributed pages.
@@ -120,12 +126,13 @@ public final class BufferedPageFetchStream extends InputStream {
   public int read(byte[] b, int off, int len) throws IOException {
     int read = -1;
     // Keep filling the buffer and reading it until we read len bytes
-    while (read < len) {
+    while (off < len) {
       // If EOF then return what we read
       if (!fillBuffer()) {
         return read;
       } else {
         // Either read fully or read as much as is left in the buffer
+        read = 0;
         int limit = Math.min(len, buffer.length - pBuffer);
         for (int i = 0; i < limit; i++) {
           b[off++] = buffer[pBuffer++];
@@ -173,17 +180,23 @@ public final class BufferedPageFetchStream extends InputStream {
    */
   // FIXME: Actually fetch a page from the DFSService
   private byte[] fetchPage(int index) throws IOException {
+    RemotePage page;
     try {
-      Thread.sleep((new Random()).nextInt(1000));
-    } catch (InterruptedException ignored) {
+      page = dfsService.fetchRemotePage(PageName.create(file.path(), index));
+    } catch (RemoteException e) {
+      // EOF
+      if (e.getCause().getCause() instanceof PageNotFoundException) {
+        return null;
+      } else {
+        throw e;
+      }
     }
-    if (index == 94) {
-      return new byte[]{'\n'};
+    ByteArrayOutputStream baos;
+    try (InputStream istream = page.contents()) {
+      baos = new ByteArrayOutputStream(page.metadata().size());
+      ByteStreams.copy(page.contents(), baos);
     }
-    if (index > 94) {
-      return null;
-    }
-    return new byte[]{(byte) (index + 33)};
+    return baos.toByteArray();
   }
 
   /**
@@ -268,8 +281,10 @@ public final class BufferedPageFetchStream extends InputStream {
     isClosed = true;
     eofIndex = 0;
     pageFetchWorkers.shutdownNow();
-    pages.clear();
-    pages.offer(eof);
+    if (pages != null) {
+      pages.clear();
+      pages.offer(eof);
+    }
     buffer = eof;
   }
 
