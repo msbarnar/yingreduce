@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -67,7 +68,12 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
     if (cache.exists(name)) {
       return cache.getInputStream(name);
     } else {
-      ByteStreams.copy(disk.getInputStream(name), cache.getOutputStream(name));
+      try (InputStream istream = disk.getInputStream(name)) {
+        try (OutputStream ostream = cache.getOutputStream(name)) {
+          ByteStreams.copy(istream, ostream);
+        }
+      }
+
       return cache.getInputStream(name);
     }
   }

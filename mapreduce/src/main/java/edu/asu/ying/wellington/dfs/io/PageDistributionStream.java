@@ -79,8 +79,7 @@ public final class PageDistributionStream extends OutputStream {
 
   @Override
   public void close() throws IOException {
-    buffer.flush();
-    newPage();
+    flush();
   }
 
   private void checkFlush() throws IOException {

@@ -110,9 +110,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
     // Get the path to the page file
     Path path = createFileDirectory(name.path()).resolve(Integer.toString(name.index()));
     // FIXME: Allow overwriting
-    if (Files.exists(path)) {
-      throw new FileAlreadyExistsException(path.toString());
-    }
+    Files.deleteIfExists(path);
     return new BufferedOutputStream(new FileOutputStream(path.toFile()));
   }
 
