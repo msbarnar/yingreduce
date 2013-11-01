@@ -71,6 +71,9 @@ public final class PageDistributionStream extends OutputStream {
     }
   }
 
+  /**
+   * Closes any incomplete page and sends it to the distribution sink.
+   */
   @Override
   public void flush() throws IOException {
     buffer.flush();
