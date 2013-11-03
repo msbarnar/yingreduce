@@ -74,8 +74,7 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
 
   /**
    * Queues the page for replication. The page must be persisted in cache; if not, an IOException
-   * is
-   * thrown.
+   * is thrown.
    */
   @Override
   public void accept(PageTransfer transfer) throws IOException {
