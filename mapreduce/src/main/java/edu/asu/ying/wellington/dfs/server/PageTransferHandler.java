@@ -83,8 +83,8 @@ public final class PageTransferHandler {
         commitToDisk(transfer.page.name());
       } catch (IOException x) {
         // Pass the exception along to the sending node so they can try again or pick a new node
-        e = new RemoteException("Receiving node threw an uncaught exception saving the sent"
-                                + " page", x);
+        e = new RemoteException("Receiving node threw an uncaught exception saving the sent page",
+                                x);
       }
     }
     // Notify the sending node if we had any problems
