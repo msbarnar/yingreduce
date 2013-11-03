@@ -7,6 +7,7 @@ import com.healthmarketscience.rmiio.RemoteInputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -68,5 +69,10 @@ public final class DFSServiceExporter
   @Override
   public boolean ping(RemoteNode pinger) throws RemoteException {
     return replicator.ping(pinger);
+  }
+
+  @Override
+  public List<RemoteNode> getResponsibleNodesFor(PageName name) throws RemoteException {
+    return replicator.getResponsibleNodesFor(name);
   }
 }

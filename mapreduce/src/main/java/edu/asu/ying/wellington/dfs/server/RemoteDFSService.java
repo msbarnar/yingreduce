@@ -3,6 +3,7 @@ package edu.asu.ying.wellington.dfs.server;
 import com.healthmarketscience.rmiio.RemoteInputStream;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -29,4 +30,6 @@ public interface RemoteDFSService extends Activatable {
   RemoteInputStream getRemoteInputStream(PageName name) throws RemoteException;
 
   boolean ping(RemoteNode pinger) throws RemoteException;
+
+  List<RemoteNode> getResponsibleNodesFor(PageName name) throws RemoteException;
 }

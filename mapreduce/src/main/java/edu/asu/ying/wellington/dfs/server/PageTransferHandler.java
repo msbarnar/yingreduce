@@ -96,7 +96,11 @@ public final class PageTransferHandler {
 
     // If no problems, send the page to the replicator
     if (e == null) {
-      replicator.accept(transfer.page.name());
+      try {
+        replicator.accept(transfer);
+      } catch (IOException x) {
+        throw new RuntimeException("Exception passing page name to replicator", x);
+      }
     }
   }
 
