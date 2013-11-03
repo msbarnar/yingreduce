@@ -1,7 +1,5 @@
 package edu.asu.ying.wellington.dfs.server;
 
-import javax.annotation.Nullable;
-
 import edu.asu.ying.wellington.RemoteNode;
 
 /**
@@ -10,43 +8,27 @@ import edu.asu.ying.wellington.RemoteNode;
  */
 public final class PageResponsibilityRecord {
 
-  // The node responsible
-  private final String nodeName;
-  // The node reference, if available
-  @Nullable
+  // The node responsible for the page
   private final RemoteNode node;
 
-  private long timeLastSeen;
+  private int cycleLastSeen;
 
-  public PageResponsibilityRecord(String nodeName) {
-    this.nodeName = nodeName;
-    this.node = null;
-    sawNode();
-  }
-
-  public PageResponsibilityRecord(String nodeName, @Nullable RemoteNode node) {
-    this.nodeName = nodeName;
+  public PageResponsibilityRecord(RemoteNode node) {
     this.node = node;
-    sawNode();
   }
 
-  public String getNodeName() {
-    return nodeName;
-  }
-
-  @Nullable
   public RemoteNode getNode() {
     return node;
   }
 
-  public boolean isTimedOut(long timeout) {
-    return (System.currentTimeMillis() - timeLastSeen) >= timeout;
+  public boolean sawThisCycle(int cycle) {
+    return cycleLastSeen >= cycle;
   }
 
   /**
    * Updates the time last seen to the current time.
    */
-  public void sawNode() {
-    timeLastSeen = System.currentTimeMillis();
+  public void sawNode(int cycle) {
+    cycleLastSeen = cycle;
   }
 }
