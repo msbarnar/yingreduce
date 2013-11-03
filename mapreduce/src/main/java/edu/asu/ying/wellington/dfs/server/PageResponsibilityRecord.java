@@ -3,7 +3,6 @@ package edu.asu.ying.wellington.dfs.server;
 import javax.annotation.Nullable;
 
 import edu.asu.ying.wellington.RemoteNode;
-import edu.asu.ying.wellington.dfs.PageName;
 
 /**
  * {@code PageResponsibilityRecord} tracks a node which is responsible for (carries a copy of,
@@ -15,27 +14,24 @@ public final class PageResponsibilityRecord {
   private final String nodeName;
   // The node reference, if available
   @Nullable
-  private RemoteNode node;
-  // The page for which the node is responsible
-  private final PageName pageId;
+  private final RemoteNode node;
 
-  public PageResponsibilityRecord(PageName pageId, String nodeName) {
-    this.pageId = pageId;
+  private long timeLastSeen;
+
+  public PageResponsibilityRecord(String nodeName) {
     this.nodeName = nodeName;
+    this.node = null;
+    sawNode();
   }
 
-  public PageResponsibilityRecord(PageName pageId, String nodeName,
-                                  @Nullable RemoteNode node) {
-    this(pageId, nodeName);
+  public PageResponsibilityRecord(String nodeName, @Nullable RemoteNode node) {
+    this.nodeName = nodeName;
     this.node = node;
+    sawNode();
   }
 
   public String getNodeName() {
     return nodeName;
-  }
-
-  public void setNode(@Nullable RemoteNode node) {
-    this.node = node;
   }
 
   @Nullable
@@ -43,7 +39,14 @@ public final class PageResponsibilityRecord {
     return node;
   }
 
-  public PageName getPageId() {
-    return pageId;
+  public boolean isTimedOut(long timeout) {
+    return (System.currentTimeMillis() - timeLastSeen) >= timeout;
+  }
+
+  /**
+   * Updates the time last seen to the current time.
+   */
+  public void sawNode() {
+    timeLastSeen = System.currentTimeMillis();
   }
 }
