@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
+import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageName;
 
@@ -22,11 +23,15 @@ public final class DFSServiceExporter
     implements Exporter<DFSService, RemoteDFSService>, RemoteDFSService {
 
   private final Activator activator;
+  // Informed when another node pings us so it can update its knowledge of which nodes are up
+  private final PageReplicator replicator;
+
   private DFSService service;
 
   @Inject
-  private DFSServiceExporter(Activator activator) {
+  private DFSServiceExporter(Activator activator, PageReplicator replicator) {
     this.activator = activator;
+    this.replicator = replicator;
   }
 
   @Override
@@ -58,5 +63,10 @@ public final class DFSServiceExporter
     } catch (IOException e) {
       throw new RemoteException("Remote node threw an exception providing page input stream", e);
     }
+  }
+
+  @Override
+  public boolean ping(RemoteNode pinger) throws RemoteException {
+    return replicator.ping(pinger);
   }
 }

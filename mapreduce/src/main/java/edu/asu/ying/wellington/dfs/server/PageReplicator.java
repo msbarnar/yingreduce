@@ -43,10 +43,25 @@ public final class PageReplicator {
    * responsible.
    */
   private final Map<PageName, List<PageResponsibilityRecord>> responsibleNodes = new HashMap<>();
+
   /**
    * Records the number of nodes which have timed out for each page
    */
   private final Map<PageName, Integer> timedOutPages = new HashMap<>();
+
+  /**
+   * Updates the last seen cycle for every page for which this node is responsible
+   */
+  public boolean ping(RemoteNode node) {
+    for (List<PageResponsibilityRecord> records : responsibleNodes.values()) {
+      for (PageResponsibilityRecord record : records) {
+        if (record.getNode().equals(node)) {
+          record.sawNode(currentPingCycle);
+        }
+      }
+    }
+    return true;
+  }
 
   /**
    * Scans the page responsibility table and notes any pages with timed out nodes to be replicated.
@@ -61,7 +76,8 @@ public final class PageReplicator {
         // Only ping nodes we haven't seen (if a node pings us, we saw it)
         if (!record.sawThisCycle(currentPingCycle)) {
           try {
-            if (record.getNode().getDFSService().ping()) {
+            // Ping with our own node proxy so they see us, too
+            if (record.getNode().getDFSService().ping(localNodeProxy)) {
               record.sawNode(currentPingCycle);
             } else {
               // Increment the number of timed out nodes for this page

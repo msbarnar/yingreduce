@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import javax.annotation.Nullable;
 
 import edu.asu.ying.common.remoting.Activatable;
+import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.PageName;
 
 /**
@@ -26,4 +27,6 @@ public interface RemoteDFSService extends Activatable {
       throws RemoteException;
 
   RemoteInputStream getRemoteInputStream(PageName name) throws RemoteException;
+
+  boolean ping(RemoteNode pinger) throws RemoteException;
 }
