@@ -33,11 +33,6 @@ public final class PageReplicator {
   // The cycle time slot for checking nodes are still up
   private int currentPingCycle = 0;
 
-  @Inject
-  private PageReplicator(@Local RemoteNode localNodeProxy) {
-    this.localNodeProxy = localNodeProxy;
-  }
-
   /**
    * Keeps a record of all the other nodes responsible for the same pages for which we are
    * responsible.
@@ -48,6 +43,12 @@ public final class PageReplicator {
    * Records the number of nodes which have timed out for each page
    */
   private final Map<PageName, Integer> timedOutPages = new HashMap<>();
+
+
+  @Inject
+  private PageReplicator(@Local RemoteNode localNodeProxy) {
+    this.localNodeProxy = localNodeProxy;
+  }
 
   /**
    * Updates the last seen cycle for every page for which this node is responsible

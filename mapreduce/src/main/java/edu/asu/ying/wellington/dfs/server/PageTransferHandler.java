@@ -34,14 +34,18 @@ public final class PageTransferHandler {
   private final PersistenceConnector memoryPersistence;
   private final PersistenceConnector diskPersistence;
 
+  private final PageReplicator replicator;
+
   private final Map<String, PageTransfer> inProgressTransfers = new ConcurrentHashMap<>();
 
   @Inject
   private PageTransferHandler(@CachePersistence PersistenceConnector memoryPersistence,
-                              @DiskPersistence PersistenceConnector diskPersistence) {
+                              @DiskPersistence PersistenceConnector diskPersistence,
+                              PageReplicator replicator) {
 
     this.memoryPersistence = memoryPersistence;
     this.diskPersistence = diskPersistence;
+    this.replicator = replicator;
   }
 
   /**
@@ -88,6 +92,11 @@ public final class PageTransferHandler {
       transfer.sendingNode.getDFSService().notifyTransferResult(transferId, e);
     } catch (RemoteException x) {
       log.log(Level.WARNING, "Exception notifying sending node of transfer completion", x);
+    }
+
+    // If no problems, send the page to the replicator
+    if (e == null) {
+      replicator.accept(transfer.page.name());
     }
   }
 
