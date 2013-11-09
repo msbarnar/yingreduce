@@ -8,6 +8,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InputStream;
 
+import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.io.PageHeader;
 import edu.asu.ying.wellington.io.Writable;
 
@@ -35,6 +36,8 @@ public final class PageData implements Writable {
     return page;
   }
 
+  // FIXME: hack to make distributionsink work with replicator
+  private RemoteNode destination;
   private PageHeader header;
   private byte[] data;
 
@@ -70,5 +73,13 @@ public final class PageData implements Writable {
 
   public byte[] data() {
     return data;
+  }
+
+  public void setDestination(RemoteNode node) {
+    destination = node;
+  }
+
+  public RemoteNode destination() {
+    return destination;
   }
 }

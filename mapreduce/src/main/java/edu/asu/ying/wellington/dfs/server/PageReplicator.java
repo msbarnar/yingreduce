@@ -1,14 +1,18 @@
 package edu.asu.ying.wellington.dfs.server;
 
+import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
@@ -18,6 +22,8 @@ import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.wellington.NodeLocator;
 import edu.asu.ying.wellington.RemoteNode;
+import edu.asu.ying.wellington.dfs.DFSService;
+import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
@@ -41,6 +47,8 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
 
   // Pass to nodes we ping so they can see us, too
   private final RemoteNode localNodeProxy;
+
+  private final Sink<PageData> distributionSink;
 
   // For retrieving pages to be replicated
   private final Persistence pageCache;
@@ -66,10 +74,20 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
   @Inject
   private PageReplicator(@Local RemoteNode localNodeProxy,
                          @CachePersistence Persistence pageCache,
-                         NodeLocator locator) {
+                         NodeLocator locator,
+                         DFSService dfsService) {
+
     this.localNodeProxy = localNodeProxy;
     this.pageCache = pageCache;
     this.locator = locator;
+    this.distributionSink = dfsService.getDistributionSink();
+    Timer timer = new Timer();
+    timer.scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        checkTimedOutNodes();
+      }
+    }, NODE_TIMEOUT_MS, NODE_TIMEOUT_MS);
   }
 
   /**
@@ -81,7 +99,6 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
     if (!pageCache.hasPage(transfer.page.name())) {
       throw new IOException("Page is not cached; cannot be replicated");
     }
-    toBeReplicated.add(transfer);
 
     List<PageResponsibilityRecord> records = responsibleNodes.get(transfer.page.name());
     if (records == null) {
@@ -110,8 +127,16 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
         }
       }
     }
+
+    // Don't replicate the page more than 3 times
+    if (nodes.size() < 3) {
+      toBeReplicated.add(transfer);
+    }
   }
 
+  /**
+   * Returns the nodes this node knows are responsible for {@code name}, including itself.
+   */
   public List<RemoteNode> getResponsibleNodesFor(PageName name) {
     List<RemoteNode> nodes = new ArrayList<>();
     // Include ourselves as a responsible node as seen by other nodes
@@ -132,7 +157,31 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
    */
   @Override
   public void process(PageTransfer transfer) throws Exception {
+    List<RemoteNode> nodes = locator.find(transfer.page.name().toString(), 5);
+    List<RemoteNode> responsibleNodes = getResponsibleNodesFor(transfer.page.name());
 
+    for (RemoteNode node : nodes) {
+      boolean haveNode = false;
+      String nodeName = node.getName();
+      // Find the next closest node not in the responsibility table
+      for (RemoteNode alreadyHave : responsibleNodes) {
+        if (nodeName.equals(alreadyHave.getName())) {
+          haveNode = true;
+          break;
+        }
+      }
+      // Pick this node if not in the responsibility table
+      if (!haveNode) {
+        // Read the page data from cache
+        InputStream istream = pageCache.readPage(transfer.page.name());
+        PageData pageData = new PageData(transfer.page, ByteStreams.toByteArray(istream));
+        // Specify where to send it
+        pageData.setDestination(node);
+        distributionSink.accept(pageData);
+        // Stop looking for nodes to replicate to
+        break;
+      }
+    }
   }
 
   /**

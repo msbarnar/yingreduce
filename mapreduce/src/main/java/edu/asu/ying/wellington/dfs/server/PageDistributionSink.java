@@ -87,8 +87,11 @@ public final class PageDistributionSink
   @Override
   public void process(PageData data) throws IOException {
     String pageName = data.header().getPage().name().toString();
+
     // Find the destination node for the page
-    RemoteNode initialNode = locator.find(pageName);
+    // FIXME: Hack: or use the one from the pagedata (set by the replicator)
+    RemoteNode initialNode
+        = data.destination() != null ? data.destination() : locator.find(pageName);
     String nodeName = initialNode.getName();
 
     // Offer the transfer to the node

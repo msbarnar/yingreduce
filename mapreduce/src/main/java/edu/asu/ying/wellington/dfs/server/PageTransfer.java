@@ -18,7 +18,7 @@ import edu.asu.ying.wellington.dfs.Page;
  */
 public final class PageTransfer implements Serializable {
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   public final String id;
   public final RemoteNode sendingNode;
