@@ -29,7 +29,7 @@ public interface RemoteDFSService extends Activatable {
 
   RemoteInputStream getRemoteInputStream(PageName name) throws RemoteException;
 
-  boolean ping(RemoteNode pinger) throws RemoteException;
+  void ping(RemoteNode pinger) throws RemoteException;
 
   List<RemoteNode> getResponsibleNodesFor(PageName name) throws RemoteException;
 }

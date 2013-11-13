@@ -98,7 +98,7 @@ public class RMIActivator implements Activator {
    * Selects a random port and specifies it as the sole port for RMI.
    */
   protected int getRandomPort() {
-    ServerSocket sock = null;
+    ServerSocket sock;
     int port;
     try {
       sock = new ServerSocket(0);

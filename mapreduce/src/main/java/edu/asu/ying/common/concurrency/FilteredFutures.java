@@ -29,7 +29,7 @@ public class FilteredFutures<V>
    * @return a {@code FilteredFutures} instance attached to the given event.
    */
   public static <V> FilteredFutures<V> getFrom(final FilteredValueEvent<V> event) {
-    return new FilteredFutures<V>(event);
+    return new FilteredFutures<>(event);
   }
 
   /**
@@ -63,7 +63,7 @@ public class FilteredFutures<V>
    * @param count the number of future values to receive.
    */
   public final FilteredFutures<V> get(final int count) {
-    this.unfulfilledFutures = new ArrayDeque<SettableFuture<V>>(count);
+    this.unfulfilledFutures = new ArrayDeque<>(count);
     for (int i = 0; i < count; i++) {
       this.unfulfilledFutures.push(SettableFuture.<V>create());
     }
@@ -76,7 +76,7 @@ public class FilteredFutures<V>
    *
    * @param on the filter on which values will be matched.
    * @return a list of {@link ListenableFuture} that will be fulfilled when values matching the
-   *         filter arrive.
+   * filter arrive.
    */
   public final List<ListenableFuture<V>> filter(final Filter on) {
     // Default to returning one future
@@ -93,7 +93,7 @@ public class FilteredFutures<V>
    *
    * @param on the filter on which values will be matched.
    * @return a {@link ListenableFuture} that will be fulfilled when a value matching the filter
-   *         arrives.
+   * arrives.
    */
   public final ListenableFuture<V> getOne(final Filter on) {
     this.get(1);

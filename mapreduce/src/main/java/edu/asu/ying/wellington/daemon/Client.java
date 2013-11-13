@@ -76,12 +76,12 @@ public class Client {
     System.out.println(String.format("%d daemons running", instances.length));
 
     final File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
-    BufferedReader reader = null;
+    BufferedReader reader;
 
     reader = new BufferedReader(new FileReader(nodeList));
 
     boolean fullyConnected = false;
-    String line = null;
+    String line;
     try {
       while (reader.ready()) {
         line = reader.readLine();

@@ -62,7 +62,7 @@ public final class JobScheduler implements JobService {
       queue(job);
     } else {
       // Forward the job to the responsible node
-      RemoteNode responsibleNode = null;
+      RemoteNode responsibleNode;
       try {
         responsibleNode = findResponsibleNode(job);
       } catch (IOException e) {

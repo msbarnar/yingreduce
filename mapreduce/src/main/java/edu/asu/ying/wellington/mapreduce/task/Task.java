@@ -12,7 +12,7 @@ import edu.asu.ying.wellington.mapreduce.job.Job;
  */
 public abstract class Task implements Serializable {
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   protected final TaskIdentifier taskID;
   protected final Job parentJob;

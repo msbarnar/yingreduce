@@ -1,6 +1,5 @@
 package edu.asu.ying.common.concurrency;
 
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -16,14 +15,6 @@ public final class DelegateQueueExecutor<T> extends QueueExecutor<T> {
 
   public DelegateQueueExecutor(QueueProcessor<T> processor, ExecutorService executor) {
     super(executor);
-    this.processor = processor;
-  }
-
-  public DelegateQueueExecutor(QueueProcessor<T> processor,
-                               ExecutorService executor,
-                               BlockingQueue<T> queue) {
-
-    super(executor, queue);
     this.processor = processor;
   }
 

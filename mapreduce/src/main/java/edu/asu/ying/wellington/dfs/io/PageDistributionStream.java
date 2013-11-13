@@ -33,10 +33,6 @@ public final class PageDistributionStream extends OutputStream {
     this.buffer = new ByteArrayOutputStream(capacity);
   }
 
-  public int remainingCapacity() {
-    return capacity - buffer.size();
-  }
-
   @Override
   public void write(int b) throws IOException {
     if (buffer.size() + 1 > capacity) {

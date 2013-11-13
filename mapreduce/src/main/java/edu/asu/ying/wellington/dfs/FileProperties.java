@@ -18,7 +18,7 @@ import edu.asu.ying.wellington.io.Writable;
 public final class FileProperties
     implements Writable, Iterable<Map.Entry<String, Writable>> {
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   private Map<String, Writable> properties = new HashMap<>();
 

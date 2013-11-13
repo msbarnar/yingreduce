@@ -68,7 +68,7 @@ public class DaemonSingleton {
     return this.id;
   }
 
-  public static String byteArrayToHexString(byte[] b) {
+  private static String byteArrayToHexString(byte[] b) {
     String result = "";
     String samp = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+=";
     for (int i = 0; i < Math.min(b.length, 22); i++) {

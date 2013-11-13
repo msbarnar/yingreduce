@@ -24,7 +24,7 @@ public final class Job implements Serializable {
   private static final int DEFAULT_REDUCER_COUNT = 3;
   private static final int MAX_REDUCER_COUNT = 128;
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   private final String name;
   private Status status;

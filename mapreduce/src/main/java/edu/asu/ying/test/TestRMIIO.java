@@ -99,7 +99,7 @@ public class TestRMIIO {
         ostream = new FileOutputStream(file);
 
         byte[] buf = new byte[1024];
-        int bytesRead = 0;
+        int bytesRead;
         while ((bytesRead = input.read(buf)) >= 0) {
           ostream.write(buf, 0, bytesRead);
         }

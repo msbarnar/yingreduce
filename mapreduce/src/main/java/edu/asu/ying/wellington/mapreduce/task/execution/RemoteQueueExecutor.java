@@ -23,7 +23,7 @@ public final class RemoteQueueExecutor extends QueueExecutor<Task> {
     // TODO: Fetch data from peer
     try {
       Thread.sleep(500 + (new Random()).nextInt(500));
-    } catch (InterruptedException e) {
+    } catch (InterruptedException ignored) {
     }
     Serializable result = null;
     try {

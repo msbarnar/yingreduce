@@ -94,7 +94,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
     try (InputStream istream = getInputStream(id)) {
       Hasher checksummer = checksumFunc.newHasher();
       byte[] buffer = new byte[8092];
-      int read = 0;
+      int read;
       while ((read = istream.read(buffer)) > 0) {
         checksummer.putBytes(buffer, 0, read);
       }
@@ -136,6 +136,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
    */
   @Override
   public void savePageIndex(Set<PageName> pageIndex) throws IOException {
+    // FIXME: Page index
   }
 
   /**
@@ -144,6 +145,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   @Override
   public Set<PageName> loadPageIndex() throws IOException {
     Set<PageName> loadedIndex = new HashSet<>();
+    // FIXME: Page index
     return loadedIndex;
   }
 
@@ -157,6 +159,7 @@ public final class DiskPersistenceConnector implements PersistenceConnector {
   @Override
   public Set<PageName> rebuildPageIndex() throws IOException {
     Set<PageName> storedPages = new HashSet<>();
+    // FIXME: Page index
     return storedPages;
   }
 

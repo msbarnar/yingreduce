@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
  */
 public abstract class MessageBase implements Message {
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   protected String id;
   protected String tag;

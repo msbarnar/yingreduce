@@ -67,8 +67,8 @@ public final class DFSServiceExporter
   }
 
   @Override
-  public boolean ping(RemoteNode pinger) throws RemoteException {
-    return replicator.ping(pinger);
+  public void ping(RemoteNode pinger) throws RemoteException {
+    replicator.ping(pinger);
   }
 
   @Override

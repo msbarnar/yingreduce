@@ -21,7 +21,7 @@ public class TestFilteredFutures {
 
   @Test
   public void ItReturnedTheRightOneOfThree() throws Exception {
-    FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<Integer>();
+    FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<>();
 
     Filter numberFilter = Filter.on.anyOf(on.equalTo(1));
 
@@ -42,7 +42,7 @@ public class TestFilteredFutures {
 
   @Test
   public void ItReturnedTheRightThreeOfNine() throws Exception {
-    FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<Integer>();
+    FilteredValueEvent<Integer> numberEvent = new FilteredValueEventBase<>();
 
     Filter numberFilter = Filter.on.anyOf(on.equalTo(1), on.equalTo(3), on.equalTo(6));
 

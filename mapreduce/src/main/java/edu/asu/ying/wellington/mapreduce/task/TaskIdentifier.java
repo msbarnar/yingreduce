@@ -17,7 +17,7 @@ public final class TaskIdentifier extends AbstractIdentifier {
     return new TaskIdentifier(id);
   }
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   private TaskIdentifier(String id) {
     super(id);

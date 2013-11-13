@@ -31,7 +31,7 @@ public final class File implements Writable {
     }
   }
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   public static FileProperties getDefaultProperties() {
     return new FileProperties();

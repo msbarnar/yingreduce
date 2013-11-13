@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
  */
 public class ResponseMessage extends MessageBase {
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   protected Serializable content;
 

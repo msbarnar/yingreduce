@@ -19,7 +19,7 @@ public interface Filter {
   public static final class on {
 
     public static <T> FilterOnEquals<T> equalTo(final T value) {
-      return new FilterOnEquals<T>(value);
+      return new FilterOnEquals<>(value);
     }
 
     public static Filter allOf(final Filter... filters) {

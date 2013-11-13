@@ -12,7 +12,7 @@ import edu.asu.ying.wellington.io.Writable;
  */
 public class SecurityAttributes implements Serializable, Writable {
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   private static final String PROPERTIES_KEY = ".security";
 

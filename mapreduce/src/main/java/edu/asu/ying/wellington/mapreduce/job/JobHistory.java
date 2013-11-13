@@ -21,7 +21,7 @@ public final class JobHistory implements Serializable {
 
   public final class Entry implements Serializable {
 
-    private static final long SerialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private final String nodeName;
     private Action nodeAction;

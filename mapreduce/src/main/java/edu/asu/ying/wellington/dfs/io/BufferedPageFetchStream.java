@@ -7,14 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
 
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.File;
@@ -48,8 +48,6 @@ public final class BufferedPageFetchStream extends InputStream {
   // FIFO blocking queue; read operations pop an item off the head and read it while
   // download operation adds items to the tail
   private final BlockingDeque<byte[]> pages;
-  // For every object put in here, a page will be fetched and cached
-  private final BlockingQueue<Object> pageFetchQueue = new LinkedBlockingQueue<>();
   // The index of the next page to fetch
   // The constructor fetches page 0
   private final AtomicInteger nextPageToFetch = new AtomicInteger(0);
@@ -75,8 +73,6 @@ public final class BufferedPageFetchStream extends InputStream {
   private byte[] buffer;
   // At this position
   private int pBuffer;
-  // Blocking on this lock
-  private final Object bufferLock = new Object();
 
   /**
    * Begins asynchronously filling the buffer with pages from {@code file}.
@@ -118,12 +114,12 @@ public final class BufferedPageFetchStream extends InputStream {
   }
 
   @Override
-  public int read(byte[] b) throws IOException {
+  public int read(@Nonnull byte[] b) throws IOException {
     return read(b, 0, b.length);
   }
 
   @Override
-  public int read(byte[] b, int off, int len) throws IOException {
+  public int read(@Nonnull byte[] b, int off, int len) throws IOException {
     int read = -1;
     // Keep filling the buffer and reading it until we read len bytes
     while (off < len) {

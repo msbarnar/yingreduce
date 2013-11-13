@@ -12,7 +12,7 @@ import edu.asu.ying.wellington.InvalidIdentifierException;
  */
 public final class PageName extends AbstractIdentifier {
 
-  private static final long SerialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   public static PageName create(Path filePath, int index) {
     return new PageName(filePath, index);
@@ -100,20 +100,5 @@ public final class PageName extends AbstractIdentifier {
     }
 
     return Integer.compare(index, o.index());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return super.equals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return super.toString();
   }
 }

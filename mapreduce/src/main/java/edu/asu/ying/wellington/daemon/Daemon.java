@@ -15,7 +15,7 @@ import edu.asu.ying.wellington.daemon.web.RestInterface;
 /**
  *
  */
-public final class Daemon {
+final class Daemon {
 
   private static final Logger log = Logger.getLogger(Daemon.class.getName());
 
@@ -66,7 +66,7 @@ public final class Daemon {
     return peer;
   }
 
-  public int getPort() {
+  int getPort() {
     return port;
   }
 }

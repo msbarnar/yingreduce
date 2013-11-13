@@ -21,7 +21,7 @@ public class FilteredValueEventBase<TValue>
   private final
   List<Map.Entry<Filter, EventHandler<TValue>>>
       handlers =
-      new ArrayList<Map.Entry<Filter, EventHandler<TValue>>>();
+      new ArrayList<>();
 
   /**
    * Attaches an event handler that will be notified when a value matching {@code filter} arrives.
@@ -32,7 +32,7 @@ public class FilteredValueEventBase<TValue>
 
   public final void attach(final Filter filter, final EventHandler<TValue> handler) {
     synchronized (this.handlers) {
-      this.handlers.add(new AbstractMap.SimpleEntry<Filter, EventHandler<TValue>>(filter, handler));
+      this.handlers.add(new AbstractMap.SimpleEntry<>(filter, handler));
     }
   }
 
@@ -47,13 +47,14 @@ public class FilteredValueEventBase<TValue>
   public final boolean detach(final Filter filter, final EventHandler<TValue> handler) {
     synchronized (this.handlers) {
       return this.handlers
-          .remove(new AbstractMap.SimpleEntry<Filter, EventHandler<TValue>>(filter, handler));
+          .remove(new AbstractMap.SimpleEntry<>(filter, handler));
     }
   }
 
   /**
    * Notifies event handlers whose filter matches {@code value} that value has arrived. </p> If a
-   * handler returns {@code false} from its {@link EventHandler#onEvent} method, the handler and its
+   * handler returns {@code false} from its {@link EventHandler#onEvent} method, the handler and
+   * its
    * filter are detached from this event.
    *
    * @param sender the object firing the event, from whom the {@code value} came.

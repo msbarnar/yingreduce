@@ -11,7 +11,7 @@ import edu.asu.ying.p2p.message.MessageOutputStream;
  */
 public interface Channel extends Closeable {
 
-  void registerMessageHandler(final MessageHandler handler, final String tag);
+  void registerMessageHandler(MessageHandler handler, String tag);
 
   MessageOutputStream getMessageOutputStream();
 }
