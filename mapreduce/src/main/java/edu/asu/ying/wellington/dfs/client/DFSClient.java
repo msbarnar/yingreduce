@@ -12,8 +12,8 @@ import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.File;
 import edu.asu.ying.wellington.dfs.File.OutputMode;
 import edu.asu.ying.wellington.dfs.Page;
-import edu.asu.ying.wellington.dfs.io.BufferedPageFetchStream;
-import edu.asu.ying.wellington.dfs.io.PageDistributionStream;
+import edu.asu.ying.wellington.dfs.io.DistributingPageOutputStream;
+import edu.asu.ying.wellington.dfs.io.PageFetchingInputStream;
 import edu.asu.ying.wellington.io.WritableInt;
 
 /**
@@ -52,7 +52,7 @@ public final class DFSClient {
   public OutputStream getOutputStream(File file, OutputMode mode)
       throws IOException, SecurityException {
 
-    // TODO: Bind a PageDistributionStream to file
+    // TODO: Bind a DistributingPageOutputStream to file
     switch (mode) {
       case CreateNew:
         // TODO: Check security
@@ -61,7 +61,8 @@ public final class DFSClient {
                               new WritableInt(pageCapacity));
         // Create an output stream with a buffer of `capacity` starting from page 0
         // The stream will flush its full pages to the DFSService for distribution.
-        return new PageDistributionStream(Page.firstPageOf(file), dfsService.getDistributionSink());
+        return new DistributingPageOutputStream(Page.firstPageOf(file),
+                                                dfsService.getDistributionSink());
 
       case Overwrite:
         // TODO: Check security
@@ -85,6 +86,6 @@ public final class DFSClient {
    *                                       {@link edu.asu.ying.wellington.dfs.SecurityAttributes}.
    */
   public InputStream getInputStream(File file) throws IOException, SecurityException {
-    return new BufferedPageFetchStream(file, SZ_INPUT_STREAM_BUFFER, dfsService);
+    return new PageFetchingInputStream(file, SZ_INPUT_STREAM_BUFFER, dfsService);
   }
 }

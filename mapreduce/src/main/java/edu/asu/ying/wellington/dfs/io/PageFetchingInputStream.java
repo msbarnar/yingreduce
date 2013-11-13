@@ -23,7 +23,7 @@ import edu.asu.ying.wellington.dfs.RemotePage;
 import edu.asu.ying.wellington.dfs.persistence.PageNotFoundException;
 
 /**
- * {@code BufferedPageFetchStream} is the {@link InputStream} implementation for distributed pages.
+ * {@code PageFetchingInputStream} is the {@link InputStream} implementation for distributed pages.
  * </p>
  * When initialized with a file name, the stream will asynchronously fetch enough pages to fill
  * the buffer, or at least one page if the buffer size is smaller than a single page.
@@ -32,9 +32,9 @@ import edu.asu.ying.wellington.dfs.persistence.PageNotFoundException;
  * another to fill the buffer. If the stream reads past the end of the last page in the buffer,
  * the standard {@link InputStream} read operations will block until a page is available.
  */
-public final class BufferedPageFetchStream extends InputStream {
+public final class PageFetchingInputStream extends InputStream {
 
-  private static final Logger log = Logger.getLogger(BufferedPageFetchStream.class.getName());
+  private static final Logger log = Logger.getLogger(PageFetchingInputStream.class.getName());
 
   // The maximum number of concurrent page fetches
   private static final int N_FETCH_THREADS = 5;
@@ -81,7 +81,7 @@ public final class BufferedPageFetchStream extends InputStream {
    * @param bufferCapacity the size of the page buffer to keep filled.
    * @param dfsService     provides input stream for each individual page.
    */
-  public BufferedPageFetchStream(File file, int bufferCapacity, DFSService dfsService) {
+  public PageFetchingInputStream(File file, int bufferCapacity, DFSService dfsService) {
     this.dfsService = dfsService;
     this.file = file;
     // Get the first page and set the page cache size

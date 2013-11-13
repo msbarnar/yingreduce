@@ -160,19 +160,21 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
     List<RemoteNode> nodes = locator.find(transfer.page.name().toString(), 5);
     List<RemoteNode> responsibleNodes = getResponsibleNodesFor(transfer.page.name());
 
+    // Look for nodes to replicate to
     for (RemoteNode node : nodes) {
-      boolean haveNode = false;
+      // The first node for which this is false gets the page
+      boolean nodeAlreadyResponsible = false;
       String nodeName = node.getName();
-      // Find the next closest node not in the responsibility table
+      // Check if this node is in the responsible nodes
       for (RemoteNode alreadyHave : responsibleNodes) {
         if (nodeName.equals(alreadyHave.getName())) {
-          haveNode = true;
+          nodeAlreadyResponsible = true;
           break;
         }
       }
       // Pick this node if not in the responsibility table
-      if (!haveNode) {
-        // Read the page data from cache
+      if (!nodeAlreadyResponsible) {
+        // Read the page data from cache and prepare a transfer for it
         InputStream istream = pageCache.readPage(transfer.page.name());
         PageData pageData = new PageData(transfer.page, ByteStreams.toByteArray(istream));
         // Specify where to send it
