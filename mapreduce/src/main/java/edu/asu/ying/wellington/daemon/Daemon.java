@@ -46,7 +46,7 @@ final class Daemon {
     try {
       peer.join(
           URI.create("//127.0.0.1:".concat(String.valueOf(instance.getPort()))));
-      log.finest(String.format("[%d] -> [%d]", port, instance.getPort()));
+      log.info(String.format("[%d] -> [%d]", port, instance.getPort()));
     } catch (final IOException e) {
       e.printStackTrace();
     }

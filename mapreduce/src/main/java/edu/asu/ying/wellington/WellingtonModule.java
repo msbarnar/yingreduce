@@ -9,11 +9,13 @@ import com.google.inject.name.Names;
 import java.util.Properties;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.ClassNotExportedException;
 import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.common.remoting.Remote;
 import edu.asu.ying.wellington.dfs.DFSService;
+import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistence;
 import edu.asu.ying.wellington.dfs.persistence.DiskPersistenceConnector;
@@ -22,6 +24,7 @@ import edu.asu.ying.wellington.dfs.persistence.PersistenceConnector;
 import edu.asu.ying.wellington.dfs.persistence.PersistenceEngine;
 import edu.asu.ying.wellington.dfs.persistence.SimpleCachePersistenceConnector;
 import edu.asu.ying.wellington.dfs.server.DFSServer;
+import edu.asu.ying.wellington.dfs.server.Distribution;
 import edu.asu.ying.wellington.dfs.server.PageDistributionSink;
 import edu.asu.ying.wellington.dfs.server.PageDistributor;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
@@ -137,6 +140,12 @@ public final class WellingtonModule extends AbstractModule {
   @Local
   private RemoteNode provideLoopbackProxy(Activator activator) throws ClassNotExportedException {
     return activator.getReference(RemoteNode.class);
+  }
+
+  @Provides
+  @Distribution
+  private Sink<PageData> provideDistributionSink(DFSService service) {
+    return service.getDistributionSink();
   }
 
   @Provides

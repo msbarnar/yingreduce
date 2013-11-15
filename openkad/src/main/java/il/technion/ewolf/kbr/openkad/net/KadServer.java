@@ -99,8 +99,8 @@ public class KadServer implements Communicator {
    */
   @Override
   public void send(final Node to, final KadMessage msg) throws IOException {
-    // System.out.println("KadServer: send: " + msg + " to: " +
-    // to.getKey());
+    //System.out.println("KadServer: send: " + msg + " to: " +
+    //to.getKey());
 
     if (msg instanceof PingRequest) {
       this.nrOutgoingPings.incrementAndGet();
@@ -126,7 +126,8 @@ public class KadServer implements Communicator {
         bout.close();
         bout = null;
 
-      } catch (final Exception e) {
+      } catch (Exception ignored) {
+        ignored.printStackTrace();
       }
     }
   }

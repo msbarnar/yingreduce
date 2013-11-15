@@ -4,6 +4,8 @@ import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import org.apache.log4j.BasicConfigurator;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -15,10 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Random;
 import java.util.Scanner;
 
-import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.p2p.kad.KadP2PModule;
 import edu.asu.ying.wellington.WellingtonModule;
 import edu.asu.ying.wellington.dfs.Path;
@@ -35,8 +35,8 @@ public class Client {
   /**
    * Daemon entry point.
    */
-  public static void main(final String[] args) {
-    final Client app = new Client(args);
+  public static void main(String[] args) {
+    Client app = new Client(args);
     try {
       app.start();
     } catch (IOException e) {
@@ -47,16 +47,40 @@ public class Client {
   /**
    * Initializes the appropriate services, but does not start them.
    */
-  private Client(final String[] args) {
-    //LogManager.getLogManager().reset();
+  private Client(String[] args) {
+    BasicConfigurator.configure();
+  }
+
+  private void connectNodes(Daemon[] instances) {
+    File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
+    BufferedReader reader;
+
+    String line;
+    try {
+      reader = new BufferedReader(new FileReader(nodeList));
+      while (reader.ready()) {
+        line = reader.readLine();
+        if (line == null) {
+          break;
+        }
+
+        instances[0].join(URI.create(String.format("//%s:5000", line)));
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private File readInputFile() {
+    return new File(System.getProperty("user.home") + "/mapreduce/data/lipsum.txt");
   }
 
   /**
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
   private void start() throws IOException {
-    final Daemon[] instances = new Daemon[5];
-
+    // Spawn virtual nodes
+    Daemon[] instances = new Daemon[2];
     Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
@@ -75,39 +99,19 @@ public class Client {
 
     System.out.println(String.format("%d daemons running", instances.length));
 
-    final File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
-    BufferedReader reader;
+    // Connect to physical nodes
+    // connectNodes(instances);
 
-    reader = new BufferedReader(new FileReader(nodeList));
+    // Read the input file
+    File inputFile = readInputFile();
 
-    boolean fullyConnected = false;
-    String line;
-    try {
-      while (reader.ready()) {
-        line = reader.readLine();
-        if (line == null) {
-          break;
-        }
-
-        instances[0].join(URI.create(String.format("//%s:5000", line)));
-
-        if (line.equals("149.169.30.10")) {
-          fullyConnected = true;
-        }
-      }
-    } catch (final IOException e) {
-      e.printStackTrace();
+    if (injector == null) {
+      throw new RuntimeException("No injector");
     }
-
-    for (RemotePeer peer : instances[0].getPeer().findPeers("hello", 10)) {
-      System.out.println(peer.getName());
-    }
-
-    File inputFile = new File(System.getProperty("user.home") + "/mapreduce/data/lipsum.txt");
-
     DFSClient dfsClient = injector.getInstance(DFSClient.class);
+
+    // Create a new file in the DFS and write the contents of the input file
     Path path = new Path("tests/myfile");
-    Random rnd = new Random();
     try (OutputStream ostream = dfsClient
         .getOutputStream(new edu.asu.ying.wellington.dfs.File(path),
                          edu.asu.ying.wellington.dfs.File.OutputMode.CreateNew)) {
@@ -117,6 +121,7 @@ public class Client {
       }
     }
 
+    // Read the file from the DFS
     File outputFile = new File(System.getProperty("user.home") + "/dfs/downloaded-lipsum.txt");
     try (OutputStream ostream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
       try (InputStream istream
@@ -133,28 +138,28 @@ public class Client {
     }
     System.exit(0);
 
+    /**************************** Job scheduling *******************************/
+
     /*JobClient client = injector.getInstance(JobClient.class);
     JobConf job = ExampleMapReduceJob.createJob();
     try {
       client.runJob(job);
     } catch (JobException e) {
       throw new RuntimeException(e);
-    }*/
+    }
 
-    if (!fullyConnected) {
-      /*LocalScheduler sched = null;
-      //sched = instances[0].getLocalPeer();
+    LocalScheduler sched = null;
+    //sched = instances[0].getLocalPeer();
 
-      if (sched != null) {
-        for (int i = 0; i < 1; i++) {
-          final Job job = new Job(new TableID("hoblahsh"));
-          final JobSchedulingResult result = sched.createJob(job);
-        }
-      }*/
+    if (sched != null) {
+      for (int i = 0; i < 1; i++) {
+        final Job job = new Job(new TableID("hoblahsh"));
+        final JobSchedulingResult result = sched.createJob(job);
+      }
     }
 
     for (final Daemon instance : instances) {
-      /*instance.getLocalPeer().getPageInSink().onIncomingPage.attach(new EventHandler<HasPageMetadata>() {
+      instance.getLocalPeer().getPageInSink().onIncomingPage.attach(new EventHandler<HasPageMetadata>() {
         @Override
         public boolean onEvent(Object sender, HasPageMetadata args) {
           System.out.println(
@@ -162,10 +167,10 @@ public class Client {
                             args.index()));
           return true;
         }
-      });*/
+      });
     }
 
-    /*final PageBuilder pb = new PageBuilder(TableIdentifier.forString("lipsum"), instances[0].getLocalPeer().getPageOutSink());
+    final PageBuilder pb = new PageBuilder(TableIdentifier.forString("lipsum"), instances[0].getLocalPeer().getPageOutSink());
     try {
       pb.offer(new Element(new WritableInt(1), new WritableString("a"),
                          new WritableBytes("It's a small world after all".getBytes())));

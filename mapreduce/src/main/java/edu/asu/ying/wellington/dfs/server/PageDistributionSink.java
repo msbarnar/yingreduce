@@ -109,11 +109,11 @@ public final class PageDistributionSink
       case Overloaded:
         // Requeue the transfer to try again later
         pageQueue.add(data);
-        log.finest(String.format("[send] %s: %s is overloaded; requeued", pageName, nodeName));
+        log.info(String.format("[send] %s: %s is overloaded; requeued", pageName, nodeName));
         break;
 
       case OutOfCapacity:
-        log.finest(String.format("[send] %s: %s is over capacity", pageName, nodeName));
+        log.info(String.format("[send] %s: %s is over capacity", pageName, nodeName));
         throw new IOException("Remote node is over capacity");
 
       case Accepting:
@@ -124,11 +124,11 @@ public final class PageDistributionSink
           // Put the page back on the queue to try again
           pageQueue.add(data);
         }
-        log.finest(String.format("[send] %s -> %s", pageName, nodeName));
+        log.info(String.format("[send] %s -> %s", pageName, nodeName));
         break;
 
       case Duplicate:
-        log.finest(String.format("[send] %s: %s already has page", pageName, nodeName));
+        log.info(String.format("[send] %s: %s already has page", pageName, nodeName));
         break;
     }
   }

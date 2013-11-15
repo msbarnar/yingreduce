@@ -7,14 +7,14 @@ import com.healthmarketscience.rmiio.GZIPRemoteOutputStream;
 import com.healthmarketscience.rmiio.RemoteOutputStreamServer;
 import com.healthmarketscience.rmiio.RemoteStreamMonitor;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
@@ -29,7 +29,7 @@ import edu.asu.ying.wellington.dfs.persistence.PersistenceConnector;
  */
 public final class PageTransferHandler {
 
-  private static final Logger log = Logger.getLogger(PageTransferHandler.class.getName());
+  private static final Logger log = Logger.getLogger(PageTransferHandler.class);
 
   private final PersistenceConnector memoryPersistence;
   private final PersistenceConnector diskPersistence;
@@ -52,6 +52,7 @@ public final class PageTransferHandler {
    * Attempts to get an {@link OutputStream} for the offered page.
    */
   public PageTransferResponse offer(PageTransfer transfer) {
+    log.info("Accepting transfer: " + transfer.page.name());
     try (OutputStream stream = memoryPersistence.getOutputStream(transfer.page.name())) {
       // Track the transfer so the monitor can close it out
       inProgressTransfers.put(transfer.id, transfer);
@@ -70,13 +71,13 @@ public final class PageTransferHandler {
     PageTransfer transfer = inProgressTransfers.remove(transferId);
     if (transfer == null) {
       // If this happens, I don't know what I'm doing and should be fired.
-      log.severe("Transfer completed but was not in progress; it's a mystery");
+      log.error("Transfer completed but was not in progress; it's a mystery");
       return;
     }
 
     if (e != null) {
       // This will get sent to the sending node and they'll resend
-      log.log(Level.WARNING, "Exception receiving page transfer", e);
+      log.warn("Exception receiving page transfer", e);
     } else {
       // Copy the transfer from cache to disk, leaving it in cache for the replicator
       try {
@@ -89,14 +90,16 @@ public final class PageTransferHandler {
     }
     // Notify the sending node if we had any problems
     try {
+      log.info("notifying completion: " + transfer.page.name());
       transfer.sendingNode.getDFSService().notifyTransferResult(transferId, e);
     } catch (RemoteException x) {
-      log.log(Level.WARNING, "Exception notifying sending node of transfer completion", x);
+      log.warn("Exception notifying sending node of transfer completion", x);
     }
 
     // If no problems, send the page to the replicator
     if (e == null) {
       try {
+        log.info("sending to replicator: " + transfer.page.name());
         replicator.accept(transfer);
       } catch (IOException x) {
         throw new RuntimeException("Exception passing page name to replicator", x);
@@ -114,6 +117,7 @@ public final class PageTransferHandler {
         ByteStreams.copy(istream, ostream);
       }
     }
+    log.info("wrote page to disk " + id.toString());
   }
 
   private final class TransferMonitor implements RemoteStreamMonitor<RemoteOutputStreamServer> {
@@ -135,6 +139,7 @@ public final class PageTransferHandler {
     public void closed(RemoteOutputStreamServer stream, boolean clean) {
       if (clean) {
         handler.closeTransfer(transferId, null);
+        log.info("Transfer completed");
       } else {
         handler.closeTransfer(transferId, new IOException("Stream was not closed cleanly; sending"
                                                           + " node possibly dropped while sending"));

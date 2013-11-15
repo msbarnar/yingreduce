@@ -202,7 +202,7 @@ public final class KadLocalPeer implements LocalPeer {
     } catch (RemoteException | InvalidContentException | InterruptedException
         | ExecutionException e) {
 
-      throw new RemoteImportException(e);
+      throw new RuntimeException(node.toString(), e);
     }
   }
 }

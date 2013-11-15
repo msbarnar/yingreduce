@@ -94,6 +94,9 @@ public final class PageFetchingInputStream extends InputStream {
       pages = null;
       return;
     }
+    if (page == null) {
+      throw new RuntimeException("Failed to fetch initial page");
+    }
     // Keep at least one pages and as many as possible without exceeding bufferCapacity
     int pageCacheSize = (int) Math.max(1, (double) bufferCapacity / page.length);
     pages = new LinkedBlockingDeque<>(pageCacheSize);
@@ -174,7 +177,6 @@ public final class PageFetchingInputStream extends InputStream {
   /**
    * Fetches the {@code index}th page for the file.
    */
-  // FIXME: Actually fetch a page from the DFSService
   private byte[] fetchPage(int index) throws IOException {
     RemotePage page;
     try {

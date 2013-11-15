@@ -2,6 +2,7 @@ package edu.asu.ying.wellington.dfs.server;
 
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,11 +23,10 @@ import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.wellington.NodeLocator;
 import edu.asu.ying.wellington.RemoteNode;
-import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.dfs.persistence.CachePersistence;
-import edu.asu.ying.wellington.dfs.persistence.Persistence;
+import edu.asu.ying.wellington.dfs.persistence.PersistenceConnector;
 
 /**
  * The {@code PageReplicator} is responsible for keeping track of which nodes share copies of our
@@ -46,12 +46,12 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
   private final NodeLocator locator;
 
   // Pass to nodes we ping so they can see us, too
-  private final RemoteNode localNodeProxy;
+  private final Provider<RemoteNode> localNodeProxyProvider;
 
-  private final Sink<PageData> distributionSink;
+  private final Provider<Sink<PageData>> distributionSinkProvider;
 
   // For retrieving pages to be replicated
-  private final Persistence pageCache;
+  private final PersistenceConnector pageCache;
 
   // The cycle time slot for checking nodes are still up
   private int currentPingCycle = 0;
@@ -72,15 +72,15 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
 
 
   @Inject
-  private PageReplicator(@Local RemoteNode localNodeProxy,
-                         @CachePersistence Persistence pageCache,
+  private PageReplicator(@Local Provider<RemoteNode> localNodeProxyProvider,
+                         @CachePersistence PersistenceConnector pageCache,
                          NodeLocator locator,
-                         DFSService dfsService) {
+                         @Distribution Provider<Sink<PageData>> distributionSinkProvider) {
 
-    this.localNodeProxy = localNodeProxy;
+    this.localNodeProxyProvider = localNodeProxyProvider;
     this.pageCache = pageCache;
     this.locator = locator;
-    this.distributionSink = dfsService.getDistributionSink();
+    this.distributionSinkProvider = distributionSinkProvider;
     Timer timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
       @Override
@@ -96,7 +96,7 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
    */
   @Override
   public void accept(PageTransfer transfer) throws IOException {
-    if (!pageCache.hasPage(transfer.page.name())) {
+    if (!pageCache.exists(transfer.page.name())) {
       throw new IOException("Page is not cached; cannot be replicated");
     }
 
@@ -110,6 +110,7 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
         .getDFSService()
         .getResponsibleNodesFor(transfer.page.name());
 
+    RemoteNode localNodeProxy = localNodeProxyProvider.get();
     for (RemoteNode node : nodes) {
       // Don't include ourselves
       if (!node.equals(localNodeProxy)) {
@@ -140,7 +141,7 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
   public List<RemoteNode> getResponsibleNodesFor(PageName name) {
     List<RemoteNode> nodes = new ArrayList<>();
     // Include ourselves as a responsible node as seen by other nodes
-    nodes.add(localNodeProxy);
+    nodes.add(localNodeProxyProvider.get());
 
     List<PageResponsibilityRecord> records = responsibleNodes.get(name);
     if (records != null) {
@@ -175,11 +176,11 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
       // Pick this node if not in the responsibility table
       if (!nodeAlreadyResponsible) {
         // Read the page data from cache and prepare a transfer for it
-        InputStream istream = pageCache.readPage(transfer.page.name());
+        InputStream istream = pageCache.getInputStream(transfer.page.name());
         PageData pageData = new PageData(transfer.page, ByteStreams.toByteArray(istream));
         // Specify where to send it
         pageData.setDestination(node);
-        distributionSink.accept(pageData);
+        distributionSinkProvider.get().accept(pageData);
         // Stop looking for nodes to replicate to
         break;
       }
@@ -203,6 +204,8 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
    * Scans the page responsibility table and notes any pages with timed out nodes to be replicated.
    */
   private void checkTimedOutNodes() {
+    RemoteNode localNodeProxy = localNodeProxyProvider.get();
+
     for (Map.Entry<PageName, List<PageResponsibilityRecord>> entry : responsibleNodes.entrySet()) {
       PageName pageName = entry.getKey();
       // Iterate over all nodes responsible for each page and check their time
