@@ -42,6 +42,11 @@ public final class DFSServiceExporter
   }
 
   @Override
+  public void unexport() {
+    activator.unbind(RemoteDFSService.class);
+  }
+
+  @Override
   public PageTransferResponse offer(PageTransfer transfer) throws RemoteException {
     try {
       return service.offer(transfer);

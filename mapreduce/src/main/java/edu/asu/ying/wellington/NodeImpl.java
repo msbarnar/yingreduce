@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.p2p.LocalPeer;
 import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
@@ -27,11 +28,19 @@ public final class NodeImpl implements LocalNode, NodeLocator {
 
   private final RemoteNode proxy;
 
+  private final JobService jobService;
+  private final TaskService taskService;
+  private final DFSService dfsService;
+
   // Network layer
   private final LocalPeer localPeer;
 
   // Derived from network
   private final String name;
+
+  private final NodeExporter exporter;
+
+  private final Activator activator;
 
 
   @Inject
@@ -39,17 +48,26 @@ public final class NodeImpl implements LocalNode, NodeLocator {
                    NodeExporter exporter,
                    JobService jobService,
                    TaskService taskService,
-                   DFSService dfsService) {
+                   DFSService dfsService,
+                   Activator activator) {
 
     this.localPeer = localPeer;
     // Use the same node name as the underlying P2P node
     this.name = "node{".concat(localPeer.getName()).concat("}");
+
+    this.exporter = exporter;
 
     try {
       this.proxy = exporter.export(this);
     } catch (ExportException e) {
       throw new RuntimeException(e);
     }
+
+    this.activator = activator;
+
+    this.jobService = jobService;
+    this.taskService = taskService;
+    this.dfsService = dfsService;
 
     jobService.start();
     taskService.start();
@@ -59,6 +77,15 @@ public final class NodeImpl implements LocalNode, NodeLocator {
   @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public void stop() {
+    activator.unbindAll();
+
+    jobService.stop();
+    taskService.stop();
+    dfsService.stop();
   }
 
   @Override
@@ -74,10 +101,12 @@ public final class NodeImpl implements LocalNode, NodeLocator {
   public List<RemoteNode> find(String name, int count) throws IOException {
     List<RemoteNode> nodes = new ArrayList<>();
     for (RemotePeer peer : localPeer.findPeers(name, count)) {
-      try {
-        nodes.add(peer.getReference(RemoteNode.class));
-      } catch (RemoteException e) {
-        log.log(Level.WARNING, "Remote exception getting proxy from remote node", e);
+      if (peer != null) {
+        try {
+          nodes.add(peer.getReference(RemoteNode.class));
+        } catch (RemoteException e) {
+          log.log(Level.WARNING, "Remote exception getting proxy from remote node", e);
+        }
       }
     }
     return nodes;

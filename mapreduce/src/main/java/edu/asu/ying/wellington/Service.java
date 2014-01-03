@@ -9,4 +9,6 @@ public interface Service {
    * Starts the service with a reference to the node on which the service is running.
    */
   void start();
+
+  void stop();
 }

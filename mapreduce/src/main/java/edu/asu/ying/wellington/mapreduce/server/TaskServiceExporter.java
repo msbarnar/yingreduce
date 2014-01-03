@@ -38,8 +38,18 @@ public final class TaskServiceExporter
   }
 
   @Override
+  public void stop() throws RemoteException {
+    service.stop();
+  }
+
+  @Override
   public RemoteTaskService export(TaskService service) throws ExportException {
     this.service = service;
     return activator.bind(RemoteTaskService.class, this);
+  }
+
+  @Override
+  public void unexport() {
+    activator.unbind(RemoteTaskService.class);
   }
 }

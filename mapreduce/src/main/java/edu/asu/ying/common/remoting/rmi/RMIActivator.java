@@ -64,6 +64,26 @@ public class RMIActivator implements Activator {
     return (R) binding.getProxy();
   }
 
+  @Override
+  public <R extends Activatable, I extends R> void unbind(Class<R> cls) {
+    try {
+      UnicastRemoteObject.unexportObject(bindings.get(cls).getProxy(), true);
+    } catch (Exception ignored) {
+    }
+    bindings.remove(cls);
+  }
+
+  @Override
+  public void unbindAll() {
+    for (Binding<?> binding : bindings.values()) {
+      try {
+        UnicastRemoteObject.unexportObject(binding.getProxy(), true);
+      } catch (Exception ignored) {
+      }
+    }
+    bindings.clear();
+  }
+
   @SuppressWarnings("unchecked")
   protected <R extends Activatable> R export(R obj) throws ExportException {
     try {

@@ -6,6 +6,7 @@ import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
+import java.rmi.RemoteException;
 import java.util.Properties;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
@@ -138,8 +139,12 @@ public final class WellingtonModule extends AbstractModule {
 
   @Provides
   @Local
-  private RemoteNode provideLoopbackProxy(Activator activator) throws ClassNotExportedException {
-    return activator.getReference(RemoteNode.class);
+  private RemoteNode provideLoopbackProxy(Activator activator) throws RemoteException {
+    try {
+      return activator.getReference(RemoteNode.class);
+    } catch (ClassNotExportedException e) {
+      return null;
+    }
   }
 
   @Provides
@@ -161,9 +166,12 @@ public final class WellingtonModule extends AbstractModule {
   }
 
   @Provides
-  private RemoteDFSService provideDFSServiceProxy(Activator activator)
-      throws ClassNotExportedException {
-    return activator.getReference(RemoteDFSService.class);
+  private RemoteDFSService provideDFSServiceProxy(Activator activator) {
+    try {
+      return activator.getReference(RemoteDFSService.class);
+    } catch (ClassNotExportedException e) {
+      return null;
+    }
   }
 
   @Provides

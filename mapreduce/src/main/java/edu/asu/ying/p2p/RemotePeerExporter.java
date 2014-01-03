@@ -32,6 +32,11 @@ public final class RemotePeerExporter implements RemotePeer, Exporter<LocalPeer,
   }
 
   @Override
+  public void unexport() {
+    activator.unbind(RemotePeer.class);
+  }
+
+  @Override
   public String getName() throws RemoteException {
     return localPeer.getName();
   }

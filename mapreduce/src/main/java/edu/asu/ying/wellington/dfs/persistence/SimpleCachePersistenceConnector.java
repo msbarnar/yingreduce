@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -39,8 +38,8 @@ public final class SimpleCachePersistenceConnector implements PersistenceConnect
   private SimpleCachePersistenceConnector() {
     ScheduledExecutorService cacheCleaner = Executors.newScheduledThreadPool(1);
     // Wait until DEFAULT_CACHE_LIFETIME_SECONDS has elapsed, then run periodically
-    cacheCleaner.scheduleAtFixedRate(this, cacheLifetimeSeconds, CACHE_CLEAN_FREQUENCY_SECONDS,
-                                     TimeUnit.SECONDS);
+    /*cacheCleaner.scheduleAtFixedRate(this, cacheLifetimeSeconds, CACHE_CLEAN_FREQUENCY_SECONDS,
+                                     TimeUnit.SECONDS);*/
   }
 
   /**

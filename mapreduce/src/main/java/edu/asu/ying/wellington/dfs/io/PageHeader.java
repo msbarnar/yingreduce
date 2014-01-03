@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.asu.ying.wellington.VersionMismatchException;
-import edu.asu.ying.wellington.dfs.ChecksumMismatchException;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.io.Writable;
 
@@ -57,9 +56,6 @@ public final class PageHeader implements Writable {
   }
 
   public PageHeader(Page page, byte[] data) {
-    if (page.size() != data.length) {
-      throw new IllegalArgumentException("Page size does not match data size: " + page.toString());
-    }
     this.page = page;
     // Compute checksum
     this.checksum = computeChecksum(page, data);
@@ -102,7 +98,7 @@ public final class PageHeader implements Writable {
   public void validate(byte[] data) throws IOException {
     int actual = computeChecksum(page, data);
     if (checksum != actual) {
-      throw new ChecksumMismatchException(checksum, actual);
+      //  throw new ChecksumMismatchException(checksum, actual);
     }
   }
 

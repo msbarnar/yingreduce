@@ -22,6 +22,7 @@ public final class PageResponsibilityRecord {
   }
 
   public boolean sawThisCycle(int cycle) {
+    // FIXME: Integer overflow will break this
     return cycleLastSeen >= cycle;
   }
 

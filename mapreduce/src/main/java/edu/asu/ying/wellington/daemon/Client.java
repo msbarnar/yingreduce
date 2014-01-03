@@ -80,7 +80,7 @@ public class Client {
    */
   private void start() throws IOException {
     // Spawn virtual nodes
-    Daemon[] instances = new Daemon[2];
+    Daemon[] instances = new Daemon[5];
     Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
@@ -121,6 +121,13 @@ public class Client {
       }
     }
 
+    System.out.println("Waiting for transfers to finish");
+    try {
+      dfsClient.waitPendingTransfers();
+    } catch (InterruptedException ignored) {
+    }
+    System.out.println("All transfers finished");
+
     // Read the file from the DFS
     File outputFile = new File(System.getProperty("user.home") + "/dfs/downloaded-lipsum.txt");
     try (OutputStream ostream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
@@ -131,11 +138,13 @@ public class Client {
     }
 
     Scanner scanner = new Scanner(System.in);
-    scanner.nextLine();
 
     for (Daemon instance : instances) {
-      instance.getPeer().close();
+      System.out.println("Enter to kill a node");
+      scanner.nextLine();
+      instance.stop();
     }
+
     System.exit(0);
 
     /**************************** Job scheduling *******************************/

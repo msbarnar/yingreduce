@@ -36,4 +36,9 @@ public final class JobServiceExporter
     this.service = service;
     return activator.bind(RemoteJobService.class, this);
   }
+
+  @Override
+  public void unexport() {
+    activator.unbind(RemoteJobService.class);
+  }
 }

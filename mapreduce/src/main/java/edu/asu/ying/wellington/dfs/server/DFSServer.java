@@ -6,6 +6,7 @@ import com.healthmarketscience.rmiio.GZIPRemoteInputStream;
 import com.healthmarketscience.rmiio.RemoteInputStream;
 import com.healthmarketscience.rmiio.RemoteInputStreamClient;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.server.ExportException;
@@ -16,15 +17,13 @@ import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.wellington.NodeLocator;
 import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.DFSService;
-import edu.asu.ying.wellington.dfs.File;
-import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.PageData;
 import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.dfs.RemotePage;
 import edu.asu.ying.wellington.dfs.RemotePageImpl;
+import edu.asu.ying.wellington.dfs.io.PageHeader;
 import edu.asu.ying.wellington.dfs.persistence.PageNotFoundException;
 import edu.asu.ying.wellington.dfs.persistence.Persistence;
-import edu.asu.ying.wellington.io.WritableInt;
 
 /**
  *
@@ -74,6 +73,10 @@ public final class DFSServer implements DFSService {
   public void start() {
   }
 
+  @Override
+  public void stop() {
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -112,13 +115,8 @@ public final class DFSServer implements DFSService {
     RemoteNode node = locator.find(name.toString());
     InputStream istream = RemoteInputStreamClient
         .wrap(node.getDFSService().getRemoteInputStream(name));
-    // FIXME: I forgot to ever actually write the page header
-    // PageHeader header = PageHeader.readFrom(new DataInputStream(istream));
-    File file = new File(name.path());
-    file.properties().put(File.Properties.PageCapacity.toString(), new WritableInt(32768));
-    Page page = new Page(file, name.index());
-    // FIXME: This comes from the header :p
-    return new RemotePageImpl(page, istream);
+    PageHeader header = PageHeader.readFrom(new DataInputStream(istream));
+    return new RemotePageImpl(header.getPage(), istream);
   }
 
   @Override

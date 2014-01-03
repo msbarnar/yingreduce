@@ -49,6 +49,11 @@ public final class JobScheduler implements JobService {
     jobDelegator.start();
   }
 
+  @Override
+  public void stop() {
+    jobDelegator.stop();
+  }
+
   /**
    * If this node is responsible for {@code job}, it will be queued for delegation. Otherwise the
    * job will be forwarded to the responsible node.

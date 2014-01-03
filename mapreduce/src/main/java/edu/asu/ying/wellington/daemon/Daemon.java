@@ -69,4 +69,9 @@ final class Daemon {
   int getPort() {
     return port;
   }
+
+  public void stop() {
+    peer.close();
+    node.stop();
+  }
 }

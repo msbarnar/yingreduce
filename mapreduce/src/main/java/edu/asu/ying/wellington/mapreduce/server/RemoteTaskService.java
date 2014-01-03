@@ -13,4 +13,6 @@ public interface RemoteTaskService extends Activatable {
   void accept(Task task) throws RemoteException;
 
   int getBackpressure() throws RemoteException;
+
+  void stop() throws RemoteException;
 }

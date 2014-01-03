@@ -62,6 +62,13 @@ public class TaskScheduler implements TaskService {
   }
 
   @Override
+  public void stop() {
+    localQueue.stop();
+    remoteQueue.stop();
+    forwardingQueue.stop();
+  }
+
+  @Override
   public void accept(Task task) throws TaskException {
     // Initial tasks go in the local queue first if available, else everything gets forwarded
     if (isInitialNodeFor(task)) {

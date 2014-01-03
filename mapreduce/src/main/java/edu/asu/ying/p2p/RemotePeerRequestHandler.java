@@ -23,6 +23,8 @@ public final class RemotePeerRequestHandler implements MessageHandler {
 
   private static final String REMOTE_PEER_TAG = "p2p.remotepeer";
 
+  private boolean isRunning = true;
+
   public static RequestMessage createRequest() {
     return new RequestMessage(REMOTE_PEER_TAG);
   }
@@ -53,6 +55,9 @@ public final class RemotePeerRequestHandler implements MessageHandler {
 
   @Override
   public Message onIncomingRequest(Message request) {
+    if (!isRunning) {
+      return null;
+    }
     final ResponseMessage response = ResponseMessage.inResponseTo(request);
     // Lazily export the local peer
     if (proxyInstance == null) {
@@ -70,5 +75,9 @@ public final class RemotePeerRequestHandler implements MessageHandler {
     }
     response.setContent(proxyInstance);
     return response;
+  }
+
+  public void stop() {
+    isRunning = false;
   }
 }

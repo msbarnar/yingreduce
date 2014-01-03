@@ -59,4 +59,9 @@ public final class NodeExporter implements RemoteNode, Exporter<LocalNode, Remot
     this.node = node;
     return activator.bind(RemoteNode.class, this);
   }
+
+  @Override
+  public void unexport() {
+    activator.unbind(RemoteNode.class);
+  }
 }

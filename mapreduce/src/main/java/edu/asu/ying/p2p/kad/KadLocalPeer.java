@@ -53,6 +53,8 @@ public final class KadLocalPeer implements LocalPeer {
   // Getting RMI references to neighbors is expensive, so cache the reference every time we get one
   private Map<Node, RemotePeer> neighborsCache = new HashMap<>();
 
+  private final RemotePeerRequestHandler peerRequestHandler;
+
   @Inject
   private KadLocalPeer(KeybasedRouting kbrNode,
                        Channel channel,
@@ -63,6 +65,8 @@ public final class KadLocalPeer implements LocalPeer {
     this.kbrNode = kbrNode;
     // Connect the P2P messaging system to the Kademlia node
     this.networkChannel = channel;
+
+    this.peerRequestHandler = peerRequestHandler;
   }
 
   /**
@@ -89,6 +93,10 @@ public final class KadLocalPeer implements LocalPeer {
 
   @Override
   public void close() {
+    log.info("Shutting down " + getName());
+
+    peerRequestHandler.stop();
+
     neighborsCache.clear();
     try {
       networkChannel.close();
@@ -202,7 +210,9 @@ public final class KadLocalPeer implements LocalPeer {
     } catch (RemoteException | InvalidContentException | InterruptedException
         | ExecutionException e) {
 
-      throw new RuntimeException(node.toString(), e);
+      //throw new RuntimeException(node.toString(), e);
+      // FIXME: masked exception, timeouts can be normal!
+      return null;
     }
   }
 }

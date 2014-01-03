@@ -14,6 +14,7 @@ import edu.asu.ying.wellington.dfs.File.OutputMode;
 import edu.asu.ying.wellington.dfs.Page;
 import edu.asu.ying.wellington.dfs.io.DistributingPageOutputStream;
 import edu.asu.ying.wellington.dfs.io.PageFetchingInputStream;
+import edu.asu.ying.wellington.dfs.server.PageDistributionSink;
 import edu.asu.ying.wellington.io.WritableInt;
 
 /**
@@ -87,5 +88,9 @@ public final class DFSClient {
    */
   public InputStream getInputStream(File file) throws IOException, SecurityException {
     return new PageFetchingInputStream(file, SZ_INPUT_STREAM_BUFFER, dfsService);
+  }
+
+  public void waitPendingTransfers() throws InterruptedException {
+    ((PageDistributionSink) dfsService.getDistributionSink()).waitPendingTransfers();
   }
 }

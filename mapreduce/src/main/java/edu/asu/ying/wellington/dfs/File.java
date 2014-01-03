@@ -44,7 +44,7 @@ public final class File implements Writable {
   }
 
   private Path path;
-  private FileProperties properties;
+  private FileProperties properties = getDefaultProperties();
 
   private File() {
   }

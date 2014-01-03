@@ -37,7 +37,7 @@ public final class PageFetchingInputStream extends InputStream {
   private static final Logger log = Logger.getLogger(PageFetchingInputStream.class.getName());
 
   // The maximum number of concurrent page fetches
-  private static final int N_FETCH_THREADS = 5;
+  private static final int N_FETCH_THREADS = 1;
 
   // For getting individual page input streams
   private final DFSService dfsService;
@@ -64,7 +64,7 @@ public final class PageFetchingInputStream extends InputStream {
   private volatile int eofIndex = -1;
 
   // Constantly keep the page cache full
-  private final ExecutorService pageFetchWorkers = Executors.newCachedThreadPool();
+  private final ExecutorService pageFetchWorkers = Executors.newSingleThreadExecutor();
 
   // True when there are no more data to be written
   private volatile boolean isClosed = false;
@@ -132,10 +132,15 @@ public final class PageFetchingInputStream extends InputStream {
       } else {
         // Either read fully or read as much as is left in the buffer
         read = 0;
-        int limit = Math.min(len, buffer.length - pBuffer);
+        int limit = Math.min(len - off, buffer.length - pBuffer);
         for (int i = 0; i < limit; i++) {
-          b[off++] = buffer[pBuffer++];
+          try {
+            b[off++] = buffer[pBuffer++];
+          } catch (ArrayIndexOutOfBoundsException e) {
+            throw e;
+          }
         }
+
         read += limit;
       }
     }

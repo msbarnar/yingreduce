@@ -16,7 +16,7 @@ import edu.asu.ying.wellington.daemon.DaemonSingleton;
 /**
  *
  */
-final class DaemonStatusRestlet extends ServerResource {
+public final class DaemonStatusRestlet extends ServerResource {
 
   @Get("xml")
   public final Representation represent() {

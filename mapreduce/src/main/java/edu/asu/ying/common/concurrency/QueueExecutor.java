@@ -1,11 +1,11 @@
 package edu.asu.ying.common.concurrency;
 
+import org.apache.log4j.Logger;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -45,6 +45,10 @@ public abstract class QueueExecutor<T> implements Runnable {
     threadPool.submit(this);
   }
 
+  public void stop() {
+    threadPool.shutdown();
+  }
+
   public void add(T item) {
     queue.add(item);
   }
@@ -65,7 +69,7 @@ public abstract class QueueExecutor<T> implements Runnable {
       try {
         this.process(item);
       } catch (Throwable e) {
-        log.log(Level.WARNING, "Uncaught exception processing queue entry", e);
+        log.warn("Uncaught exception processing queue entry", e);
       }
     }
   }

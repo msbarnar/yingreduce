@@ -1,6 +1,5 @@
 package edu.asu.ying.wellington.dfs.server;
 
-import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -8,7 +7,7 @@ import com.healthmarketscience.rmiio.RemoteOutputStream;
 import com.healthmarketscience.rmiio.RemoteOutputStreamClient;
 import com.healthmarketscience.rmiio.RemoteRetry;
 
-import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
@@ -86,6 +85,12 @@ public final class PageDistributionSink
    */
   @Override
   public void process(PageData data) throws IOException {
+    synchronized (pageQueue) {
+      if (pageQueue.size() == 0) {
+        pageQueue.notifyAll();
+      }
+    }
+
     String pageName = data.header().getPage().name().toString();
 
     // Find the destination node for the page
@@ -106,7 +111,7 @@ public final class PageDistributionSink
     }
 
     switch (response.status) {
-      case Overloaded:
+      /*case Overloaded:
         // Requeue the transfer to try again later
         pageQueue.add(data);
         log.info(String.format("[send] %s: %s is overloaded; requeued", pageName, nodeName));
@@ -115,7 +120,7 @@ public final class PageDistributionSink
       case OutOfCapacity:
         log.info(String.format("[send] %s: %s is over capacity", pageName, nodeName));
         throw new IOException("Remote node is over capacity");
-
+*/
       case Accepting:
         try {
           inProgressTransfers.put(transfer.id, data);
@@ -130,12 +135,20 @@ public final class PageDistributionSink
       case Duplicate:
         log.info(String.format("[send] %s: %s already has page", pageName, nodeName));
         break;
+
+      default:
+        log.severe(String.format("[send] %s rejected by %s", pageName, nodeName));
     }
   }
 
   @Override
   public void notifyResult(String transferId, @Nullable Throwable exception) {
     PageData data = inProgressTransfers.remove(transferId);
+    synchronized (inProgressTransfers) {
+      if (inProgressTransfers.isEmpty()) {
+        inProgressTransfers.notifyAll();
+      }
+    }
     if (data == null) {
       log.warning(
           "Received completion notification for a transfer we didn't start; it's a mystery");
@@ -155,16 +168,28 @@ public final class PageDistributionSink
     // contents in chunks
     OutputStream ostream = null;
     try {
-      ByteArrayInputStream istream = new ByteArrayInputStream(data.data());
       ostream = RemoteOutputStreamClient.wrap(outputStream, RemoteRetry.SIMPLE);
       // Trust RMIIO to buffer the transfer properly
-      ByteStreams.copy(istream, ostream);
+      data.write(new DataOutputStream(ostream));
     } finally {
       if (ostream != null) {
         try {
           ostream.close();
         } catch (IOException ignored) {
         }
+      }
+    }
+  }
+
+  public void waitPendingTransfers() throws InterruptedException {
+    synchronized (pageQueue) {
+      if (pageQueue.size() > 0) {
+        pageQueue.wait();
+      }
+    }
+    synchronized (inProgressTransfers) {
+      if (!inProgressTransfers.isEmpty()) {
+        inProgressTransfers.wait();
       }
     }
   }

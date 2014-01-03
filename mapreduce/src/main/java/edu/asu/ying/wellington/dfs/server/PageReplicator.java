@@ -3,7 +3,11 @@ package edu.asu.ying.wellington.dfs.server;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.ProvisionException;
 
+import org.apache.log4j.Logger;
+
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
@@ -14,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.asu.ying.common.concurrency.DelegateQueueExecutor;
 import edu.asu.ying.common.concurrency.QueueExecutor;
@@ -34,13 +38,14 @@ import edu.asu.ying.wellington.dfs.persistence.PersistenceConnector;
  * the replicator will communicate with the other nodes in the set to decide who should replicate
  * the lost page to new nodes.
  */
+// FIXME: This class is a joke
 public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<PageTransfer> {
 
   private static final Logger log = Logger.getLogger(PageReplicator.class.getName());
 
   // The time a node is allowed to not respond before it is considered dead and its pages are
   // re-replicated
-  private static final long NODE_TIMEOUT_MS = 3 * 60 * 1000;    // 3 minutes
+  private static final long NODE_TIMEOUT_MS = 5 * 1000;    // 10 seconds
 
   // For finding the next responsible node
   private final NodeLocator locator;
@@ -54,7 +59,7 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
   private final PersistenceConnector pageCache;
 
   // The cycle time slot for checking nodes are still up
-  private int currentPingCycle = 0;
+  private final AtomicInteger currentPingCycle = new AtomicInteger(0);
 
   // The list of pages that have yet to be replicated.
   private final QueueExecutor<PageTransfer> toBeReplicated = new DelegateQueueExecutor<>(this);
@@ -70,6 +75,8 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
    */
   private final Map<PageName, Integer> timedOutPages = new HashMap<>();
 
+  private final Timer timer;
+
 
   @Inject
   private PageReplicator(@Local Provider<RemoteNode> localNodeProxyProvider,
@@ -81,13 +88,15 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
     this.pageCache = pageCache;
     this.locator = locator;
     this.distributionSinkProvider = distributionSinkProvider;
-    Timer timer = new Timer();
+    timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
       @Override
       public void run() {
         checkTimedOutNodes();
       }
     }, NODE_TIMEOUT_MS, NODE_TIMEOUT_MS);
+
+    toBeReplicated.start();
   }
 
   /**
@@ -100,11 +109,30 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
       throw new IOException("Page is not cached; cannot be replicated");
     }
 
+    String localName = locator.local().getName();
+
+    log.info(
+        String.format("Page %s showed up at replicator on %s", transfer.page.name(), localName));
+
+    // Start with our list of responsible nodes for this page; if we don't know any, just start
+    // with us
     List<PageResponsibilityRecord> records = responsibleNodes.get(transfer.page.name());
     if (records == null) {
       records = new ArrayList<>();
+      records.add(new PageResponsibilityRecord(locator.local()));
       responsibleNodes.put(transfer.page.name(), records);
     }
+
+    log.info(String.format("[%s] I know that %d nodes know about %s", localName,
+                           records.size(), transfer.page.name()));
+
+    if (records.size() >= 3) {
+      log.info(String.format("[%s] That's enough", localName));
+      return;
+    }
+
+    log.info(String.format("[%s] That's not enough, let me ask around...", localName));
+
     // Get the responsibility table from the previous node and add it to our own
     List<RemoteNode> nodes = transfer.sendingNode
         .getDFSService()
@@ -112,7 +140,7 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
 
     RemoteNode localNodeProxy = localNodeProxyProvider.get();
     for (RemoteNode node : nodes) {
-      // Don't include ourselves
+      // Don't ask ourselves
       if (!node.equals(localNodeProxy)) {
         boolean alreadyAdded = false;
         for (PageResponsibilityRecord record : records) {
@@ -129,8 +157,12 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
       }
     }
 
+    log.info(String.format("[%s] After asking, now I know that %d nodes know about %s",
+                           locator.local().getName(),
+                           records.size(), transfer.page.name()));
+
     // Don't replicate the page more than 3 times
-    if (nodes.size() < 3) {
+    if (records.size() < 3) {
       toBeReplicated.add(transfer);
     }
   }
@@ -152,12 +184,24 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
     return nodes;
   }
 
+  private void addResponsibleNode(PageName page, RemoteNode node) {
+    List<PageResponsibilityRecord> records = responsibleNodes.get(page);
+    if (records == null) {
+      records = new ArrayList<>();
+      responsibleNodes.put(page, records);
+    }
+    records.add(new PageResponsibilityRecord(node));
+  }
+
   /**
    * Replicates a single page to the next closest node, which is placed in the responsibility
    * table for this page.
    */
   @Override
   public void process(PageTransfer transfer) throws Exception {
+    log.info("Replicating page " + transfer.page.name());
+
+    // Find pages that SHOULD be responsible for this page
     List<RemoteNode> nodes = locator.find(transfer.page.name().toString(), 5);
     List<RemoteNode> responsibleNodes = getResponsibleNodesFor(transfer.page.name());
 
@@ -167,24 +211,29 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
       boolean nodeAlreadyResponsible = false;
       String nodeName = node.getName();
       // Check if this node is in the responsible nodes
+      // FIXME: WOW is this inefficient
       for (RemoteNode alreadyHave : responsibleNodes) {
-        if (nodeName.equals(alreadyHave.getName())) {
+        String alreadyHaveName = alreadyHave.getName();
+        if (nodeName.equals(alreadyHaveName)) {
           nodeAlreadyResponsible = true;
           break;
         }
       }
       // Pick this node if not in the responsibility table
       if (!nodeAlreadyResponsible) {
+        log.info("Found a node for page " + transfer.page.name() + ": " + node.getName());
         // Read the page data from cache and prepare a transfer for it
         InputStream istream = pageCache.getInputStream(transfer.page.name());
         PageData pageData = new PageData(transfer.page, ByteStreams.toByteArray(istream));
         // Specify where to send it
         pageData.setDestination(node);
         distributionSinkProvider.get().accept(pageData);
+        addResponsibleNode(transfer.page.name(), node);
         // Stop looking for nodes to replicate to
-        break;
+        return;
       }
     }
+    log.info(transfer.page.name() + " already sufficiently replicated");
   }
 
   /**
@@ -194,7 +243,7 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
     for (List<PageResponsibilityRecord> records : responsibleNodes.values()) {
       for (PageResponsibilityRecord record : records) {
         if (record.getNode().equals(node)) {
-          record.sawNode(currentPingCycle);
+          record.sawNode(currentPingCycle.get());
         }
       }
     }
@@ -204,7 +253,17 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
    * Scans the page responsibility table and notes any pages with timed out nodes to be replicated.
    */
   private void checkTimedOutNodes() {
-    RemoteNode localNodeProxy = localNodeProxyProvider.get();
+    RemoteNode localNodeProxy = null;
+    try {
+      localNodeProxy = localNodeProxyProvider.get();
+    } catch (ProvisionException e) {
+      // Happens when the node shuts down
+      timer.cancel();
+      return;
+    }
+
+    // FIXME: Integer overflow will break this
+    int currentCycle = currentPingCycle.getAndIncrement();
 
     for (Map.Entry<PageName, List<PageResponsibilityRecord>> entry : responsibleNodes.entrySet()) {
       PageName pageName = entry.getKey();
@@ -213,12 +272,13 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
       while (records.hasNext()) {
         PageResponsibilityRecord record = records.next();
         // Only ping nodes we haven't seen (if a node pings us, we saw it)
-        if (!record.sawThisCycle(currentPingCycle)) {
+        if (!record.sawThisCycle(currentCycle)) {
           // Ping with our own node proxy so they see us, too
           try {
             record.getNode().getDFSService().ping(localNodeProxy);
-            record.sawNode(currentPingCycle);
-          } catch (RemoteException pingException) {
+            record.sawNode(currentCycle);
+            //log.debug("Saw node " + record.getNode().getName());
+          } catch (NullPointerException | RemoteException e) {
             // Increment the number of timed out nodes for this page
             addTimedOutNode(pageName);
             // Remove this node from the responsibility table
@@ -227,8 +287,6 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
         }
       }
     }
-    // Advance one time slot
-    ++currentPingCycle;
   }
 
   /**
@@ -238,14 +296,17 @@ public final class PageReplicator implements Sink<PageTransfer>, QueueProcessor<
     // Prevent a race condition where a page's number of timed out nodes is incremented after
     // the timeout is dealt with but before the number is decremented, resulting in the value of
     // timedOutPages being one greater than it should be
-    synchronized (timedOutPages) {
-      Integer numTimedOut = timedOutPages.get(page);
-      if (numTimedOut == null) {
-        numTimedOut = 1;
-        timedOutPages.put(page, numTimedOut);
-      } else {
-        timedOutPages.put(page, ++numTimedOut);
-      }
+    log.warn("Node timed out for page " + page);
+
+    PageTransfer transfer = null;
+    try {
+      PageData data = PageData.readFrom(new DataInputStream(pageCache.getInputStream(page)));
+      transfer = new PageTransfer(locator.local(), 3, data.header().getPage());
+    } catch (IOException e) {
+      log.error("Tried to replicate timed out page, but exception getting data from cache", e);
+    }
+    if (transfer != null) {
+      toBeReplicated.add(transfer);
     }
   }
 }
