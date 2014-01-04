@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import edu.asu.ying.common.remoting.Activatable;
 import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.PageName;
+import edu.asu.ying.wellington.dfs.io.PageHeader;
 
 /**
  * {@code RemoteDFSService} is the interface to the filesystem server on a remote peer.
@@ -32,4 +33,8 @@ public interface RemoteDFSService extends Activatable {
   void ping(RemoteNode pinger) throws RemoteException;
 
   List<RemoteNode> getResponsibleNodesFor(PageName name) throws RemoteException;
+
+  PageHeader getPageHeader(PageName name) throws RemoteException;
+
+  boolean hasPage(PageName name) throws RemoteException;
 }

@@ -10,7 +10,7 @@ import edu.asu.ying.wellington.mapreduce.job.Job;
  * {@code Task} is the base class of all distributable mapreduce. </p> Properties defined by this
  * class are: <ul> <il>{@code mapreduce.id} - the universally unique ID of the mapreduce</il> </ul>
  */
-public abstract class Task implements Serializable {
+public class Task implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -20,7 +20,7 @@ public abstract class Task implements Serializable {
 
   protected RemoteNode initialNode;
 
-  protected Task(Job parentJob, TaskIdentifier taskID, PageName targetPage) {
+  public Task(Job parentJob, TaskIdentifier taskID, PageName targetPage) {
     this.parentJob = parentJob;
     this.taskID = taskID;
     this.targetPage = targetPage;
@@ -45,6 +45,4 @@ public abstract class Task implements Serializable {
   public PageName getTargetPageID() {
     return targetPage;
   }
-
-  public abstract Serializable run();
 }

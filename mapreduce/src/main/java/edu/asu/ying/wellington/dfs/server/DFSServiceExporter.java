@@ -16,6 +16,7 @@ import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageName;
+import edu.asu.ying.wellington.dfs.io.PageHeader;
 
 /**
  *
@@ -79,5 +80,19 @@ public final class DFSServiceExporter
   @Override
   public List<RemoteNode> getResponsibleNodesFor(PageName name) throws RemoteException {
     return replicator.getResponsibleNodesFor(name);
+  }
+
+  @Override
+  public PageHeader getPageHeader(PageName name) throws RemoteException {
+    try {
+      return service.getPageHeader(name);
+    } catch (IOException e) {
+      throw new RemoteException("Remote node threw an exception reading page header", e);
+    }
+  }
+
+  @Override
+  public boolean hasPage(PageName name) throws RemoteException {
+    return service.hasPage(name);
   }
 }

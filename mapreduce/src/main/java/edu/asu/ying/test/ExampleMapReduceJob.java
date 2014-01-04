@@ -26,9 +26,12 @@ public class ExampleMapReduceJob {
     return job;
   }
 
-  public class LetterCounter
+  public static class LetterCounter
       implements Mappable<WritableString, WritableString, WritableChar, WritableInt>,
                  Reducer<WritableChar, WritableInt, WritableChar, WritableInt> {
+
+    public LetterCounter() {
+    }
 
     @Override
     public void map(WritableString key, WritableString value,

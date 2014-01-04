@@ -20,9 +20,13 @@ import java.net.URI;
 import java.util.Scanner;
 
 import edu.asu.ying.p2p.kad.KadP2PModule;
+import edu.asu.ying.test.ExampleMapReduceJob;
 import edu.asu.ying.wellington.WellingtonModule;
 import edu.asu.ying.wellington.dfs.Path;
 import edu.asu.ying.wellington.dfs.client.DFSClient;
+import edu.asu.ying.wellington.mapreduce.job.JobClient;
+import edu.asu.ying.wellington.mapreduce.job.JobConf;
+import edu.asu.ying.wellington.mapreduce.job.JobException;
 
 /**
  * The com.healthmarketscience.rmiio.main entry point for the node daemon. {@code Server} starts
@@ -111,7 +115,7 @@ public class Client {
     DFSClient dfsClient = injector.getInstance(DFSClient.class);
 
     // Create a new file in the DFS and write the contents of the input file
-    Path path = new Path("tests/myfile");
+    Path path = new Path("lipsum");
     try (OutputStream ostream = dfsClient
         .getOutputStream(new edu.asu.ying.wellington.dfs.File(path),
                          edu.asu.ying.wellington.dfs.File.OutputMode.CreateNew)) {
@@ -137,6 +141,20 @@ public class Client {
       }
     }
 
+    System.out.println("Scheduling job");
+
+    /**************************** Job scheduling *******************************/
+
+    for (int i = 0; i < 1; i++) {
+      JobClient client = injector.getInstance(JobClient.class);
+      JobConf job = ExampleMapReduceJob.createJob();
+      try {
+        client.runJob(job);
+      } catch (JobException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     Scanner scanner = new Scanner(System.in);
 
     for (Daemon instance : instances) {
@@ -146,49 +164,5 @@ public class Client {
     }
 
     System.exit(0);
-
-    /**************************** Job scheduling *******************************/
-
-    /*JobClient client = injector.getInstance(JobClient.class);
-    JobConf job = ExampleMapReduceJob.createJob();
-    try {
-      client.runJob(job);
-    } catch (JobException e) {
-      throw new RuntimeException(e);
-    }
-
-    LocalScheduler sched = null;
-    //sched = instances[0].getLocalPeer();
-
-    if (sched != null) {
-      for (int i = 0; i < 1; i++) {
-        final Job job = new Job(new TableID("hoblahsh"));
-        final JobSchedulingResult result = sched.createJob(job);
-      }
-    }
-
-    for (final Daemon instance : instances) {
-      instance.getLocalPeer().getPageInSink().onIncomingPage.attach(new EventHandler<HasPageMetadata>() {
-        @Override
-        public boolean onEvent(Object sender, HasPageMetadata args) {
-          System.out.println(
-              String.format("[%d] PAGE! %s %d", instance.getPort(), args.getTableId().toString(),
-                            args.index()));
-          return true;
-        }
-      });
-    }
-
-    final PageBuilder pb = new PageBuilder(TableIdentifier.forString("lipsum"), instances[0].getLocalPeer().getPageOutSink());
-    try {
-      pb.offer(new Element(new WritableInt(1), new WritableString("a"),
-                         new WritableBytes("It's a small world after all".getBytes())));
-      pb.flush();
-      pb.offer(new Element(new WritableInt(2), new WritableString("b"),
-                         new WritableBytes("It's a small world after all".getBytes())));
-      pb.flush();
-    } catch (final IOException e) {
-      e.printStackTrace();
-    }*/
   }
 }

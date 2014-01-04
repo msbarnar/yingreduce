@@ -128,6 +128,13 @@ public final class DFSServer implements DFSService {
     return new GZIPRemoteInputStream(istream);
   }
 
+  @Override
+  public PageHeader getPageHeader(PageName name) throws IOException {
+    try (InputStream istream = persistence.readPage(name)) {
+      return PageHeader.readFrom(new DataInputStream(istream));
+    }
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -139,5 +146,10 @@ public final class DFSServer implements DFSService {
   @Override
   public RemoteDFSService asRemote() {
     return proxy;
+  }
+
+  @Override
+  public Persistence getPersistence() {
+    return persistence;
   }
 }

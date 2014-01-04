@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
 import edu.asu.ying.common.event.Sink;
 import edu.asu.ying.common.remoting.Exported;
 import edu.asu.ying.wellington.Service;
+import edu.asu.ying.wellington.dfs.io.PageHeader;
+import edu.asu.ying.wellington.dfs.persistence.Persistence;
 import edu.asu.ying.wellington.dfs.server.PageTransfer;
 import edu.asu.ying.wellington.dfs.server.PageTransferResponse;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
@@ -58,5 +60,7 @@ public interface DFSService extends Service, Exported<RemoteDFSService> {
    */
   RemoteInputStream provideRemoteInputStream(PageName name) throws IOException;
 
+  PageHeader getPageHeader(PageName name) throws IOException;
 
+  Persistence getPersistence();
 }

@@ -2,10 +2,10 @@ package edu.asu.ying.wellington.mapreduce.task.execution;
 
 import com.google.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Remote;
@@ -22,7 +22,7 @@ import edu.asu.ying.wellington.mapreduce.task.Task;
  */
 public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
-  private static final Logger log = Logger.getLogger(ForwardingQueueExecutor.class.getName());
+  private static final Logger log = Logger.getLogger(ForwardingQueueExecutor.class);
 
   private final NodeLocator locator;
 
@@ -49,6 +49,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
     // QFn -> QRn
     // If still null, then ours is the best scheduler to forward to
     RemoteTaskService bestNeighbor = null;
+    RemoteNode bestNode = null;
     int maximumBackpressure = size() - remoteQueue.size();
 
     // Unless one of our neighbors has a lower backpressure
@@ -61,9 +62,10 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
         if (remoteBackpressure > maximumBackpressure) {
           maximumBackpressure = remoteBackpressure;
           bestNeighbor = remoteScheduler;
+          bestNode = node;
         }
       } catch (RemoteException e) {
-        log.log(Level.WARNING, "Remote exception getting backpressure from remote scheduler", e);
+        log.warn("Remote exception getting backpressure from remote scheduler", e);
       }
     }
 
@@ -73,16 +75,20 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
       // QFn -> QFn
       if (maximumBackpressure < 0) {
         add(task);
+        log.info("Reforward: " + task.getTargetPageID());
       } else {
         // Put the task in the remote queue
         remoteQueue.add(task);
+        log.info("Forward to self: " + task.getTargetPageID());
       }
     } else {
       // Forward the task to the remote node
       try {
         bestNeighbor.accept(task);
+        log.info(locator.local().getName() + " [" + task.getTargetPageID() + "] -> " + bestNode
+            .getName());
       } catch (RemoteException e) {
-        log.log(Level.WARNING, "Remote exception forwarding task to remote node", e);
+        log.warn("Remote exception forwarding task to remote node", e);
       }
     }
   }

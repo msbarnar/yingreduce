@@ -2,6 +2,8 @@ package edu.asu.ying.wellington.mapreduce.task;
 
 import com.google.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 import java.rmi.server.ExportException;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
@@ -16,6 +18,8 @@ import edu.asu.ying.wellington.mapreduce.server.TaskServiceExporter;
  *
  */
 public class TaskScheduler implements TaskService {
+
+  private static final Logger log = Logger.getLogger(TaskScheduler.class);
 
   private final RemoteTaskService proxy;
 
@@ -93,6 +97,7 @@ public class TaskScheduler implements TaskService {
     if (localQueue.size() <= forwardingQueue.size()) {
       // If the local queue won't take it, forward it
       localQueue.add(task);
+      log.info("Queue local: " + task.getTargetPageID());
     } else {
       queueForward(task);
     }
@@ -100,6 +105,7 @@ public class TaskScheduler implements TaskService {
 
   private void queueForward(Task task) throws TaskSchedulingException {
     forwardingQueue.add(task);
+    log.info("Queue forward: " + task.getTargetPageID());
   }
 
   /**

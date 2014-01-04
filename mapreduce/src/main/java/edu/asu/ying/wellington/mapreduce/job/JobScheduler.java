@@ -11,6 +11,8 @@ import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.wellington.NodeLocator;
 import edu.asu.ying.wellington.RemoteNode;
+import edu.asu.ying.wellington.dfs.PageName;
+import edu.asu.ying.wellington.dfs.Path;
 import edu.asu.ying.wellington.mapreduce.server.JobServiceExporter;
 import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
 
@@ -108,9 +110,7 @@ public final class JobScheduler implements JobService {
    * Finds the node with the first page of the job's table.
    */
   private RemoteNode findResponsibleNode(Job job) throws IOException {
-    //return nodeLocator.find(PageName.firstPageOf(job.getTableName()).toString());
-    // FIXME: Find a node for the job
-    return null;
+    return nodeLocator.find(PageName.firstPageOf(new Path(job.getTableName())).toString());
   }
 
   @Override
