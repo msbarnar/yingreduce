@@ -1,10 +1,9 @@
 package edu.asu.ying.wellington.mapreduce.job;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import edu.asu.ying.wellington.RemoteNode;
@@ -32,7 +31,7 @@ public final class Job implements Serializable {
   private final String tableName;
 
   private RemoteNode responsibleNode;
-  private List<RemoteNode> reducerNodes;
+  private Set<RemoteNode> reducerNodes;
   private int reducerCount = DEFAULT_REDUCER_COUNT;
 
   private int numTasks;
@@ -67,12 +66,12 @@ public final class Job implements Serializable {
     return this.responsibleNode;
   }
 
-  public void setReducerNodes(Collection<RemoteNode> reducers) {
-    this.reducerNodes = ImmutableList.copyOf(reducers);
+  public void setReducerNodes(Set<RemoteNode> reducers) {
+    this.reducerNodes = ImmutableSet.copyOf(reducers);
     this.reducerCount = this.reducerNodes.size();
   }
 
-  public List<RemoteNode> getReducerNodeIDs() {
+  public Set<RemoteNode> getReducerNodeIDs() {
     return this.reducerNodes;
   }
 

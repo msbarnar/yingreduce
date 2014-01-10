@@ -5,6 +5,10 @@ import com.google.inject.Inject;
 import org.apache.log4j.Logger;
 
 import java.rmi.server.ExportException;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
@@ -13,6 +17,7 @@ import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
 import edu.asu.ying.wellington.mapreduce.server.TaskServiceExporter;
+import edu.asu.ying.wellington.mapreduce.task.execution.TaskExecutor;
 
 /**
  *
@@ -27,22 +32,31 @@ public class TaskScheduler implements TaskService {
 
   // Ql and Qr are bounded, but Qf is just a pipe to neighboring peers
   private final QueueExecutor<Task> forwardingQueue;
-  private final QueueExecutor<Task> localQueue;
-  private final QueueExecutor<Task> remoteQueue;
+  private final BlockingDeque<Task> localQueue;
+  private final BlockingDeque<Task> remoteQueue;
 
+  private final BlockingDeque<Object> readyQueue;
+
+  private final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
+
+  private final TaskExecutor executor;
 
   @Inject
   private TaskScheduler(TaskServiceExporter exporter,
                         DFSService dfsService,
                         @Forwarding QueueExecutor<Task> forwardingQueue,
-                        @Local QueueExecutor<Task> localQueue,
-                        @Remote QueueExecutor<Task> remoteQueue) {
+                        @Remote BlockingDeque<Task> remoteQueue,
+                        @Local BlockingDeque<Object> readyQueue,
+                        TaskExecutor executor) {
 
     this.dfsService = dfsService;
 
-    this.localQueue = localQueue;
+    this.localQueue = new LinkedBlockingDeque<>();
     this.remoteQueue = remoteQueue;
+    this.readyQueue = readyQueue;
     this.forwardingQueue = forwardingQueue;
+
+    this.executor = executor;
 
     try {
       this.proxy = exporter.export(this);
@@ -60,15 +74,27 @@ public class TaskScheduler implements TaskService {
   @Override
   public void start() {
     // Start everything explicitly so we don't start any threads in constructors
-    localQueue.start();
-    remoteQueue.start();
     forwardingQueue.start();
+
+    taskExecutor.submit(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          readyQueue.take();
+          if (localQueue.size() >= remoteQueue.size()) {
+            executor.execute(localQueue.take());
+          } else {
+            executor.execute(remoteQueue.take());
+          }
+          taskExecutor.submit(this);
+        } catch (InterruptedException ignored) {
+        }
+      }
+    });
   }
 
   @Override
   public void stop() {
-    localQueue.stop();
-    remoteQueue.stop();
     forwardingQueue.stop();
   }
 
@@ -97,7 +123,8 @@ public class TaskScheduler implements TaskService {
     if (localQueue.size() <= forwardingQueue.size()) {
       // If the local queue won't take it, forward it
       localQueue.add(task);
-      log.info("Queue local: " + task.getTargetPageID());
+      readyQueue.add(new Object());
+      //log.info("Queue local: " + task.getTargetPageID());
     } else {
       queueForward(task);
     }
@@ -105,7 +132,7 @@ public class TaskScheduler implements TaskService {
 
   private void queueForward(Task task) throws TaskSchedulingException {
     forwardingQueue.add(task);
-    log.info("Queue forward: " + task.getTargetPageID());
+    //log.info("Queue forward: " + task.getTargetPageID());
   }
 
   /**

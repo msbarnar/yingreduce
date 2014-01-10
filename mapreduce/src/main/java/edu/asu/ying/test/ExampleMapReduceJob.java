@@ -51,6 +51,8 @@ public class ExampleMapReduceJob {
       for (Map.Entry<Character, Integer> entry : freqs.entrySet()) {
         output.collect(new WritableChar(entry.getKey()), new WritableInt(entry.getValue()));
       }
+
+      output.complete();
     }
 
     @Override

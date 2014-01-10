@@ -8,7 +8,7 @@ from fabric.api import cd, run, env, execute, parallel
 username = 'msbarnar'
 host_prefix = '149.169.30.'
 hosts = range(9, 13)+range(35, 39)
-numhosts = 3
+numhosts = 2
 
 env.hosts = [username+'@'+host_prefix + str(x) for x in hosts[:numhosts]]
 env.warn_only = True

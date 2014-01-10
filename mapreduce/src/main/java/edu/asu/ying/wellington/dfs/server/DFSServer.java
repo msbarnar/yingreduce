@@ -115,8 +115,9 @@ public final class DFSServer implements DFSService {
     RemoteNode node = locator.find(name.toString());
     InputStream istream = RemoteInputStreamClient
         .wrap(node.getDFSService().getRemoteInputStream(name));
-    PageHeader header = PageHeader.readFrom(new DataInputStream(istream));
-    return new RemotePageImpl(header.getPage(), istream);
+    persistence.storePage(name, istream);
+    return new RemotePageImpl(PageHeader.readFrom(new DataInputStream(persistence.readPage(name)))
+                                  .getPage(), istream);
   }
 
   @Override

@@ -3,9 +3,13 @@ package edu.asu.ying.wellington.mapreduce.job;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
@@ -22,12 +26,16 @@ import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
  */
 public final class JobScheduler implements JobService {
 
+  private final Logger log = Logger.getLogger(JobScheduler.class);
+
   private final RemoteJobService proxy;
 
   private final Provider<String> localNodeIDProvider;
   private final NodeLocator nodeLocator;
 
   private final QueueExecutor<Job> jobDelegator;
+
+  private final Map<String, Integer> openJobs = new HashMap<>();
 
   @Inject
   private JobScheduler(JobServiceExporter exporter,
@@ -87,6 +95,27 @@ public final class JobScheduler implements JobService {
     }
   }
 
+  @Override
+  public void completeReduction(RemoteNode reducer, Job job) {
+    synchronized (openJobs) {
+      Integer numCompletions = openJobs.get(job.getName());
+      if (numCompletions == null) {
+        numCompletions = 1;
+      } else {
+        ++numCompletions;
+        log.info("Waiting for " + (job.getReducerCount() - numCompletions) + " more reductions");
+        if (numCompletions >= job.getReducerCount()) {
+          commitResults(job);
+          openJobs.remove(job.getName());
+          log.info("Job complete: " + job.getTableName());
+          log.info(job.getTimeElapsed() + " ms");
+          return;
+        }
+      }
+      openJobs.put(job.getName(), numCompletions);
+    }
+  }
+
   /**
    * Queues the job for reducer allocation and task delegation.
    */
@@ -111,6 +140,17 @@ public final class JobScheduler implements JobService {
    */
   private RemoteNode findResponsibleNode(Job job) throws IOException {
     return nodeLocator.find(PageName.firstPageOf(new Path(job.getTableName())).toString());
+  }
+
+  private void commitResults(Job job) {
+    for (RemoteNode node : job.getReducerNodeIDs()) {
+      try {
+        node.getReducerFor(null).commit();
+      } catch (RemoteException e) {
+        log.error("Reducer unreachable for commit", e);
+      }
+    }
+    log.info("Reductions committed");
   }
 
   @Override

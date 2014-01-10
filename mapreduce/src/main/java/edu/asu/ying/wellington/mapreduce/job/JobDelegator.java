@@ -5,7 +5,6 @@ import com.google.inject.Provider;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -44,8 +43,9 @@ public final class JobDelegator extends QueueExecutor<Job> {
 
   @Override
   protected void process(Job job) {
+    job.setStartTime(System.currentTimeMillis());
     // Find k reducers for the job and set them
-    Collection<RemoteNode> reducers = this.findReducers(job);
+    Set<RemoteNode> reducers = findReducers(job);
     job.setReducerNodes(reducers);
 
     // Since we're at the responsible node, this is also the initial node for task 0.
@@ -75,6 +75,7 @@ public final class JobDelegator extends QueueExecutor<Job> {
       throw new RuntimeException(e);
     }
 
+    // Delegate tasks
     Deque<Task> tasks = new ArrayDeque<>();
     for (int i = 0; i < job.getNumTasks(); i++) {
       Task task = null;

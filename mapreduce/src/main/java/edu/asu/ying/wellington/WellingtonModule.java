@@ -8,6 +8,8 @@ import com.google.inject.name.Names;
 
 import java.rmi.RemoteException;
 import java.util.Properties;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.event.Sink;
@@ -41,8 +43,6 @@ import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskScheduler;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 import edu.asu.ying.wellington.mapreduce.task.execution.ForwardingQueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.execution.LocalQueueExecutor;
-import edu.asu.ying.wellington.mapreduce.task.execution.RemoteQueueExecutor;
 
 /**
  * {@code WellingtonModule} binds Wellington service classes. </p> The module depends on {@link
@@ -105,16 +105,6 @@ public final class WellingtonModule extends AbstractModule {
         .annotatedWith(Forwarding.class)
         .to(ForwardingQueueExecutor.class)
         .in(Scopes.SINGLETON);
-    bind(new TypeLiteral<QueueExecutor<Task>>() {
-    })
-        .annotatedWith(Remote.class)
-        .to(RemoteQueueExecutor.class)
-        .in(Scopes.SINGLETON);
-    bind(new TypeLiteral<QueueExecutor<Task>>() {
-    })
-        .annotatedWith(Local.class)
-        .to(LocalQueueExecutor.class)
-        .in(Scopes.SINGLETON);
   }
 
   private void configureDFSService() {
@@ -145,6 +135,38 @@ public final class WellingtonModule extends AbstractModule {
     } catch (ClassNotExportedException e) {
       return null;
     }
+  }
+
+  private BlockingDeque<Object> readyQueue = null;
+  private final Object readyQueueLock = new Object();
+
+  @Provides
+  @Local
+  private BlockingDeque<Object> provideReadyQueue() {
+    if (readyQueue == null) {
+      synchronized (readyQueueLock) {
+        if (readyQueue == null) {
+          readyQueue = new LinkedBlockingDeque<>();
+        }
+      }
+    }
+    return readyQueue;
+  }
+
+  private BlockingDeque<Task> remoteQueue = null;
+  private final Object remoteQueueLock = new Object();
+
+  @Provides
+  @Remote
+  private BlockingDeque<Task> provideRemoteQueue() {
+    if (remoteQueue == null) {
+      synchronized (remoteQueueLock) {
+        if (remoteQueue == null) {
+          remoteQueue = new LinkedBlockingDeque<>();
+        }
+      }
+    }
+    return remoteQueue;
   }
 
   @Provides

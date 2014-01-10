@@ -10,7 +10,9 @@ import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
 import edu.asu.ying.wellington.dfs.server.RemoteDFSService;
 import edu.asu.ying.wellington.mapreduce.server.RemoteJobService;
+import edu.asu.ying.wellington.mapreduce.server.RemoteReducer;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
+import edu.asu.ying.wellington.mapreduce.task.Task;
 
 public final class NodeExporter implements RemoteNode, Exporter<LocalNode, RemoteNode> {
 
@@ -52,6 +54,11 @@ public final class NodeExporter implements RemoteNode, Exporter<LocalNode, Remot
   @Override
   public RemoteDFSService getDFSService() throws RemoteException {
     return dfsServiceProvider.get();
+  }
+
+  @Override
+  public RemoteReducer getReducerFor(Task task) throws RemoteException {
+    return node.getReducerFor(task);
   }
 
   @Override

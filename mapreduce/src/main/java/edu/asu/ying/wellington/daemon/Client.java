@@ -7,11 +7,9 @@ import com.google.inject.Injector;
 import org.apache.log4j.BasicConfigurator;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +57,8 @@ public class Client {
     File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
     BufferedReader reader;
 
+    int i = 0;
+
     String line;
     try {
       reader = new BufferedReader(new FileReader(nodeList));
@@ -68,7 +68,11 @@ public class Client {
           break;
         }
 
-        instances[0].join(URI.create(String.format("//%s:5000", line)));
+        System.out.println("Instance " + i + " connect to " + line);
+        instances[i++].join(URI.create(String.format("//%s:5000", line)));
+        if (i >= instances.length) {
+          i = 0;
+        }
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -76,7 +80,19 @@ public class Client {
   }
 
   private File readInputFile() {
-    return new File(System.getProperty("user.home") + "/mapreduce/data/lipsum.txt");
+    return new File(System.getProperty("user.home") + "/mapreduce/data/lipsum10m.txt");
+  }
+
+  Scanner scanner = new Scanner(System.in);
+
+  private String readCommand() {
+    System.out.println("=========================");
+    System.out.println("q: quit");
+    System.out.println("c: connect to physical peers");
+    System.out.println("u: upload data");
+    System.out.println("j: schedule a job");
+
+    return scanner.nextLine().trim().toLowerCase();
   }
 
   /**
@@ -84,15 +100,15 @@ public class Client {
    */
   private void start() throws IOException {
     // Spawn virtual nodes
-    Daemon[] instances = new Daemon[5];
+    Daemon[] instances = new Daemon[10];
     Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
           new KadP2PModule().setProperty("p2p.port", Integer.toString(5000 + i)))
           .createChildInjector(
               new WellingtonModule()
-                  .setProperty("dfs.store.path", System.getProperty("user.home") + "/dfs")
-                  .setProperty("dfs.page.capacity", "32768"));
+                  .setProperty("dfs.store.path", System.getProperty("user.home") + "/dfs/" + i)
+                  .setProperty("dfs.page.capacity", "262144"));
 
       instances[i] = injector.getInstance(Daemon.class);
       System.out.println(instances[i].getPeer().getName());
@@ -103,66 +119,73 @@ public class Client {
 
     System.out.println(String.format("%d daemons running", instances.length));
 
-    // Connect to physical nodes
-    // connectNodes(instances);
+    String command;
+    while (!(command = readCommand()).equals("q")) {
+      switch (command) {
+        case "c":
+          connectNodes(instances);
+          break;
+        case "u":
+          // Read the input file
+          File inputFile = readInputFile();
 
-    // Read the input file
-    File inputFile = readInputFile();
+          if (injector == null) {
+            throw new RuntimeException("No injector");
+          }
+          DFSClient dfsClient = injector.getInstance(DFSClient.class);
 
-    if (injector == null) {
-      throw new RuntimeException("No injector");
-    }
-    DFSClient dfsClient = injector.getInstance(DFSClient.class);
+          // Create a new file in the DFS and write the contents of the input file
+          Path path = new Path("lipsum");
+          try (OutputStream ostream = dfsClient
+              .getOutputStream(new edu.asu.ying.wellington.dfs.File(path),
+                               edu.asu.ying.wellington.dfs.File.OutputMode.CreateNew)) {
 
-    // Create a new file in the DFS and write the contents of the input file
-    Path path = new Path("lipsum");
-    try (OutputStream ostream = dfsClient
-        .getOutputStream(new edu.asu.ying.wellington.dfs.File(path),
-                         edu.asu.ying.wellington.dfs.File.OutputMode.CreateNew)) {
+            try (InputStream istream = new BufferedInputStream(new FileInputStream(inputFile))) {
+              ByteStreams.copy(istream, ostream);
+            }
+          }
 
-      try (InputStream istream = new BufferedInputStream(new FileInputStream(inputFile))) {
-        ByteStreams.copy(istream, ostream);
+          System.out.println("Waiting for transfers to finish");
+          try {
+            dfsClient.waitPendingTransfers();
+          } catch (InterruptedException ignored) {
+          }
+          System.out.println("All transfers finished");
+          break;
+        case "j":
+          JobClient client = injector.getInstance(JobClient.class);
+          for (int i = 0; i < 5; i++) {
+            JobConf job = ExampleMapReduceJob.createJob();
+            try {
+              client.runJob(job);
+            } catch (JobException e) {
+              throw new RuntimeException(e);
+            }
+          }
+          break;
       }
     }
 
-    System.out.println("Waiting for transfers to finish");
+    for (Daemon instance : instances) {
+      instance.stop();
+    }
     try {
-      dfsClient.waitPendingTransfers();
+      Thread.sleep(3000);
     } catch (InterruptedException ignored) {
     }
-    System.out.println("All transfers finished");
+    System.exit(0);
 
     // Read the file from the DFS
-    File outputFile = new File(System.getProperty("user.home") + "/dfs/downloaded-lipsum.txt");
+    /*File outputFile = new File(System.getProperty("user.home") + "/dfs/downloaded-lipsum.txt");
     try (OutputStream ostream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
       try (InputStream istream
                = dfsClient.getInputStream(new edu.asu.ying.wellington.dfs.File(path))) {
         ByteStreams.copy(istream, ostream);
       }
-    }
+    }*/
 
     System.out.println("Scheduling job");
 
     /**************************** Job scheduling *******************************/
-
-    for (int i = 0; i < 1; i++) {
-      JobClient client = injector.getInstance(JobClient.class);
-      JobConf job = ExampleMapReduceJob.createJob();
-      try {
-        client.runJob(job);
-      } catch (JobException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    Scanner scanner = new Scanner(System.in);
-
-    for (Daemon instance : instances) {
-      System.out.println("Enter to kill a node");
-      scanner.nextLine();
-      instance.stop();
-    }
-
-    System.exit(0);
   }
 }

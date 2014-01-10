@@ -6,8 +6,10 @@ import org.apache.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.concurrent.BlockingDeque;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.common.remoting.Remote;
 import edu.asu.ying.wellington.NodeLocator;
 import edu.asu.ying.wellington.RemoteNode;
@@ -26,13 +28,16 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
   private final NodeLocator locator;
 
-  private final QueueExecutor<Task> remoteQueue;
+  private final BlockingDeque<Task> remoteQueue;
+  private final BlockingDeque<Object> readyQueue;
 
   @Inject
   private ForwardingQueueExecutor(NodeLocator locator,
-                                  @Remote QueueExecutor<Task> remoteQueue) {
+                                  @Remote BlockingDeque<Task> remoteQueue,
+                                  @Local BlockingDeque<Object> readyQueue) {
     this.locator = locator;
     this.remoteQueue = remoteQueue;
+    this.readyQueue = readyQueue;
   }
 
   /**
@@ -43,6 +48,11 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
    */
   @Override
   protected synchronized void process(Task task) {
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException ignored) {
+    }
+
     Collection<RemoteNode> neighbors = locator.neighbors();
 
     // Default to forwarding to the local remote queue
@@ -65,7 +75,7 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
           bestNode = node;
         }
       } catch (RemoteException e) {
-        log.warn("Remote exception getting backpressure from remote scheduler", e);
+        log.error("Remote exception getting backpressure from remote scheduler", e);
       }
     }
 
@@ -75,20 +85,21 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
       // QFn -> QFn
       if (maximumBackpressure < 0) {
         add(task);
-        log.info("Reforward: " + task.getTargetPageID());
+        //log.info("Reforward: " + task.getTargetPageID());
       } else {
         // Put the task in the remote queue
         remoteQueue.add(task);
-        log.info("Forward to self: " + task.getTargetPageID());
+        readyQueue.add(new Object());
+        //log.info("Forward to self: " + task.getTargetPageID());
       }
     } else {
       // Forward the task to the remote node
       try {
         bestNeighbor.accept(task);
-        log.info(locator.local().getName() + " [" + task.getTargetPageID() + "] -> " + bestNode
-            .getName());
+        //log.info(locator.local().getName() + " [" + task.getTargetPageID() + "] -> " + bestNode
+        //    .getName());
       } catch (RemoteException e) {
-        log.warn("Remote exception forwarding task to remote node", e);
+        log.error("Remote exception forwarding task to remote node", e);
       }
     }
   }

@@ -56,7 +56,9 @@ public final class PersistenceEngine implements Persistence, QueueProcessor<Page
   @Override
   public void storePage(PageName name, InputStream stream) throws IOException {
     cache.deleteIfExists(name);
-    ByteStreams.copy(stream, cache.getOutputStream(name));
+    try (OutputStream ostream = cache.getOutputStream(name)) {
+      ByteStreams.copy(stream, ostream);
+    }
     cacheCommitQueue.add(name);
   }
 

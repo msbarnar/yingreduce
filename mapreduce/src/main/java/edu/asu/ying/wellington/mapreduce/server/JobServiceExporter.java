@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import edu.asu.ying.common.remoting.Activator;
 import edu.asu.ying.common.remoting.Exporter;
+import edu.asu.ying.wellington.RemoteNode;
 import edu.asu.ying.wellington.mapreduce.job.Job;
 import edu.asu.ying.wellington.mapreduce.job.JobException;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
@@ -29,6 +30,11 @@ public final class JobServiceExporter
     } catch (JobException e) {
       throw new RemoteException("Remote node failed to accept job", e);
     }
+  }
+
+  @Override
+  public void completeReduction(RemoteNode reducer, Job job) throws RemoteException {
+    service.completeReduction(reducer, job);
   }
 
   @Override

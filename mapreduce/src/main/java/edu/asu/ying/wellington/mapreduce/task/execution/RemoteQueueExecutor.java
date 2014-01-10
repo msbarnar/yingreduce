@@ -4,10 +4,8 @@ import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
 
-import java.io.Serializable;
-import java.util.Random;
-
 import edu.asu.ying.common.concurrency.QueueExecutor;
+import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.mapreduce.task.Task;
 
 /**
@@ -18,24 +16,17 @@ public final class RemoteQueueExecutor extends QueueExecutor<Task> {
 
   private static final Logger log = Logger.getLogger(RemoteQueueExecutor.class);
 
+  private final DFSService dfs;
+  private final TaskExecutor executor;
+
   @Inject
-  private RemoteQueueExecutor() {
+  private RemoteQueueExecutor(DFSService dfs, TaskExecutor executor) {
+    this.dfs = dfs;
+    this.executor = executor;
   }
 
   @Override
   protected void process(Task task) {
-    // TODO: Fetch data from peer
-    try {
-      Thread.sleep(1000 + (new Random()).nextInt(1000));
-    } catch (InterruptedException ignored) {
-    }
-    Serializable result = null;
-    try {
-      //result = task.run();
-      log.info("Remote: " + task.getTargetPageID());
-    } catch (final Exception e) {
-      e.printStackTrace();
-      result = e;
-    }
+    executor.execute(task);
   }
 }

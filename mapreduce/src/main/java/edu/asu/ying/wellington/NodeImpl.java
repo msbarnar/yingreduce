@@ -16,6 +16,11 @@ import edu.asu.ying.p2p.PeerNotFoundException;
 import edu.asu.ying.p2p.RemotePeer;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.mapreduce.job.JobService;
+import edu.asu.ying.wellington.mapreduce.server.Reducer;
+import edu.asu.ying.wellington.mapreduce.server.ReducerImpl;
+import edu.asu.ying.wellington.mapreduce.server.RemoteReducer;
+import edu.asu.ying.wellington.mapreduce.server.RemoteReducerImpl;
+import edu.asu.ying.wellington.mapreduce.task.Task;
 import edu.asu.ying.wellington.mapreduce.task.TaskService;
 
 /**
@@ -25,6 +30,9 @@ import edu.asu.ying.wellington.mapreduce.task.TaskService;
 public final class NodeImpl implements LocalNode, NodeLocator {
 
   private static final Logger log = Logger.getLogger(NodeImpl.class.getName());
+
+  private final Reducer reducer;
+  private RemoteReducer reducerProxy;
 
   private final RemoteNode proxy;
 
@@ -72,6 +80,13 @@ public final class NodeImpl implements LocalNode, NodeLocator {
     jobService.start();
     taskService.start();
     dfsService.start();
+
+    reducer = new ReducerImpl(this);
+    try {
+      reducerProxy = activator.bind(RemoteReducer.class, new RemoteReducerImpl(reducer));
+    } catch (RemoteException e) {
+      log.log(Level.SEVERE, "Failed to export reducer obj", e);
+    }
   }
 
   @Override
@@ -86,6 +101,11 @@ public final class NodeImpl implements LocalNode, NodeLocator {
     jobService.stop();
     taskService.stop();
     dfsService.stop();
+  }
+
+  @Override
+  public RemoteReducer getReducerFor(Task task) {
+    return reducerProxy;
   }
 
   @Override
