@@ -99,6 +99,10 @@ public class Client {
    * Starts the initialized services, transitioning the daemon to the {@code Running} state.
    */
   private void start() throws IOException {
+    BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("user.home") + "/pagesize")));
+    String pageSize = reader.readLine().trim();
+    reader.close();
+
     // Spawn virtual nodes
     Daemon[] instances = new Daemon[10];
     Injector injector = null;
@@ -108,7 +112,7 @@ public class Client {
           .createChildInjector(
               new WellingtonModule()
                   .setProperty("dfs.store.path", System.getProperty("user.home") + "/dfs/" + i)
-                  .setProperty("dfs.page.capacity", "262144"));
+                  .setProperty("dfs.page.capacity", pageSize));
 
       instances[i] = injector.getInstance(Daemon.class);
       System.out.println(instances[i].getPeer().getName());
@@ -153,14 +157,24 @@ public class Client {
           System.out.println("All transfers finished");
           break;
         case "j":
+          reader = new BufferedReader(new FileReader(new File(System.getProperty("user.home") + "/numjobs")));
+          int numJobs = Integer.parseInt(reader.readLine().trim());
+          int numConcurrent = Integer.parseInt(reader.readLine().trim());
+          reader.close();
+
+          System.out.println("Starting " + (numJobs / numConcurrent) + " groups of " + numConcurrent + " jobs");
           JobClient client = injector.getInstance(JobClient.class);
-          for (int i = 0; i < 5; i++) {
-            JobConf job = ExampleMapReduceJob.createJob();
-            try {
-              client.runJob(job);
-            } catch (JobException e) {
-              throw new RuntimeException(e);
+          for (int j = 0; j < (numJobs / numConcurrent); j++) {
+            for (int i = 0; i < numConcurrent; i++) {
+              JobConf job = ExampleMapReduceJob.createJob();
+              try {
+                client.runJob(job);
+              } catch (JobException e) {
+                throw new RuntimeException(e);
+              }
             }
+            System.out.println("Press enter to run next group of jobs");
+            scanner.nextLine();
           }
           break;
       }
