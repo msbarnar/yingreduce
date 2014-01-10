@@ -104,7 +104,7 @@ public class Client {
     reader.close();
 
     // Spawn virtual nodes
-    Daemon[] instances = new Daemon[10];
+    Daemon[] instances = new Daemon[5];
     Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
