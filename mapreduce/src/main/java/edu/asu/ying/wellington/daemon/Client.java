@@ -57,8 +57,6 @@ public class Client {
     File nodeList = new File(System.getProperty("user.home").concat("/nodes"));
     BufferedReader reader;
 
-    int i = 0;
-
     String line;
     try {
       reader = new BufferedReader(new FileReader(nodeList));
@@ -68,10 +66,9 @@ public class Client {
           break;
         }
 
-        System.out.println("Instance " + i + " connect to " + line);
-        instances[i++].join(URI.create(String.format("//%s:5000", line)));
-        if (i >= instances.length) {
-          i = 0;
+        for (int i = 0; i < instances.length; i++) {
+          System.out.println("Instance " + i + " connect to " + line);
+          instances[i++].join(URI.create(String.format("//%s:5000", line)));
         }
       }
     } catch (IOException e) {
@@ -111,7 +108,7 @@ public class Client {
           new KadP2PModule().setProperty("p2p.port", Integer.toString(5000 + i)))
           .createChildInjector(
               new WellingtonModule()
-                  .setProperty("dfs.store.path", System.getProperty("user.home") + "/dfs/" + i)
+                  .setProperty("dfs.store.path", System.getProperty("user.home") + "/dfs")
                   .setProperty("dfs.page.capacity", pageSize));
 
       instances[i] = injector.getInstance(Daemon.class);
