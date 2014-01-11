@@ -68,7 +68,7 @@ public class Client {
 
         for (int i = 0; i < instances.length; i++) {
           System.out.println("Instance " + i + " connect to " + line);
-          instances[i++].join(URI.create(String.format("//%s:5000", line)));
+          instances[i].join(URI.create(String.format("//%s:5000", line)));
         }
       }
     } catch (IOException e) {
@@ -100,8 +100,11 @@ public class Client {
     String pageSize = reader.readLine().trim();
     reader.close();
 
+    reader = new BufferedReader(new FileReader(new File(System.getProperty("user.home") + "/numnodes")));
+    int numNodes = Integer.parseInt(reader.readLine().trim());
+
     // Spawn virtual nodes
-    Daemon[] instances = new Daemon[5];
+    Daemon[] instances = new Daemon[numNodes];
     Injector injector = null;
     for (int i = 0; i < instances.length; i++) {
       injector = Guice.createInjector(
