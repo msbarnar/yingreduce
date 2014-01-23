@@ -1,6 +1,7 @@
 package edu.asu.ying.wellington.mapreduce.task;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.apache.log4j.Logger;
 
@@ -9,10 +10,12 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
 import edu.asu.ying.common.remoting.Remote;
+import edu.asu.ying.wellington.LocalNode;
 import edu.asu.ying.wellington.dfs.DFSService;
 import edu.asu.ying.wellington.dfs.PageName;
 import edu.asu.ying.wellington.mapreduce.server.RemoteTaskService;
@@ -41,13 +44,18 @@ public class TaskScheduler implements TaskService {
 
   private final TaskExecutor executor;
 
+  private final AtomicInteger numLocalTasks = new AtomicInteger(0);
+
+  private final Provider<LocalNode> localNodeProvider;
+
   @Inject
   private TaskScheduler(TaskServiceExporter exporter,
                         DFSService dfsService,
                         @Forwarding QueueExecutor<Task> forwardingQueue,
                         @Remote BlockingDeque<Task> remoteQueue,
                         @Local BlockingDeque<Object> readyQueue,
-                        TaskExecutor executor) {
+                        TaskExecutor executor,
+                        Provider<LocalNode> localNodeProvider) {
 
     this.dfsService = dfsService;
 
@@ -57,6 +65,8 @@ public class TaskScheduler implements TaskService {
     this.forwardingQueue = forwardingQueue;
 
     this.executor = executor;
+
+    this.localNodeProvider = localNodeProvider;
 
     try {
       this.proxy = exporter.export(this);
@@ -124,6 +134,8 @@ public class TaskScheduler implements TaskService {
       // If the local queue won't take it, forward it
       localQueue.add(task);
       readyQueue.add(new Object());
+      System.out.println(localNodeProvider.get().getName() + " - Local Tasks: " + numLocalTasks.incrementAndGet());
+
       //log.info("Queue local: " + task.getTargetPageID());
     } else {
       queueForward(task);

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.asu.ying.common.concurrency.QueueExecutor;
 import edu.asu.ying.common.remoting.Local;
@@ -30,6 +31,9 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
 
   private final BlockingDeque<Task> remoteQueue;
   private final BlockingDeque<Object> readyQueue;
+
+  private final AtomicInteger numRemoteTasks = new AtomicInteger(0);
+
 
   @Inject
   private ForwardingQueueExecutor(NodeLocator locator,
@@ -90,6 +94,11 @@ public final class ForwardingQueueExecutor extends QueueExecutor<Task> {
         // Put the task in the remote queue
         remoteQueue.add(task);
         readyQueue.add(new Object());
+        try {
+          System.out.println(locator.local().getName() + " - Remote Tasks: " + numRemoteTasks.incrementAndGet());
+        } catch (RemoteException e) {
+          log.error(e);
+        }
         //log.info("Forward to self: " + task.getTargetPageID());
       }
     } else {
