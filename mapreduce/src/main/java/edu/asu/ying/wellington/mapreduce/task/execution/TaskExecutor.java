@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,18 +34,10 @@ public class TaskExecutor {
   private long timeSlotSecond = -1;
   private long timeSlotStart = 0;
 
-  private BufferedWriter bw = null;
-
 
   @Inject
   private TaskExecutor(DFSService dfs) {
     this.dfs = dfs;
-
-    try {
-      bw = new BufferedWriter(new FileWriter(new File(System.getenv("user.home")+"tasktimes.csv")));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   public synchronized void execute(Task task) {
@@ -90,9 +81,11 @@ public class TaskExecutor {
       taskImpl.map(key, new WritableString(sb.toString()), collector, reporter);
 
       timeSlotSecond = (long) Math.floor((System.currentTimeMillis() - timeSlotStart));
-      if (bw != null) {
 
+      try (BufferedWriter bw = new BufferedWriter(new FileWriter(System.getenv("user.home")+"tasktimes.csv", true))) {
         bw.write(String.format("%d,%d\n", timeSlotSecond, readTotal));
+      } catch (IOException e) {
+        e.printStackTrace();
       }
 
 
