@@ -1,0 +1,11 @@
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   deployment/target/deployment-1.0-SNAPSHOT.jar
+#	modified:   mapreduce/src/main/java/edu/asu/ying/wellington/mapreduce/task/TaskScheduler.java
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	more

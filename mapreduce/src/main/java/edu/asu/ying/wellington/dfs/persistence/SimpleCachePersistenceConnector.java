@@ -25,8 +25,8 @@ import edu.asu.ying.wellington.dfs.PageName;
  */
 public final class SimpleCachePersistenceConnector implements PersistenceConnector, Runnable {
 
-  public static final int DEFAULT_CACHE_LIFETIME_SECONDS = 15 * 60;  // 15 minutes
-  private static final long CACHE_CLEAN_FREQUENCY_SECONDS = 60;  // seconds
+  public static final int DEFAULT_CACHE_LIFETIME_SECONDS = 10;  // 10 seconds
+  private static final long CACHE_CLEAN_FREQUENCY_SECONDS = 10;  // seconds
 
   private final HashFunction checksumFunc = Hashing.adler32();
 

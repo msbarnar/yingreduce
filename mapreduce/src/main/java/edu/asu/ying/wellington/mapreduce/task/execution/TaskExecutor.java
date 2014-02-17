@@ -4,6 +4,9 @@ import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -29,12 +32,28 @@ public class TaskExecutor {
 
   private final DFSService dfs;
 
+  private long timeSlotSecond = -1;
+  private long timeSlotStart = 0;
+
+  private BufferedWriter bw = null;
+
+
   @Inject
   private TaskExecutor(DFSService dfs) {
     this.dfs = dfs;
+
+    try {
+      bw = new BufferedWriter(new FileWriter(new File(System.getenv("user.home")+"tasktimes.csv")));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public synchronized void execute(Task task) {
+    if (timeSlotSecond < 0) {
+      timeSlotStart = System.currentTimeMillis();
+    }
+
     PageName pageName = task.getTargetPageID();
 
     long start = System.currentTimeMillis();
@@ -59,13 +78,23 @@ public class TaskExecutor {
 
       StringBuilder sb = new StringBuilder();
 
+      int readTotal = 0;
+
       char[] buf = new char[1024];
       int read;
       while ((read = reader.read(buf, 0, buf.length)) > 0) {
         sb.append(buf, 0, read);
+        readTotal += read;
       }
 
       taskImpl.map(key, new WritableString(sb.toString()), collector, reporter);
+
+      timeSlotSecond = (long) Math.floor((System.currentTimeMillis() - timeSlotStart));
+      if (bw != null) {
+
+        bw.write(String.format("%d,%d\n", timeSlotSecond, readTotal));
+      }
+
 
       /*System.out.println(String.format("%s,%s,%d,%f", task.getParentJob().getName(),
                                        task.getTargetPageID().path(),

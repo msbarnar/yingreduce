@@ -111,13 +111,11 @@ public class TaskScheduler implements TaskService {
   @Override
   public void accept(Task task) throws TaskException {
     // Initial tasks go in the local queue first if available, else everything gets forwarded
-    /*if (isInitialNodeFor(task)) {
+    if (isInitialNodeFor(task)) {
       queueLocal(task);
     } else {
       queueForward(task);
-    }*/
-    // FIXME: Experiment: random scheduling
-    queueLocal(task);
+    }
   }
 
   @Override
@@ -132,18 +130,16 @@ public class TaskScheduler implements TaskService {
 
   private void queueLocal(Task task) throws TaskSchedulingException {
     // Forward to the shortest of {Ql, Qf}
-    // FIXME: Experiment: random scheduling
-    //if (localQueue.size() <= forwardingQueue.size()) {
+    if (localQueue.size() <= forwardingQueue.size()) {
       // If the local queue won't take it, forward it
       localQueue.add(task);
       readyQueue.add(new Object());
       System.out.println(localNodeProvider.get().getName() + " - Local Tasks: " + numLocalTasks.incrementAndGet());
 
       //log.info("Queue local: " + task.getTargetPageID());
-    // FIXME: Experiment: random scheduling
-    /*} else {
+    } else {
       queueForward(task);
-    }*/
+    }
   }
 
   private void queueForward(Task task) throws TaskSchedulingException {
