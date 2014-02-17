@@ -82,7 +82,7 @@ public class TaskExecutor {
 
       timeSlotSecond = (long) Math.floor((System.currentTimeMillis() - timeSlotStart));
 
-      try (BufferedWriter bw = new BufferedWriter(new FileWriter(System.getenv("user.home")+"tasktimes.csv", true))) {
+      try (BufferedWriter bw = new BufferedWriter(new FileWriter(System.getProperty("user.home")+"/tasktimes.csv", true))) {
         bw.write(String.format("%d,%d\n", timeSlotSecond, readTotal));
       } catch (IOException e) {
         e.printStackTrace();
